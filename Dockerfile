@@ -1,7 +1,8 @@
 FROM node:18.14.0-slim AS base
 WORKDIR /api
 RUN apt-get update && apt-get install -y \
-    openssl
+    openssl \
+    && rm -rf /var/lib/apt/lists/*
 COPY package*.json tsconfig.json ./
 
 FROM base AS test
