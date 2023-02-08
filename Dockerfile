@@ -1,8 +1,7 @@
 FROM node:18.14.0-slim AS base
 WORKDIR /api
 RUN apt-get update && apt-get install -y \
-    openssl \
-    && rm -rf /var/lib/apt/lists/*
+    openssl
 COPY package*.json tsconfig.json ./
 
 FROM base AS test
@@ -29,4 +28,4 @@ FROM build AS production
 ENV NODE_ENV production
 COPY --from=build /api/build ./
 CMD npm run start
-ENTRYPOINT [ "/api/scripts/ensure-database-url.sh" ]
+# TOOD: Add ensure-database-url script
