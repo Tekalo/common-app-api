@@ -8,6 +8,6 @@ const app: Application = express();
  */
 app.use(router);
 
-app.set('port', 3000);
+app.set('port', process.env.PORT);
 
 export default app;
