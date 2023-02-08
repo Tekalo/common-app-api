@@ -45,4 +45,4 @@ services:
       - test
     depends_on:
       - test-postgres
-    command: scripts/test-command.sh
+    # command: scripts/test-command.sh # TODO: Uncomment when ready to add in testing
