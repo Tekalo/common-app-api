@@ -1,8 +1,7 @@
 FROM node:18.14.0-slim AS base
 WORKDIR /api
 RUN apt-get update && apt-get install -y \
-    openssl \
-    && rm -rf /var/lib/apt/lists/*
+    openssl && rm -rf /var/lib/apt/lists/*
 COPY package*.json tsconfig.json ./
 
 FROM base AS test
@@ -19,14 +18,21 @@ CMD npm run dev
 
 # Build the project's compiled files
 FROM base AS build
-ENV NODE_ENV production
+# TODO: Run all operations, in lower-leel envs, as notroot
+# https://denibertovic.com/posts/handling-permissions-with-docker-volumes/
+RUN groupadd -g 9999 notrootgroup \
+    && useradd -m -g 9999 -u 5678 notroot \
+    && chown -R 5678:9999 .
+USER notroot
 RUN npm ci
-COPY . .
+ENV NODE_ENV production
+COPY --chown=5678:9999 . .
 RUN npm run build
 
 # Copy our build artifacts and start the server
 FROM build AS production
 ENV NODE_ENV production
+RUN npm prune
 COPY --from=build /api/build ./
 CMD npm run start
 # TOOD: Add ensure-database-url script
