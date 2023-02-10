@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:14.6
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+  api:
+    image: common-app
+    build:
+      context: .
+      target: development
+    working_dir: /api
+    environment:
+      - PORT=3000
+    volumes:
+      - .:/api

@@ -1,0 +1,48 @@
+services:
+  postgres:
+    extends:
+      file: docker-compose.common.yaml
+      service: postgres
+    environment:
+      - POSTGRES_DB=devdb
+    ports:
+      - "5432:5432"
+  api:
+    extends:
+      file: docker-compose.common.yaml
+      service: api
+    image: common-app:dev
+    build:
+      context: .
+      target: development
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/devdb
+    ports:
+      - "3000:3000"
+    command: "npm run debug"
+    depends_on:
+      - postgres
+  test-postgres:
+    extends:
+      file: docker-compose.common.yaml
+      service: postgres
+    environment:
+      - POSTGRES_DB=testdb
+    profiles:
+      - test
+  test-api:
+    extends:
+      file: docker-compose.common.yaml
+      service: api
+    image: common-app:test
+    build:
+      context: .
+      target: test
+    environment:
+      - PORT=3000
+      - DATABASE_URL=postgresql://postgres:password@test-postgres:5432/testdb
+    profiles:
+      - test
+    depends_on:
+      - test-postgres
+    # command: scripts/test-command.sh # TODO: Uncomment when ready to add in testing
