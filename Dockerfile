@@ -18,15 +18,13 @@ CMD npm run dev
 
 # Build the project's compiled files
 FROM base AS build
+RUN mkdir /.npm
 # TODO: Run all operations, in lower-leel envs, as notroot
 # https://denibertovic.com/posts/handling-permissions-with-docker-volumes/
-RUN groupadd -g 9999 notrootgroup \
-    && useradd -m -g 9999 -u 5678 notroot \
-    && chown -R 5678:9999 .
-USER notroot
+USER node
 RUN npm ci
 ENV NODE_ENV production
-COPY --chown=5678:9999 . .
+COPY --chown=node:node . .
 RUN npm run build
 
 # Copy our build artifacts and start the server
