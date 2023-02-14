@@ -11,7 +11,7 @@ const app: Application = express();
 app.use(router);
 
 /**
- * Swagger UI documentation endpoint before auth
+ * Swagger UI documentation endpoint
  */
  router.use('/docs', swaggerUi.serve);
  router.get('/docs', swaggerUi.setup(spec));
