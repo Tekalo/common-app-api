@@ -14,7 +14,7 @@ services:
     image: common-app:dev
     build:
       context: .
-      target: production
+      target: development
     environment:
       - DATABASE_URL=postgresql://postgres:password@postgres:5432/devdb
     ports:
