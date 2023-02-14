@@ -13,8 +13,8 @@ app.use(router);
 /**
  * Swagger UI documentation endpoint
  */
- router.use('/docs', swaggerUi.serve);
- router.get('/docs', swaggerUi.setup(spec));
+router.use('/docs', swaggerUi.serve);
+router.get('/docs', swaggerUi.setup(spec));
 
 app.set('port', process.env.PORT);
 
