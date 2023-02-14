@@ -29,21 +29,21 @@ jobs:
     container:
       image: node:18-slim
 
-    # env:
-    #   POSTGRES_HOST: postgres
-    #   POSTGRES_PORT: 5432
-    #   DATABASE_URL: postgresql://ims_admin:password@postgres:5432/testdb
+    env:
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      DATABASE_URL: postgresql://capp_admin:password@postgres:5432/testdb
 
     services:
       postgres:
         image: postgres:14.7
-        # env:
-        #   POSTGRES_PASSWORD: password
-        #   POSTGRES_USER: ims_admin
-        #   POSTGRES_DB: testdb
-        #   POSTGRES_HOST: postgres
-        #   POSTGRES_PORT: 5432
-        #   DATABASE_URL: postgresql://ims_admin:password@postgres:5432/testdb
+        env:
+          POSTGRES_PASSWORD: password
+          POSTGRES_USER: capp_admin
+          POSTGRES_DB: testdb
+          POSTGRES_HOST: postgres
+          POSTGRES_PORT: 5432
+          DATABASE_URL: postgresql://capp_admin:password@postgres:5432/testdb
         # Set health checks to wait until postgres has started
         options: >-
           --health-cmd pg_isready
