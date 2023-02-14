@@ -24,9 +24,8 @@ model Application {
     preferredContact String // enum?
     pronoun          String
 
-    dateAdded  DateTime
-    dataSource String //??
-    program    String //enum?
+    dateAdded   DateTime
+    attribution String // enum?
 
     resumeUrl String
     openTo    String // enum?
@@ -44,11 +43,11 @@ model Application {
     interestCauses        String[] // Interested In - Impact Causes   //enum? Should be array?
     interestGovt          Boolean // Interested In - Govt
 
+    otherCause String // Additional cause(s) they are interested in   //Array?
     skill      String //Should be array?
-    otherCause String //??
 
     currentLocation String
-    openToRelocate  Boolean //??
+    openToRelocate  String // Enum?
 
     desiredSalary     Int
     previousImpact    Boolean
@@ -70,8 +69,8 @@ model Opportunity {
 
     orgName String
 
-    dateAdded  DateTime
-    dataSource String //??
+    dateAdded   DateTime
+    attribution String // enum?
 
     orgType  String //enum?
     industry String //enum?
