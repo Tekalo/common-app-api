@@ -1,0 +1,64 @@
+{
+  "extends": ["airbnb-base", "prettier"],
+  "plugins": ["@typescript-eslint", "prettier", "import"],
+  "rules": {
+    // turn on errors for missing imports
+    "import/no-unresolved": "error",
+    "import/extensions": [
+      "error",
+      "ignorePackages",
+      {
+        "js": "never",
+        "jsx": "never",
+        "ts": "never",
+        "tsx": "never"
+      }
+    ]
+  },
+  "settings": {
+    "import/parsers": {
+      "@typescript-eslint/parser": [".ts", ".tsx"]
+    },
+    "import/resolver": {
+      "typescript": {
+        "alwaysTryTypes": true
+      }
+    }
+  },
+  "overrides": [
+    {
+      "files": ["*.ts"], // Your TypeScript files extension
+      "extends": [
+        "airbnb-typescript/base",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:@typescript-eslint/recommended-requiring-type-checking"
+      ],
+      "parserOptions": {
+        "project": ["./tsconfig.json"] // Specify it only for TypeScript files
+      },
+      "rules": {
+        "@typescript-eslint/indent": "off",
+        // Ignore errors about dev deps that are only used in test files and not actual /src code
+        "import/no-extraneous-dependencies": [
+          "error",
+          { "devDependencies": ["**/*test.ts", "**/context.ts"] }
+        ]
+      }
+    },
+    {
+      "files": ["*.test.ts"],
+      "rules": {
+        "@typescript-eslint/no-unsafe-assignment": "off"
+      }
+    },
+    {
+      "files": ["*.md"],
+      "parser": "eslint-plugin-markdownlint/parser",
+      "extends": ["plugin:markdownlint/recommended"],
+      "rules": {
+        "markdownlint/md013": "off",
+        "markdownlint/md034": "off"
+      }
+    }
+  ]
+}
