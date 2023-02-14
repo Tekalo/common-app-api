@@ -1,0 +1,70 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model Candidate {
+    id          Int           @id @default(autoincrement())
+    Application Application[]
+}
+
+model Application {
+    id Int @id @default(autoincrement())
+
+    candidate   Candidate @relation(fields: [candidateId], references: [id])
+    candidateId Int
+
+    name             String
+    email            String
+    phone            String
+    preferredContact String // enum?
+    pronoun          String
+
+    dateAdded  DateTime
+    dataSource String //??
+    program    String //enum?
+
+    resumeUrl String
+    openTo    String // enum?
+
+    lastOrg  String // Current or Most Recent Org   // Link to org??
+    lastRole String // Current or Most Recent Role  // enum?
+    yoe      Float // Years of Relevant Experience
+
+    linkedInUrl String
+    porfolioUrl String
+    githubUrl   String
+
+    interestOpportunities String[] // Interested In - Opportunities    //enum? Should be array?
+    interestRoles         String[] // Interested In - Roles            //enum? Should be array?
+    interestCauses        String[] // Interested In - Impact Causes   //enum? Should be array?
+    interestGovt          Boolean // Interested In - Govt
+
+    skill      String //Should be array?
+    otherCause String //??
+
+    currentLocation String
+    openToRelocate  Boolean //??
+
+    desiredSalary     Int
+    previousImpact    Boolean
+    workAuthorization String // enum?
+
+    essayResponse String
+}
+
+model Organization {
+    id          Int           @id @default(autoincrement())
+    Opportunity Opportunity[]
+}
+
+model Opportunity {
+    id Int @id @default(autoincrement())
+
+    organization   Organization @relation(fields: [organizationId], references: [id])
+    organizationId Int
+}
