@@ -1,0 +1,91 @@
+---
+name: Test
+
+on:
+  push:
+    branches:
+      - main
+      - 'renovate/**'
+    paths-ignore:
+      # - 'tf/**' TODO: Uncomment this when we have tf/ dir
+      - '.github/**'
+  pull_request:
+    paths-ignore:
+      # - 'tf/**' TODO: Uncomment this when we have tf/ dir
+      - '.github/**'
+    branches-ignore:
+      - 'renovate/**'
+  workflow_dispatch:
+
+permissions:
+  # id-token: write
+  contents: read
+
+jobs:
+  test:
+    name: Run tests
+    runs-on: ubuntu-latest
+
+    container:
+      image: node:18-slim
+
+    # env:
+    #   POSTGRES_HOST: postgres
+    #   POSTGRES_PORT: 5432
+    #   DATABASE_URL: postgresql://ims_admin:password@postgres:5432/testdb
+
+    services:
+      postgres:
+        image: postgres:14.7
+        # env:
+        #   POSTGRES_PASSWORD: password
+        #   POSTGRES_USER: ims_admin
+        #   POSTGRES_DB: testdb
+        #   POSTGRES_HOST: postgres
+        #   POSTGRES_PORT: 5432
+        #   DATABASE_URL: postgresql://ims_admin:password@postgres:5432/testdb
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install Node.js dependencies
+        run: npm ci
+
+      - name: Run linters
+        run: ./scripts/lint-command.sh
+
+      - name: Run type checks
+        run: npm run check
+
+      - name: Run tests
+        run: npm run test
+
+  # build_and_push:
+  #   name: Build and push image
+  #   uses: ./.github/workflows/build-workflow.yml
+  #   if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
+  #   needs:
+  #     - test
+
+  # deploy:
+  #   name: 'Deploy to dev'
+  #   if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
+  #   uses: ./.github/workflows/deploy-image.yml
+  #   needs:
+  #     - build_and_push
+  #   with:
+  #     env: 'dev'
+  #     image: ${{ needs.build_and_push.outputs.image }}
+  #   secrets: inherit

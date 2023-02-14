@@ -15,7 +15,8 @@
     "container-install": "./scripts/container-install.sh",
     "format": "./scripts/prettier.sh",
     "lint": "./scripts/container-lint.sh",
-    "lint:fix": "./scripts/lint-fix.sh"
+    "lint:fix": "./scripts/lint-fix.sh",
+    "test": "echo \"Error: no test specified\" && exit 0"
   },
   "repository": {
     "type": "git",
