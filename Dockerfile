@@ -18,19 +18,21 @@ CMD npm run dev
 
 # Build the project's compiled files
 FROM base AS build
-RUN mkdir /.npm
 # TODO: Run all operations, in lower-leel envs, as notroot
 # https://denibertovic.com/posts/handling-permissions-with-docker-volumes/
-USER node
+RUN mkdir ./build && chown -R node:node ./build
 RUN npm ci
 ENV NODE_ENV production
+USER node
 COPY --chown=node:node . .
 RUN npm run build
 
 # Copy our build artifacts and start the server
 FROM build AS production
 ENV NODE_ENV production
+USER root
 RUN npm prune
+USER node
 COPY --from=build /api/build ./
 CMD npm run start
 # TOOD: Add ensure-database-url script
