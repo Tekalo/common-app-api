@@ -67,4 +67,38 @@ model Opportunity {
 
     organization   Organization @relation(fields: [organizationId], references: [id])
     organizationId Int
+
+    orgName String
+
+    dateAdded  DateTime
+    dataSource String //??
+
+    orgType  String //enum?
+    industry String //enum?
+    orgSize  String //enum?
+
+    contactName  String
+    contactEmail String
+    contactPhone String
+
+    role            String //enum?
+    opportunityType String //enum? Array?
+    paid            Boolean
+    salaryRange     String
+    location        String
+    visaSponsorship String //enum?
+
+    desiredStartDate DateTime
+    desiredEndDate   DateTime
+    desiredYoe       String
+    desiredSkill     String //array?
+    desiredOther     String //array?
+    desiredImpactExp String
+
+    similarStaffed Boolean
+
+    jdUrl String
+
+    essayRole String
+    essayHelp String
 }
