@@ -4,30 +4,5 @@
     "title": "Common App API",
     "description": "Documentation for Common App REST API endpoints",
     "version": "1.0.1"
-  },
-  "paths": {
-    "/health": {
-      "get": {
-        "description": "Gets health status",
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "additionalProperties": false,
-                  "properties": {
-                    "healthy": {
-                      "type": "boolean"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
   }
 }
