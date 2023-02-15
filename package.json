@@ -15,7 +15,9 @@
     "container-install": "./scripts/container-install.sh",
     "format": "./scripts/prettier.sh",
     "lint": "./scripts/container-lint.sh",
-    "lint:fix": "./scripts/lint-fix.sh"
+    "lint:fix": "./scripts/lint-fix.sh",
+    "test": "echo \"Error: no test specified\" && exit 0",
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
@@ -30,6 +32,7 @@
   "dependencies": {
     "@tsconfig/node18": "1.0.1",
     "express": "4.18.2",
+    "husky": "^8.0.3",
     "swagger-ui-express": "4.6.0"
   },
   "devDependencies": {
