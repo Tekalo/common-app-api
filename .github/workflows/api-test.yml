@@ -55,22 +55,27 @@ jobs:
       - name: Check out Git repository
         uses: actions/checkout@v3
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 7
+
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
 
       - name: Install Node.js dependencies
-        run: npm ci
+        run: pnpm install
 
       - name: Run linters
         run: ./scripts/lint-command.sh
 
       - name: Run type checks
-        run: npm run check
+        run: pnpm check
 
       - name: Run tests
-        run: npm run test
+        run: pnpm test
 
   # build_and_push:
   #   name: Build and push image

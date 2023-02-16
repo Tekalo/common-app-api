@@ -1,2 +1,7 @@
 #!/bin/bash
-docker compose run -u node --no-deps --rm api npm install "$@"
+if [ "$#" -eq  "0" ]
+then
+   docker compose run -u node --no-deps --rm api pnpm install
+else
+   docker compose run -u node --no-deps --rm api pnpm install $1
+fi
