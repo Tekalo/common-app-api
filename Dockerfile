@@ -1,4 +1,4 @@
-FROM node:18.14.0-slim AS base
+FROM node:19.6.0-slim AS base
 WORKDIR /api
 RUN apt-get update && apt-get install -y \
     openssl && rm -rf /var/lib/apt/lists/*
