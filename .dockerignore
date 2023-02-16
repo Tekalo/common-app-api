@@ -14,7 +14,7 @@
 **/compose*
 **/Dockerfile*
 **/node_modules
-**/npm-debug.log
 **/secrets.dev.yaml
 **/values.dev.yaml
+**/.pnpm-store
 README.md

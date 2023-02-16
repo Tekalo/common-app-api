@@ -19,7 +19,7 @@ services:
       - DATABASE_URL=postgresql://postgres:password@postgres:5432/devdb
     ports:
       - "3000:3000"
-    command: "npm run debug"
+    command: "pnpm debug"
     depends_on:
       - postgres
   test-postgres:

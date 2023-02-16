@@ -1,2 +1,2 @@
 #!/bin/bash
-exec npx eslint .
+exec pnpm exec eslint .

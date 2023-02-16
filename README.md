@@ -7,16 +7,18 @@ The Common App API is used to support the Common App Application, a tool for mat
 ### Prerequisites
 
 - Docker: [Docker Desktop](https://docs.docker.com/desktop/) is recommended for all operating systems.
-- NPM
+- [PNPM](https://pnpm.io/) We use pnpm, a more performant drop-in replacement for npm
 
 ### Setting up a dev environment
 
 We use Docker for local development and testing. This ensures consistency in environments amongst all contributors. Our Docker environment consists of 2 containers: API and Postgres DB containers. The local dev dir is volume-mounted at `/api` into the container, so there is no need to rebuild the image for code or package changes.
 
-To install dependencies, instead of running `npm install` (see [important note on node_modules](#important-note-on-node_modules) below), run:
+> As a general rule, _all_ package.json scripts should be run _inside_ the development Docker container, not on the local host machine. To do so, you can execute: `docker compose run -u node {your-command-here}`
+
+To install dependencies, instead of running `pnpm install` (see [important note on node_modules](#important-note-on-node_modules) below), run:
 
 ```bash
-npm run container-install
+pnpm container-install
 ```
 
 This will build a docker image of the API and then use it to install NPM packages.
@@ -33,16 +35,16 @@ You can now access the API at <http://localhost:3000>. The API container uses `n
 
 ### Important note on node_modules
 
-The node_modules directory is mounted into the container and all node commands should be run in the container. As far as possible, the npm scripts will use docker to run linting, beautification, build, etc in the container. **Never run `npm install` outside the container, as it could result in incorrect architecture packages being installed and logged to package-lock. Use `npm run container-install` instead, which runs the install in the container**
+The node_modules directory is mounted into the container and all node commands should be run in the container. As far as possible, the pnpm scripts will use docker to run linting, beautification, build, etc in the container. **Never run `pnpm install` outside the container, as it could result in incorrect architecture packages being installed and logged to pnpm-lock. Use `pnpm container-install` instead, which runs the install in the container**
 
 To add new packages, you can use:
 
 ```sh
-npm run container-install -- args to npm install
+pnpm container-install -- args to pnpm install
 
 # examples
-npm run container-install -- pino # same as: npm install pino
-npm run container-install -- --save-dev pino-pretty # same as: npm install --save-dev pino-pretty
+pnpm container-install -- pino # same as: pnpm install pino
+pnpm container-install -- --save-dev pino-pretty # same as: pnpm install --save-dev pino-pretty
 ```
 
 ## Code Formatting
