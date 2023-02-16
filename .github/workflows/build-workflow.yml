@@ -1,0 +1,59 @@
+---
+name: Build image
+
+on:
+  workflow_call:
+    outputs:
+      image:
+        description: 'Built docker image'
+        value: ${{ jobs.build_and_push.outputs.image }}
+
+env:
+  AWS_REGION: us-east-1
+  ECR_REPOSITORY: capp/api
+  DOCKER_BUILDKIT: 1
+
+permissions:
+  # id-token: write
+  contents: read
+
+jobs:
+  build_and_push:
+    name: Build and push
+    runs-on: ubuntu-latest
+
+    outputs:
+      image: ${{ steps.build-image.outputs.image }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          aws-region: us-east-1
+          role-to-assume: arn:aws:iam::297530360210:role/github-actions
+          role-session-name: GithubActions
+          mask-aws-account-id: false
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Set short github sha variable
+        run: |
+          echo "GITHUB_SHA_SHORT=$(echo "$GITHUB_SHA" | cut -c 1-6)" \
+            >> "$GITHUB_ENV"
+
+      - name: Build, tag, and push image to Amazon ECR
+        id: build-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: '${{ env.GITHUB_SHA_SHORT }}'
+        run: |
+          docker build -t "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" \
+            --target production \
+            .
+          docker push --all-tags "$ECR_REGISTRY/$ECR_REPOSITORY"
+          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
