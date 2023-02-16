@@ -8,11 +8,11 @@ on:
       - 'renovate/**'
       - gh-actions-build-workflow
     paths-ignore:
-      # - 'tf/**' TODO: Uncomment this when we have tf/ dir
+      # - 'tf/**' TODO: Uncomment this when we have tf dir
       - '.github/**'
   pull_request:
     paths-ignore:
-      # - 'tf/**' TODO: Uncomment this when we have tf/ dir
+      # - 'tf/**' TODO: Uncomment this when we have tf dir
       - '.github/**'
     branches-ignore:
       - 'renovate/**'
