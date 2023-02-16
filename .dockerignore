@@ -16,5 +16,5 @@
 **/node_modules
 **/secrets.dev.yaml
 **/values.dev.yaml
-README.md
 **/.pnpm-store
+README.md
