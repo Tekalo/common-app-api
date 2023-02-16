@@ -2,7 +2,7 @@ FROM node:18.14.0-slim AS base
 WORKDIR /api
 RUN apt-get update && apt-get install -y \
     openssl && rm -rf /var/lib/apt/lists/* && \
-    npm install -g pnpm &&
+    npm install -g pnpm
 
 COPY package.json pnpm-lock.yaml tsconfig.json ./
 
