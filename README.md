@@ -13,7 +13,7 @@ The Common App API is used to support the Common App Application, a tool for mat
 
 We use Docker for local development and testing. This ensures consistency in environments amongst all contributors. Our Docker environment consists of 2 containers: API and Postgres DB containers. The local dev dir is volume-mounted at `/api` into the container, so there is no need to rebuild the image for code or package changes.
 
-> As a general rule, _all_ package.json scripts should be run _inside_ the development Docker container, not on the local host machine. To do so, you can execute: `docker compose run -u node {your-command-here}`
+> As a general rule, _all_ package.json scripts should be run _inside_ the development Docker container, not on the local host machine. To do so, you can execute: `docker compose run -u node --no-deps --rm api {your-command-here}`
 
 To install dependencies, instead of running `pnpm install` (see [important note on node_modules](#important-note-on-node_modules) below), run:
 
