@@ -14,7 +14,7 @@ env:
   DOCKER_BUILDKIT: 1
 
 permissions:
-  # id-token: write
+  id-token: write
   contents: read
 
 jobs:
