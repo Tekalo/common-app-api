@@ -96,7 +96,7 @@ resource "aws_ecs_service" "api" {
   load_balancer {
     target_group_arn = aws_lb_target_group.api.arn
     container_name   = "capp-api"
-    container_port   = 3000
+    container_port   = var.api_port
   }
 
   # Per https://github.com/hashicorp/terraform-provider-aws/issues/22823, the default
@@ -129,7 +129,7 @@ resource "aws_ecs_task_definition" "api" {
       essential = true
       portMappings = [
         {
-          containerPort = 3000
+          containerPort = var.api_port
         }
       ]
       logConfiguration = {
@@ -148,6 +148,9 @@ resource "aws_ecs_task_definition" "api" {
       environment = [{
         name  = "APP_ENV"
         value = "${var.env}"
+        }, {
+        name  = "PORT"
+        value = "${var.api_port}"
       }]
     }
   ])
