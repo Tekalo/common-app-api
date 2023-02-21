@@ -1,8 +1,7 @@
-// read from the aws_security_group resource, and export the result as db_security_group
 data "aws_security_group" "db_security_group" {
   id = var.db_security_group_id
 }
-// read from the aws_db_subnet_group resource, and export the result as db_security_group
+
 data "aws_db_subnet_group" "main_subnet_group" {
   name = var.db_subnet_name
 }
@@ -26,7 +25,7 @@ resource "aws_rds_cluster" "main" {
   database_name          = "capp"
   master_username        = var.db_username
   master_password        = var.db_password
-  vpc_security_group_ids = [data.aws_security_group.db_security_group.id] // sets vpc_security_group_ids to the IDs of the aws security group
+  vpc_security_group_ids = [data.aws_security_group.db_security_group.id]
 
   final_snapshot_identifier = "capp-${var.env}-final"
 
@@ -76,7 +75,7 @@ resource "aws_cloudwatch_metric_alarm" "rds_instance0_cpu" {
 }
 
 resource "aws_ecs_service" "api" {
-  name                              = "ims-${var.env}-api"
+  name                              = "capp-${var.env}-api"
   cluster                           = var.ecs_cluster
   task_definition                   = aws_ecs_task_definition.api.arn
   desired_count                     = 1
@@ -102,20 +101,21 @@ resource "aws_ecs_service" "api" {
 
   # Per https://github.com/hashicorp/terraform-provider-aws/issues/22823, the default
   # capacity provider strategy on the cluster leads to a cycle of needing to recreate the service
-  # to null out the strategy.
+  # to null out the strategy (since we do not specify a strategy ourselves, there is a discrepency between 
+  # terraform spec and what is already in AWS)
   # If https://github.com/hashicorp/terraform-provider-aws/issues/26533 is ever resolved, we
   # could explicitly set the strategy to be the default strategy, which would be acceptable.
-  # lifecycle { # TODO - Uncomment this when you actually understand what its doing - i dont see any capacity provider defs
-  #   ignore_changes = [
-  #     capacity_provider_strategy
-  #   ]
-  # }
+  lifecycle {
+    ignore_changes = [
+      capacity_provider_strategy
+    ]
+  }
 }
 
 data "aws_region" "current" {}
 
 resource "aws_ecs_task_definition" "api" {
-  family = "ims-${var.env}-api"
+  family = "capp-${var.env}-api"
 
   depends_on = [aws_iam_role_policy.execution_role, aws_iam_role_policy_attachment.default_execution_role]
 
@@ -123,14 +123,13 @@ resource "aws_ecs_task_definition" "api" {
 
   container_definitions = jsonencode([
     {
-      name      = "ims-api"
+      name      = "capp-api"
       image     = "${var.image}"
       memory    = 256
       essential = true
       portMappings = [
         {
           containerPort = 3000
-          # hostPort      = 80
         }
       ]
       logConfiguration = {
@@ -142,18 +141,11 @@ resource "aws_ecs_task_definition" "api" {
         }
       }
       secrets = [{
-        name      = "AUTH_CONFIG"
-        valueFrom = aws_secretsmanager_secret.auth_config.arn
-        },
-        {
-          name      = "DATABASE_SECRET"
-          valueFrom = module.rds-secret.secret_arn
+        name      = "DATABASE_SECRET"
+        valueFrom = module.rds-secret.secret_arn
       }]
 
       environment = [{
-        name  = "CORS_ORIGINS"
-        value = "http://localhost:1234,https://ims.dev.apps.futurestech.cloud,https://ims.staging.apps.futurestech.cloud"
-        }, {
         name  = "APP_ENV"
         value = "${var.env}"
       }]
@@ -162,7 +154,7 @@ resource "aws_ecs_task_definition" "api" {
 }
 
 resource "aws_cloudwatch_log_group" "api" {
-  name              = "IMS/${var.env}/Api"
+  name              = "CAPP/${var.env}/Api"
   retention_in_days = 90
 }
 
@@ -196,7 +188,7 @@ resource "aws_lb_listener_rule" "api" {
 
   condition {
     host_header {
-      values = ["ims-api.${data.aws_route53_zone.main.name}"]
+      values = ["capp-api.${data.aws_route53_zone.main.name}"]
     }
   }
 
@@ -257,7 +249,7 @@ data "aws_lb_listener" "main443" {
 
 resource "aws_route53_record" "api" {
   zone_id = var.dns_zone_id
-  name    = "ims-api.${data.aws_route53_zone.main.name}"
+  name    = "capp-api.${data.aws_route53_zone.main.name}"
   type    = "A"
   alias {
     name                   = data.aws_lb.main.dns_name
@@ -269,7 +261,7 @@ resource "aws_route53_record" "api" {
 module "rds-secret" {
   source = "../rds-secret-postgres"
 
-  function_name = "ims-${var.env}-rds"
+  function_name = "capp-${var.env}-rds"
   initial_secret = {
     "engine"   = "postgres"
     "host"     = aws_rds_cluster.main.endpoint
@@ -282,19 +274,13 @@ module "rds-secret" {
   vpc_subnet_ids        = var.rotation_vpc_subnet_ids
   vpc_security_group_id = var.rotation_vpc_security_group_id
 
-  secret_name        = "projects/ims/${var.env}/db/config"
-  secret_description = "RDS database secret for IMS ${var.env} [${var.db_username}]"
-}
-
-resource "aws_secretsmanager_secret" "auth_config" {
-  name        = "projects/ims/${var.env}/auth_config"
-  description = "IMS ${var.env} authentication config"
-  kms_key_id  = aws_kms_key.main.key_id
+  secret_name        = "projects/capp/${var.env}/db/config"
+  secret_description = "RDS database secret for CAPP ${var.env} [${var.db_username}]"
 }
 
 resource "aws_iam_role" "ecs_execution_role" {
-  name = "ims-${var.env}-ecs-execution-role"
-  path = "/projects/ims/${var.env}/"
+  name = "capp-${var.env}-ecs-execution-role"
+  path = "/projects/capp/${var.env}/"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -312,7 +298,7 @@ resource "aws_iam_role" "ecs_execution_role" {
 }
 
 resource "aws_iam_role_policy" "execution_role" {
-  name   = "ims-task-execution-role"
+  name   = "capp-task-execution-role"
   role   = aws_iam_role.ecs_execution_role.id
   policy = data.aws_iam_policy_document.execution_role.json
 }
@@ -320,7 +306,7 @@ resource "aws_iam_role_policy" "execution_role" {
 data "aws_iam_policy_document" "execution_role" {
   statement {
     actions   = ["secretsmanager:GetSecretValue"]
-    resources = [aws_secretsmanager_secret.auth_config.arn, module.rds-secret.secret_arn]
+    resources = [module.rds-secret.secret_arn]
   }
 
   statement {
@@ -332,154 +318,4 @@ data "aws_iam_policy_document" "execution_role" {
 resource "aws_iam_role_policy_attachment" "default_execution_role" {
   role       = aws_iam_role.ecs_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
-}
-
-resource "aws_s3_bucket" "root_bucket" {
-  bucket = local.frontend_bucket_name
-}
-
-resource "aws_s3_bucket_policy" "root_bucket" {
-  bucket = aws_s3_bucket.root_bucket.id
-  policy = data.aws_iam_policy_document.root_policy.json
-}
-
-resource "aws_s3_bucket_public_access_block" "root_bucket" {
-  bucket = aws_s3_bucket.root_bucket.id
-
-  block_public_acls       = true
-  block_public_policy     = true
-  ignore_public_acls      = true
-  restrict_public_buckets = true
-}
-
-data "aws_iam_policy_document" "root_policy" {
-  statement {
-    sid    = "AllowCloudFrontServicePrincipalReadOnly"
-    effect = "Allow"
-
-    principals {
-      type        = "Service"
-      identifiers = ["cloudfront.amazonaws.com"]
-    }
-
-    actions = [
-      "s3:GetObject"
-    ]
-
-    resources = [
-      "${aws_s3_bucket.root_bucket.arn}/*",
-    ]
-
-    condition {
-      test     = "StringEquals"
-      variable = "AWS:SourceArn"
-      values = [
-        aws_cloudfront_distribution.root_s3_distribution.arn
-      ]
-    }
-  }
-}
-
-resource "aws_cloudfront_distribution" "root_s3_distribution" {
-  origin {
-    domain_name = aws_s3_bucket.root_bucket.bucket_domain_name
-    origin_id   = "S3-${local.frontend_bucket_name}"
-
-    origin_access_control_id = aws_cloudfront_origin_access_control.bucket_access.id
-  }
-
-  enabled             = true
-  is_ipv6_enabled     = true
-  default_root_object = "index.html"
-
-  aliases = ["ims.${data.aws_route53_zone.main.name}"]
-
-  custom_error_response {
-    response_page_path    = "/index.html"
-    error_code            = 404
-    response_code         = 200
-    error_caching_min_ttl = 0
-  }
-
-  custom_error_response {
-    response_page_path    = "/index.html"
-    error_code            = 403
-    response_code         = 200
-    error_caching_min_ttl = 0
-  }
-
-  default_cache_behavior {
-    allowed_methods  = ["GET", "HEAD"]
-    cached_methods   = ["GET", "HEAD"]
-    target_origin_id = "S3-${local.frontend_bucket_name}"
-
-
-    forwarded_values {
-      query_string = false
-
-      cookies {
-        forward = "none"
-      }
-    }
-
-    viewer_protocol_policy = "redirect-to-https"
-    min_ttl                = 0
-    default_ttl            = 3600
-    max_ttl                = 86400
-  }
-
-  restrictions {
-    geo_restriction {
-      restriction_type = "none"
-    }
-  }
-
-  ordered_cache_behavior {
-    path_pattern     = "/index.html"
-    allowed_methods  = ["GET", "HEAD", "OPTIONS"]
-    cached_methods   = ["GET", "HEAD", "OPTIONS"]
-    target_origin_id = "S3-${local.frontend_bucket_name}"
-
-    forwarded_values {
-      query_string = false
-      headers      = ["Origin"]
-
-      cookies {
-        forward = "none"
-      }
-    }
-
-    min_ttl                = 0
-    default_ttl            = 30
-    max_ttl                = 60
-    compress               = true
-    viewer_protocol_policy = "redirect-to-https"
-  }
-
-
-  viewer_certificate {
-    acm_certificate_arn = var.cert_arn
-    ssl_support_method  = "sni-only"
-  }
-
-}
-
-resource "aws_route53_record" "root-a" {
-  zone_id = data.aws_route53_zone.main.zone_id
-  name    = "ims.${data.aws_route53_zone.main.name}"
-  type    = "A"
-
-  alias {
-    name                   = aws_cloudfront_distribution.root_s3_distribution.domain_name
-    zone_id                = aws_cloudfront_distribution.root_s3_distribution.hosted_zone_id
-    evaluate_target_health = false
-  }
-}
-
-resource "aws_cloudfront_origin_access_control" "bucket_access" {
-  name                              = "IMSBucketOAC${var.env}"
-  description                       = "OAC for bucket access via cloudfront"
-  origin_access_control_origin_type = "s3"
-  signing_behavior                  = "always"
-  signing_protocol                  = "sigv4"
 }

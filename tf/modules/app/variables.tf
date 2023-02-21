@@ -31,16 +31,6 @@ variable "image" {
   type        = string
 }
 
-variable "cli_image" {
-  description = "Docker repository and tag for cli image"
-  type        = string
-}
-
-output "cli_image" {
-  description = "Image with which we are running ad-hoc CLI commands on"
-  value       = jsondecode(aws_ecs_task_definition.cli.container_definitions)[0].image
-}
-
 output "image" {
   description = "Image with which this stack has been deployed"
   value       = jsondecode(aws_ecs_task_definition.api.container_definitions)[0].image
@@ -50,7 +40,7 @@ variable "db_username" {
   description = "Initial database administrator username"
   type        = string
   sensitive   = true
-  default     = "ims_admin"
+  default     = "capp_admin"
 }
 
 variable "db_password" {
