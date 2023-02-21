@@ -219,7 +219,7 @@ resource "aws_cloudwatch_metric_alarm" "api_targetgroup_healthy_hosts_count" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "api_targetgroup_500_errors" {
-  alarm_name          = "${var.env}-api-500-errors"
+  alarm_name          = "capp-${var.env}-api-500-errors"
   alarm_description   = "Checks for the sum of HTTP 500 responses"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = 5
