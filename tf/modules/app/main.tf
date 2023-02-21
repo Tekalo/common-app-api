@@ -21,7 +21,7 @@ resource "aws_rds_cluster" "main" {
 
   engine                 = "aurora-postgresql"
   engine_mode            = "provisioned"
-  engine_version         = "14.6" # TODO: make sure this should actually be same as our postgresql version number (taken from the docker image tag)
+  engine_version         = "14.6"
   database_name          = "capp"
   master_username        = var.db_username
   master_password        = var.db_password
