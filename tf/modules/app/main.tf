@@ -56,7 +56,7 @@ resource "aws_rds_cluster_instance" "instance0" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "rds_instance0_cpu" {
-  alarm_name          = "${var.env}-rds-instance0-cpu"
+  alarm_name          = "capp-${var.env}-rds-instance0-cpu"
   alarm_description   = "Average CPU for ${var.env} DB: ${aws_rds_cluster_instance.instance0.identifier}"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = 5
