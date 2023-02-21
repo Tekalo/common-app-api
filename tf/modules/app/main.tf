@@ -150,7 +150,7 @@ resource "aws_ecs_task_definition" "api" {
         value = "${var.env}"
         }, {
         name  = "PORT"
-        value = "${var.api_port}"
+        value = var.api_port
       }]
     }
   ])
