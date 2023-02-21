@@ -184,8 +184,6 @@ data "aws_route53_zone" "main" {
 resource "aws_lb_listener_rule" "api" {
   listener_arn = data.aws_lb_listener.main443.arn
 
-  priority = 100
-
   condition {
     host_header {
       values = ["capp-api.${data.aws_route53_zone.main.name}"]
