@@ -199,7 +199,7 @@ resource "aws_lb_listener_rule" "api" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "api_targetgroup_healthy_hosts_count" {
-  alarm_name          = "${var.env}-api-healthy-hosts"
+  alarm_name          = "capp-${var.env}-api-healthy-hosts"
   alarm_description   = "Ensures at least 1 healthy host in the TargetGroup"
   comparison_operator = "LessThanThreshold"
   evaluation_periods  = 5
