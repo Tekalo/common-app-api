@@ -44,7 +44,8 @@ model Application {
     interestGovt          Boolean // Interested In - Govt
 
     otherCause String? // Additional cause(s) they are interested in
-    skills     String[]
+    skills     String[] // Enum or FKs
+    otherSkill String? // Additional skill(s) they have
 
     currentLocation String
     openToRelocate  String // enum
