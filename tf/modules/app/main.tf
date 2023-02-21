@@ -75,7 +75,7 @@ resource "aws_cloudwatch_metric_alarm" "rds_instance0_cpu" {
 }
 
 resource "aws_ecs_service" "api" {
-  name                              = "capp-${var.env}-api"
+  name                              = "capp-api"
   cluster                           = var.ecs_cluster
   task_definition                   = aws_ecs_task_definition.api.arn
   desired_count                     = 1
