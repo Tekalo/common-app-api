@@ -2,6 +2,11 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:base"],
   "enabled": true,
+  "ignorePaths": [
+    "**/node_modules/**",
+    "docker-compose*.yaml",
+    ".github/workflows/*"
+  ],
   "packageRules": [
     {
       "matchUpdateTypes": ["patch"],
@@ -13,6 +18,12 @@
       "automergeType": "branch",
       "automerge": true,
       "matchCurrentVersion": "!/^0./"
+    },
+    {
+      "matchUpdateTypes": ["minor", "patch"],
+      "automerge": false,
+      "matchFiles": ["docker-compose*.yaml"],
+      "matchPaths": [".github/workflows/*"]
     }
   ]
 }
