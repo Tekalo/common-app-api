@@ -26,6 +26,16 @@ variable "env" {
   type        = string
 }
 
+variable "api_port" {
+  description = "Port number for API service"
+  type        = number
+}
+
+output "api_port" {
+  description = "Port number for API service"
+  value       = var.api_port
+}
+
 variable "image" {
   description = "Docker repository and tag for image"
   type        = string
