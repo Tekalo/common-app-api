@@ -2,11 +2,7 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:base"],
   "enabled": true,
-  "ignorePaths": [
-    "**/node_modules/**",
-    "docker-compose*.yaml",
-    ".github/workflows/*"
-  ],
+  "ignorePaths": ["**/node_modules/**"],
   "packageRules": [
     {
       "matchUpdateTypes": ["patch"],
