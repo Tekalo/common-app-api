@@ -7,11 +7,11 @@ on:
       - main
       - 'renovate/**'
     paths-ignore:
-      # - 'tf/**' TODO: Uncomment this when we have tf dir
+      - 'tf/**'
       - '.github/**'
   pull_request:
     paths-ignore:
-      # - 'tf/**' TODO: Uncomment this when we have tf dir
+      - 'tf/**'
       - '.github/**'
     branches-ignore:
       - 'renovate/**'
