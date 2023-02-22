@@ -7,18 +7,18 @@ on:
       - main
       - 'renovate/**'
     paths-ignore:
-      # - 'tf/**' TODO: Uncomment this when we have tf/ dir
+      - 'tf/**'
       - '.github/**'
   pull_request:
     paths-ignore:
-      # - 'tf/**' TODO: Uncomment this when we have tf/ dir
+      - 'tf/**'
       - '.github/**'
     branches-ignore:
       - 'renovate/**'
   workflow_dispatch:
 
 permissions:
-  # id-token: write
+  id-token: write
   contents: read
 
 jobs:
@@ -77,12 +77,12 @@ jobs:
       - name: Run tests
         run: pnpm test
 
-  # build_and_push:
-  #   name: Build and push image
-  #   uses: ./.github/workflows/build-workflow.yml
-  #   if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
-  #   needs:
-  #     - test
+  build_and_push:
+    name: Build and push image
+    uses: ./.github/workflows/build-workflow.yml
+    if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
+    needs:
+      - test
 
   # deploy:
   #   name: 'Deploy to dev'
