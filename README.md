@@ -47,6 +47,32 @@ pnpm container-install -- pino # same as: pnpm install pino
 pnpm container-install -- --save-dev pino-pretty # same as: pnpm install --save-dev pino-pretty
 ```
 
+## Environment Variables
+
+### Local Development
+
+For local development, the `docker-compose` setup should be setting all of these already:
+
+`PORT` - (required) host port for API to be exposed on (should be `3000`)
+
+`DATABASE_URL` - (required) URL for Prisma Client to connect to. Formatted as: `postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:5432/${POSTGRES_DB}`
+
+- `${POSTGRES_HOST}` in the local setup will be the name of our docker-compose postgres service
+
+### Github Actions
+
+The below are used for the Postgres image in Github Actions CI/CD:
+
+`POSTGRES_DB` - Name of default database for Postgres container to create
+
+`POSTGRES_USER` - Username to create in Postgres container
+
+`POSTGRES_PORT` - Port for Postgres to be exposed (should be `5432`)
+
+`POSTGRES_PASSWORD` - Password to create in Postgres container
+
+`POSTGRES_HOST` - Hostname of Postgres server
+
 ## Code Formatting
 
 If there are particular rules that you want to add or otherwise toggle, you should generally use the `.prettierrc` file to configure the rules.
