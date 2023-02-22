@@ -13,6 +13,12 @@
       "automergeType": "branch",
       "automerge": true,
       "matchCurrentVersion": "!/^0./"
+    },
+    {
+      "matchUpdateTypes": ["minor", "patch"],
+      "automerge": false,
+      "matchFiles": ["docker-compose*.yaml"],
+      "matchPaths": [".github/workflows/*"]
     }
   ]
 }
