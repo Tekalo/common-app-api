@@ -17,7 +17,11 @@
     {
       "matchUpdateTypes": ["minor", "patch"],
       "automerge": false,
-      "matchFiles": ["docker-compose*.yaml"],
+      "matchFiles": ["docker-compose*.yaml"]
+    },
+    {
+      "matchUpdateTypes": ["minor", "patch"],
+      "automerge": false,
       "matchPaths": [".github/workflows/*"]
     }
   ]
