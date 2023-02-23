@@ -1,0 +1,65 @@
+---
+name: Deploy Image
+
+run-name: Deploy to ${{ inputs.env }}
+
+on:
+  workflow_call:
+    inputs:
+      image:
+        description: 'Docker image to deploy'
+        type: string
+        required: true
+      env:
+        description: 'Environment to deploy to'
+        type: string
+        required: true
+    secrets:
+      TF_API_TOKEN:
+        required: true
+
+env:
+  AWS_REGION: us-east-1
+  ECS_SERVICE: capp-api
+  ECS_CLUSTER: ${{ inputs.env }}
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    name: Deploy to ${{ inputs.env }}
+    environment:
+      name: ${{ inputs.env }}
+      url: https://capp.${{ inputs.env }}.apps.futurestech.cloud
+    concurrency: ${{ inputs.env }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: tf/envs/${{ inputs.env }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+
+      - name: Terraform Init
+        id: init
+        run: terraform init
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          aws-region: us-east-1
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_INFRA }}
+          role-session-name: GithubActions
+
+      # Start API task again with our updated database
+      - name: API Terraform Apply
+        run: |
+          terraform apply -auto-approve -input=false \
+          -var 'image=${{ inputs.image }}'
