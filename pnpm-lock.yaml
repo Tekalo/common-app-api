@@ -19,7 +19,7 @@ specifiers:
   express: 4.18.2
   husky: ^8.0.3
   nodemon: 2.0.20
-  pino-pretty: 9.3.0
+  pino-pretty: 9.4.0
   prettier: 2.8.4
   swagger-ui-express: 4.6.1
   typescript: 4.9.5
@@ -46,7 +46,7 @@ devDependencies:
   eslint-plugin-markdownlint: 0.4.0_eslint@8.33.0
   eslint-plugin-prettier: 4.2.1_qa2thblfovmfepmgrc7z2owbo4
   nodemon: 2.0.20
-  pino-pretty: 9.3.0
+  pino-pretty: 9.4.0
   prettier: 2.8.4
   typescript: 4.9.5
 
@@ -2496,8 +2496,8 @@ packages:
       split2: 4.1.0
     dev: true
 
-  /pino-pretty/9.3.0:
-    resolution: {integrity: sha512-T3FIzVc2sQfDY6FSjhvAEOeA1sby0YKI4he4VsI+d8q3MyYnfsPT+7OI3W/99v0v3TfJN/nMJradEvJWjbjRaQ==}
+  /pino-pretty/9.4.0:
+    resolution: {integrity: sha512-NIudkNLxnl7MGj1XkvsqVyRgo6meFP82ECXF2PlOI+9ghmbGuBUUqKJ7IZPIxpJw4vhhSva0IuiDSAuGh6TV9g==}
     hasBin: true
     dependencies:
       colorette: 2.0.19
