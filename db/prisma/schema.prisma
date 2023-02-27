@@ -7,16 +7,16 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Candidate {
-    id          Int           @id @default(autoincrement())
-    Application Application[]
+model Applicant {
+    id           Int                   @id @default(autoincrement())
+    Applications ApplicantSubmission[]
 }
 
-model Application {
+model ApplicantSubmission {
     id Int @id @default(autoincrement())
 
-    candidate   Candidate @relation(fields: [candidateId], references: [id])
-    candidateId Int
+    applicant   Applicant @relation(fields: [applicantId], references: [id])
+    applicantId Int
 
     name             String
     email            String
@@ -60,11 +60,11 @@ model Application {
 }
 
 model Organization {
-    id          Int           @id @default(autoincrement())
-    Opportunity Opportunity[]
+    id                     Int                     @id @default(autoincrement())
+    OpportunitySubmissions OpportunitySubmission[]
 }
 
-model Opportunity {
+model OpportunitySubmission {
     id Int @id @default(autoincrement())
 
     organization   Organization @relation(fields: [organizationId], references: [id])
