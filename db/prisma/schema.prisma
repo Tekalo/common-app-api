@@ -24,8 +24,8 @@ model Application {
     pronoun          String?
     preferredContact String // enum
 
-    dateAdded       DateTime
-    dataAttribution String // Who owns this data  // enum
+    dateAdded  DateTime
+    dataOrigin String // Who created this data  // enum
 
     resumeUrl    String
     searchStatus String // enum
@@ -43,16 +43,16 @@ model Application {
     interestCauses        String[] // Interested In - Impact Causes   //enum
     interestGovt          Boolean // Interested In - Govt
 
-    otherCause String? // Additional cause(s) they are interested in
-    skills     String[] // Enum or FKs
-    otherSkill String? // Additional skill(s) they have
+    otherCause  String? // Additional cause(s) they are interested in
+    skills      String[] // Enum or FKs
+    otherSkills String[] // Additional skill(s) they have
 
     currentLocation String
     openToRelocate  String // enum
 
-    desiredSalary     Int?
-    previousImpact    Boolean
-    workAuthorization String // enum
+    desiredSalary            Int?
+    previousImpactExperience Boolean
+    workAuthorization        String // enum
 
     essayResponse String
 
@@ -96,7 +96,7 @@ model Opportunity {
     desiredEndDate     DateTime?
     desiredYoe         String? // enum
     desiredSkills      String[] // enum, optional
-    desiredSkillsOther String?
+    desiredSkillsOther String[] // optional
     desiredImpactExp   String?
 
     similarStaffed Boolean?
