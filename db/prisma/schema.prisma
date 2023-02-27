@@ -1,0 +1,108 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model Candidate {
+    id          Int           @id @default(autoincrement())
+    Application Application[]
+}
+
+model Application {
+    id Int @id @default(autoincrement())
+
+    candidate   Candidate @relation(fields: [candidateId], references: [id])
+    candidateId Int
+
+    name             String
+    email            String
+    phone            String?
+    pronoun          String?
+    preferredContact String // enum
+
+    dateAdded  DateTime
+    dataOrigin String // Who created this data  // enum
+
+    resumeUrl    String
+    searchStatus String // enum
+
+    lastOrg  String // Current or Most Recent Org
+    lastRole String // Current or Most Recent Role
+    yoe      Float // Years of Relevant Experience
+
+    linkedInUrl String?
+    porfolioUrl String?
+    githubUrl   String?
+
+    interestOpportunities String[] // Interested In - Opportunities    //enum
+    interestRoles         String[] // Interested In - Roles            //enum
+    interestCauses        String[] // Interested In - Impact Causes   //enum
+    interestGovt          Boolean // Interested In - Govt
+
+    otherCause  String? // Additional cause(s) they are interested in
+    skills      String[] // Enum or FKs
+    otherSkills String[] // Additional skill(s) they have
+
+    currentLocation String
+    openToRelocate  String // enum
+
+    desiredSalary            Int?
+    previousImpactExperience Boolean
+    workAuthorization        String // enum
+
+    essayResponse String
+
+    referenceAttribution String? //How did you hear about us  //enum
+}
+
+model Organization {
+    id          Int           @id @default(autoincrement())
+    Opportunity Opportunity[]
+}
+
+model Opportunity {
+    id Int @id @default(autoincrement())
+
+    organization   Organization @relation(fields: [organizationId], references: [id])
+    organizationId Int
+
+    orgName String
+
+    dateAdded DateTime
+    source    String // enum
+
+    orgType  String // enum
+    industry String[] // enum
+    orgSize  String // enum
+
+    contactName  String
+    contactEmail String
+    contactPhone String
+
+    paid Boolean // Whether this is paid or volunteer
+
+    fullTime Boolean? // Whether this is full or part time
+
+    role            String?
+    salaryRange     String?
+    location        String
+    visaSponsorship String?
+
+    desiredStartDate   DateTime?
+    desiredEndDate     DateTime?
+    desiredYoe         String? // enum
+    desiredSkills      String[] // enum, optional
+    desiredSkillsOther String[] // optional
+    desiredImpactExp   String?
+
+    similarStaffed Boolean?
+
+    jdUrl String?
+
+    essayRole String?
+    essayHelp String?
+}
