@@ -75,7 +75,7 @@ jobs:
         run: pnpm check
 
       - name: Run tests
-        run: pnpm test
+        run: ./scripts/test-command.sh
 
   build_and_push:
     name: Build and push image
