@@ -17,6 +17,10 @@ on:
       - 'renovate/**'
   workflow_dispatch:
 
+env:
+  AUTH0_CONFIG: '{}'
+  PORT: 3000
+
 permissions:
   id-token: write
   contents: read
