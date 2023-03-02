@@ -17,6 +17,9 @@ on:
       - 'renovate/**'
   workflow_dispatch:
 
+env:
+  AUTH0_CONFIG: '{}'
+
 permissions:
   id-token: write
   contents: read
