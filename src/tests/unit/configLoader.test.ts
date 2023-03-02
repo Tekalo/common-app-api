@@ -1,4 +1,3 @@
-import { expect, jest, test } from '@jest/globals';
 import configLoader from '@App/services/configLoader.js';
 
 describe('Config Loader', () => {
