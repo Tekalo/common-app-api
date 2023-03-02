@@ -18,6 +18,7 @@ services:
     environment:
       - DATABASE_URL=postgresql://postgres:password@postgres:5432/devdb
       - "AUTH0_CONFIG={}"
+      - PORT=3000
     ports:
       - "3000:3000"
     command: "pnpm debug"

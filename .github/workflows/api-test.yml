@@ -19,6 +19,7 @@ on:
 
 env:
   AUTH0_CONFIG: '{}'
+  PORT: 3000
 
 permissions:
   id-token: write
