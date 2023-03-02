@@ -1,0 +1,38 @@
+import ApplicantController from '@App/controllers/ApplicantController.js';
+import CappAuth0Client from '@App/services/CappAuth0Client.js';
+import { ZodError } from 'zod';
+import { jest } from '@jest/globals';
+import { AppMetadata, User, UserMetadata } from 'auth0';
+
+
+describe('Applicant Controller', () => {
+  describe('Create Applicant', () => {
+
+    const mockCappAuth0Client = new CappAuth0Client();
+    const mockCreateApplicant = jest.fn<typeof mockCappAuth0Client.createApplicant>();
+    mockCappAuth0Client.createApplicant = mockCreateApplicant;
+
+    test('Should not store new applicant in Auth0', async () => {
+      const applicantController = new ApplicantController(mockCappAuth0Client);
+      await applicantController.createApplicant({
+        name: 'Bob Boberson',
+        email: 'bboerson@schmidtfutures.com',
+      }, { auth0: 'false' });
+      expect(mockCappAuth0Client.createApplicant).toHaveBeenCalledTimes(0);
+    });
+    test("Should throw error if body is missing 'name' field", async () => {
+      const applicantController = new ApplicantController(mockCappAuth0Client);
+      try {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        await applicantController.createApplicant({
+          email: 'bboberson@schmidtfutures.com',
+        });
+      } catch (e) {
+        if (!(e instanceof ZodError)) {
+          throw new Error('Exepcted ZodError');
+        }
+      }
+    });
+  });
+});
