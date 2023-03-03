@@ -18,7 +18,7 @@ class CappAuth0Client {
     return this.auth0Client;
   }
 
-  async createApplicant(data: ApplicantBody) {
+  async createUser(data: ApplicantBody) {
     const auth0Client: ManagementClient = this.getClient();
     const payload: Auth0UserBody = { connection: 'email', ...data };
     const response = await auth0Client.createUser(payload);

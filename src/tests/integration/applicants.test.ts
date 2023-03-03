@@ -15,4 +15,3 @@ describe('POST /applicants', () => {
     expect(body).toEqual({ success: true });
   });
 });
-
