@@ -5,5 +5,5 @@ export default {
   extensionsToTreatAsEsm: ['.ts'],
   transform: {
     '^.+\\.(t|j)sx?$': '@swc/jest', // loads .swcrc config by default
-  }
+  },
 };

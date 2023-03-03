@@ -9,9 +9,9 @@ afterAll(async () => {});
 describe('POST /applicants', () => {
   test('should create a new applicant and store in Auth0', async () => {
     const { body } = await request(app)
-    .post('/applicants')
-    .send({ name: 'Bob Boberson', email: 'bboberson@gmail.com' })
-    .expect(200);
+      .post('/applicants')
+      .send({ name: 'Bob Boberson', email: 'bboberson@gmail.com' })
+      .expect(200);
     expect(body).toEqual({ success: true });
   });
 });

@@ -17,6 +17,8 @@ services:
       target: development
     environment:
       - DATABASE_URL=postgresql://postgres:password@postgres:5432/devdb
+      - "AUTH0_CONFIG={}"
+      - PORT=3000
     ports:
       - "3000:3000"
     command: "pnpm debug"
@@ -41,6 +43,7 @@ services:
     environment:
       - PORT=3000
       - DATABASE_URL=postgresql://postgres:password@test-postgres:5432/testdb
+      - "AUTH0_CONFIG={}"
     profiles:
       - test
     depends_on:

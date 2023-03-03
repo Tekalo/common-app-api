@@ -11,7 +11,10 @@ class ApplicantController {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  async createApplicant(data: ApplicantBody, query: ApplicantQueryParams = { auth0: 'true' } ) {
+  async createApplicant(
+    data: ApplicantBody,
+    query: ApplicantQueryParams = { auth0: 'true' },
+  ) {
     if (query.auth0 !== 'false') {
       const validatedData = ApplicantBodySchema.parse(data); // Zod validate
       await this.auth0Client.createUser(validatedData);

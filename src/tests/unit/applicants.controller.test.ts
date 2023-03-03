@@ -5,17 +5,20 @@ import { jest } from '@jest/globals';
 
 describe('Applicant Controller', () => {
   describe('Create Applicant', () => {
-
     const mockCappAuth0Client = new CappAuth0Client();
-    const mockCreateApplicant = jest.fn<typeof mockCappAuth0Client.createUser>();
+    const mockCreateApplicant =
+      jest.fn<typeof mockCappAuth0Client.createUser>();
     mockCappAuth0Client.createUser = mockCreateApplicant;
 
     test('Should not store new applicant in Auth0', async () => {
       const applicantController = new ApplicantController(mockCappAuth0Client);
-      await applicantController.createApplicant({
-        name: 'Bob Boberson',
-        email: 'bboerson@schmidtfutures.com',
-      }, { auth0: 'false' });
+      await applicantController.createApplicant(
+        {
+          name: 'Bob Boberson',
+          email: 'bboerson@schmidtfutures.com',
+        },
+        { auth0: 'false' },
+      );
       expect(mockCappAuth0Client.createUser).toHaveBeenCalledTimes(0);
     });
     test("Should throw error if body is missing 'name' field", async () => {

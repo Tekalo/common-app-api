@@ -11,11 +11,15 @@ export type EmptyObject = Record<string, any>;
 
 router.post(
   '/',
-  (req: Request<EmptyObject, EmptyObject, EmptyObject, ApplicantQueryParams>, res: Response, next) => {
+  (
+    req: Request<EmptyObject, EmptyObject, EmptyObject, ApplicantQueryParams>,
+    res: Response,
+    next,
+  ) => {
     const appBody = req.body as ApplicantBody;
     applicantController
       .createApplicant(appBody, req.query)
-  .then((result) => {
+      .then((result) => {
         res.status(200).json(result);
       })
       .catch((err) => next(err));
