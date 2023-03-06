@@ -1,3 +1,4 @@
 node_modules
 build
 .pnpm-store
+scripts/auth0/*
