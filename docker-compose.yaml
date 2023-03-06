@@ -43,9 +43,14 @@ services:
     environment:
       - PORT=3000
       - DATABASE_URL=postgresql://postgres:password@test-postgres:5432/testdb
-      - "AUTH0_CONFIG={}"
+      - 'AUTH0_CONFIG={domain:"sf-capp-dev.us.auth0.com", clientId: "AzRVLnVmcru9u0hR5dl5VW84c21GLNEM", clientSecret:"CaIlDbCe1j8oN2-qPXKGvV1i7KU8fsxyIaIhgxg9UPgShTNtT0SnKCdDvV4Yf6ex"}'
     profiles:
       - test
     depends_on:
       - test-postgres
     # command: scripts/test-command.sh # TODO: Uncomment when ready to add in testing
+        # domain: 'sf-capp-dev.us.auth0.com',
+        # clientId: 'AzRVLnVmcru9u0hR5dl5VW84c21GLNEM',
+        # clientSecret:
+        #   'CaIlDbCe1j8oN2-qPXKGvV1i7KU8fsxyIaIhgxg9UPgShTNtT0SnKCdDvV4Yf6ex', // TODO CONFIG ME
+        # scope: 'create:users',
