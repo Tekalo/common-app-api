@@ -1,6 +1,7 @@
 import { ApplicantBody } from '@App/resources/types/apiRequestBodies.js';
 import { ApplicantQueryParams } from '@App/resources/types/apiRequestParams.js';
 import ApplicantBodySchema from '@App/resources/zodSchemas/apiRequestBodySchemas.js';
+import { ApplicantResponse } from '@App/resources/types/apiResponses.js';
 import CappAuth0Client from '@App/services/CappAuth0Client.js';
 
 class ApplicantController {
@@ -14,13 +15,16 @@ class ApplicantController {
   async createApplicant(
     data: ApplicantBody,
     query: ApplicantQueryParams = { auth0: 'true' },
-  ) {
+  ): Promise<ApplicantResponse> {
+    let auth0User;
     if (query.auth0 !== 'false') {
       const validatedData = ApplicantBodySchema.parse(data); // Zod validate
-      await this.auth0Client.createUser(validatedData);
+      auth0User = await this.auth0Client.createUser(validatedData);
     }
-    return { success: true };
-    // TODO: Create user in our Prisma DB
+    return {
+      auth0Id: auth0User?.user_id,
+      email: data.email,
+    };
   }
 }
 

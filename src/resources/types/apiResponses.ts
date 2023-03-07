@@ -1,3 +1,6 @@
+import { z } from 'zod';
+import ApplicantResponseSchema from '../zodSchemas/apiResponseSchemas.js';
+
 export type Problem = {
   title?: string; // HTTP error name e.g. "Unauthorized"
   status?: number; // HTTP status code
@@ -5,3 +8,5 @@ export type Problem = {
   type?: string;
   instance?: string;
 };
+
+export type ApplicantResponse = z.infer<typeof ApplicantResponseSchema>;

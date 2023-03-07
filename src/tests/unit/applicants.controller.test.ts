@@ -21,7 +21,7 @@ describe('Applicant Controller', () => {
       );
       expect(mockCappAuth0Client.createUser).toHaveBeenCalledTimes(0);
     });
-    test("Should throw error if request body is missing name", async () => {
+    test('Should throw error if request body is missing name', async () => {
       const applicantController = new ApplicantController(mockCappAuth0Client);
       try {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment

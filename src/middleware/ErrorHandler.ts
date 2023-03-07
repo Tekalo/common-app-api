@@ -9,12 +9,13 @@ const errorHandler = (
   res: Response,
   next: NextFunction, // eslint-disable-line @typescript-eslint/no-unused-vars
 ) => {
+
   const problem: Problem = err.problem || {};
   if (err instanceof ZodError) {
     const { issues } = err;
     problem.title = 'Zod Validation Error';
     problem.status = 400;
-    problem.detail = `${issues[0].code}: ${issues[0].path}`;
+    problem.detail = issues[0].code;
   }
   res
     .status(problem.status || 500)

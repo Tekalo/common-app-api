@@ -12,8 +12,8 @@ const UserPayload = z.object({ // todo rename to SHELL user payload
 
 const Auth0Config = z.object({
   domain: z.string(),
-  clientId: z.string().email(),
+  clientId: z.string(),
   clientSecret: z.string(),
 });
 
-export { UserPayload, Auth0Config }
+export { UserPayload, Auth0Config };
