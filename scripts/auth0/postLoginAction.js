@@ -14,30 +14,41 @@ exports.onExecutePostLogin = async (event, api) => {
     clientSecret: '',
   });
 
-  // Social login, first time
-  if (event.connection.name === 'google-oauth2' && event.stats && event.stats.logins_count === 1) { 
+
+  const management = new ManagementClient({
+    domain: 'sf-capp-dev.us.auth0.com',
+    clientId: 'AzRVLnVmcru9u0hR5dl5VW84c21GLNEM',
+    clientSecret: 'CaIlDbCe1j8oN2-qPXKGvV1i7KU8fsxyIaIhgxg9UPgShTNtT0SnKCdDvV4Yf6ex',
+});
+
+  // Social login, first time for user who has never had their shell account cleaned
+  if (event.connection.name === 'google-oauth2' &&
+      (!event.user.user_metadata || !event.user.user_metadata.has_cleaned_shell_accounts)
+  ) {
     let shellUserId;
     let userEmail;
     try {
       userEmail = event.user.email;
       const existingUsers = await management.getUsersByEmail(userEmail);
-      // Be sure we found our shell user and they never set their own password
       for (let i = 0; i < existingUsers.length; i++) {
         const user = existingUsers[i];
+        // Find our shell user
         if(
           user.identities && 
           user.identities.length === 1 &&
-          user.identities[0].connection === 'Username-Password-Authentication' &&
-          (!event.user.user_metadata || !event.user.user_metadata.has_cleaned_shell_accounts)
+          user.identities[0].connection === 'Username-Password-Authentication'
         ){
           shellUserId = user.user_id;
-          try {
-            await management.deleteUser({id:shellUserId})
-            // Set flag on our social user that we have already deleted their shell account
-            api.user.setUserMetadata("has_cleaned_shell_accounts", true);
-          } catch(e) {
-            throw new Error(`Could not delete user with ID ${shellUserId}`);
-          }
+          break;
+        }
+      }
+      if (shellUserId){
+        try {
+          await management.deleteUser({id:shellUserId})
+          // Set flag on our social user that we have already deleted their shell account
+          api.user.setUserMetadata("has_cleaned_shell_accounts", true);
+        } catch(e) {
+          throw new Error(`Could not delete user with ID ${shellUserId}`);
         }
       }
     } catch (e) {
