@@ -24,7 +24,11 @@ class CappAuth0Client {
   async createUser(data: ApplicantBody) {
     const auth0Client: ManagementClient = this.getClient();
     const password = randomUUID();
-    const payload: Auth0UserBody = { connection: 'Username-Password-Authentication', password, ...data };
+    const payload: Auth0UserBody = {
+      connection: 'Username-Password-Authentication',
+      password,
+      ...data,
+    };
     let responseBody;
     try {
       responseBody = await auth0Client.createUser(payload);

@@ -15,7 +15,7 @@ afterAll(async () => {
   }
 });
 
-const itif = (condition: boolean) => condition ? it : it.skip;
+const itif = (condition: boolean) => (condition ? it : it.skip);
 
 // TODO Fix this test for Auth0 testing
 describe('POST /applicants', () => {
@@ -27,17 +27,20 @@ describe('POST /applicants', () => {
       .expect(200);
     expect(body).toHaveProperty('email', 'bboberson@gmail.com');
   });
-  itif('CI' in process.env)('should create a new applicant and store in Auth0', async () => {
-    const { body }: { body: ApplicantResponse }  = await request(app)
-      .post('/applicants')
-      .send({ name: 'Bob Boberson', email: 'bboberson@gmail.com' })
-      .expect(200);
-    if (body.auth0Id) {
-      testUserID = body.auth0Id;
-    }
-    expect(body).toHaveProperty('auth0Id');
-    expect(body).toHaveProperty('email');
-  });
+  itif('CI' in process.env)(
+    'should create a new applicant and store in Auth0',
+    async () => {
+      const { body }: { body: ApplicantResponse } = await request(app)
+        .post('/applicants')
+        .send({ name: 'Bob Boberson', email: 'bboberson@gmail.com' })
+        .expect(200);
+      if (body.auth0Id) {
+        testUserID = body.auth0Id;
+      }
+      expect(body).toHaveProperty('auth0Id');
+      expect(body).toHaveProperty('email');
+    },
+  );
   test('should throw 409 if user already exists', async () => {
     const { body } = await request(app)
       .post('/applicants')
@@ -53,5 +56,4 @@ describe('POST /applicants', () => {
       .expect(400);
     expect(body).toHaveProperty('title', 'Zod Validation Error');
   });
-
 });

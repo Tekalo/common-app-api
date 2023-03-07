@@ -3,7 +3,8 @@ import { z } from 'zod';
 /**
  * Zod schemas for Auth0 Management API
  */
-const UserPayload = z.object({ // todo rename to SHELL user payload
+const UserPayload = z.object({
+  // todo rename to SHELL user payload
   name: z.string(),
   email: z.string().email(),
   password: z.string(),
