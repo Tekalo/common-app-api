@@ -2,6 +2,7 @@ import request from 'supertest';
 import app from '@App/app.js';
 import CappAuth0Client from '@App/services/CappAuth0Client.js';
 import { ApplicantResponse } from '@App/resources/types/apiResponses.js';
+import itif from '@App/tests/util/helpers.js';
 
 let testUserID: string;
 const cappAuth0 = new CappAuth0Client();
@@ -15,9 +16,6 @@ afterAll(async () => {
   }
 });
 
-const itif = (condition: boolean) => (condition ? it : it.skip);
-
-// TODO Fix this test for Auth0 testing
 describe('POST /applicants', () => {
   it('should create a new applicant', async () => {
     const { body } = await request(app)

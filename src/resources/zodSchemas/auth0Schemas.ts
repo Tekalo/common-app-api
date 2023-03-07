@@ -3,8 +3,7 @@ import { z } from 'zod';
 /**
  * Zod schemas for Auth0 Management API
  */
-const UserPayload = z.object({
-  // todo rename to SHELL user payload
+const ShellUserPayload = z.object({
   name: z.string(),
   email: z.string().email(),
   password: z.string(),
@@ -17,4 +16,4 @@ const Auth0Config = z.object({
   clientSecret: z.string(),
 });
 
-export { UserPayload, Auth0Config };
+export { ShellUserPayload, Auth0Config };

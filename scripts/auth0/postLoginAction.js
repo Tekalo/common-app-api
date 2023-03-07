@@ -18,7 +18,6 @@ exports.onExecutePostLogin = async (event, api) => {
     event.connection.name === 'google-oauth2' &&
     (!event.user.app_metadata ||
       !event.user.app_metadata.has_cleaned_shell_accounts)
-
   ) {
     let shellUserId;
     let userEmail;
