@@ -19,7 +19,7 @@ describe('Applicant Controller', () => {
         },
         { auth0: 'false' },
       );
-      expect(mockCappAuth0Client.createUser).toHaveBeenCalledTimes(0);
+      expect(mockCreateApplicant).toHaveBeenCalledTimes(0);
     });
     test('Should throw error if request body is missing name', async () => {
       const applicantController = new ApplicantController(mockCappAuth0Client);

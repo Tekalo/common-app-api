@@ -9,7 +9,7 @@ const cappAuth0 = new CappAuth0Client();
 beforeAll(async () => {});
 
 afterAll(async () => {
-  if ('CI' in process.env) {
+  if ('CI' in process.env && testUserID) {
     const auth0Client = cappAuth0.getClient();
     await auth0Client.deleteUser({ id: testUserID });
   }
@@ -28,12 +28,13 @@ describe('POST /applicants', () => {
     expect(body).toHaveProperty('email', 'bboberson@gmail.com');
   });
   itif('CI' in process.env)('should create a new applicant and store in Auth0', async () => {
-    const response = await request(app)
+    const { body }: { body: ApplicantResponse }  = await request(app)
       .post('/applicants')
       .send({ name: 'Bob Boberson', email: 'bboberson@gmail.com' })
       .expect(200);
-    const body: ApplicantResponse = response;
-    testUserID = body.auth0Id;
+    if (body.auth0Id) {
+      testUserID = body.auth0Id;
+    }
     expect(body).toHaveProperty('auth0Id');
     expect(body).toHaveProperty('email');
   });

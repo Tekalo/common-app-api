@@ -12,6 +12,7 @@ export type EmptyObject = Record<string, any>;
 router.post(
   '/',
   (
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     req: Request<EmptyObject, EmptyObject, EmptyObject, ApplicantQueryParams>,
     res: Response,
     next,
