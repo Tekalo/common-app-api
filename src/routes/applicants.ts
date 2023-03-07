@@ -7,12 +7,12 @@ import express, { Request, Response } from 'express';
 const applicantController = new ApplicantController(new CappAuth0Client());
 const router = express.Router();
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type EmptyObject = Record<string, any>;
 
 router.post(
   '/',
   (
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     req: Request<EmptyObject, EmptyObject, EmptyObject, ApplicantQueryParams>,
     res: Response,
     next,
