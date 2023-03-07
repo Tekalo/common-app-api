@@ -9,9 +9,9 @@ exports.onExecutePostLogin = async (event, api) => {
   const ManagementClient = require('auth0').ManagementClient;
 
   const management = new ManagementClient({
-      domain: '',
-      clientId: '',
-      clientSecret: '',
+    domain: '',
+    clientId: '',
+    clientSecret: '',
   });
 
   // Social login, first time
@@ -22,24 +22,28 @@ exports.onExecutePostLogin = async (event, api) => {
       userEmail = event.user.email;
       const existingUsers = await management.getUsersByEmail(userEmail);
       // Be sure we found our shell user and they never set their own password
-      existingUsers.forEach((user) => {
+      for (let i = 0; i < existingUsers.length; i++) {
+        const user = existingUsers[i];
         if(
           user.identities && 
           user.identities.length === 1 &&
-          user.identities[0].connection === 'Username-Password-Authentication' && 
-          !event.user.last_password_reset
+          user.identities[0].connection === 'Username-Password-Authentication' &&
+          (!event.user.user_metadata || !event.user.user_metadata.has_cleaned_shell_accounts)
         ){
           shellUserId = user.user_id;
+          try {
+            await management.deleteUser({id:shellUserId})
+            // Set flag on our social user that we have already deleted their shell account
+            api.user.setUserMetadata("has_cleaned_shell_accounts", true);
+          } catch(e) {
+            throw new Error(`Could not delete user with ID ${shellUserId}`);
+          }
         }
-      })
-      try {
-        await management.deleteUser({id:shellUserId})
-      } catch(e) {
-        throw new Error(`Could not delete user with ID ${shellUserId}`);
       }
     } catch (e) {
         throw new Error(`Something went wrong when determining whether to delete shell user ${userEmail}`);
     }
+
   }
 };
 
