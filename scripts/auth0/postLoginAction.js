@@ -14,13 +14,6 @@ exports.onExecutePostLogin = async (event, api) => {
     clientSecret: '',
   });
 
-
-  const management = new ManagementClient({
-    domain: 'sf-capp-dev.us.auth0.com',
-    clientId: 'AzRVLnVmcru9u0hR5dl5VW84c21GLNEM',
-    clientSecret: 'CaIlDbCe1j8oN2-qPXKGvV1i7KU8fsxyIaIhgxg9UPgShTNtT0SnKCdDvV4Yf6ex',
-});
-
   // Social login, first time for user who has never had their shell account cleaned
   if (event.connection.name === 'google-oauth2' &&
       (!event.user.user_metadata || !event.user.user_metadata.has_cleaned_shell_accounts)
