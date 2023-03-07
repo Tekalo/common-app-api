@@ -16,8 +16,9 @@ exports.onExecutePostLogin = async (event, api) => {
   // Social login, first time for user who has never had their shell account cleaned
   if (
     event.connection.name === 'google-oauth2' &&
-    (!event.user.user_metadata ||
-      !event.user.user_metadata.has_cleaned_shell_accounts)
+    (!event.user.app_metadata ||
+      !event.user.app_metadata.has_cleaned_shell_accounts)
+
   ) {
     let shellUserId;
     let userEmail;
@@ -40,7 +41,7 @@ exports.onExecutePostLogin = async (event, api) => {
         try {
           await management.deleteUser({ id: shellUserId });
           // Set flag on our social user that we have already deleted their shell account
-          api.user.setUserMetadata('has_cleaned_shell_accounts', true);
+          api.user.setAppMetadata('has_cleaned_shell_accounts', true);
         } catch (e) {
           throw new Error(`Could not delete user with ID ${shellUserId}`);
         }
