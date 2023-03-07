@@ -20,7 +20,7 @@ specifiers:
   eslint-config-prettier: 8.7.0
   eslint-import-resolver-typescript: 3.5.3
   eslint-plugin-import: 2.27.5
-  eslint-plugin-markdownlint: 0.4.0
+  eslint-plugin-markdownlint: 0.4.1
   eslint-plugin-prettier: 4.2.1
   express: 4.18.2
   husky: 8.0.3
@@ -58,7 +58,7 @@ devDependencies:
   eslint-config-prettier: 8.7.0_eslint@8.35.0
   eslint-import-resolver-typescript: 3.5.3_yckic57kx266ph64dhq6ozvb54
   eslint-plugin-import: 2.27.5_yiggpkcwtyhpwcphetqfqiayhm
-  eslint-plugin-markdownlint: 0.4.0_eslint@8.35.0
+  eslint-plugin-markdownlint: 0.4.1_eslint@8.35.0
   eslint-plugin-prettier: 4.2.1_xprnzp4ul2bcpmfe73av4voica
   jest: 29.4.3
   nodemon: 2.0.21
@@ -2342,14 +2342,14 @@ packages:
       - supports-color
     dev: true
 
-  /eslint-plugin-markdownlint/0.4.0_eslint@8.35.0:
-    resolution: {integrity: sha512-k5ZvMP11HJd3ggpmgfc+LSesx/QK75wsD7wQJjj2lLf0eJCMGQl8Osq0T4EmjJzBX0T0D3IlmArkhpj2wLg7Lg==}
+  /eslint-plugin-markdownlint/0.4.1_eslint@8.35.0:
+    resolution: {integrity: sha512-X8Ovprt2COSwmZAlY1RNsuxI1QdFmf1sAtATQkibB4l+5SCrm5crj/lO9YsR+Dnn0dFel4hr0GK5tgzVzx0fpQ==}
     engines: {node: '>=10'}
     peerDependencies:
       eslint: '>=7.5.0'
     dependencies:
       eslint: 8.35.0
-      markdownlint: 0.26.0
+      markdownlint: 0.27.0
     dev: true
 
   /eslint-plugin-prettier/4.2.1_xprnzp4ul2bcpmfe73av4voica:
@@ -4093,9 +4093,9 @@ packages:
       uc.micro: 1.0.6
     dev: true
 
-  /markdownlint/0.26.0:
-    resolution: {integrity: sha512-I7nfRVwKVs/AJi4BlBkUCNj/S4HJjZSSM1wbzdy7vZerFkSGpbs7wX9Rk8rvopvZjTTKFPQWItqdbl2Hh6YXQQ==}
-    engines: {node: '>=14'}
+  /markdownlint/0.27.0:
+    resolution: {integrity: sha512-HtfVr/hzJJmE0C198F99JLaeada+646B5SaG2pVoEakLFI6iRGsvMqrnnrflq8hm1zQgwskEgqSnhDW11JBp0w==}
+    engines: {node: '>=14.18.0'}
     dependencies:
       markdown-it: 13.0.1
     dev: true
