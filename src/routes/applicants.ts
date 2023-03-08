@@ -1,6 +1,8 @@
 import ApplicantController from '@App/controllers/ApplicantController.js';
 import { ApplicantBody } from '@App/resources/types/apiRequestBodies.js';
 import { ApplicantQueryParams } from '@App/resources/types/apiRequestParams.js';
+import ApplicantBodySchema from '@App/resources/zodSchemas/apiRequestBodySchemas.js';
+import ApplicantQueryParamsSchema from '@App/resources/zodSchemas/apiRequestParamsSchemas.js';
 import CappAuth0Client from '@App/services/CappAuth0Client.js';
 import express, { Request, Response } from 'express';
 
@@ -18,8 +20,10 @@ router.post(
     next,
   ) => {
     const appBody = req.body as ApplicantBody;
+    const validatedBody = ApplicantBodySchema.parse(appBody);
+    const validateParams = ApplicantQueryParamsSchema.parse(req.query);
     applicantController
-      .createApplicant(appBody, req.query)
+      .createApplicant(validatedBody, validateParams)
       .then((result) => {
         res.status(200).json(result);
       })

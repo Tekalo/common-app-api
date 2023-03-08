@@ -1,6 +1,5 @@
 import { ApplicantBody } from '@App/resources/types/apiRequestBodies.js';
 import { ApplicantQueryParams } from '@App/resources/types/apiRequestParams.js';
-import ApplicantBodySchema from '@App/resources/zodSchemas/apiRequestBodySchemas.js';
 import { ApplicantResponse } from '@App/resources/types/apiResponseBodies.js';
 import CappAuth0Client from '@App/services/CappAuth0Client.js';
 
@@ -18,8 +17,7 @@ class ApplicantController {
   ): Promise<ApplicantResponse> {
     let auth0User;
     if (query.auth0 !== 'false') {
-      const validatedData = ApplicantBodySchema.parse(data);
-      auth0User = await this.auth0Client.createUser(validatedData);
+      auth0User = await this.auth0Client.createUser(data);
     }
     return {
       auth0Id: auth0User?.user_id || null,
