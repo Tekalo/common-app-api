@@ -17,7 +17,7 @@ services:
       target: development
     environment:
       - DATABASE_URL=postgresql://postgres:password@postgres:5432/devdb
-      - "AUTH0_CONFIG={}"
+      - 'AUTH0_CONFIG={"domain":"sf-capp-dev.us.auth0.com", "clientId": "AzRVLnVmcru9u0hR5dl5VW84c21GLNEM", "clientSecret": "${AUTH0_CLIENT_SECRET}" }'
       - PORT=3000
     ports:
       - "3000:3000"
@@ -43,7 +43,7 @@ services:
     environment:
       - PORT=3000
       - DATABASE_URL=postgresql://postgres:password@test-postgres:5432/testdb
-      - "AUTH0_CONFIG={}"
+      - 'AUTH0_CONFIG={"domain":"sf-capp-dev.us.auth0.com", "clientId": "AzRVLnVmcru9u0hR5dl5VW84c21GLNEM", "clientSecret": "${AUTH0_CLIENT_SECRET}"}'
     profiles:
       - test
     depends_on:

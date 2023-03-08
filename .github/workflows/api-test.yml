@@ -18,7 +18,7 @@ on:
   workflow_dispatch:
 
 env:
-  AUTH0_CONFIG: '{}'
+  AUTH0_CONFIG: '{"domain": "sf-capp-dev.us.auth0.com", "clientId": "AzRVLnVmcru9u0hR5dl5VW84c21GLNEM", "clientSecret": "${{ secrets.AUTH0_CLIENT_SECRET }}"}'
   PORT: 3000
 
 permissions:
