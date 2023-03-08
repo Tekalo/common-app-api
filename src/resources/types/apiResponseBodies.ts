@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import ApplicantResponseSchema from '../zodSchemas/apiResponseSchemas.js';
+import ApplicantResponseSchema from '../zodSchemas/apiResponseBodySchemas.js';
 
 export type Problem = {
   title?: string; // HTTP error name e.g. "Unauthorized"

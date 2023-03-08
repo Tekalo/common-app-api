@@ -1,5 +1,5 @@
 import CAPPError from '@App/resources/shared/CAPPError.js';
-import { Problem } from '@App/resources/types/apiResponses.js';
+import { Problem } from '@App/resources/types/apiResponseBodies.js';
 import { Request, Response, NextFunction } from 'express';
 import { ZodError } from 'zod';
 

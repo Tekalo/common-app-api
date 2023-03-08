@@ -1,4 +1,4 @@
-import { Problem } from '@App/resources/types/apiResponses.js';
+import { Problem } from '@App/resources/types/apiResponseBodies.js';
 
 /**
  * Generic class for any CAPP Errors

@@ -1,7 +1,7 @@
 import { ApplicantBody } from '@App/resources/types/apiRequestBodies.js';
 import { ApplicantQueryParams } from '@App/resources/types/apiRequestParams.js';
 import ApplicantBodySchema from '@App/resources/zodSchemas/apiRequestBodySchemas.js';
-import { ApplicantResponse } from '@App/resources/types/apiResponses.js';
+import { ApplicantResponse } from '@App/resources/types/apiResponseBodies.js';
 import CappAuth0Client from '@App/services/CappAuth0Client.js';
 
 class ApplicantController {
