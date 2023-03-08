@@ -45,7 +45,7 @@
                       "type": "string"
                     },
                     "auth0Id": {
-                      "type": "string",
+                      "type": "boolean",
                       "nullable": true
                     }
                   }
