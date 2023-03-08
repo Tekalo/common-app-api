@@ -8,8 +8,13 @@ datasource db {
 }
 
 model Applicant {
-    id           Int                   @id @default(autoincrement())
-    Applications ApplicantSubmission[]
+    id               Int                   @id @default(autoincrement())
+    name             String
+    email            String
+    phone            String?
+    pronoun          String?
+    preferredContact String // enum
+    Applications     ApplicantSubmission[]
 }
 
 model ApplicantSubmission {
@@ -17,12 +22,6 @@ model ApplicantSubmission {
 
     applicant   Applicant @relation(fields: [applicantId], references: [id])
     applicantId Int
-
-    name             String
-    email            String
-    phone            String?
-    pronoun          String?
-    preferredContact String // enum
 
     dateAdded  DateTime
     dataOrigin String // Who created this data  // enum
