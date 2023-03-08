@@ -7,7 +7,7 @@ const ApplicantQueryParamsSchema = z.object({
   auth0: z
     .string()
     .optional()
-    .refine((val) => val === 'true' || val === 'false'),
+    .refine((val) => val === undefined || val === 'true' || val === 'false'),
 });
 
 export default ApplicantQueryParamsSchema;
