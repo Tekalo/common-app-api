@@ -39,14 +39,18 @@ describe('POST /applicants', () => {
       expect(body).toHaveProperty('email');
     },
   );
-  test('should throw 409 if user already exists', async () => {
-    const { body } = await request(app)
-      .post('/applicants')
-      .send({ name: 'Bob Boberson', email: 'bboberson@gmail.com' })
-      .expect(409);
-    expect(body).toHaveProperty('title', 'User Creation Error');
-    expect(body).toHaveProperty('detail', 'User already exists');
-  });
+  // This test depends on the previous one to create Bob Boberson
+  itif('CI' in process.env)(
+    'should throw 409 if user already exists',
+    async () => {
+      const { body } = await request(app)
+        .post('/applicants')
+        .send({ name: 'Bob Boberson', email: 'bboberson@gmail.com' })
+        .expect(409);
+      expect(body).toHaveProperty('title', 'User Creation Error');
+      expect(body).toHaveProperty('detail', 'User already exists');
+    },
+  );
   test('should throw 400 error for missing email', async () => {
     const { body } = await request(app)
       .post('/applicants')
