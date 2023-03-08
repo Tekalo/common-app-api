@@ -4,7 +4,10 @@ import { z } from 'zod';
  * Zod schemas for CommonApp-API request params
  */
 const ApplicantQueryParamsSchema = z.object({
-  auth0: z.string().refine((val) => val === 'true' || val === 'false'),
+  auth0: z
+    .string()
+    .optional()
+    .refine((val) => val === 'true' || val === 'false'),
 });
 
 export default ApplicantQueryParamsSchema;
