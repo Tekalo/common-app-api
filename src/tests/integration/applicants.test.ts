@@ -52,7 +52,11 @@ describe('POST /applicants', () => {
       async () => {
         const { body }: { body: ApplicantResponseBody } = await request(app)
           .post('/applicants')
-          .send({ name: 'Bob Boberson', email: 'bboberson@gmail.com' })
+          .send({
+            name: 'Bob Boberson',
+            email: 'bboberson@gmail.com',
+            preferredContact: 'sms',
+          })
           .expect(200);
         if (body.auth0Id) {
           testUserID = body.auth0Id;
@@ -67,7 +71,11 @@ describe('POST /applicants', () => {
       async () => {
         const { body } = await request(app)
           .post('/applicants')
-          .send({ name: 'Bob Boberson', email: 'bboberson@gmail.com' })
+          .send({
+            name: 'Bob Boberson',
+            email: 'bboberson@gmail.com',
+            preferredContact: 'sms',
+          })
           .expect(409);
         expect(body).toHaveProperty('title', 'User Creation Error');
         expect(body).toHaveProperty('detail', 'User already exists');
