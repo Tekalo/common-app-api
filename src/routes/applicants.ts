@@ -8,9 +8,13 @@ import {
   ApplicantRequestBody,
 } from '@App/resources/types/applicants.js';
 import CappAuth0Client from '@App/services/CappAuth0Client.js';
+import prisma from '@App/resources/client.js';
 import express, { Request, Response } from 'express';
 
-const applicantController = new ApplicantController(new CappAuth0Client());
+const applicantController = new ApplicantController(
+  new CappAuth0Client(),
+  prisma,
+);
 const router = express.Router();
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

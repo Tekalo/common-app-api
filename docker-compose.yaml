@@ -24,6 +24,22 @@ services:
     command: "pnpm debug"
     depends_on:
       - postgres
+  prisma-studio:
+    container_name: prisma-studio
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/devdb
+    ports:
+      - "5555:5555"
+    build:
+      context: .
+      dockerfile: db/prisma/Dockerfile
+    volumes:
+      # - ./scripts:/app/scripts
+      - ./db/prisma:/app/prisma
+    profiles:
+      - tools
+    depends_on:
+      - postgres
   test-postgres:
     extends:
       file: docker-compose.common.yaml

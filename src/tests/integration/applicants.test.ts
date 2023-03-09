@@ -7,8 +7,6 @@ import itif from '@App/tests/util/helpers.js';
 let testUserID: string;
 const cappAuth0 = new CappAuth0Client();
 
-beforeAll(async () => {});
-
 afterAll(async () => {
   if (testUserID) {
     const auth0Client = cappAuth0.getClient();
@@ -19,17 +17,32 @@ afterAll(async () => {
 describe('POST /applicants', () => {
   it('should create a new applicant only in database', async () => {
     // TODO: Comment back in when we add in DB logic
-    // const { body } = await request(app)
-    //   .post('/applicants')
-    //   .send({ name: 'Bob Boberson', email: 'bboberson@gmail.com' })
-    //   .query('auth0=false')
-    //   .expect(200);
-    // expect(body).toHaveProperty('email', 'bboberson@gmail.com');
+    const { body } = await request(app)
+      .post('/applicants')
+      .send({
+        name: 'Bob Boberson',
+        email: 'bboberson@gmail.com',
+        preferredContact: 'email',
+      })
+      .query('auth0=false')
+      .expect(200);
+    expect(body).toHaveProperty('email', 'bboberson@gmail.com');
   });
   it('should throw 400 error for missing email', async () => {
     const { body } = await request(app)
       .post('/applicants')
       .send({ name: 'Bob Boberson' })
+      .expect(400);
+    expect(body).toHaveProperty('title', 'Zod Validation Error');
+  });
+  test('Should throw error if request body has invalid preferred contact', async () => {
+    const { body } = await request(app)
+      .post('/applicants')
+      .send({
+        name: 'Bob Boberson',
+        email: 'bboberson@gmail.com',
+        preferredContact: 'text me please',
+      })
       .expect(400);
     expect(body).toHaveProperty('title', 'Zod Validation Error');
   });

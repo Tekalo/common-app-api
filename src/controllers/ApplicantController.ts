@@ -3,13 +3,18 @@ import {
   ApplicantResponseBody,
   ApplicantRequestBody,
 } from '@App/resources/types/applicants.js';
+import CAPPError from '@App/resources/shared/CAPPError.js';
 import CappAuth0Client from '@App/services/CappAuth0Client.js';
+import { Prisma, PrismaClient } from '@prisma/client';
 
 class ApplicantController {
   private auth0Client: CappAuth0Client;
 
-  constructor(auth0Client: CappAuth0Client) {
+  private prisma: PrismaClient;
+
+  constructor(auth0Client: CappAuth0Client, prisma: PrismaClient) {
     this.auth0Client = auth0Client;
+    this.prisma = prisma;
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -21,9 +26,34 @@ class ApplicantController {
     if (query.auth0 !== 'false') {
       auth0User = await this.auth0Client.createUser(data);
     }
+    let returnApplicant;
+    try {
+      returnApplicant = await this.prisma.applicant.create({ data });
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        // TODO : Log e.message in Sentry
+        throw new CAPPError(
+          {
+            title: 'User Creation Error',
+            detail: 'Database error encountered when creating new user',
+          },
+          e instanceof Error ? { cause: e } : undefined,
+        );
+      }
+      throw new CAPPError(
+        {
+          title: 'User Creation Error',
+          detail: 'Unknown error in creating applicant',
+          status: 500,
+        },
+        e instanceof Error ? { cause: e } : undefined,
+      );
+    }
+    // const createdApplicant = await this.prisma.applicant.create({ data });
     return {
+      id: returnApplicant.id,
       auth0Id: auth0User?.user_id || null,
-      email: data.email,
+      email: returnApplicant.email,
     };
   }
 }
