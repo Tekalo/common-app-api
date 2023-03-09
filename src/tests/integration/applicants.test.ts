@@ -7,7 +7,7 @@ import itif from '@App/tests/util/helpers.js';
 let testUserID: string;
 const cappAuth0 = new CappAuth0Client();
 
-afterAll(async () => {
+afterEach(async () => {
   if (testUserID) {
     const auth0Client = cappAuth0.getClient();
     await auth0Client.deleteUser({ id: testUserID });
@@ -65,10 +65,14 @@ describe('POST /applicants', () => {
         expect(body).toHaveProperty('email');
       },
     );
-    // This test depends on the previous one to create Bob Boberson
     itif('CI' in process.env)(
       'should throw 409 if user already exists',
       async () => {
+        await request(app).post('/applicants').send({
+          name: 'Bob Boberson',
+          email: 'bboberson@gmail.com',
+          preferredContact: 'sms',
+        });
         const { body } = await request(app)
           .post('/applicants')
           .send({
