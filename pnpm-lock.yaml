@@ -6,7 +6,7 @@ specifiers:
   '@swc/core': 1.3.38
   '@swc/jest': 0.2.24
   '@tsconfig/node18': 1.0.1
-  '@types/auth0': 2.35.10
+  '@types/auth0': 2.35.11
   '@types/express': 4.17.17
   '@types/jest': 29.4.0
   '@types/supertest': 2.0.12
@@ -36,7 +36,7 @@ specifiers:
 dependencies:
   '@prisma/client': 4.11.0_prisma@4.11.0
   '@tsconfig/node18': 1.0.1
-  '@types/auth0': 2.35.10
+  '@types/auth0': 2.35.11
   auth0: 3.2.0
   express: 4.18.2
   husky: 8.0.3
@@ -988,8 +988,8 @@ packages:
     resolution: {integrity: sha512-sNFeK6X2ATlhlvzyH4kKYQlfHXE2f2/wxtB9ClvYXevWpmwkUT7VaSrjIN9E76Qebz8qP5JOJJ9jD3QoD/Z9TA==}
     dev: false
 
-  /@types/auth0/2.35.10:
-    resolution: {integrity: sha512-B2NzYu/kVd+EaIhpBX/wi3oWkA7gU8i6xU8vhK2gK0Keox8ShfuHJeN5DSSZH6XZgZp4BsAmA974mDjQFgGW+g==}
+  /@types/auth0/2.35.11:
+    resolution: {integrity: sha512-DYoaaZUCN2m16ItLnpfCXibM5iz93rn8jos9vAATO7NlY7Hoz24s11Jd4K1IY53KGn1TogrhwMiDfm5I0H4AzQ==}
     dev: false
 
   /@types/babel__core/7.20.0:
