@@ -78,6 +78,9 @@ jobs:
       - name: Run type checks
         run: pnpm check
 
+      - name: Push Prisma schema
+        run: pnpx prisma db push
+
       - name: Run tests
         run: ./scripts/test-command.sh
 
