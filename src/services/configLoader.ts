@@ -1,6 +1,6 @@
 import CAPPError from '@App/resources/shared/CAPPError.js';
-import { Auth0Config } from '@App/resources/types/auth0Types.js';
-import { Auth0Config as Auth0ConfigSchema } from '@App/resources/zodSchemas/auth0Schemas.js';
+import { Auth0Config } from '@App/resources/types/auth0.js';
+import { Auth0ConfigSchema } from '@App/resources/schemas/auth0.js';
 
 export type BaseConfig = {
   port: number;

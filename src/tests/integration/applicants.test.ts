@@ -1,7 +1,7 @@
 import request from 'supertest';
 import app from '@App/app.js';
 import CappAuth0Client from '@App/services/CappAuth0Client.js';
-import { ApplicantResponse } from '@App/resources/types/apiResponseBodies.js';
+import { ApplicantResponseBody } from '@App/resources/types/applicants.js';
 import itif from '@App/tests/util/helpers.js';
 
 let testUserID: string;
@@ -37,7 +37,7 @@ describe('POST /applicants', () => {
     itif('CI' in process.env)(
       'should create a new applicant and store in Auth0',
       async () => {
-        const { body }: { body: ApplicantResponse } = await request(app)
+        const { body }: { body: ApplicantResponseBody } = await request(app)
           .post('/applicants')
           .send({ name: 'Bob Boberson', email: 'bboberson@gmail.com' })
           .expect(200);

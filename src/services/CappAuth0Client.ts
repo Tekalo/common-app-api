@@ -1,6 +1,6 @@
 import CAPPError from '@App/resources/shared/CAPPError.js';
-import { ApplicantBody } from '@App/resources/types/apiRequestBodies.js';
-import { Auth0UserBody, Auth0Config } from '@App/resources/types/auth0Types.js';
+import { ApplicantRequestBody } from '@App/resources/types/applicants.js';
+import { Auth0UserBody, Auth0Config } from '@App/resources/types/auth0.js';
 import { ManagementClient } from 'auth0';
 import { randomUUID } from 'node:crypto';
 import configLoader from './configLoader.js';
@@ -21,7 +21,7 @@ class CappAuth0Client {
     return this.auth0Client;
   }
 
-  async createUser(data: ApplicantBody) {
+  async createUser(data: ApplicantRequestBody) {
     const auth0Client: ManagementClient = this.getClient();
     const password = randomUUID();
     const payload: Auth0UserBody = {
