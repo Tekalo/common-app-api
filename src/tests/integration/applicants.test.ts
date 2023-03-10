@@ -70,7 +70,11 @@ describe('POST /applicants', () => {
       async () => {
         const { body }: { body: ApplicantResponseBody } = await request(app)
           .post('/applicants')
-          .send({ name: 'Bob Boberson', email: 'bboberson@gmail.com' });
+          .send({
+            name: 'Bob Boberson',
+            email: 'bboberson@gmail.com',
+            preferredContact: 'sms',
+          });
         if (body.auth0Id) {
           testUserID = body.auth0Id;
         }

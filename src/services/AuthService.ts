@@ -1,5 +1,4 @@
 import CAPPError from '@App/resources/shared/CAPPError.js';
-import { ApplicantRequestBody } from '@App/resources/types/applicants.js';
 import { Auth0UserBody, Auth0Config } from '@App/resources/types/auth0.js';
 import { ManagementClient } from 'auth0';
 import { randomBytes } from 'node:crypto';
@@ -21,13 +20,12 @@ class AuthService {
     return this.auth0Client;
   }
 
-  async createUser(data: ApplicantRequestBody) {
+  async createUser(data: { name: string; email: string }) {
     const auth0Client: ManagementClient = this.getClient();
-    const password = randomBytes(20).toString('base64');
     const payload: Auth0UserBody = {
-      connection: 'Username-Password-Authentication',
-      password,
       ...data,
+      connection: 'Username-Password-Authentication',
+      password: randomBytes(20).toString('base64'),
     };
     let responseBody;
     try {

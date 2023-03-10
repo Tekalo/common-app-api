@@ -17,14 +17,16 @@ class ApplicantController {
     this.prisma = prisma;
   }
 
-  // eslint-disable-next-line class-methods-use-this
   async createApplicant(
     data: ApplicantRequestBody,
     query: ApplicantQueryParams = { auth0: 'true' },
   ): Promise<ApplicantResponseBody> {
     let auth0User;
     if (query.auth0 !== 'false') {
-      auth0User = await this.auth0Service.createUser(data);
+      auth0User = await this.auth0Service.createUser({
+        name: data.name,
+        email: data.email,
+      });
     }
     let returnApplicant;
     try {
