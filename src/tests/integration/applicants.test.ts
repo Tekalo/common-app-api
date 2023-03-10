@@ -1,11 +1,11 @@
 import request from 'supertest';
 import app from '@App/app.js';
-import CappAuth0Client from '@App/services/CappAuth0Client.js';
+import AuthService from '@App/services/AuthService.js';
 import { ApplicantResponseBody } from '@App/resources/types/applicants.js';
 import itif from '@App/tests/util/helpers.js';
 
 let testUserID: string;
-const cappAuth0 = new CappAuth0Client();
+const cappAuth0 = new AuthService();
 
 beforeAll(async () => {});
 
@@ -31,7 +31,7 @@ describe('POST /applicants', () => {
       .post('/applicants')
       .send({ name: 'Bob Boberson' })
       .expect(400);
-    expect(body).toHaveProperty('title', 'Zod Validation Error');
+    expect(body).toHaveProperty('title', 'Validation Error');
   });
   describe('Auth0 Integration', () => {
     itif('CI' in process.env)(

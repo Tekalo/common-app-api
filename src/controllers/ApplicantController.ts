@@ -3,12 +3,12 @@ import {
   ApplicantResponseBody,
   ApplicantRequestBody,
 } from '@App/resources/types/applicants.js';
-import CappAuth0Client from '@App/services/CappAuth0Client.js';
+import AuthService from '@App/services/AuthService.js';
 
 class ApplicantController {
-  private auth0Client: CappAuth0Client;
+  private auth0Client: AuthService;
 
-  constructor(auth0Client: CappAuth0Client) {
+  constructor(auth0Client: AuthService) {
     this.auth0Client = auth0Client;
   }
 

@@ -1,5 +1,5 @@
 import ApplicantController from '@App/controllers/ApplicantController.js';
-import CappAuth0Client from '@App/services/CappAuth0Client.js';
+import CappAuth0Client from '@App/services/AuthService.js';
 import { ZodError } from 'zod';
 import { jest } from '@jest/globals';
 
