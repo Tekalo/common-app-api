@@ -48,7 +48,6 @@ describe('POST /applicants', () => {
         expect(body).toHaveProperty('email');
       },
     );
-    // This test depends on the previous one to create Bob Boberson
     itif('CI' in process.env)(
       'should throw 409 if user already exists',
       async () => {
