@@ -51,15 +51,18 @@ describe('POST /applicants', () => {
     itif('CI' in process.env)(
       'should throw 409 if user already exists',
       async () => {
-        await request(app)
+        const { body }: { body: ApplicantResponseBody } = await request(app)
           .post('/applicants')
           .send({ name: 'Bob Boberson', email: 'bboberson@gmail.com' });
-        const { body } = await request(app)
+        if (body.auth0Id) {
+          testUserID = body.auth0Id;
+        }
+        const { body: conflictBody } = await request(app)
           .post('/applicants')
           .send({ name: 'Bob Boberson', email: 'bboberson@gmail.com' })
           .expect(409);
-        expect(body).toHaveProperty('title', 'User Creation Error');
-        expect(body).toHaveProperty('detail', 'User already exists');
+        expect(conflictBody).toHaveProperty('title', 'User Creation Error');
+        expect(conflictBody).toHaveProperty('detail', 'User already exists');
       },
     );
   });
