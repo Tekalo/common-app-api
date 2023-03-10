@@ -6,10 +6,10 @@ import {
 import AuthService from '@App/services/AuthService.js';
 
 class ApplicantController {
-  private auth0Client: AuthService;
+  private auth0Service: AuthService;
 
-  constructor(auth0Client: AuthService) {
-    this.auth0Client = auth0Client;
+  constructor(auth0Service: AuthService) {
+    this.auth0Service = auth0Service;
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -19,7 +19,7 @@ class ApplicantController {
   ): Promise<ApplicantResponseBody> {
     let auth0User;
     if (query.auth0 !== 'false') {
-      auth0User = await this.auth0Client.createUser(data);
+      auth0User = await this.auth0Service.createUser(data);
     }
     return {
       auth0Id: auth0User?.user_id || null,

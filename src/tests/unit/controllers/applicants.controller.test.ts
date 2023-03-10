@@ -1,17 +1,16 @@
 import ApplicantController from '@App/controllers/ApplicantController.js';
-import CappAuth0Client from '@App/services/AuthService.js';
+import AuthService from '@App/services/AuthService.js';
 import { ZodError } from 'zod';
 import { jest } from '@jest/globals';
 
 describe('Applicant Controller', () => {
   describe('Create Applicant', () => {
-    const mockCappAuth0Client = new CappAuth0Client();
-    const mockCreateApplicant =
-      jest.fn<typeof mockCappAuth0Client.createUser>();
+    const mockAuthService = new AuthService();
+    const mockCreateApplicant = jest.fn<typeof mockAuthService.createUser>();
 
-    mockCappAuth0Client.createUser = mockCreateApplicant;
+    mockAuthService.createUser = mockCreateApplicant;
     test('Should not store new applicant in Auth0', async () => {
-      const applicantController = new ApplicantController(mockCappAuth0Client);
+      const applicantController = new ApplicantController(mockAuthService);
       await applicantController.createApplicant(
         {
           name: 'Bob Boberson',
@@ -22,7 +21,7 @@ describe('Applicant Controller', () => {
       expect(mockCreateApplicant).toHaveBeenCalledTimes(0);
     });
     test('Should throw error if request body is missing name', async () => {
-      const applicantController = new ApplicantController(mockCappAuth0Client);
+      const applicantController = new ApplicantController(mockAuthService);
       try {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore

@@ -5,14 +5,14 @@ import { ApplicantResponseBody } from '@App/resources/types/applicants.js';
 import itif from '@App/tests/util/helpers.js';
 
 let testUserID: string;
-const cappAuth0 = new AuthService();
+const authService = new AuthService();
 
 beforeAll(async () => {});
 
 afterEach(async () => {
   if (testUserID) {
-    const auth0Client = cappAuth0.getClient();
-    await auth0Client.deleteUser({ id: testUserID });
+    const auth0Service = authService.getClient();
+    await auth0Service.deleteUser({ id: testUserID });
   }
 });
 
