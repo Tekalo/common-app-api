@@ -20,7 +20,9 @@ pnpm container-install
 2\. Create a root level `.env` file, and in it put:
 
 ```bash
-AUTH0_CLIENT_SECRET={AUTH0_TENANT_CLIENT_SECRET}
+AUTH0_CLIENT_SECRET={Auth0 Tenant Client Secret}
+AUTH0_CLIENT_ID={Auth0 Tenant Client ID}
+AUTH0_DOMAIN={Auth0 Tenant Domain}
 ```
 
 We use Docker for local development and testing. This ensures consistency in environments amongst all contributors. Our Docker environment consists of 2 containers: API and Postgres DB containers. The local dev dir is volume-mounted at `/api` into the container, so there is no need to rebuild the image for code or package changes.
