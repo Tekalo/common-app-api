@@ -18,7 +18,7 @@ on:
   workflow_dispatch:
 
 env:
-  AUTH0_CONFIG: '{}'
+  AUTH0_CONFIG: '{"domain": "${{ vars.AUTH0_DOMAIN }}", "clientId": "${{ vars.AUTH0_CLIENT_ID }}", "clientSecret": "${{ secrets.AUTH0_CLIENT_SECRET }}"}'
   PORT: 3000
 
 permissions:
