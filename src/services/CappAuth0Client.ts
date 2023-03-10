@@ -40,6 +40,7 @@ class CappAuth0Client {
           status: 409,
         });
       }
+      throw(e);
     }
     return responseBody;
   }

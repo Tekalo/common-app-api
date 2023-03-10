@@ -29,7 +29,7 @@
         }
       }
     },
-    "/appliants": {
+    "/applicants": {
       "post": {
         "description": "Create a new applicant",
         "responses": {
