@@ -1,5 +1,5 @@
 import ApplicantController from '@App/controllers/ApplicantController.js';
-import CappAuth0Client from '@App/services/CappAuth0Client.js';
+import AuthService from '@App/services/AuthService.js';
 import { jest } from '@jest/globals';
 
 import {
@@ -23,11 +23,10 @@ export type PrismaCreateInputType = Prisma.ApplicantSelect;
 
 describe('Applicant Controller', () => {
   describe('Create Applicant', () => {
-    const mockCappAuth0Client = new CappAuth0Client();
-    const mockCreateApplicant =
-      jest.fn<typeof mockCappAuth0Client.createUser>();
+    const mockAuthService = new AuthService();
+    const mockCreateApplicant = jest.fn<typeof mockAuthService.createUser>();
 
-    mockCappAuth0Client.createUser = mockCreateApplicant;
+    mockAuthService.createUser = mockCreateApplicant;
     test('Should not store new applicant in Auth0', async () => {
       const mockResolved = {
         id: 1,
@@ -39,7 +38,7 @@ describe('Applicant Controller', () => {
       };
       mockCtx.prisma.applicant.create.mockResolvedValue(mockResolved);
       const applicantController = new ApplicantController(
-        mockCappAuth0Client,
+        mockAuthService,
         ctx.prisma,
       );
       await applicantController.createApplicant(
@@ -61,7 +60,7 @@ describe('Applicant Controller', () => {
         }),
       );
       const applicantController = new ApplicantController(
-        mockCappAuth0Client,
+        mockAuthService,
         ctx.prisma,
       );
       try {

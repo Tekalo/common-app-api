@@ -1,16 +1,16 @@
 import request from 'supertest';
 import app from '@App/app.js';
-import CappAuth0Client from '@App/services/CappAuth0Client.js';
+import AuthService from '@App/services/AuthService.js';
 import { ApplicantResponseBody } from '@App/resources/types/applicants.js';
 import itif from '@App/tests/util/helpers.js';
 
 let testUserID: string;
-const cappAuth0 = new CappAuth0Client();
+const authService = new AuthService();
 
 afterEach(async () => {
   if (testUserID) {
-    const auth0Client = cappAuth0.getClient();
-    await auth0Client.deleteUser({ id: testUserID });
+    const auth0Service = authService.getClient();
+    await auth0Service.deleteUser({ id: testUserID });
   }
 });
 
@@ -33,7 +33,7 @@ describe('POST /applicants', () => {
       .post('/applicants')
       .send({ name: 'Bob Boberson' })
       .expect(400);
-    expect(body).toHaveProperty('title', 'Zod Validation Error');
+    expect(body).toHaveProperty('title', 'Validation Error');
   });
   test('Should throw error if request body has invalid preferred contact', async () => {
     const { body } = await request(app)
@@ -44,7 +44,7 @@ describe('POST /applicants', () => {
         preferredContact: 'text me please',
       })
       .expect(400);
-    expect(body).toHaveProperty('title', 'Zod Validation Error');
+    expect(body).toHaveProperty('title', 'Validation Error');
   });
   describe('Auth0 Integration', () => {
     itif('CI' in process.env)(
@@ -68,12 +68,13 @@ describe('POST /applicants', () => {
     itif('CI' in process.env)(
       'should throw 409 if user already exists',
       async () => {
-        await request(app).post('/applicants').send({
-          name: 'Bob Boberson',
-          email: 'bboberson@gmail.com',
-          preferredContact: 'sms',
-        });
-        const { body } = await request(app)
+        const { body }: { body: ApplicantResponseBody } = await request(app)
+          .post('/applicants')
+          .send({ name: 'Bob Boberson', email: 'bboberson@gmail.com' });
+        if (body.auth0Id) {
+          testUserID = body.auth0Id;
+        }
+        const { body: conflictBody } = await request(app)
           .post('/applicants')
           .send({
             name: 'Bob Boberson',
@@ -81,8 +82,8 @@ describe('POST /applicants', () => {
             preferredContact: 'sms',
           })
           .expect(409);
-        expect(body).toHaveProperty('title', 'User Creation Error');
-        expect(body).toHaveProperty('detail', 'User already exists');
+        expect(conflictBody).toHaveProperty('title', 'User Creation Error');
+        expect(conflictBody).toHaveProperty('detail', 'User already exists');
       },
     );
   });

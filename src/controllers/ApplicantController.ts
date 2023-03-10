@@ -4,16 +4,16 @@ import {
   ApplicantRequestBody,
 } from '@App/resources/types/applicants.js';
 import CAPPError from '@App/resources/shared/CAPPError.js';
-import CappAuth0Client from '@App/services/CappAuth0Client.js';
 import { Prisma, PrismaClient } from '@prisma/client';
+import AuthService from '@App/services/AuthService.js';
 
 class ApplicantController {
-  private auth0Client: CappAuth0Client;
+  private auth0Service: AuthService;
 
   private prisma: PrismaClient;
 
-  constructor(auth0Client: CappAuth0Client, prisma: PrismaClient) {
-    this.auth0Client = auth0Client;
+  constructor(auth0Service: AuthService, prisma: PrismaClient) {
+    this.auth0Service = auth0Service;
     this.prisma = prisma;
   }
 
@@ -24,7 +24,7 @@ class ApplicantController {
   ): Promise<ApplicantResponseBody> {
     let auth0User;
     if (query.auth0 !== 'false') {
-      auth0User = await this.auth0Client.createUser(data);
+      auth0User = await this.auth0Service.createUser(data);
     }
     let returnApplicant;
     try {

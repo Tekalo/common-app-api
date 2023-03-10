@@ -2,10 +2,10 @@ import CAPPError from '@App/resources/shared/CAPPError.js';
 import { ApplicantRequestBody } from '@App/resources/types/applicants.js';
 import { Auth0UserBody, Auth0Config } from '@App/resources/types/auth0.js';
 import { ManagementClient } from 'auth0';
-import { randomUUID } from 'node:crypto';
+import { randomBytes } from 'node:crypto';
 import configLoader from './configLoader.js';
 
-class CappAuth0Client {
+class AuthService {
   private auth0Client: ManagementClient | undefined;
 
   getClient(): ManagementClient {
@@ -23,7 +23,7 @@ class CappAuth0Client {
 
   async createUser(data: ApplicantRequestBody) {
     const auth0Client: ManagementClient = this.getClient();
-    const password = randomUUID();
+    const password = randomBytes(20).toString('base64');
     const payload: Auth0UserBody = {
       connection: 'Username-Password-Authentication',
       password,
@@ -40,9 +40,10 @@ class CappAuth0Client {
           status: 409,
         });
       }
+      throw e;
     }
     return responseBody;
   }
 }
 
-export default CappAuth0Client;
+export default AuthService;
