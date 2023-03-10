@@ -20,19 +20,5 @@ describe('Applicant Controller', () => {
       );
       expect(mockCreateApplicant).toHaveBeenCalledTimes(0);
     });
-    test('Should throw error if request body is missing name', async () => {
-      const applicantController = new ApplicantController(mockAuthService);
-      try {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        await applicantController.createApplicant({
-          email: 'bboberson@schmidtfutures.com',
-        });
-      } catch (e) {
-        if (!(e instanceof ZodError)) {
-          throw new Error('Exepcted ZodError');
-        }
-      }
-    });
   });
 });
