@@ -9,7 +9,7 @@ const cappAuth0 = new AuthService();
 
 beforeAll(async () => {});
 
-afterAll(async () => {
+afterEach(async () => {
   if (testUserID) {
     const auth0Client = cappAuth0.getClient();
     await auth0Client.deleteUser({ id: testUserID });
@@ -52,6 +52,9 @@ describe('POST /applicants', () => {
     itif('CI' in process.env)(
       'should throw 409 if user already exists',
       async () => {
+        await request(app)
+          .post('/applicants')
+          .send({ name: 'Bob Boberson', email: 'bboberson@gmail.com' });
         const { body } = await request(app)
           .post('/applicants')
           .send({ name: 'Bob Boberson', email: 'bboberson@gmail.com' })
