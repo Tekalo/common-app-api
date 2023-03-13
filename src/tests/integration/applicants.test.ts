@@ -46,6 +46,7 @@ describe('POST /applicants', () => {
       .expect(400);
     expect(body).toHaveProperty('title', 'Validation Error');
   });
+
   describe('Auth0 Integration', () => {
     itif('CI' in process.env)(
       'should create a new applicant and store in Auth0',

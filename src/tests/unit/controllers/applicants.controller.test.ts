@@ -51,7 +51,6 @@ describe('Applicant Controller', () => {
       );
       expect(mockCreateApplicant).toHaveBeenCalledTimes(0);
     });
-
     test('Should throw error if Prisma fails to create applicant', async () => {
       mockCtx.prisma.applicant.create.mockRejectedValue(
         new Prisma.PrismaClientKnownRequestError('ERROR', {

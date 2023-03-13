@@ -12,6 +12,7 @@ import prisma from '@App/resources/client.js';
 import express, { Request, Response } from 'express';
 
 const applicantController = new ApplicantController(new AuthService(), prisma);
+
 const router = express.Router();
 
 export type EmptyObject = Record<string, unknown>;
