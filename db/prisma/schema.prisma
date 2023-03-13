@@ -58,18 +58,10 @@ model ApplicantSubmission {
     referenceAttribution String? //How did you hear about us  //enum
 }
 
-model Organization {
-    id                     Int                     @id @default(autoincrement())
-    OpportunitySubmissions OpportunitySubmission[]
-}
-
 model OpportunitySubmission {
     id Int @id @default(autoincrement())
 
-    organization   Organization @relation(fields: [organizationId], references: [id])
-    organizationId Int
-
-    orgName String
+    organization String
 
     dateAdded DateTime
     source    String // enum
