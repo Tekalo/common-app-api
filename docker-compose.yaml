@@ -34,7 +34,6 @@ services:
       context: .
       dockerfile: db/prisma/Dockerfile
     volumes:
-      # - ./scripts:/app/scripts
       - ./db/prisma:/app/prisma
     profiles:
       - tools

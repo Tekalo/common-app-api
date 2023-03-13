@@ -52,7 +52,6 @@ class ApplicantController {
         e instanceof Error ? { cause: e } : undefined,
       );
     }
-    // const createdApplicant = await this.prisma.applicant.create({ data });
     return {
       id: returnApplicant.id,
       auth0Id: auth0User?.user_id || null,
