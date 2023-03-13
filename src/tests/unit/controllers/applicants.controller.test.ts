@@ -1,15 +1,12 @@
 import ApplicantController from '@App/controllers/ApplicantController.js';
 import AuthService from '@App/services/AuthService.js';
 import { jest } from '@jest/globals';
-
 import {
   MockContext,
   Context,
   createMockContext,
 } from '@App/tests/util/context.js';
-
 import { Prisma } from '@prisma/client';
-import CAPPError from '@App/resources/shared/CAPPError.js';
 
 let mockCtx: MockContext;
 let ctx: Context;
@@ -62,23 +59,16 @@ describe('Applicant Controller', () => {
         mockAuthService,
         ctx.prisma,
       );
-      try {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        await applicantController.createApplicant({
+      await expect(
+        applicantController.createApplicant({
           name: 'Bob Boberson',
           email: 'bboberson@schmidtfutures.com',
           preferredContact: 'email',
-        });
-      } catch (e) {
-        if (!(e instanceof CAPPError)) {
-          throw new Error('Exepcted CAPPError');
-        }
-        expect(e.problem).toHaveProperty(
-          'detail',
-          'Database error encountered when creating new user',
-        );
-      }
+        }),
+      ).rejects.toHaveProperty(
+        'problem.detail',
+        'Database error encountered when creating new user',
+      );
     });
   });
 });

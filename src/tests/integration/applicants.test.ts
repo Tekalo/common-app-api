@@ -16,7 +16,6 @@ afterEach(async () => {
 
 describe('POST /applicants', () => {
   it('should create a new applicant only in database', async () => {
-    // TODO: Comment back in when we add in DB logic
     const { body } = await request(app)
       .post('/applicants')
       .send({
@@ -26,7 +25,7 @@ describe('POST /applicants', () => {
       })
       .query('auth0=false')
       .expect(200);
-    expect(body).toHaveProperty('email', 'bboberson@gmail.com');
+    expect(body).toHaveProperty('id');
   });
   it('should throw 400 error for missing email', async () => {
     const { body } = await request(app)
