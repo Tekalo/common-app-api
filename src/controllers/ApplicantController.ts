@@ -38,6 +38,7 @@ class ApplicantController {
           {
             title: 'User Creation Error',
             detail: 'Database error encountered when creating new user',
+            status: 400,
           },
           e instanceof Error ? { cause: e } : undefined,
         );

@@ -3,6 +3,7 @@ import app from '@App/app.js';
 import AuthService from '@App/services/AuthService.js';
 import { ApplicantResponseBody } from '@App/resources/types/applicants.js';
 import itif from '@App/tests/util/helpers.js';
+import prisma from '@App/resources/client.js';
 
 let testUserID: string;
 const authService = new AuthService();
@@ -12,6 +13,7 @@ afterEach(async () => {
     const auth0Service = authService.getClient();
     await auth0Service.deleteUser({ id: testUserID });
   }
+  await prisma.applicant.deleteMany();
 });
 
 describe('POST /applicants', () => {
@@ -33,6 +35,26 @@ describe('POST /applicants', () => {
       .send({ name: 'Bob Boberson' })
       .expect(400);
     expect(body).toHaveProperty('title', 'Validation Error');
+  });
+  it('should throw 400 error when creating a duplicate applicant', async () => {
+    await request(app)
+      .post('/applicants')
+      .query('auth0=false')
+      .send({
+        name: 'Bob Boberson',
+        email: 'bboberson@gmail.com',
+        preferredContact: 'sms',
+      });
+    const { body } = await request(app)
+      .post('/applicants')
+      .query('auth0=false')
+      .send({
+        name: 'Bob Boberson',
+        email: 'bboberson@gmail.com',
+        preferredContact: 'sms',
+      })
+      .expect(400);
+    expect(body).toHaveProperty('title', 'User Creation Error');
   });
   test('Should throw error if request body has invalid preferred contact', async () => {
     const { body } = await request(app)
@@ -66,7 +88,7 @@ describe('POST /applicants', () => {
       },
     );
     itif('CI' in process.env)(
-      'should throw 409 if user already exists',
+      'should throw 409 if user already exists in Auth0',
       async () => {
         const { body }: { body: ApplicantResponseBody } = await request(app)
           .post('/applicants')
