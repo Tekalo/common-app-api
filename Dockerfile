@@ -5,6 +5,7 @@ RUN apt-get update && apt-get install -y \
     npm install -g pnpm
 
 COPY package.json pnpm-lock.yaml tsconfig.json ./
+COPY db/ db/
 
 FROM base AS test
 ENV NODE_ENV test
