@@ -8,9 +8,11 @@ import {
   ApplicantRequestBody,
 } from '@App/resources/types/applicants.js';
 import AuthService from '@App/services/AuthService.js';
+import prisma from '@App/resources/client.js';
 import express, { Request, Response } from 'express';
 
-const applicantController = new ApplicantController(new AuthService());
+const applicantController = new ApplicantController(new AuthService(), prisma);
+
 const router = express.Router();
 
 export type EmptyObject = Record<string, unknown>;

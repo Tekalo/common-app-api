@@ -10,7 +10,7 @@ datasource db {
 model Applicant {
     id               Int                   @id @default(autoincrement())
     name             String
-    email            String
+    email            String                @unique
     phone            String?
     pronoun          String?
     preferredContact String // enum
