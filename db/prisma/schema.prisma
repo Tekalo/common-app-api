@@ -61,11 +61,10 @@ model ApplicantSubmission {
 model OpportunitySubmission {
     id Int @id @default(autoincrement())
 
-    organization String
-
     dateAdded DateTime
     source    String // enum
 
+    orgName  String
     orgType  String // enum
     industry String[] // enum
     orgSize  String // enum
