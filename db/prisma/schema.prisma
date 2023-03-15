@@ -23,7 +23,7 @@ model ApplicantSubmission {
     applicant   Applicant @relation(fields: [applicantId], references: [id])
     applicantId Int
 
-    dateAdded  DateTime
+    dateAdded  DateTime @default(now())
     dataOrigin String // Who created this data  // enum
 
     resumeUrl    String
@@ -61,7 +61,7 @@ model ApplicantSubmission {
 model OpportunitySubmission {
     id Int @id @default(autoincrement())
 
-    dateAdded DateTime
+    dateAdded DateTime @default(now())
     source    String // enum
 
     orgName  String
