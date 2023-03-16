@@ -20,7 +20,7 @@ on:
 
 env:
   AWS_REGION: us-east-1
-  ECS_SERVICE: capp-api
+  ECS_SERVICE: capp-${{ inputs.env }}-api
   ECS_CLUSTER: ${{ inputs.env }}
   ECS_CLI_TASK: capp-${{ inputs.env }}-cli
 
