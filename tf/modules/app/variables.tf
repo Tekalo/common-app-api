@@ -60,6 +60,16 @@ variable "db_password" {
   default     = "password"
 }
 
+variable "cli_image" {
+  description = "Docker repository and tag for cli image"
+  type        = string
+}
+
+output "cli_image" {
+  description = "Image with which we are running ad-hoc CLI commands on"
+  value       = jsondecode(aws_ecs_task_definition.cli.container_definitions)[0].image
+}
+
 variable "cert_arn" {
   type        = string
   description = "The certificate we will use for the static site"

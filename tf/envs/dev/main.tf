@@ -47,6 +47,7 @@ module "app" {
   ecs_cluster          = module.envconfig.ecs_cluster
   cert_arn             = module.envconfig.cert_arn
   image                = var.image
+  cli_image            = var.cli_image
 
   rotation_vpc_security_group_id = module.envconfig.database_ingress_security_group_id
   rotation_vpc_subnet_ids        = module.envconfig.private_subnet_ids
