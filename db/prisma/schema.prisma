@@ -15,7 +15,7 @@ model Applicant {
     pronoun          String?
     preferredContact String // enum
     searchStatus     String // Actively looking or not, cadidate open to // enum
-    Applications     ApplicantSubmission[]
+    applications     ApplicantSubmission[]
 }
 
 model ApplicantSubmission {
@@ -60,17 +60,16 @@ model ApplicantSubmission {
 
     referenceAttribution String? //How did you hear about us  //enum
 }
-
-model Organization {
-    id                     Int                     @id @default(autoincrement())
-    OpportunitySubmissions OpportunitySubmission[]
+model OpportunityBatch {
+    id Int @id @default(autoincrement())
+    opportunitySubmissions     OpportunitySubmission[]
 }
 
 model OpportunitySubmission {
     id Int @id @default(autoincrement())
-
-    organization   Organization @relation(fields: [organizationId], references: [id])
-    organizationId Int
+    
+    opportunityBatch   OpportunityBatch @relation(fields: [opportunityBatchId], references: [id])
+    opportunityBatchId Int
 
     orgName String
 
