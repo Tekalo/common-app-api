@@ -174,7 +174,7 @@ resource "aws_ecs_task_definition" "cli" {
         options = {
           "awslogs-group"         = aws_cloudwatch_log_group.api.name
           "awslogs-region"        = data.aws_region.current.name
-          "awslogs-stream-prefix" = "api"
+          "awslogs-stream-prefix" = "cli"
         }
       }
       secrets = [{
