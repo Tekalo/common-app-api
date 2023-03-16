@@ -24,7 +24,7 @@ model ApplicantSubmission {
     applicant   Applicant @relation(fields: [applicantId], references: [id])
     applicantId Int
 
-    dateAdded DateTime
+    dateAdded DateTime @default(now())
     originTag String // Whose link did they click, data attribution  // enum
 
     resumeUrl      String
@@ -74,7 +74,7 @@ model OpportunitySubmission {
 
     orgName String
 
-    dateAdded       DateTime
+    dateAdded DateTime @default(now())
     source          String // enum
     opportunityType String // enum
 

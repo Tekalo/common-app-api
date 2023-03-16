@@ -27,6 +27,12 @@ class OpportunityController {
         paid: true,
         location: '',
       }));
+
+      const transaction = this.prisma.$transaction([
+        this.prisma.opportunitySubmission.createMany({
+          data: prismaPayload,
+        }),
+      ]);
       return await this.prisma.opportunitySubmission.createMany({
         data: prismaPayload,
       });

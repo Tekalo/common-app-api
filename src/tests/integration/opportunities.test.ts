@@ -40,7 +40,7 @@ describe('POST /applicants', () => {
       .expect(200);
     expect(body).toHaveProperty('count', 2);
   });
-  it('should throw 400 error if request body is missing fullTime flag', async () => {
+  it('should throw 400 error if request body is missing organization type', async () => {
     const missingOrgType = { ...oppSubmissionsPayload };
     // @ts-expect-error: Ignore TS error for invalid request body
     delete { ...oppSubmissionsPayload }.organization.type;
