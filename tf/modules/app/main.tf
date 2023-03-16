@@ -156,6 +156,35 @@ resource "aws_ecs_task_definition" "api" {
   ])
 }
 
+resource "aws_ecs_task_definition" "cli" {
+  family = "capp-${var.env}-cli"
+
+  depends_on = [aws_iam_role_policy.execution_role, aws_iam_role_policy_attachment.default_execution_role]
+
+  execution_role_arn = aws_iam_role.ecs_execution_role.arn
+
+  container_definitions = jsonencode([
+    {
+      name      = "capp-cli"
+      image     = "${var.cli_image}"
+      memory    = 512
+      essential = true
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          "awslogs-group"         = aws_cloudwatch_log_group.api.name
+          "awslogs-region"        = data.aws_region.current.name
+          "awslogs-stream-prefix" = "api"
+        }
+      }
+      secrets = [{
+        name      = "DATABASE_SECRET"
+        valueFrom = module.rds-secret.secret_arn
+      }]
+    },
+  ])
+}
+
 resource "aws_cloudwatch_log_group" "api" {
   name              = "CAPP/${var.env}/Api"
   retention_in_days = 90

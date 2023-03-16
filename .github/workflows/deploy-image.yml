@@ -58,6 +58,23 @@ jobs:
           role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_INFRA }}
           role-session-name: GithubActions
 
+      - name: Seed database
+        id: seed-db
+        run: |
+          set -euo pipefail
+          run_result=$(aws ecs run-task \
+            --cluster "$ECS_CLUSTER" \
+            --task-definition "$ECS_CLI_TASK" \
+            --overrides '{"containerOverrides": [{"name": "ims-cli", "memory": 768, "command": ["pnpm", "prisma:update"]}]}')
+          echo ${run_result}
+          container_arn=$(echo $run_result | jq -r '.tasks[0].taskArn')
+          aws ecs wait tasks-stopped \
+              --cluster "$ECS_CLUSTER" \
+              --tasks "${container_arn}"
+          exit $(aws ecs describe-tasks \
+            --cluster "$ECS_CLUSTER" \
+            --tasks "${container_arn}" | jq -r .tasks[0].containers[0].exitCode)
+
       # Start API task again with our updated database
       - name: API Terraform Apply
         run: |
