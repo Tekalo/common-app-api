@@ -59,6 +59,19 @@ jobs:
           role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_INFRA }}
           role-session-name: GithubActions
 
+      - name: Get latest image build tag
+        id: prev-image
+        run: |
+          PREV_IMAGE=$(aws ecs describe-task-definition --task-definition "$ECS_SERVICE" | jq -r .taskDefinition.containerDefinitions[0].image)
+          echo "prev-image=${PREV_IMAGE}" >> $GITHUB_OUTPUT
+
+      # To update our CLI task. This is a no-op on our API task.
+      - name: CLI Terraform Apply
+        run: |
+          terraform apply -auto-approve -input=false \
+            -var 'cli_image=${{ inputs.image }}' \
+            -var 'image=${{ steps.prev-image.outputs.prev-image }}'
+
       - name: Seed database
         id: seed-db
         run: |
