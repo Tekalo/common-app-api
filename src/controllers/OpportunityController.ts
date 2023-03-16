@@ -32,14 +32,10 @@ class OpportunityController {
         }),
       );
 
-      const transaction = this.prisma.$transaction([
-        this.prisma.opportunitySubmission.createMany({
+      const newOppSubmission =
+        await this.prisma.opportunitySubmission.createMany({
           data: prismaPayload,
-        }),
-      ]);
-      return await this.prisma.opportunitySubmission.createMany({
-        data: prismaPayload,
-      });
+        });
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         // TODO : Log e.message in Sentry

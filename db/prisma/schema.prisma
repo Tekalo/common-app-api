@@ -62,26 +62,25 @@ model ApplicantSubmission {
 }
 
 model OpportunityBatch {
-    id Int @id @default(autoincrement())
-    opportunitySubmissions     OpportunitySubmission[]
+    id                     Int                     @id @default(autoincrement())
+    opportunitySubmissions OpportunitySubmission[]
 }
 
 model OpportunitySubmission {
     id Int @id @default(autoincrement())
-    
+
     opportunityBatch   OpportunityBatch @relation(fields: [opportunityBatchId], references: [id])
     opportunityBatchId Int
 
     orgName String
 
     dateAdded DateTime @default(now())
-    source          String // enum
-    opportunityType String // enum
+    source    String // enum
+    type      String // enum
 
     orgType    String // enum
     orgSize    String // enum
     impactArea String[] // enum
-
 
     contactName  String
     contactEmail String
