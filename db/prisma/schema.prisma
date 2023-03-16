@@ -62,7 +62,7 @@ model ApplicantSubmission {
 }
 model OpportunityBatch {
     id Int @id @default(autoincrement())
-    opportunitySubmission     OpportunitySubmission[]
+    opportunitySubmissions     OpportunitySubmission[]
 }
 
 model OpportunitySubmission {
