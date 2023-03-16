@@ -6,6 +6,7 @@ on:
     branches:
       - main
       - 'renovate/**'
+      - bugfix-ecs-deploy
     paths-ignore:
       - 'tf/**'
       - '.github/**'
@@ -37,6 +38,7 @@ jobs:
       POSTGRES_HOST: postgres
       POSTGRES_PORT: 5432
       DATABASE_URL: postgresql://capp_admin:password@postgres:5432/testdb
+      ECS_CLI_TASK: capp-${{ inputs.env }}-cli
 
     services:
       postgres:
