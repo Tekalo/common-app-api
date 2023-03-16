@@ -91,13 +91,13 @@ jobs:
     needs:
       - test
 
-  # deploy:
-  #   name: 'Deploy to dev'
-  #   if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
-  #   uses: ./.github/workflows/deploy-image.yml
-  #   needs:
-  #     - build_and_push
-  #   with:
-  #     env: 'dev'
-  #     image: ${{ needs.build_and_push.outputs.image }}
-  #   secrets: inherit
+  deploy:
+    name: 'Deploy to dev'
+    if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
+    uses: ./.github/workflows/deploy-image.yml
+    needs:
+      - build_and_push
+    with:
+      env: 'dev'
+      image: ${{ needs.build_and_push.outputs.image }}
+    secrets: inherit
