@@ -17,6 +17,7 @@ on:
     secrets:
       TF_API_TOKEN:
         required: true
+  workflow_dispatch:
 
 env:
   AWS_REGION: us-east-1
