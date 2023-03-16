@@ -16,17 +16,21 @@ class OpportunityController {
     data: OpportunityRequestBody,
   ): Promise<OpportunityResponseBody> {
     try {
-      const prismaPayload = data.map(({ organization, contact }) => ({
-        orgName: organization.name,
-        orgType: organization.type,
-        orgSize: organization.size,
-        contactName: contact.name,
-        contactPhone: contact.phone,
-        contactEmail: contact.email,
-        source: '',
-        paid: true,
-        location: '',
-      }));
+      const prismaPayload = data.map(
+        ({ organization, contact, ...oppFields }) => ({
+          orgName: organization.name,
+          orgType: organization.type,
+          orgSize: organization.size,
+          contactName: contact.name,
+          contactPhone: contact.phone,
+          contactEmail: contact.email,
+          source: '',
+          paid: oppFields.paid,
+          location: oppFields.location,
+          pitchEssay: oppFields.pitchEssay,
+          type: oppFields.type,
+        }),
+      );
 
       const transaction = this.prisma.$transaction([
         this.prisma.opportunitySubmission.createMany({
