@@ -14,7 +14,8 @@ model Applicant {
     phone            String?
     pronoun          String?
     preferredContact String // enum
-    Applications     ApplicantSubmission[]
+    searchStatus     String // Actively looking or not, cadidate open to // enum
+    applications     ApplicantSubmission[]
 }
 
 model ApplicantSubmission {
@@ -23,19 +24,20 @@ model ApplicantSubmission {
     applicant   Applicant @relation(fields: [applicantId], references: [id])
     applicantId Int
 
-    dateAdded  DateTime @default(now())
-    dataOrigin String // Who created this data  // enum
+    dateAdded DateTime
+    originTag String // Whose link did they click, data attribution  // enum
 
-    resumeUrl    String
-    searchStatus String // enum
+    resumeUrl      String
+    resumePassword String?
 
     lastOrg  String // Current or Most Recent Org
     lastRole String // Current or Most Recent Role
     yoe      Float // Years of Relevant Experience
 
-    linkedInUrl String?
-    porfolioUrl String?
-    githubUrl   String?
+    linkedInUrl       String?
+    githubUrl         String?
+    portfolioUrl      String?
+    portfolioPassword String?
 
     interestOpportunities String[] // Interested In - Opportunities    //enum
     interestRoles         String[] // Interested In - Roles            //enum
@@ -49,36 +51,47 @@ model ApplicantSubmission {
     currentLocation String
     openToRelocate  String // enum
 
-    desiredSalary            Int?
+    desiredSalary            String?
     previousImpactExperience Boolean
     workAuthorization        String // enum
+    hoursPerWeek             String? // Only part-time
 
     essayResponse String
 
     referenceAttribution String? //How did you hear about us  //enum
 }
 
+model OpportunityBatch {
+    id Int @id @default(autoincrement())
+    opportunitySubmissions     OpportunitySubmission[]
+}
+
 model OpportunitySubmission {
     id Int @id @default(autoincrement())
+    
+    opportunityBatch   OpportunityBatch @relation(fields: [opportunityBatchId], references: [id])
+    opportunityBatchId Int
 
-    dateAdded DateTime @default(now())
-    source    String // enum
+    orgName String
 
-    orgName  String
-    orgType  String // enum
-    industry String[] // enum
-    orgSize  String // enum
+    dateAdded       DateTime
+    source          String // enum
+    opportunityType String // enum
+
+    orgType    String // enum
+    orgSize    String // enum
+    impactArea String[] // enum
+
 
     contactName  String
     contactEmail String
     contactPhone String
 
-    paid Boolean // Whether this is paid or volunteer
+    paid        Boolean // Whether this is paid or volunteer
+    fullTime    Boolean? // Whether this is full or part timeß
+    roleType    String?
+    salaryRange String?
 
-    fullTime Boolean? // Whether this is full or part time
-
-    role            String?
-    salaryRange     String?
     location        String
     visaSponsorship String?
 
@@ -91,8 +104,7 @@ model OpportunitySubmission {
 
     similarStaffed Boolean?
 
-    jdUrl String?
+    jdUrl String? // Link to job description
 
-    essayRole String?
-    essayHelp String?
+    pitchEssay String // How would you pitch this role in 2 sentences?
 }

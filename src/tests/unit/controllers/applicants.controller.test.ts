@@ -30,6 +30,7 @@ describe('Applicant Controller', () => {
         name: 'Bob Boberson',
         email: 'bboberson@gmail.com',
         preferredContact: 'sms',
+        searchStatus: 'active',
         phone: '123-456-7777',
         pronoun: 'them/they',
       };
@@ -43,6 +44,7 @@ describe('Applicant Controller', () => {
           name: 'Bob Boberson',
           email: 'bboerson@schmidtfutures.com',
           preferredContact: 'email',
+          searchStatus: 'active',
         },
         { auth0: 'false' },
       );
@@ -64,6 +66,7 @@ describe('Applicant Controller', () => {
           name: 'Bob Boberson',
           email: 'bboberson@schmidtfutures.com',
           preferredContact: 'email',
+          searchStatus: 'active',
         }),
       ).rejects.toHaveProperty(
         'problem.detail',

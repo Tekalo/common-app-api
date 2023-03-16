@@ -1,11 +1,13 @@
 import { z } from 'zod';
 
 const PreferredContact = z.enum(['sms', 'whatsapp', 'email']);
+const SearchStatus = z.enum(['active', 'passive', 'future']);
 
 const ApplicantRequestBodySchema = z.object({
   name: z.string(),
   email: z.string().email(),
   preferredContact: PreferredContact,
+  searchStatus: SearchStatus,
 });
 
 const ApplicantResponseBodySchema = z.object({
