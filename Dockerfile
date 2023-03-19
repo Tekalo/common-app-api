@@ -37,8 +37,6 @@ RUN pnpm build
 FROM build AS production
 ENV NODE_ENV production
 COPY --from=build /api/build ./
-# USER root
-# RUN pnpm prune
 USER node
 CMD pnpm start
 # TOOD: Add ensure-database-url script
