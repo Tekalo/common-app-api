@@ -23,7 +23,6 @@ env:
   ECS_SERVICE: capp-${{ inputs.env }}-api
   ECS_CLUSTER: ${{ inputs.env }}
   ECS_CLI_TASK: capp-${{ inputs.env }}-cli
-  DATABASE_URL: postgresql://postgres:password@postgres:5432/devdb
 
 permissions:
   id-token: write
