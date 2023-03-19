@@ -39,4 +39,4 @@ ENV NODE_ENV production
 COPY --from=build /api/build ./
 USER node
 CMD pnpm start
-ENTRYPOINT [ "/api/scripts/ensure-database-url.sh" ]
+ENTRYPOINT [ "/api/scripts/ensure-db-url.sh" ]
