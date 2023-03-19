@@ -39,4 +39,4 @@ ENV NODE_ENV production
 COPY --from=build /api/build ./
 USER node
 CMD pnpm start
-# TOOD: Add ensure-database-url script
+ENTRYPOINT [ "/api/scripts/ensure-database-url.sh" ]
