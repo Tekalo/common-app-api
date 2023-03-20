@@ -23,6 +23,7 @@ env:
   ECS_SERVICE: capp-api
   ECS_CLUSTER: ${{ inputs.env }}
   ECS_CLI_TASK: capp-${{ inputs.env }}-cli
+  ECS_API_TASK: capp-${{ inputs.env }}-api
 
 permissions:
   id-token: write
@@ -62,7 +63,7 @@ jobs:
       - name: Get latest image build tag
         id: prev-image
         run: |
-          PREV_IMAGE=$(aws ecs describe-task-definition --task-definition "$ECS_SERVICE" | jq -r .taskDefinition.containerDefinitions[0].image)
+          PREV_IMAGE=$(aws ecs describe-task-definition --task-definition $ECS_API_TASK | jq -r .taskDefinition.containerDefinitions[0].image)
           echo "prev-image=${PREV_IMAGE}" >> $GITHUB_OUTPUT
 
       # To update our CLI task. This is a no-op on our API task.
