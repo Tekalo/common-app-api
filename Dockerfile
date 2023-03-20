@@ -33,12 +33,8 @@ USER node
 COPY --chown=node:node . .
 RUN pnpm build
 
-# Copy our build artifacts and start the server
+# Start the server
 FROM build AS production
 ENV NODE_ENV production
-USER root
-RUN pnpm prune
-USER node
-COPY --from=build /api/build ./
 CMD pnpm start
-# TOOD: Add ensure-database-url script
+ENTRYPOINT [ "/api/scripts/ensure-db-url.sh" ]

@@ -20,8 +20,9 @@ on:
 
 env:
   AWS_REGION: us-east-1
-  ECS_SERVICE: capp-api
   ECS_CLUSTER: ${{ inputs.env }}
+  ECS_CLI_TASK: capp-${{ inputs.env }}-cli
+  ECS_API_TASK: capp-${{ inputs.env }}-api
 
 permissions:
   id-token: write
@@ -58,14 +59,27 @@ jobs:
           role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_INFRA }}
           role-session-name: GithubActions
 
-      - name: Seed database
-        id: seed-db
+      - name: Get latest image build tag
+        id: prev-image
+        run: |
+          PREV_IMAGE=$(aws ecs describe-task-definition --task-definition "$ECS_API_TASK" | jq -r .taskDefinition.containerDefinitions[0].image)
+          echo "prev-image=${PREV_IMAGE}" >> $GITHUB_OUTPUT
+
+      # To update our CLI task. This is a no-op on our API task.
+      - name: CLI Terraform Apply
+        run: |
+          terraform apply -auto-approve -input=false \
+            -var 'cli_image=${{ inputs.image }}' \
+            -var 'image=${{ steps.prev-image.outputs.prev-image }}'
+
+      - name: Initialize Prisma schema
+        id: prisma-init
         run: |
           set -euo pipefail
           run_result=$(aws ecs run-task \
             --cluster "$ECS_CLUSTER" \
             --task-definition "$ECS_CLI_TASK" \
-            --overrides '{"containerOverrides": [{"name": "capp-cli", "command": ["pnpm", "prisma:update"]}]}')
+            --overrides '{"containerOverrides": [{"name": "capp-cli", "command": ["pnpm", "prisma", "db", "push"]}]}')
           echo ${run_result}
           container_arn=$(echo $run_result | jq -r '.tasks[0].taskArn')
           aws ecs wait tasks-stopped \
@@ -79,4 +93,5 @@ jobs:
       - name: API Terraform Apply
         run: |
           terraform apply -auto-approve -input=false \
+          -var 'cli_image=${{ inputs.image }}' \
           -var 'image=${{ inputs.image }}'
