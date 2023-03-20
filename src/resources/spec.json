@@ -66,9 +66,9 @@
         }
       }
     },
-    "/opportunities/submission": {
+    "/opportunities/submissions": {
       "post": {
-        "description": "Create a new organization",
+        "description": "Create a new opportunity",
         "requestBody": {
           "required": true,
           "content": {
@@ -85,17 +85,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "additionalProperties": false,
-                  "properties": {
-                    "email": {
-                      "type": "string"
-                    },
-                    "auth0Id": {
-                      "type": "boolean",
-                      "nullable": true
-                    }
-                  }
+                  "$ref": "#/components/schemas/opportunitiesResponseBody"
                 }
               }
             }
@@ -118,6 +108,15 @@
           },
           "preferredContact": {
             "type": "string"
+          }
+        }
+      },
+      "opportunitiesResponseBody": {
+        "additionalProperties": false,
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
           }
         }
       },

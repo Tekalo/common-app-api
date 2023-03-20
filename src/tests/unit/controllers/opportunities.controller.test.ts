@@ -18,7 +18,7 @@ beforeEach(() => {
 export type PrismaCreateInputType = Prisma.ApplicantSelect;
 
 describe('Opportunity Controller', () => {
-  test('Should create a new opportunity', async () => {
+  test('Should create a new opportunity submission', async () => {
     const opportunityController = new OpportunityController(ctx.prisma);
     const reqPayload: OpportunityRequestBody = [
       {
@@ -74,7 +74,7 @@ describe('Opportunity Controller', () => {
     const response = await opportunityController.createOpportunitySubmissions(
       reqPayload,
     );
-    expect(response).toEqual([mockResolved]);
+    expect(response).toEqual([{ id: expect.any(Number) }]);
   });
   test('Should throw CAPP error when Prisma throws an invalid input error', async () => {
     mockCtx.prisma.opportunitySubmission.create.mockRejectedValue(

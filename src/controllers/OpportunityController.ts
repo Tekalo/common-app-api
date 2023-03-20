@@ -35,10 +35,11 @@ class OpportunityController {
             },
           }),
       );
-      return await Promise.all(prismaPromises);
+      const result = await Promise.all(prismaPromises);
+      return result.map((submission) => ({ id: submission.id }));
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        // TODO : Log e.message in Sentrypp
+        // TODO : Log e.message in Sentry
         throw new CAPPError(
           {
             title: 'Opportunity Submission Creation Error',
