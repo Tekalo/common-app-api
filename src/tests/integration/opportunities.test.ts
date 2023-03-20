@@ -18,14 +18,24 @@ describe('POST /applicants', () => {
       email: 'bboberson@gmail.com',
       phone: '4258287733',
     },
-    fullTime: false,
+    fullTime: true,
+    impactArea: ['Clean Energy'],
+    location: 'Burgerville',
+    paid: true,
+    pitchEssay: 'Come flip burgers for Bob',
+    source: 'Commercial',
+    type: 'nonprofit',
   };
   it('should create a new opportunity submission', async () => {
     const { body } = await request(app)
       .post('/opportunities/submissions')
       .send([oppSubmissionsPayload])
       .expect(200);
-    expect(body).toEqual({ count: 1 });
+    expect(body).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ id: expect.any(Number) }),
+      ]),
+    );
   });
   it('should create multiple new opportunity submissions', async () => {
     const secondOppSubmissionPayload = { ...oppSubmissionsPayload };
@@ -38,7 +48,12 @@ describe('POST /applicants', () => {
       .post('/opportunities/submissions')
       .send([oppSubmissionsPayload, secondOppSubmissionPayload])
       .expect(200);
-    expect(body).toHaveProperty('count', 2);
+    expect(body).toHaveLength(2);
+    expect(body).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ id: expect.any(Number) }),
+      ]),
+    );
   });
   it('should throw 400 error if request body is missing organization type', async () => {
     const missingOrgType = { ...oppSubmissionsPayload };

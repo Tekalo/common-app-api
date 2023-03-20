@@ -16,29 +16,29 @@ class OpportunityController {
     data: OpportunityRequestBody,
   ): Promise<OpportunityResponseBody> {
     try {
-      const prismaPayload = data.map(
-        ({ organization, contact, ...oppFields }) => ({
-          orgName: organization.name,
-          orgType: organization.type,
-          orgSize: organization.size,
-          contactName: contact.name,
-          contactPhone: contact.phone,
-          contactEmail: contact.email,
-          source: '',
-          paid: oppFields.paid,
-          location: oppFields.location,
-          pitchEssay: oppFields.pitchEssay,
-          type: oppFields.type,
-        }),
+      const prismaPromises = data.map(
+        ({ organization, contact, ...oppFields }) =>
+          this.prisma.opportunitySubmission.create({
+            data: {
+              orgName: organization.name,
+              orgType: organization.type,
+              orgSize: organization.size,
+              contactName: contact.name,
+              contactPhone: contact.phone,
+              contactEmail: contact.email,
+              source: oppFields.source,
+              paid: oppFields.paid,
+              location: oppFields.location,
+              pitchEssay: oppFields.pitchEssay,
+              type: oppFields.type,
+              opportunityBatch: { create: {} },
+            },
+          }),
       );
-
-      const newOppSubmission =
-        await this.prisma.opportunitySubmission.createMany({
-          data: prismaPayload,
-        });
+      return await Promise.all(prismaPromises);
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        // TODO : Log e.message in Sentry
+        // TODO : Log e.message in Sentrypp
         throw new CAPPError(
           {
             title: 'Opportunity Submission Creation Error',
