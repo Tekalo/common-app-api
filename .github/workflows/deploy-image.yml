@@ -63,7 +63,7 @@ jobs:
       - name: Get latest image build tag
         id: prev-image
         run: |
-          PREV_IMAGE=$(aws ecs describe-task-definition --task-definition $ECS_API_TASK | jq -r .taskDefinition.containerDefinitions[0].image)
+          PREV_IMAGE=$(aws ecs describe-task-definition --task-definition "$ECS_API_TASK" | jq -r .taskDefinition.containerDefinitions[0].image)
           echo "prev-image=${PREV_IMAGE}" >> $GITHUB_OUTPUT
 
       # To update our CLI task. This is a no-op on our API task.
