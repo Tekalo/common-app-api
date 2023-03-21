@@ -18,7 +18,7 @@ beforeEach(() => {
 export type PrismaCreateInputType = Prisma.ApplicantSelect;
 
 describe('Opportunity Controller', () => {
-  test('Should create a new opportunity submission', async () => {
+  test('Should create a new batch of opportunities', async () => {
     const opportunityController = new OpportunityController(ctx.prisma);
     const reqPayload: OpportunityBatchRequestBody = {
       organization: {
@@ -55,7 +55,7 @@ describe('Opportunity Controller', () => {
       contactEmail: contact.email,
     };
     mockCtx.prisma.opportunityBatch.create.mockResolvedValue(mockResolved);
-    const response = await opportunityController.createOpportunitySubmissions(
+    const response = await opportunityController.createOpportunityBatch(
       reqPayload,
     );
     expect(response).toEqual(mockResolved);
@@ -92,10 +92,10 @@ describe('Opportunity Controller', () => {
       ],
     };
     await expect(
-      opportunityController.createOpportunitySubmissions(reqPayload),
+      opportunityController.createOpportunityBatch(reqPayload),
     ).rejects.toHaveProperty(
       'problem.detail',
-      'Database error encountered when creating new opportunity submission',
+      'Database error encountered when creating new opportunity batch',
     );
   });
 });

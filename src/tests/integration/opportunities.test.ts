@@ -8,7 +8,7 @@ afterEach(async () => {
 });
 
 describe('POST /opportunities', () => {
-  const oppSubmissionsPayload = {
+  const oppBatchPayload = {
     organization: {
       name: 'Bobs Burgers Foundation',
       type: 'nonprofit',
@@ -31,15 +31,15 @@ describe('POST /opportunities', () => {
       },
     ],
   };
-  it('should create a new opportunity submission', async () => {
+  it('should create a new batch of opportunities', async () => {
     const { body } = await request(app)
       .post('/opportunities/batch')
-      .send(oppSubmissionsPayload)
+      .send(oppBatchPayload)
       .expect(200);
     expect(body).toEqual(expect.objectContaining({ id: expect.any(Number) }));
   });
-  it('should create multiple new opportunity submissions', async () => {
-    const secondOppSubmissionPayload = { ...oppSubmissionsPayload };
+  it('should create multiple new batches of opportunities', async () => {
+    const secondOppSubmissionPayload = { ...oppBatchPayload };
     secondOppSubmissionPayload.submissions.push({
       fullTime: false,
       location: 'Fryville',
@@ -55,9 +55,9 @@ describe('POST /opportunities', () => {
     expect(body).toEqual(expect.objectContaining({ id: expect.any(Number) }));
   });
   it('should throw 400 error if request body is missing organization type', async () => {
-    const missingOrgType = { ...oppSubmissionsPayload };
+    const missingOrgType = { ...oppBatchPayload };
     // @ts-expect-error: Ignore TS error for invalid request body
-    delete { ...oppSubmissionsPayload }.organization.type;
+    delete { ...oppBatchPayload }.organization.type;
     const { body } = await request(app)
       .post('/opportunities/batch')
       .send([missingOrgType])
@@ -66,8 +66,8 @@ describe('POST /opportunities', () => {
   });
   test('Should throw error if request body has invalid org size', async () => {
     const invalidOrgSize = {
-      ...oppSubmissionsPayload,
-      organization: { ...oppSubmissionsPayload.organization, size: '100' },
+      ...oppBatchPayload,
+      organization: { ...oppBatchPayload.organization, size: '100' },
     };
     const { body } = await request(app)
       .post('/opportunities/batch')

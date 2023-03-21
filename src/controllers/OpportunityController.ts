@@ -12,7 +12,7 @@ class OpportunityController {
     this.prisma = prisma;
   }
 
-  async createOpportunitySubmissions(
+  async createOpportunityBatch(
     data: OpportunityBatchRequestBody,
   ): Promise<OpportunityBatchResponseBody> {
     try {
@@ -46,7 +46,7 @@ class OpportunityController {
           {
             title: 'Opportunity Submission Creation Error',
             detail:
-              'Database error encountered when creating new opportunity submission',
+              'Database error encountered when creating new opportunity batch',
             status: 400,
           },
           e instanceof Error ? { cause: e } : undefined,
@@ -55,7 +55,7 @@ class OpportunityController {
       throw new CAPPError(
         {
           title: 'Opportunity Submission Creation Error',
-          detail: 'Unknown error in creating opportunity submission',
+          detail: 'Unknown error in creating opportunity batch',
           status: 500,
         },
         e instanceof Error ? { cause: e } : undefined,

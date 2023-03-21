@@ -12,7 +12,7 @@ router.post('/batch', (req: Request, res: Response, next) => {
   const appBody = req.body as OpportunityBatchRequestBody;
   const validatedBody = OpportunityBatchRequestBodySchema.parse(appBody);
   opportunityController
-    .createOpportunitySubmissions(validatedBody)
+    .createOpportunityBatch(validatedBody)
     .then((result) => {
       res.status(200).json(result);
     })
