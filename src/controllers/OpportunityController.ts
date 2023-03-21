@@ -21,7 +21,7 @@ class OpportunityController {
         paid: submission.paid,
         location: submission.location,
         pitchEssay: submission.pitchEssay,
-        type: submission.type,
+        employmentType: submission.employmentType,
       }));
       const { organization, contact } = data;
       return await this.prisma.opportunityBatch.create({

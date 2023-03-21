@@ -27,7 +27,7 @@ describe('POST /opportunities', () => {
         paid: true,
         pitchEssay: 'Come flip burgers for Bob',
         source: 'Commercial',
-        type: 'nonprofit',
+        employmentType: 'nonprofit',
       },
     ],
   };
@@ -46,7 +46,7 @@ describe('POST /opportunities', () => {
       paid: true,
       pitchEssay: 'Come make french fries for Bob',
       source: 'Advertisement',
-      type: 'nonprofit',
+      employmentType: 'nonprofit',
     });
     const { body } = await request(app)
       .post('/opportunities/batch')

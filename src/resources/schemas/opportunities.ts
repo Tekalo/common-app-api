@@ -22,7 +22,7 @@ const OpportunityBatchRequestBodySchema = z.object({
       paid: z.boolean(),
       pitchEssay: z.string(),
       source: z.string(),
-      type: z.string(),
+      employmentType: z.string(),
     }),
   ),
 });

@@ -39,7 +39,7 @@ describe('Opportunity Controller', () => {
           paid: true,
           pitchEssay: 'Come flip burgers for Bob',
           source: 'Commercial',
-          type: 'nonprofit',
+          employmentType: 'nonprofit',
         },
       ],
     };
@@ -87,7 +87,7 @@ describe('Opportunity Controller', () => {
           paid: true,
           pitchEssay: 'Come flip burgers for Bob',
           source: 'Commercial',
-          type: 'nonprofit',
+          employmentType: 'nonprofit',
         },
       ],
     };
