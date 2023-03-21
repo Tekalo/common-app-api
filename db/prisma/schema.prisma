@@ -95,7 +95,7 @@ model OpportunitySubmission {
 
     desiredStartDate   DateTime?
     desiredEndDate     DateTime?
-    desiredYoe         String? // enum
+    desiredYoe         String[] // enum
     desiredSkills      String[] // enum, optional
     desiredSkillsOther String[] // optional
     desiredImpactExp   String?
