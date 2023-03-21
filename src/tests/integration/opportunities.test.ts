@@ -4,6 +4,7 @@ import prisma from '@App/resources/client.js';
 
 afterEach(async () => {
   await prisma.opportunitySubmission.deleteMany();
+  await prisma.opportunityBatch.deleteMany();
 });
 
 describe('POST /opportunities', () => {
