@@ -79,9 +79,9 @@ model OpportunitySubmission {
     opportunityBatch   OpportunityBatch @relation(fields: [opportunityBatchId], references: [id])
     opportunityBatchId Int
 
-    dateAdded DateTime @default(now())
-    source    String // enum
-    type      String // enum
+    dateAdded      DateTime @default(now())
+    source         String // enum
+    employmentType String // enum
 
     paid        Boolean // Whether this is paid or volunteer
     fullTime    Boolean? // Whether this is full or part timeß
