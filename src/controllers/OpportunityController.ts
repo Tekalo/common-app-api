@@ -16,27 +16,30 @@ class OpportunityController {
     data: OpportunityRequestBody,
   ): Promise<OpportunityResponseBody> {
     try {
-      const prismaPromises = data.map(
-        ({ organization, contact, ...oppFields }) =>
-          this.prisma.opportunitySubmission.create({
-            data: {
-              orgName: organization.name,
-              orgType: organization.type,
-              orgSize: organization.size,
-              contactName: contact.name,
-              contactPhone: contact.phone,
-              contactEmail: contact.email,
-              source: oppFields.source,
-              paid: oppFields.paid,
-              location: oppFields.location,
-              pitchEssay: oppFields.pitchEssay,
-              type: oppFields.type,
-              opportunityBatch: { create: {} },
-            },
-          }),
+      const opportunitySubmissions = data.map(
+        ({ organization, contact, ...oppFields }) => ({
+          orgName: organization.name,
+          orgType: organization.type,
+          orgSize: organization.size,
+          contactName: contact.name,
+          contactPhone: contact.phone,
+          contactEmail: contact.email,
+          source: oppFields.source,
+          paid: oppFields.paid,
+          location: oppFields.location,
+          pitchEssay: oppFields.pitchEssay,
+          type: oppFields.type,
+        }),
       );
-      const result = await Promise.all(prismaPromises);
-      return result.map((submission) => ({ id: submission.id }));
+      return await this.prisma.opportunityBatch.create({
+        data: {
+          opportunitySubmissions: {
+            createMany: {
+              data: opportunitySubmissions,
+            },
+          },
+        },
+      });
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         // TODO : Log e.message in Sentry

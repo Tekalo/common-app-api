@@ -31,11 +31,7 @@ describe('POST /applicants', () => {
       .post('/opportunities/submissions')
       .send([oppSubmissionsPayload])
       .expect(200);
-    expect(body).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({ id: expect.any(Number) }),
-      ]),
-    );
+    expect(body).toEqual(expect.objectContaining({ id: expect.any(Number) }));
   });
   it('should create multiple new opportunity submissions', async () => {
     const secondOppSubmissionPayload = { ...oppSubmissionsPayload };
@@ -48,12 +44,7 @@ describe('POST /applicants', () => {
       .post('/opportunities/submissions')
       .send([oppSubmissionsPayload, secondOppSubmissionPayload])
       .expect(200);
-    expect(body).toHaveLength(2);
-    expect(body).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({ id: expect.any(Number) }),
-      ]),
-    );
+    expect(body).toEqual(expect.objectContaining({ id: expect.any(Number) }));
   });
   it('should throw 400 error if request body is missing organization type', async () => {
     const missingOrgType = { ...oppSubmissionsPayload };

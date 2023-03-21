@@ -25,10 +25,8 @@ const OpportunityRequestBodySchema = z.array(
   }),
 );
 
-const OpportunityResponseBodySchema = z.array(
-  z.object({
-    id: z.number(),
-  }),
-);
+const OpportunityResponseBodySchema = z.object({
+  id: z.number(),
+});
 
 export { OpportunityRequestBodySchema, OpportunityResponseBodySchema };
