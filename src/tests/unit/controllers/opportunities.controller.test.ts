@@ -1,4 +1,4 @@
-import { OpportunityRequestBody } from '@App/resources/types/opportunities.js';
+import { OpportunityBatchRequestBody } from '@App/resources/types/opportunities.js';
 import {
   MockContext,
   Context,
@@ -20,33 +20,45 @@ export type PrismaCreateInputType = Prisma.ApplicantSelect;
 describe('Opportunity Controller', () => {
   test('Should create a new opportunity submission', async () => {
     const opportunityController = new OpportunityController(ctx.prisma);
-    const reqPayload: OpportunityRequestBody = [
-      {
-        organization: {
-          name: 'Bobs Burgers Foundation',
-          type: 'nonprofit',
-          size: '<50',
-        },
-        contact: {
-          name: 'Bob Boberson',
-          email: 'bboberson@gmail.com',
-          phone: '4258287733',
-        },
-        fullTime: true,
-        impactArea: ['Clean Energy'],
-        location: 'Burgerville',
-        paid: true,
-        pitchEssay: 'Come flip burgers for Bob',
-        source: 'Commercial',
+    const reqPayload: OpportunityBatchRequestBody = {
+      organization: {
+        name: 'Bobs Burgers Foundation',
         type: 'nonprofit',
+        size: '<50',
+        impactAreas: ['Clean Energy'],
       },
-    ];
-    const mockResolved = { id: 1 };
+      contact: {
+        name: 'Bob Boberson',
+        email: 'bboberson@gmail.com',
+        phone: '4258287733',
+      },
+      submissions: [
+        {
+          fullTime: true,
+          location: 'Burgerville',
+          paid: true,
+          pitchEssay: 'Come flip burgers for Bob',
+          source: 'Commercial',
+          type: 'nonprofit',
+        },
+      ],
+    };
+    const { organization, contact } = reqPayload;
+    const mockResolved = {
+      id: 1,
+      orgName: organization.name,
+      orgType: organization.type,
+      orgSize: organization.size,
+      impactAreas: organization.impactAreas,
+      contactName: contact.name,
+      contactPhone: contact.phone,
+      contactEmail: contact.email,
+    };
     mockCtx.prisma.opportunityBatch.create.mockResolvedValue(mockResolved);
     const response = await opportunityController.createOpportunitySubmissions(
       reqPayload,
     );
-    expect(response).toEqual({ id: expect.any(Number) });
+    expect(response).toEqual(mockResolved);
   });
   test('Should throw CAPP error when Prisma throws an invalid input error', async () => {
     mockCtx.prisma.opportunityBatch.create.mockRejectedValue(
@@ -56,27 +68,29 @@ describe('Opportunity Controller', () => {
       }),
     );
     const opportunityController = new OpportunityController(ctx.prisma);
-    const reqPayload: OpportunityRequestBody = [
-      {
-        organization: {
-          name: 'Bobs Burgers Foundation',
-          type: 'nonprofit',
-          size: '<50',
-        },
-        contact: {
-          name: 'Bob Boberson',
-          email: 'bboberson@gmail.com',
-          phone: '4258287733',
-        },
-        fullTime: true,
-        impactArea: ['Clean Energy'],
-        location: 'Burgerville',
-        paid: true,
-        pitchEssay: 'Come flip burgers for Bob',
-        source: 'Commercial',
+    const reqPayload: OpportunityBatchRequestBody = {
+      organization: {
+        name: 'Bobs Burgers Foundation',
         type: 'nonprofit',
+        size: '<50',
+        impactAreas: ['Clean Energy'],
       },
-    ];
+      contact: {
+        name: 'Bob Boberson',
+        email: 'bboberson@gmail.com',
+        phone: '4258287733',
+      },
+      submissions: [
+        {
+          fullTime: true,
+          location: 'Burgerville',
+          paid: true,
+          pitchEssay: 'Come flip burgers for Bob',
+          source: 'Commercial',
+          type: 'nonprofit',
+        },
+      ],
+    };
     await expect(
       opportunityController.createOpportunitySubmissions(reqPayload),
     ).rejects.toHaveProperty(

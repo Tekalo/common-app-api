@@ -1,8 +1,8 @@
 import CAPPError from '@App/resources/shared/CAPPError.js';
 import { Prisma, PrismaClient } from '@prisma/client';
 import {
-  OpportunityRequestBody,
-  OpportunityResponseBody,
+  OpportunityBatchRequestBody,
+  OpportunityBatchResponseBody,
 } from '@App/resources/types/opportunities.js';
 
 class OpportunityController {
@@ -13,26 +13,25 @@ class OpportunityController {
   }
 
   async createOpportunitySubmissions(
-    data: OpportunityRequestBody,
-  ): Promise<OpportunityResponseBody> {
+    data: OpportunityBatchRequestBody,
+  ): Promise<OpportunityBatchResponseBody> {
     try {
-      const opportunitySubmissions = data.map(
-        ({ organization, contact, ...oppFields }) => ({
+      const opportunitySubmissions = data.submissions.map((submission) => ({
+        source: submission.source,
+        paid: submission.paid,
+        location: submission.location,
+        pitchEssay: submission.pitchEssay,
+        type: submission.type,
+      }));
+      const { organization, contact } = data;
+      return await this.prisma.opportunityBatch.create({
+        data: {
           orgName: organization.name,
           orgType: organization.type,
           orgSize: organization.size,
           contactName: contact.name,
           contactPhone: contact.phone,
           contactEmail: contact.email,
-          source: oppFields.source,
-          paid: oppFields.paid,
-          location: oppFields.location,
-          pitchEssay: oppFields.pitchEssay,
-          type: oppFields.type,
-        }),
-      );
-      return await this.prisma.opportunityBatch.create({
-        data: {
           opportunitySubmissions: {
             createMany: {
               data: opportunitySubmissions,

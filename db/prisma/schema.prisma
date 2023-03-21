@@ -64,6 +64,13 @@ model ApplicantSubmission {
 model OpportunityBatch {
     id                     Int                     @id @default(autoincrement())
     opportunitySubmissions OpportunitySubmission[]
+    orgName                String
+    orgType                String // enum
+    orgSize                String // enum
+    impactAreas            String[] // enum
+    contactName            String
+    contactEmail           String
+    contactPhone           String
 }
 
 model OpportunitySubmission {
@@ -72,19 +79,9 @@ model OpportunitySubmission {
     opportunityBatch   OpportunityBatch @relation(fields: [opportunityBatchId], references: [id])
     opportunityBatchId Int
 
-    orgName String
-
     dateAdded DateTime @default(now())
     source    String // enum
     type      String // enum
-
-    orgType    String // enum
-    orgSize    String // enum
-    impactArea String[] // enum
-
-    contactName  String
-    contactEmail String
-    contactPhone String
 
     paid        Boolean // Whether this is paid or volunteer
     fullTime    Boolean? // Whether this is full or part timeß

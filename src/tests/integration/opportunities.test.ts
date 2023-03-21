@@ -13,37 +13,44 @@ describe('POST /opportunities', () => {
       name: 'Bobs Burgers Foundation',
       type: 'nonprofit',
       size: '<50',
+      impactAreas: ['Clean Energy'],
     },
     contact: {
       name: 'Bob Boberson',
       email: 'bboberson@gmail.com',
       phone: '4258287733',
     },
-    fullTime: true,
-    impactArea: ['Clean Energy'],
-    location: 'Burgerville',
-    paid: true,
-    pitchEssay: 'Come flip burgers for Bob',
-    source: 'Commercial',
-    type: 'nonprofit',
+    submissions: [
+      {
+        fullTime: true,
+        location: 'Burgerville',
+        paid: true,
+        pitchEssay: 'Come flip burgers for Bob',
+        source: 'Commercial',
+        type: 'nonprofit',
+      },
+    ],
   };
   it('should create a new opportunity submission', async () => {
     const { body } = await request(app)
-      .post('/opportunities/submissions')
-      .send([oppSubmissionsPayload])
+      .post('/opportunities/batch')
+      .send(oppSubmissionsPayload)
       .expect(200);
     expect(body).toEqual(expect.objectContaining({ id: expect.any(Number) }));
   });
   it('should create multiple new opportunity submissions', async () => {
     const secondOppSubmissionPayload = { ...oppSubmissionsPayload };
-    secondOppSubmissionPayload.organization = {
-      name: 'Ronald McDonald House',
-      type: 'government',
-      size: '<50',
-    };
+    secondOppSubmissionPayload.submissions.push({
+      fullTime: false,
+      location: 'Fryville',
+      paid: true,
+      pitchEssay: 'Come make french fries for Bob',
+      source: 'Advertisement',
+      type: 'nonprofit',
+    });
     const { body } = await request(app)
-      .post('/opportunities/submissions')
-      .send([oppSubmissionsPayload, secondOppSubmissionPayload])
+      .post('/opportunities/batch')
+      .send(secondOppSubmissionPayload)
       .expect(200);
     expect(body).toEqual(expect.objectContaining({ id: expect.any(Number) }));
   });
@@ -52,15 +59,18 @@ describe('POST /opportunities', () => {
     // @ts-expect-error: Ignore TS error for invalid request body
     delete { ...oppSubmissionsPayload }.organization.type;
     const { body } = await request(app)
-      .post('/opportunities/submissions')
+      .post('/opportunities/batch')
       .send([missingOrgType])
       .expect(400);
     expect(body).toHaveProperty('title', 'Validation Error');
   });
   test('Should throw error if request body has invalid org size', async () => {
-    const invalidOrgSize = { orgSize: '100', ...oppSubmissionsPayload };
+    const invalidOrgSize = {
+      ...oppSubmissionsPayload,
+      organization: { ...oppSubmissionsPayload.organization, size: '100' },
+    };
     const { body } = await request(app)
-      .post('/opportunities/submissions')
+      .post('/opportunities/batch')
       .send([invalidOrgSize])
       .expect(400);
     expect(body).toHaveProperty('title', 'Validation Error');

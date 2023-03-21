@@ -66,7 +66,7 @@
         }
       }
     },
-    "/opportunities/submissions": {
+    "/opportunities/batch": {
       "post": {
         "description": "Create a new opportunity",
         "requestBody": {
@@ -117,6 +117,30 @@
         "properties": {
           "id": {
             "type": "number"
+          },
+          "contactName": {
+            "type": "string"
+          },
+          "contactEmail": {
+            "type": "string"
+          },
+          "contactPhone": {
+            "type": "string"
+          },
+          "orgName": {
+            "type": "string"
+          },
+          "orgSize": {
+            "type": "string"
+          },
+          "orgType": {
+            "type": "string"
+          },
+          "impactAreas": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         }
       },
@@ -124,34 +148,63 @@
         "additionalProperties": false,
         "type": "object",
         "properties": {
-          "fullTime": {
-            "type": "boolean"
-          },
-          "organization": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "type": "string"
-              },
-              "type": {
-                "type": "string"
-              },
-              "size": {
-                "type": "string"
-              }
-            }
-          },
           "contact": {
             "type": "object",
             "properties": {
-              "name": {
+              "email": {
                 "type": "string"
               },
-              "email": {
+              "name": {
                 "type": "string"
               },
               "phone": {
                 "type": "string"
+              }
+            }
+          },
+          "organization": {
+            "type": "object",
+            "properties": {
+              "impactAreas": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "name": {
+                "type": "string"
+              },
+              "size": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              }
+            }
+          },
+          "submissions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "fullTime": {
+                  "type": "boolean"
+                },
+                "location": {
+                  "type": "string"
+                },
+                "paid": {
+                  "type": "boolean"
+                },
+                "pitchEssay": {
+                  "type": "string"
+                },
+                "source": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                }
               }
             }
           }

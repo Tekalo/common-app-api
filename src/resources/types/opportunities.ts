@@ -1,13 +1,13 @@
 import { z } from 'zod';
 import {
-  OpportunityRequestBodySchema,
-  OpportunityResponseBodySchema,
+  OpportunityBatchRequestBodySchema,
+  OpportunityBatchResponseBodySchema,
 } from '../schemas/opportunities.js';
 
-export type OpportunityRequestBody = z.infer<
-  typeof OpportunityRequestBodySchema
+export type OpportunityBatchRequestBody = z.infer<
+  typeof OpportunityBatchRequestBodySchema
 >;
 
-export type OpportunityResponseBody = z.infer<
-  typeof OpportunityResponseBodySchema
+export type OpportunityBatchResponseBody = z.infer<
+  typeof OpportunityBatchResponseBodySchema
 >;
