@@ -6,7 +6,7 @@ afterEach(async () => {
   await prisma.opportunitySubmission.deleteMany();
 });
 
-describe('POST /applicants', () => {
+describe('POST /opportunities', () => {
   const oppSubmissionsPayload = {
     organization: {
       name: 'Bobs Burgers Foundation',
