@@ -108,6 +108,10 @@
           },
           "preferredContact": {
             "type": "string"
+          },
+          "acceptedTCVersion": {
+            "type": "string",
+            "format": "date"
           }
         }
       },

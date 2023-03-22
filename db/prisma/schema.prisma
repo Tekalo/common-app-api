@@ -16,6 +16,7 @@ model Applicant {
     preferredContact String // enum
     searchStatus     String // Actively looking or not, cadidate open to // enum
     applications     ApplicantSubmission[]
+    acceptedTCVersion      String
 }
 
 model ApplicantSubmission {

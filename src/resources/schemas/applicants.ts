@@ -8,6 +8,7 @@ const ApplicantRequestBodySchema = z.object({
   email: z.string().email(),
   preferredContact: PreferredContact,
   searchStatus: SearchStatus,
+  acceptedTCVersion: z.string(),
 });
 
 const ApplicantResponseBodySchema = z.object({
