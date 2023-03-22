@@ -25,7 +25,7 @@ describe('POST /applicants', () => {
         email: 'bboberson@gmail.com',
         preferredContact: 'email',
         searchStatus: 'active',
-        acceptedTCVersion: '04012023',
+        acceptedTCVersion: '2023-04-01',
       })
       .query('auth0=false')
       .expect(200);
@@ -44,7 +44,7 @@ describe('POST /applicants', () => {
       email: 'bboberson@gmail.com',
       preferredContact: 'sms',
       searchStatus: 'active',
-      acceptedTCVersion: '04012023',
+      acceptedTCVersion: '2023-04-01',
     });
     const { body } = await request(app)
       .post('/applicants')
@@ -54,7 +54,7 @@ describe('POST /applicants', () => {
         email: 'bboberson@gmail.com',
         preferredContact: 'sms',
         searchStatus: 'active',
-        acceptedTCVersion: '04012023',
+        acceptedTCVersion: '2023-04-01',
       })
       .expect(400);
     expect(body).toHaveProperty('title', 'User Creation Error');
@@ -67,7 +67,7 @@ describe('POST /applicants', () => {
         email: 'bboberson@gmail.com',
         preferredContact: 'text me please',
         searchStatus: 'active',
-        acceptedTCVersion: '04012023',
+        acceptedTCVersion: '2023-04-01',
       })
       .expect(400);
     expect(body).toHaveProperty('title', 'Validation Error');
@@ -84,7 +84,7 @@ describe('POST /applicants', () => {
             email: 'bboberson@gmail.com',
             preferredContact: 'sms',
             searchStatus: 'active',
-            acceptedTCVersion: '04012023',
+            acceptedTCVersion: '2023-04-01',
           })
           .expect(200);
         if (body.auth0Id) {
@@ -104,7 +104,7 @@ describe('POST /applicants', () => {
             email: 'bboberson@gmail.com',
             preferredContact: 'sms',
             searchStatus: 'active',
-            acceptedTCVersion: '04012023',
+            acceptedTCVersion: '2023-04-01',
           });
         if (body.auth0Id) {
           testUserID = body.auth0Id;
@@ -116,7 +116,7 @@ describe('POST /applicants', () => {
             email: 'bboberson@gmail.com',
             preferredContact: 'sms',
             searchStatus: 'active',
-            acceptedTCVersion: '04012023',
+            acceptedTCVersion: '2023-04-01',
           })
           .expect(409);
         expect(conflictBody).toHaveProperty('title', 'User Creation Error');

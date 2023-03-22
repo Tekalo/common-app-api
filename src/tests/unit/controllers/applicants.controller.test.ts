@@ -33,7 +33,7 @@ describe('Applicant Controller', () => {
         searchStatus: 'active',
         phone: '123-456-7777',
         pronoun: 'them/they',
-        acceptedTCVersion: '04012023',
+        acceptedTCVersion: '2023-04-01',
       };
       mockCtx.prisma.applicant.create.mockResolvedValue(mockResolved);
       const applicantController = new ApplicantController(
@@ -46,7 +46,7 @@ describe('Applicant Controller', () => {
           email: 'bboerson@schmidtfutures.com',
           preferredContact: 'email',
           searchStatus: 'active',
-          acceptedTCVersion: '04012023',
+          acceptedTCVersion: '2023-04-01',
         },
         { auth0: 'false' },
       );
@@ -69,7 +69,7 @@ describe('Applicant Controller', () => {
           email: 'bboberson@schmidtfutures.com',
           preferredContact: 'email',
           searchStatus: 'active',
-          acceptedTCVersion: '04012023',
+          acceptedTCVersion: '2023-04-01',
         }),
       ).rejects.toHaveProperty(
         'problem.detail',
