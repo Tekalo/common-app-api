@@ -24,7 +24,7 @@ model ApplicantSubmission {
     applicant   Applicant @relation(fields: [applicantId], references: [id])
     applicantId Int
 
-    dateAdded DateTime
+    dateAdded DateTime @default(now())
     originTag String // Whose link did they click, data attribution  // enum
 
     resumeUrl      String
@@ -60,30 +60,28 @@ model ApplicantSubmission {
 
     referenceAttribution String? //How did you hear about us  //enum
 }
+
 model OpportunityBatch {
-    id Int @id @default(autoincrement())
-    opportunitySubmissions     OpportunitySubmission[]
+    id                     Int                     @id @default(autoincrement())
+    opportunitySubmissions OpportunitySubmission[]
+    orgName                String
+    orgType                String // enum
+    orgSize                String // enum
+    impactAreas            String[] // enum
+    contactName            String
+    contactEmail           String
+    contactPhone           String
 }
 
 model OpportunitySubmission {
     id Int @id @default(autoincrement())
-    
+
     opportunityBatch   OpportunityBatch @relation(fields: [opportunityBatchId], references: [id])
     opportunityBatchId Int
 
-    orgName String
-
-    dateAdded       DateTime
-    source          String // enum
-    opportunityType String // enum
-
-    orgType    String // enum
-    orgSize    String // enum
-    impactArea String[] // enum
-
-    contactName  String
-    contactEmail String
-    contactPhone String
+    dateAdded      DateTime @default(now())
+    source         String // enum
+    employmentType String // enum
 
     paid        Boolean // Whether this is paid or volunteer
     fullTime    Boolean? // Whether this is full or part timeß

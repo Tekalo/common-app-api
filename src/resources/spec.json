@@ -65,6 +65,33 @@
           }
         }
       }
+    },
+    "/opportunities/batch": {
+      "post": {
+        "description": "Create a new opportunity",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/opportunitiesRequestBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/opportunitiesResponseBody"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -81,6 +108,105 @@
           },
           "preferredContact": {
             "type": "string"
+          }
+        }
+      },
+      "opportunitiesResponseBody": {
+        "additionalProperties": false,
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "contactName": {
+            "type": "string"
+          },
+          "contactEmail": {
+            "type": "string"
+          },
+          "contactPhone": {
+            "type": "string"
+          },
+          "orgName": {
+            "type": "string"
+          },
+          "orgSize": {
+            "type": "string"
+          },
+          "orgType": {
+            "type": "string"
+          },
+          "impactAreas": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "opportunitiesRequestBody": {
+        "additionalProperties": false,
+        "type": "object",
+        "properties": {
+          "contact": {
+            "type": "object",
+            "properties": {
+              "email": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "phone": {
+                "type": "string"
+              }
+            }
+          },
+          "organization": {
+            "type": "object",
+            "properties": {
+              "impactAreas": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "name": {
+                "type": "string"
+              },
+              "size": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              }
+            }
+          },
+          "submissions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "fullTime": {
+                  "type": "boolean"
+                },
+                "location": {
+                  "type": "string"
+                },
+                "paid": {
+                  "type": "boolean"
+                },
+                "pitchEssay": {
+                  "type": "string"
+                },
+                "source": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                }
+              }
+            }
           }
         }
       }
