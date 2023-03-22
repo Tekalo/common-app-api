@@ -1,0 +1,64 @@
+{
+  "opportunityBatches": [
+    {
+      "orgName": "Bobs Burgers Foundation",
+      "orgType": "nonprofit",
+      "orgSize": "<50",
+      "contactName": "Bob Boberson",
+      "contactEmail": "bboberson@gmail.com",
+      "contactPhone": "4258287733",
+      "impactAreas": ["Clean Energy"],
+      "submissions": [
+        {
+          "fullTime": true,
+          "location": "Burgerville",
+          "paid": true,
+          "pitchEssay": "Come flip burgers for Bob",
+          "source": "Commercial",
+          "employmentType": "fulltime"
+        },
+        {
+          "fullTime": true,
+          "location": "Remote",
+          "paid": true,
+          "pitchEssay": "Come fry somem fries for Bob",
+          "source": "",
+          "employmentType": "parttime"
+        }
+      ]
+    },
+    {
+      "orgName": "Mozilla Foundation",
+      "orgType": "nonprofit",
+      "orgSize": ">50",
+      "contactName": "Moz Illa",
+      "contactEmail": "milla@mozilla.org",
+      "contactPhone": "+45559847193",
+      "impactAreas": ["Internet Freedom"],
+      "submissions": [
+        {
+          "fullTime": true,
+          "location": "San Francisco",
+          "paid": true,
+          "pitchEssay": "Support and collectively lead the open source Mozilla project",
+          "source": "All Tech is Human",
+          "employmentType": "fulltime"
+        }
+      ]
+    }
+  ],
+  "applicants": [
+    {
+      "name": "Robin Williams",
+      "email": "rwilliams@robinwilliams.com",
+      "preferredContact": "sms",
+      "searchStatus": "future"
+    },
+    {
+      "name": "X Æ A-12",
+      "email": "X Æ A-12@tesla.com",
+      "preferredContact": "whatsapp",
+      "searchStatus": "future"
+    }
+  ]
+}
