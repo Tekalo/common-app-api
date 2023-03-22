@@ -1,0 +1,72 @@
+---
+name: Run Seed Script
+
+run-name: Run seed script in ${{ inputs.env }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      image:
+        description: 'Docker image to deploy'
+        type: string
+        required: true
+      env:
+        description: 'Environment to deploy to'
+        type: environment
+        required: true
+
+env:
+  AWS_REGION: us-east-1
+  ECS_CLI_TASK: capp-${{ inputs.env }}-cli
+  ECS_API_TASK: capp-${{ inputs.env }}-api
+  ECS_CLUSTER: ${{ inputs.env }}
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  seed:
+    name: Run seed script in ${{ inputs.env }}
+    if: ${{ inputs.env == "dev" }}
+    concurrency: ${{ inputs.env }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: tf/envs/${{ inputs.env }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+
+      - name: Terraform Init
+        id: init
+        run: terraform init
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          aws-region: us-east-1
+          role-to-assume: ${{ secrets.DEV_AWS_PLAN_ROLE }}
+          role-session-name: GithubActions
+
+      - name: Run dev seed script
+        id: seed-db
+        run: |
+          set -euo pipefail
+          run_result=$(aws ecs run-task \
+            --cluster "$ECS_CLUSTER" \
+            --task-definition "$ECS_CLI_TASK" \
+            --overrides '{"containerOverrides": [{"name": "capp-cli", "command": ["pnpm", "prisma:seed"]}]}')
+          echo ${run_result}
+          container_arn=$(echo $run_result | jq -r '.tasks[0].taskArn')
+          aws ecs wait tasks-stopped \
+              --cluster "$ECS_CLUSTER" \
+              --tasks "${container_arn}"
+          exit $(aws ecs describe-tasks \
+            --cluster "$ECS_CLUSTER" \
+            --tasks "${container_arn}" | jq -r .tasks[0].containers[0].exitCode)
