@@ -28,7 +28,7 @@ permissions:
 jobs:
   seed:
     name: Run seed script in ${{ inputs.env }}
-    if: ${{ inputs.env == "dev" }}
+    if: ${{ inputs.env == 'dev' }}
     concurrency: ${{ inputs.env }}
     runs-on: ubuntu-latest
     defaults:
