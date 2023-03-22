@@ -22,7 +22,7 @@ type OpportunityBatchType = Prisma.OpportunityBatchCreateInput;
  *
  * @param upsertPromises Upserts to execute
  * @returns Array of fulfilled promises
- * @throws IMSError if any issues in the upsert
+ * @throws CAPPError if any issues in the upsert
  */
 async function doUpsert(
   upsertPromises: Array<Promise<ApplicantType> | Promise<OpportunityBatchType>>,
@@ -86,7 +86,6 @@ async function seedOpportunitySubmissionBatches() {
       },
     }),
   );
-  // console.log(opportunityBatchUpserts)
   await doUpsert(opportunityBatchUpserts);
 }
 
