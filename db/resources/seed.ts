@@ -28,6 +28,7 @@ async function doUpsert(
   upsertPromises: Array<Promise<ApplicantType> | Promise<OpportunityBatchType>>,
 ): Promise<Array<PromiseFulfilledResult<any>>> {
   let successful: Array<PromiseFulfilledResult<any>> = [];
+  console.log('about to do upsert');
   await Promise.allSettled(upsertPromises).then(
     (results: Array<PromiseSettledResult<any>>) => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -54,6 +55,7 @@ async function doUpsert(
 }
 
 async function seedApplicants() {
+  console.log('seeding applicants');
   const { applicants }: { applicants: Array<ApplicantType> } = seedData;
   const applicantsUpserts = applicants.map((app) =>
     prisma.applicant.upsert({
@@ -90,6 +92,9 @@ async function seedOpportunitySubmissionBatches() {
 }
 
 async function main() {
+  console.log('about to connect');
+  await prisma.$connect();
+  console.log('connected!');
   await seedApplicants();
   await seedOpportunitySubmissionBatches();
 }
