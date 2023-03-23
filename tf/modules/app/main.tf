@@ -21,7 +21,7 @@ resource "aws_rds_cluster" "main" {
 
   engine                 = "aurora-postgresql"
   engine_mode            = "provisioned"
-  engine_version         = "14.6"
+  engine_version         = "14"
   database_name          = "capp"
   master_username        = var.db_username
   master_password        = var.db_password
@@ -101,7 +101,7 @@ resource "aws_ecs_service" "api" {
 
   # Per https://github.com/hashicorp/terraform-provider-aws/issues/22823, the default
   # capacity provider strategy on the cluster leads to a cycle of needing to recreate the service
-  # to null out the strategy (since we do not specify a strategy ourselves, there is a discrepency between 
+  # to null out the strategy (since we do not specify a strategy ourselves, there is a discrepency between
   # terraform spec and what is already in AWS)
   # If https://github.com/hashicorp/terraform-provider-aws/issues/26533 is ever resolved, we
   # could explicitly set the strategy to be the default strategy, which would be acceptable.
