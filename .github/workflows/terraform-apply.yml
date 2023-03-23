@@ -1,0 +1,69 @@
+name: Terraform Apply
+
+on:
+  workflow_call:
+    inputs:
+      env:
+        required: true
+        type: string
+    secrets:
+      TF_API_TOKEN:
+        required: true
+      AWS_DEPLOY_ROLE_INFRA:
+        required: true
+    outputs:
+      image:
+        description: Image that has been currently deployed
+        value: ${{ jobs.terraform_check.outputs.image }}
+
+jobs:
+  terraform:
+    name: Apply Terraform
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ inputs.env }}
+    concurrency: ${{ inputs.env }}
+    defaults:
+      run:
+        working-directory: tf/envs/${{ inputs.env }}
+    outputs:
+      image: ${{ steps.current-image.outputs.stdout }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+
+      - name: Terraform Init
+        id: init
+        run: terraform init
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          aws-region: us-east-1
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_INFRA }}
+          role-session-name: GithubActions
+          mask-aws-account-id: false
+
+      - name: Get current image
+        id: current-image
+        run: terraform output -raw image
+
+      # No actual value in a plan right now, since we can't preserve it across workflows
+      # The real use case for a plan is that we generate plan, approve PR, and then deploy
+      # WITH that plan.
+      # - name: Download plan
+      #   uses: actions/download-artifact@v3
+      #   with:
+      #     name: tf-plan-${{ inputs.env }}
+      #     path: ./tf/envs/${{ inputs.env }}/
+
+      - name: Terraform Apply
+        run: |
+          terraform apply -auto-approve -input=false \
+            -var 'cli_image=${{ steps.current-image.outputs.stdout }}' \
+            -var 'image=${{ steps.current-image.outputs.stdout }}'
