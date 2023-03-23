@@ -66,7 +66,7 @@ devDependencies:
   eslint-plugin-import: 2.27.5_as6wyplljmmarlclp2tx3tj6rq
   eslint-plugin-markdownlint: 0.4.1_eslint@8.36.0
   eslint-plugin-prettier: 4.2.1_ose2zoovovx4ulolhifz3tfzx4
-  jest: 29.5.0_757mb262zsxkcnuknwfdsckmku
+  jest: 29.5.0
   nodemon: 2.0.22
   pino-pretty: 10.0.0
   prettier: 2.8.6
