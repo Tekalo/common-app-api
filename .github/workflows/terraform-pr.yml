@@ -45,7 +45,7 @@ jobs:
       env: ${{ matrix.env }}
     secrets:
       TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
-      AWS_ROLE_TO_ASSUME: "${{ env[fromJSON('{\"prod\": \"PROD_AWS_PLAN_ROLE\", \"dev\": \"DEV_AWS_PLAN_ROLE\", \"staging\": \"STAGING_AWS_PLAN_ROLE\"}')[matrix.role_id]] }}"
+      AWS_ROLE_TO_ASSUME: "${{ vars[fromJSON('{\"prod\": \"PROD_AWS_PLAN_ROLE\", \"dev\": \"DEV_AWS_PLAN_ROLE\", \"staging\": \"STAGING_AWS_PLAN_ROLE\"}')[matrix.role_id]] }}"
 
   tests:
     name: Run tests
