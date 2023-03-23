@@ -27,6 +27,7 @@ describe('Applicant Controller', () => {
     test('Should not store new applicant in Auth0', async () => {
       const mockResolved = {
         id: 1,
+        auth0Id: 'auth0|999999',
         name: 'Bob Boberson',
         email: 'bboberson@gmail.com',
         preferredContact: 'sms',

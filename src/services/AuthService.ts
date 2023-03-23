@@ -42,6 +42,23 @@ class AuthService {
     }
     return responseBody;
   }
+
+  async deleteUser(id: string) {
+    const auth0Client: ManagementClient = this.getClient();
+    let responseBody;
+    try {
+      responseBody = await auth0Client.deleteUser({ id });
+    } catch (e) {
+      if (e instanceof Error) {
+        throw new CAPPError({
+          title: 'User Deletion Error',
+          detail: 'Problem deleting user from Auth0',
+        });
+      }
+      throw e;
+    }
+    return responseBody;
+  }
 }
 
 export default AuthService;

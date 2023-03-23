@@ -36,4 +36,14 @@ router.post(
   },
 );
 
+router.delete('/:id', (req: Request, res: Response, next) => {
+  const id = req.params.id;
+  applicantController
+    .deleteApplicant(id)
+    .then((result) => {
+      res.status(200).json(result);
+    })
+    .catch((err) => next(err));
+});
+
 export default router;
