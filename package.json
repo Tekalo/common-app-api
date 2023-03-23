@@ -74,6 +74,6 @@
   },
   "prisma": {
     "schema": "db/prisma/schema.prisma",
-    "seed": "ts-node --transpile-only ./db/resources/seed.ts"
+    "seed": "pnpx ts-node --transpile-only ./db/resources/seed.ts"
   }
 }
