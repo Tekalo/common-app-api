@@ -40,13 +40,6 @@ jobs:
       fail-fast: false
       matrix:
         env: ${{ fromJSON(needs.changes.outputs.envs) }}
-        include:
-          - env: prod
-            role_id: PROD_AWS_PLAN_ROLE
-          - env: dev
-            role_id: DEV_AWS_PLAN_ROLE
-          - env: staging
-            role_id: STAGING_AWS_PLAN_ROLE
     uses: ./.github/workflows/terraform-plan.yml
     with:
       env: ${{ matrix.env }}
