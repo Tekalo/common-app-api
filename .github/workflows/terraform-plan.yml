@@ -6,10 +6,11 @@ on:
       env:
         required: true
         type: string
+      AWS_ROLE_TO_ASSUME:
+        type: string
+        required: true
     secrets:
       TF_API_TOKEN:
-        required: true
-      AWS_ROLE_TO_ASSUME:
         required: true
     outputs:
       image:
@@ -53,7 +54,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
           aws-region: us-east-1
-          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          role-to-assume: ${{ inputs.AWS_ROLE_TO_ASSUME }}
           role-session-name: GithubActions
           mask-aws-account-id: false
 
