@@ -43,7 +43,7 @@ jobs:
     uses: ./.github/workflows/terraform-plan.yml
     with:
       env: ${{ matrix.env }}
-      AWS_ROLE_TO_ASSUME: "${{ vars[fromJSON('{\"prod\": \"PROD_AWS_PLAN_ROLE\", \"dev\": \"dev_AWS_PLAN_ROLE\", \"staging\": \"STAGING_AWS_PLAN_ROLE\"}')[matrix.role_id]] }}"
+      AWS_ROLE_TO_ASSUME: "${{ vars[format('{}_AWS_PLAN_ROLE, matrix.env)] }}"
     secrets:
       TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
 
