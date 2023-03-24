@@ -39,6 +39,20 @@ describe('POST /applicants', () => {
       .expect(400);
     expect(body).toHaveProperty('title', 'Validation Error');
   });
+  it('should throw 400 error if acceptedPrivacy false', async () => {
+    const { body } = await request(app)
+      .post('/applicants')
+      .send({
+        name: 'Bob Boberson',
+        email: 'bboberson@gmail.com',
+        preferredContact: 'sms',
+        searchStatus: 'active',
+        acceptedTerms: true,
+        acceptedPrivacy: false,
+      })
+      .expect(400);
+    expect(body).toHaveProperty('title', 'Validation Error');
+  });
   it('should throw 400 error when creating a duplicate applicant', async () => {
     await request(app).post('/applicants').query('auth0=false').send({
       name: 'Bob Boberson',
