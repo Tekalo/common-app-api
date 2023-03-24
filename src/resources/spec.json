@@ -108,6 +108,12 @@
           },
           "preferredContact": {
             "type": "string"
+          },
+          "acceptedTerms": {
+            "type": "boolean"
+          },
+          "acceptedPrivacy": {
+            "type": "boolean"
           }
         }
       },

@@ -16,6 +16,8 @@ model Applicant {
     preferredContact String // enum
     searchStatus     String // Actively looking or not, cadidate open to // enum
     applications     ApplicantSubmission[]
+    acceptedTerms    DateTime              @default(now())
+    acceptedPrivacy  DateTime              @default(now())
 }
 
 model ApplicantSubmission {

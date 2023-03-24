@@ -25,6 +25,8 @@ describe('POST /applicants', () => {
         email: 'bboberson@gmail.com',
         preferredContact: 'email',
         searchStatus: 'active',
+        acceptedTerms: true,
+        acceptedPrivacy: true,
       })
       .query('auth0=false')
       .expect(200);
@@ -37,12 +39,28 @@ describe('POST /applicants', () => {
       .expect(400);
     expect(body).toHaveProperty('title', 'Validation Error');
   });
+  it('should throw 400 error if acceptedPrivacy false', async () => {
+    const { body } = await request(app)
+      .post('/applicants')
+      .send({
+        name: 'Bob Boberson',
+        email: 'bboberson@gmail.com',
+        preferredContact: 'sms',
+        searchStatus: 'active',
+        acceptedTerms: true,
+        acceptedPrivacy: false,
+      })
+      .expect(400);
+    expect(body).toHaveProperty('title', 'Validation Error');
+  });
   it('should throw 400 error when creating a duplicate applicant', async () => {
     await request(app).post('/applicants').query('auth0=false').send({
       name: 'Bob Boberson',
       email: 'bboberson@gmail.com',
       preferredContact: 'sms',
       searchStatus: 'active',
+      acceptedTerms: true,
+      acceptedPrivacy: true,
     });
     const { body } = await request(app)
       .post('/applicants')
@@ -52,6 +70,8 @@ describe('POST /applicants', () => {
         email: 'bboberson@gmail.com',
         preferredContact: 'sms',
         searchStatus: 'active',
+        acceptedTerms: true,
+        acceptedPrivacy: true,
       })
       .expect(400);
     expect(body).toHaveProperty('title', 'User Creation Error');
@@ -64,6 +84,8 @@ describe('POST /applicants', () => {
         email: 'bboberson@gmail.com',
         preferredContact: 'text me please',
         searchStatus: 'active',
+        acceptedTerms: true,
+        acceptedPrivacy: true,
       })
       .expect(400);
     expect(body).toHaveProperty('title', 'Validation Error');
@@ -80,6 +102,8 @@ describe('POST /applicants', () => {
             email: 'bboberson@gmail.com',
             preferredContact: 'sms',
             searchStatus: 'active',
+            acceptedTerms: true,
+            acceptedPrivacy: true,
           })
           .expect(200);
         if (body.auth0Id) {
@@ -99,6 +123,8 @@ describe('POST /applicants', () => {
             email: 'bboberson@gmail.com',
             preferredContact: 'sms',
             searchStatus: 'active',
+            acceptedTerms: true,
+            acceptedPrivacy: true,
           });
         if (body.auth0Id) {
           testUserID = body.auth0Id;
@@ -110,6 +136,8 @@ describe('POST /applicants', () => {
             email: 'bboberson@gmail.com',
             preferredContact: 'sms',
             searchStatus: 'active',
+            acceptedTerms: true,
+            acceptedPrivacy: true,
           })
           .expect(409);
         expect(conflictBody).toHaveProperty('title', 'User Creation Error');
