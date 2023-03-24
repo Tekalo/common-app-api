@@ -52,15 +52,13 @@
       "name": "Robin Williams",
       "email": "rwilliams@robinwilliams.com",
       "preferredContact": "sms",
-      "searchStatus": "future",
-      "acceptedTCVersion": "2023-04-01"
+      "searchStatus": "future"
     },
     {
       "name": "X Æ A-12",
       "email": "X Æ A-12@tesla.com",
       "preferredContact": "whatsapp",
-      "searchStatus": "future",
-      "acceptedTCVersion": "2023-04-01"
+      "searchStatus": "future"
     }
   ]
 }

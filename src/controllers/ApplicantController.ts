@@ -30,8 +30,12 @@ class ApplicantController {
     }
     let returnApplicant;
     try {
-      returnApplicant = await this.prisma.applicant.create({ data });
+      const { acceptedPrivacy, acceptedTerms, ...prismaData } = data;
+      returnApplicant = await this.prisma.applicant.create({
+        data: prismaData,
+      });
     } catch (e) {
+      console.log(e);
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         // TODO : Log e.message in Sentry
         throw new CAPPError(

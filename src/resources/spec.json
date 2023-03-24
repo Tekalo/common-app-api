@@ -109,9 +109,11 @@
           "preferredContact": {
             "type": "string"
           },
-          "acceptedTCVersion": {
-            "type": "string",
-            "format": "date"
+          "acceptedTerms": {
+            "type": "boolean"
+          },
+          "acceptedPrivacy": {
+            "type": "boolean"
           }
         }
       },
