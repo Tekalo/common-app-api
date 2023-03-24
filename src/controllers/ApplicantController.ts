@@ -35,7 +35,6 @@ class ApplicantController {
         data: prismaData,
       });
     } catch (e) {
-      console.log(e);
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         // TODO : Log e.message in Sentry
         throw new CAPPError(
