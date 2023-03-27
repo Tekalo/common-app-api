@@ -34,24 +34,25 @@ model ApplicantSubmission {
 
     lastOrg  String // Current or Most Recent Org
     lastRole String // Current or Most Recent Role
-    yoe      Float // Years of Relevant Experience
+    yoe      String // Years of Relevant Experience
 
     linkedInUrl       String?
     githubUrl         String?
     portfolioUrl      String?
     portfolioPassword String?
 
-    interestOpportunities String[] // Interested In - Opportunities    //enum
-    interestRoles         String[] // Interested In - Roles            //enum
-    interestCauses        String[] // Interested In - Impact Causes   //enum
-    interestGovt          Boolean // Interested In - Govt
+    interestEmploymentType String[] // Interested In - Opportunities    //enum
+    interestRoles          String[] // Interested In - Roles            //enum
+    interestCauses         String[] // Interested In - Impact Causes   //enum
+    interestGovt           Boolean // Interested In - Govt
 
-    otherCause  String? // Additional cause(s) they are interested in
+    otherCauses String? // Additional cause(s) they are interested in
     skills      String[] // Enum or FKs
     otherSkills String[] // Additional skill(s) they have
 
     currentLocation String
     openToRelocate  String // enum
+    openToRemote    String
 
     desiredSalary            String?
     previousImpactExperience Boolean

@@ -1,9 +1,13 @@
 import request from 'supertest';
 import app from '@App/app.js';
 import AuthService from '@App/services/AuthService.js';
-import { ApplicantResponseBody } from '@App/resources/types/applicants.js';
+import {
+  ApplicantResponseBody,
+  ApplicantSubmissionBody,
+} from '@App/resources/types/applicants.js';
 import itif from '@App/tests/util/helpers.js';
 import prisma from '@App/resources/client.js';
+import applicantSubmissionGenerator from '../fixtures/applicantSubmissionGenerator.js';
 
 let testUserID: string;
 const authService = new AuthService();
@@ -13,6 +17,7 @@ afterEach(async () => {
     const auth0Service = authService.getClient();
     await auth0Service.deleteUser({ id: testUserID });
   }
+  await prisma.applicantSubmission.deleteMany();
   await prisma.applicant.deleteMany();
 });
 
@@ -144,5 +149,50 @@ describe('POST /applicants', () => {
         expect(conflictBody).toHaveProperty('detail', 'User already exists');
       },
     );
+  });
+});
+
+describe('POST /applicants/:id/submissions', () => {
+  it('should create a new applicant submission', async () => {
+    const testApplicantResp = await request(app)
+      .post('/applicants')
+      .query('auth0=false')
+      .send({
+        name: 'Bob Boberson',
+        email: 'bboberson@gmail.com',
+        preferredContact: 'sms',
+        searchStatus: 'active',
+        acceptedTerms: true,
+        acceptedPrivacy: true,
+      });
+    const { id }: { id: number } = testApplicantResp.body;
+    const testBody: ApplicantSubmissionBody =
+      applicantSubmissionGenerator.getAPIRequestBody();
+    const { body } = await request(app)
+      .post(`/applicants/${id}/submissions`)
+      .send(testBody)
+      .expect(200);
+    expect(body).toHaveProperty('id');
+  });
+
+  it('should throw 400 error for missing years of experience (yoe)', async () => {
+    const testSubmission = applicantSubmissionGenerator.getAPIRequestBody();
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    delete testSubmission.yoe;
+    const { body } = await request(app)
+      .post('/applicants/1/submissions')
+      .send({ ...testSubmission })
+      .expect(400);
+    expect(body).toHaveProperty('title', 'Validation Error');
+  });
+
+  it('should throw error if request body has invalid XXXX', async () => {
+    const testSubmission = applicantSubmissionGenerator.getAPIRequestBody();
+    const { body } = await request(app)
+      .post('/applicants/1/submissions')
+      .send({ ...testSubmission, openToRelocate: 'idk maybe' })
+      .expect(400);
+    expect(body).toHaveProperty('title', 'Validation Error');
   });
 });
