@@ -120,7 +120,7 @@ describe('POST /applicants', () => {
           .post('/applicants')
           .send({
             name: 'Bob Boberson',
-            email: `bboberson${getRandomString()}@gmail.com`,
+            email: 'bboberson333@gmail.com',
             preferredContact: 'sms',
             searchStatus: 'active',
             acceptedTerms: true,
@@ -133,7 +133,7 @@ describe('POST /applicants', () => {
           .post('/applicants')
           .send({
             name: 'Bob Boberson',
-            email: `bboberson${getRandomString()}@gmail.com`,
+            email: 'bboberson333@gmail.com',
             preferredContact: 'sms',
             searchStatus: 'active',
             acceptedTerms: true,
