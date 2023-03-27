@@ -9,35 +9,35 @@ const getAPIRequestBody = (
   overrides: Partial<ApplicantSubmissionBody> = {},
 ): ApplicantSubmissionBody => ({
   originTag: '',
-  lastRole: '',
-  lastOrg: '',
-  yoe: '',
+  lastRole: 'senior software engineer',
+  lastOrg: 'mozilla',
+  yoe: '>11',
   skills: ['react', 'python'], // enum
   otherSkills: ['juggling', 'curling'],
   linkedInUrl: 'https://www.linkedin.com/in/bob-bobberson',
   githubUrl: 'https://github.com/bboberson',
   portfolioUrl: null,
   portfolioPassword: '',
-  resumeUrl: '',
-  resumePassword: '',
-  hoursPerWeek: '',
-  interestEmploymentType: ['full'], // test this works
+  resumeUrl: 'myportfolio.com',
+  resumePassword: null,
+  hoursPerWeek: null,
+  interestEmploymentType: ['full'], // enum
   interestRoles: [
     'software engineer - frontend',
     'software engineer - backend',
-  ], // keep this as non-zod-enum?
+  ],
   currentLocation: 'Boston, MA',
   openToRelocate: 'not sure',
   openToRemote: 'both',
   desiredSalary: '100,000',
   interestCauses: ['climate change', 'responsible AI'],
-  otherCauses: 'animal rights', // keep this as non-zod-enum? order matters - refine to be length 2?
+  otherCauses: 'animal rights',
   workAuthorization: 'sponsorship',
   interestGovt: true,
   previousImpactExperience: false,
   essayResponse:
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non iaculis erat.',
-  referenceAttribution: 'social media',
+  referenceAttribution: 'social media', // enum
   ...overrides,
 });
 

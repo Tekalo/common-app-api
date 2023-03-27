@@ -67,14 +67,14 @@ const ApplicantSubmissionRequestBodySchema = z.object({
   resumeUrl: z.string(),
   resumePassword: z.string().nullable().optional(),
   hoursPerWeek: z.string().nullable().optional(),
-  interestEmploymentType: z.array(EmploymentType), // test this works
+  interestEmploymentType: z.array(EmploymentType),
   interestRoles: z.array(z.string()), // keep this as non-zod-enum?
   currentLocation: z.string(),
   openToRelocate: OpenToRelocate,
   openToRemote: OpenToRemote,
   desiredSalary: z.string().nullable().optional(),
-  interestCauses: z.array(z.string()),
-  otherCauses: z.string().nullable().optional(), // keep this as non-zod-enum? order matters - refine to be length 2?
+  interestCauses: z.array(z.string()), // order matters
+  otherCauses: z.string().nullable().optional(),
   workAuthorization: WorkAuthorization,
   interestGovt: z.boolean(),
   previousImpactExperience: z.boolean(),
