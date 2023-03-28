@@ -1,5 +1,6 @@
 FROM node:18.15.0-slim AS base
 WORKDIR /api
+RUN chown node:node /api
 RUN apt-get update && apt-get install -y \
     openssl && rm -rf /var/lib/apt/lists/* && \
     npm install -g pnpm

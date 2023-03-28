@@ -31,13 +31,11 @@ class ApplicantController {
     }
     let returnApplicant;
     try {
-      const applicantData = auth0User
-        ? { ...data, auth0Id: auth0User.user_id }
-        : data;
       // TODO: If this fails, we want to remove user from Auth0.
       // We can't "rollback" Auth0 operation, but maybe we manually delete or try to delete here?
+      const { acceptedPrivacy, acceptedTerms, ...prismaData } = data;
       returnApplicant = await this.prisma.applicant.create({
-        data: applicantData,
+        data: prismaData,
       });
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
@@ -70,8 +68,8 @@ class ApplicantController {
   async deleteApplicant(id: string) {
     try {
       // TODO:
-      // await this.prisma.applicant.delete({ where: { auth0Id: id } });
-      // await this.auth0Service.deleteUser( id );
+      await this.prisma.applicant.delete({ where: { auth0Id: id } });
+      await this.auth0Service.deleteUser(id);
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         // TODO : Log e.message in Sentry

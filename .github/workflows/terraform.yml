@@ -1,0 +1,70 @@
+name: 'Terraform Deploy'
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'tf/**'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to apply TF against'
+        type: environment
+        required: true
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    # Set job outputs to values from filter step
+    outputs:
+      dev: ${{ steps.filter.outputs.dev || inputs.environment == 'dev' }}
+      staging: ${{ steps.filter.outputs.staging || inputs.environment == 'staging' }}
+      prod: ${{ steps.filter.outputs.prod || inputs.environment == 'prod' }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          base: ${{ github.ref }}
+          filters: |
+            dev:
+              - 'tf/envs/dev/**'
+              - 'tf/modules/**'
+            # staging:
+            #   - 'tf/envs/staging/**'
+            #   - 'tf/modules/**'
+            # prod:
+            #   - 'tf/envs/prod/**'
+            #   - 'tf/modules/**'
+
+  deploy-dev:
+    name: 'Deploy to Dev'
+    needs: [changes]
+    if: needs.changes.outputs.dev == 'true'
+    uses: ./.github/workflows/terraform-apply.yml
+    with:
+      env: dev
+    secrets: inherit
+
+  deploy-staging:
+    name: 'Deploy to Staging'
+    needs: [changes, deploy-dev]
+    if: needs.changes.outputs.staging == 'true'
+    uses: ./.github/workflows/terraform-apply.yml
+    with:
+      env: staging
+    secrets: inherit
+
+  deploy-prod:
+    name: 'Deploy to Prod'
+    needs: [changes, deploy-staging]
+    if: needs.changes.outputs.prod == 'true'
+    uses: ./.github/workflows/terraform-apply.yml
+    with:
+      env: prod
+    secrets: inherit

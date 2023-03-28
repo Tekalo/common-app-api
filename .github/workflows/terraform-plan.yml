@@ -1,0 +1,110 @@
+name: Plan
+
+on:
+  workflow_call:
+    inputs:
+      env:
+        required: true
+        type: string
+      AWS_ROLE_TO_ASSUME:
+        type: string
+        required: true
+    secrets:
+      TF_API_TOKEN:
+        required: true
+    outputs:
+      image:
+        description: Image that has been currently deployed
+        value: ${{ jobs.terraform_check.outputs.image }}
+
+jobs:
+  terraform:
+    name: Generate Plan
+    runs-on: ubuntu-latest
+    # Do we want concurrency to prevent weird plans? I think so... But we'll see?
+    concurrency: ${{ inputs.env }}
+    defaults:
+      run:
+        working-directory: tf/envs/${{ inputs.env }}
+    outputs:
+      image: ${{ steps.current-image.outputs.stdout }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+
+      - name: Terraform Format
+        id: fmt
+        run: terraform fmt -check
+        continue-on-error: true
+
+      - name: Terraform Init
+        id: init
+        run: terraform init
+
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          aws-region: us-east-1
+          role-to-assume: ${{ inputs.AWS_ROLE_TO_ASSUME }}
+          role-session-name: GithubActions
+          mask-aws-account-id: false
+
+      - name: Get current image
+        id: current-image
+        run: |
+          terraform output -raw image
+
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan -no-color -input=false -out 'tf-${{ inputs.env }}.plan' -var 'cli_image=${{ steps.current-image.outputs.stdout }}' -var 'image=${{ steps.current-image.outputs.stdout }}'
+        continue-on-error: true
+
+      - uses: actions/github-script@v6
+        env:
+          PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+        with:
+          script: |
+            const output = `### Plan for ${{ inputs.env }}
+            #### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
+            #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
+            #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
+            #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+
+            <details><summary>Show Plan</summary>
+
+            \`\`\`\n
+            ${process.env.PLAN}
+            \`\`\`
+
+            </details>
+
+            *Pushed by: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            })
+
+      - name: Terraform Plan Status
+        if: steps.plan.outcome == 'failure'
+        run: exit 1
+
+      # See note in terraform-apply.yml about why plan file is not that useful right now
+      # - name: Upload plan
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: tf-plan-${{ inputs.env }}
+      #     path: ./tf/envs/${{ inputs.env }}/tf-${{ inputs.env }}.plan
+      #     if-no-files-found: error # 'warn' or 'ignore' are also available, defaults to `warn`
+      #     retention-days: 1
