@@ -65,11 +65,21 @@ class ApplicantController {
     };
   }
 
-  async deleteApplicant(id: string) {
+  // our applicant ID
+  async deleteApplicant(id: number) {
     try {
       // TODO:
-      await this.prisma.applicant.delete({ where: { auth0Id: id } });
-      await this.auth0Service.deleteUser(id);
+      const applicantToDelete = await this.prisma.applicant.findUniqueOrThrow({
+        where: { id },
+      });
+      await this.prisma.applicantDeletionRequests.create({
+        data: {
+          email: applicantToDelete.email,
+          auth0Id: applicantToDelete.auth0Id || '',
+        },
+      });
+      await this.prisma.applicant.delete({ where: { id } });
+      await this.auth0Service.deleteUser(applicantToDelete.auth0Id);
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         // TODO : Log e.message in Sentry

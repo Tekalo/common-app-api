@@ -37,9 +37,9 @@ router.post(
 );
 
 router.delete('/:id', (req: Request, res: Response, next) => {
-  const { id } = req.params;
+  const applicantID = +req.params.id;
   applicantController
-    .deleteApplicant(id)
+    .deleteApplicant(applicantID)
     .then((result) => {
       res.status(200).json(result);
     })
