@@ -1,12 +1,14 @@
 import ApplicantController from '@App/controllers/ApplicantController.js';
 import AuthService from '@App/services/AuthService.js';
-import { jest } from '@jest/globals';
+import { AppMetadata, ManagementClient, User, UserMetadata } from 'auth0';
+import { expect, jest, test } from '@jest/globals';
 import {
   MockContext,
   Context,
   createMockContext,
 } from '@App/tests/util/context.js';
 import { Prisma } from '@prisma/client';
+import CAPPError from '@App/resources/shared/CAPPError.js';
 
 let mockCtx: MockContext;
 let ctx: Context;
@@ -21,10 +23,7 @@ export type PrismaCreateInputType = Prisma.ApplicantSelect;
 describe('Applicant Controller', () => {
   describe('Create Applicant', () => {
     const mockAuthService = new AuthService();
-    const mockCreateApplicant = jest.fn<typeof mockAuthService.createUser>();
-
-    mockAuthService.createUser = mockCreateApplicant;
-    test('Should not store new applicant in Auth0', async () => {
+    test('Should throw error if Auth0 fails to create applicant', async () => {
       const mockResolved = {
         id: 1,
         name: 'Bob Boberson',
@@ -41,18 +40,16 @@ describe('Applicant Controller', () => {
         mockAuthService,
         ctx.prisma,
       );
-      await applicantController.createApplicant(
-        {
+      await expect(
+        applicantController.createApplicant({
           name: 'Bob Boberson',
-          email: 'bboerson@schmidtfutures.com',
+          email: 'bboberson@schmidtfutures.com',
           preferredContact: 'email',
           searchStatus: 'active',
           acceptedTerms: true,
           acceptedPrivacy: true,
-        },
-        { auth0: 'false' },
-      );
-      expect(mockCreateApplicant).toHaveBeenCalledTimes(0);
+        }),
+      ).rejects.toHaveProperty('problem.detail', 'User already exists');
     });
     test('Should throw error if Prisma fails to create applicant', async () => {
       mockCtx.prisma.applicant.create.mockRejectedValue(
