@@ -4,4 +4,6 @@
  */
 const itif = (condition: boolean) => (condition ? it : it.skip);
 
-export default itif;
+const getRandomString = () => Math.random().toString(36).slice(2);
+
+export { itif, getRandomString };

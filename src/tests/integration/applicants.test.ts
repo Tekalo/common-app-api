@@ -2,7 +2,7 @@ import request from 'supertest';
 import app from '@App/app.js';
 import AuthService from '@App/services/AuthService.js';
 import { ApplicantResponseBody } from '@App/resources/types/applicants.js';
-import itif from '@App/tests/util/helpers.js';
+import { itif, getRandomString } from '@App/tests/util/helpers.js';
 import prisma from '@App/resources/client.js';
 
 let testUserID: string;
@@ -22,7 +22,7 @@ describe('POST /applicants', () => {
       .post('/applicants')
       .send({
         name: 'Bob Boberson',
-        email: 'bboberson@gmail.com',
+        email: `bboberson${getRandomString()}@gmail.com`,
         preferredContact: 'email',
         searchStatus: 'active',
         acceptedTerms: true,
@@ -44,7 +44,7 @@ describe('POST /applicants', () => {
       .post('/applicants')
       .send({
         name: 'Bob Boberson',
-        email: 'bboberson@gmail.com',
+        email: `bboberson${getRandomString()}@gmail.com`,
         preferredContact: 'sms',
         searchStatus: 'active',
         acceptedTerms: true,
@@ -56,7 +56,7 @@ describe('POST /applicants', () => {
   it('should throw 400 error when creating a duplicate applicant', async () => {
     await request(app).post('/applicants').query('auth0=false').send({
       name: 'Bob Boberson',
-      email: 'bboberson@gmail.com',
+      email: 'bboberson123@gmail.com',
       preferredContact: 'sms',
       searchStatus: 'active',
       acceptedTerms: true,
@@ -67,7 +67,7 @@ describe('POST /applicants', () => {
       .query('auth0=false')
       .send({
         name: 'Bob Boberson',
-        email: 'bboberson@gmail.com',
+        email: 'bboberson123@gmail.com',
         preferredContact: 'sms',
         searchStatus: 'active',
         acceptedTerms: true,
@@ -81,7 +81,7 @@ describe('POST /applicants', () => {
       .post('/applicants')
       .send({
         name: 'Bob Boberson',
-        email: 'bboberson@gmail.com',
+        email: `bboberson${getRandomString()}@gmail.com`,
         preferredContact: 'text me please',
         searchStatus: 'active',
         acceptedTerms: true,
@@ -99,7 +99,7 @@ describe('POST /applicants', () => {
           .post('/applicants')
           .send({
             name: 'Bob Boberson',
-            email: 'bboberson@gmail.com',
+            email: `bboberson${getRandomString()}@gmail.com`,
             preferredContact: 'sms',
             searchStatus: 'active',
             acceptedTerms: true,
@@ -120,7 +120,7 @@ describe('POST /applicants', () => {
           .post('/applicants')
           .send({
             name: 'Bob Boberson',
-            email: 'bboberson@gmail.com',
+            email: 'bboberson333@gmail.com',
             preferredContact: 'sms',
             searchStatus: 'active',
             acceptedTerms: true,
@@ -133,7 +133,7 @@ describe('POST /applicants', () => {
           .post('/applicants')
           .send({
             name: 'Bob Boberson',
-            email: 'bboberson@gmail.com',
+            email: 'bboberson333@gmail.com',
             preferredContact: 'sms',
             searchStatus: 'active',
             acceptedTerms: true,
