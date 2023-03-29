@@ -1,6 +1,5 @@
 import ApplicantController from '@App/controllers/ApplicantController.js';
 import AuthService from '@App/services/AuthService.js';
-import { jest } from '@jest/globals';
 import {
   MockContext,
   Context,
@@ -20,13 +19,14 @@ export type PrismaCreateInputType = Prisma.ApplicantSelect;
 
 describe('Applicant Controller', () => {
   describe('Create Applicant', () => {
-    const mockAuthService = new AuthService();
-    const mockCreateApplicant = jest.fn<typeof mockAuthService.createUser>();
+    // test('Should throw if Auth0 fails to create user', async () => {
+    //   jest
+    //   .spyOn(AuthService.prototype, 'createUser')
+    //   .mockImplementation(() => Promise.reject(new Error('The user already exists.')));
 
-    mockAuthService.createUser = mockCreateApplicant;
-    // test('Should not store new applicant in Auth0', async () => {
     //   const mockResolved = {
     //     id: 1,
+    //     auth0Id: 'auth0|123456789',
     //     name: 'Bob Boberson',
     //     email: 'bboberson@gmail.com',
     //     preferredContact: 'sms',
@@ -38,10 +38,10 @@ describe('Applicant Controller', () => {
     //   };
     //   mockCtx.prisma.applicant.create.mockResolvedValue(mockResolved);
     //   const applicantController = new ApplicantController(
-    //     mockAuthService,
+    //     new AuthService(),
     //     ctx.prisma,
     //   );
-    //   await applicantController.createApplicant(
+    //   await expect(applicantController.createApplicant(
     //     {
     //       name: 'Bob Boberson',
     //       email: 'bboerson@schmidtfutures.com',
@@ -49,10 +49,11 @@ describe('Applicant Controller', () => {
     //       searchStatus: 'active',
     //       acceptedTerms: true,
     //       acceptedPrivacy: true,
-    //     },
-    //     { auth0: 'false' },
+    //     })
+    //   ).rejects.toHaveProperty(
+    //     'problem.detail',
+    //     'User already exists',
     //   );
-    //   expect(mockCreateApplicant).toHaveBeenCalledTimes(0);
     // });
     test('Should throw error if Prisma fails to create applicant', async () => {
       mockCtx.prisma.applicant.create.mockRejectedValue(
@@ -62,7 +63,7 @@ describe('Applicant Controller', () => {
         }),
       );
       const applicantController = new ApplicantController(
-        mockAuthService,
+        new AuthService(),
         ctx.prisma,
       );
       await expect(

@@ -5,9 +5,8 @@ import { itif, getRandomString } from '@App/tests/util/helpers.js';
 import prisma from '@App/resources/client.js';
 import applicantRoutes from '@App/routes/applicants.js';
 
-import { jest } from '@jest/globals';
-import { User } from 'auth0';
-import AuthService from '../../services/AuthService.js';
+import AuthService from '@App/services/AuthService.js';
+import DummyAuthService from '../fixtures/DummyAuthService.js';
 
 let testUserID: string;
 const authService = new AuthService();
@@ -20,14 +19,9 @@ afterEach(async () => {
   await prisma.applicant.deleteMany();
 });
 
-const mockUser = {} as User;
-jest
-  .spyOn(AuthService.prototype, 'createUser')
-  .mockImplementation(() => Promise.resolve(mockUser));
-
 describe('POST /applicants', () => {
   it('should create a new applicant only in database', async () => {
-    app.use('/applicants', applicantRoutes(new AuthService())); // override?
+    app.use('/applicants', applicantRoutes(new DummyAuthService()));
     const { body } = await request(app)
       .post('/applicants')
       .send({
