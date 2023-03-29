@@ -1,12 +1,10 @@
 import express, { Application } from 'express';
 import * as swaggerUi from 'swagger-ui-express';
 import spec from '@App/resources/spec.json' assert { type: 'json' };
-import {
-  applicantRoutes,
-  healthRoutes,
-  opportunitiesRoutes,
-} from '@App/routes/index.js';
+import { healthRoutes, opportunitiesRoutes } from '@App/routes/index.js';
+import applicantRoutes from '@App/routes/applicants.js';
 import errorHandler from './middleware/ErrorHandler.js';
+import AuthService from './services/AuthService.js';
 
 const router = express.Router();
 const app: Application = express();
@@ -18,7 +16,7 @@ app.use(express.json());
  */
 app.use(router);
 
-app.use('/applicants', applicantRoutes);
+app.use('/applicants', applicantRoutes(new AuthService()));
 app.use('/opportunities', opportunitiesRoutes);
 app.use('/health', healthRoutes);
 /**

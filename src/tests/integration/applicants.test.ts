@@ -1,9 +1,13 @@
 import request from 'supertest';
 import app from '@App/app.js';
-import AuthService from '@App/services/AuthService.js';
 import { ApplicantResponseBody } from '@App/resources/types/applicants.js';
 import { itif, getRandomString } from '@App/tests/util/helpers.js';
 import prisma from '@App/resources/client.js';
+import applicantRoutes from '@App/routes/applicants.js';
+
+import { jest } from '@jest/globals';
+import { User } from 'auth0';
+import AuthService from '../../services/AuthService.js';
 
 let testUserID: string;
 const authService = new AuthService();
@@ -16,8 +20,14 @@ afterEach(async () => {
   await prisma.applicant.deleteMany();
 });
 
+const mockUser = {} as User;
+jest
+  .spyOn(AuthService.prototype, 'createUser')
+  .mockImplementation(() => Promise.resolve(mockUser));
+
 describe('POST /applicants', () => {
   it('should create a new applicant only in database', async () => {
+    app.use('/applicants', applicantRoutes(new AuthService())); // override?
     const { body } = await request(app)
       .post('/applicants')
       .send({
@@ -28,7 +38,6 @@ describe('POST /applicants', () => {
         acceptedTerms: true,
         acceptedPrivacy: true,
       })
-      .query('auth0=false')
       .expect(200);
     expect(body).toHaveProperty('id');
   });
@@ -54,7 +63,7 @@ describe('POST /applicants', () => {
     expect(body).toHaveProperty('title', 'Validation Error');
   });
   it('should throw 400 error when creating a duplicate applicant', async () => {
-    await request(app).post('/applicants').query('auth0=false').send({
+    await request(app).post('/applicants').send({
       name: 'Bob Boberson',
       email: 'bboberson123@gmail.com',
       preferredContact: 'sms',
@@ -64,7 +73,6 @@ describe('POST /applicants', () => {
     });
     const { body } = await request(app)
       .post('/applicants')
-      .query('auth0=false')
       .send({
         name: 'Bob Boberson',
         email: 'bboberson123@gmail.com',

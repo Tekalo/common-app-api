@@ -24,36 +24,36 @@ describe('Applicant Controller', () => {
     const mockCreateApplicant = jest.fn<typeof mockAuthService.createUser>();
 
     mockAuthService.createUser = mockCreateApplicant;
-    test('Should not store new applicant in Auth0', async () => {
-      const mockResolved = {
-        id: 1,
-        name: 'Bob Boberson',
-        email: 'bboberson@gmail.com',
-        preferredContact: 'sms',
-        searchStatus: 'active',
-        phone: '123-456-7777',
-        pronoun: 'them/they',
-        acceptedTerms: new Date('2021-04-01'),
-        acceptedPrivacy: new Date('2021-04-01'),
-      };
-      mockCtx.prisma.applicant.create.mockResolvedValue(mockResolved);
-      const applicantController = new ApplicantController(
-        mockAuthService,
-        ctx.prisma,
-      );
-      await applicantController.createApplicant(
-        {
-          name: 'Bob Boberson',
-          email: 'bboerson@schmidtfutures.com',
-          preferredContact: 'email',
-          searchStatus: 'active',
-          acceptedTerms: true,
-          acceptedPrivacy: true,
-        },
-        { auth0: 'false' },
-      );
-      expect(mockCreateApplicant).toHaveBeenCalledTimes(0);
-    });
+    // test('Should not store new applicant in Auth0', async () => {
+    //   const mockResolved = {
+    //     id: 1,
+    //     name: 'Bob Boberson',
+    //     email: 'bboberson@gmail.com',
+    //     preferredContact: 'sms',
+    //     searchStatus: 'active',
+    //     phone: '123-456-7777',
+    //     pronoun: 'them/they',
+    //     acceptedTerms: new Date('2021-04-01'),
+    //     acceptedPrivacy: new Date('2021-04-01'),
+    //   };
+    //   mockCtx.prisma.applicant.create.mockResolvedValue(mockResolved);
+    //   const applicantController = new ApplicantController(
+    //     mockAuthService,
+    //     ctx.prisma,
+    //   );
+    //   await applicantController.createApplicant(
+    //     {
+    //       name: 'Bob Boberson',
+    //       email: 'bboerson@schmidtfutures.com',
+    //       preferredContact: 'email',
+    //       searchStatus: 'active',
+    //       acceptedTerms: true,
+    //       acceptedPrivacy: true,
+    //     },
+    //     { auth0: 'false' },
+    //   );
+    //   expect(mockCreateApplicant).toHaveBeenCalledTimes(0);
+    // });
     test('Should throw error if Prisma fails to create applicant', async () => {
       mockCtx.prisma.applicant.create.mockRejectedValue(
         new Prisma.PrismaClientKnownRequestError('ERROR', {
