@@ -41,9 +41,8 @@ async function doUpsert(
         console.error(rejected[rejected.length - 1].reason); // Logging only the last error to get us on the right path of debugging
         const problem: Problem = {
           title: 'Insert failure',
-          detail: `Failed to insert ${rejected.length} row${
-            rejected.length > 1 ? 's' : ''
-          }`,
+          detail: `Failed to insert ${rejected.length} row${rejected.length > 1 ? 's' : ''
+            }`,
           status: 500,
         };
         throw new CAPPError(problem);
