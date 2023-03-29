@@ -2,8 +2,8 @@ lockfileVersion: '6.0'
 
 dependencies:
   '@prisma/client':
-    specifier: 4.12.0-integration-views-fs.1
-    version: 4.12.0-integration-views-fs.1(prisma@4.12.0-integration-views-fs.1)
+    specifier: 4.12.0
+    version: 4.12.0(prisma@4.12.0)
   '@tsconfig/node18':
     specifier: 1.0.1
     version: 1.0.1
@@ -100,8 +100,8 @@ devDependencies:
     specifier: 2.8.7
     version: 2.8.7
   prisma:
-    specifier: 4.12.0-integration-views-fs.1
-    version: 4.12.0-integration-views-fs.1
+    specifier: 4.12.0
+    version: 4.12.0
   supertest:
     specifier: 6.3.3
     version: 6.3.3
@@ -796,8 +796,8 @@ packages:
       tslib: 2.5.0
     dev: true
 
-  /@prisma/client@4.12.0-integration-views-fs.1(prisma@4.12.0-integration-views-fs.1):
-    resolution: {integrity: sha512-XOE5xXYUOyynH2T3WDG+TxAfH+QdaCDPNDXflr1oAGW5ebljzWd46v9kYv8OVvizwV9nvAZaI2qaiSvxrFQZQg==}
+  /@prisma/client@4.12.0(prisma@4.12.0):
+    resolution: {integrity: sha512-j9/ighfWwux97J2dS15nqhl60tYoH8V0IuSsgZDb6bCFcQD3fXbXmxjYC8GHhIgOk3lB7Pq+8CwElz2MiDpsSg==}
     engines: {node: '>=14.17'}
     requiresBuild: true
     peerDependencies:
@@ -806,16 +806,16 @@ packages:
       prisma:
         optional: true
     dependencies:
-      '@prisma/engines-version': 4.12.0-44.78c592cc8424d6adc77df66f66b6937fd4e254a0
-      prisma: 4.12.0-integration-views-fs.1
+      '@prisma/engines-version': 4.12.0-67.659ef412370fa3b41cd7bf6e94587c1dfb7f67e7
+      prisma: 4.12.0
     dev: false
 
-  /@prisma/engines-version@4.12.0-44.78c592cc8424d6adc77df66f66b6937fd4e254a0:
-    resolution: {integrity: sha512-gOceU499P8KhcMuWH+n+euKYPNR5uz0TeNJdAd+Qn5uxbCJl2+akWE5XLsWuUgLOIiGU95NlpjK9dInCQmlW7g==}
+  /@prisma/engines-version@4.12.0-67.659ef412370fa3b41cd7bf6e94587c1dfb7f67e7:
+    resolution: {integrity: sha512-JIHNj5jlXb9mcaJwakM0vpgRYJIAurxTUqM0iX0tfEQA5XLZ9ONkIckkhuAKdAzocZ+80GYg7QSsfpjg7OxbOA==}
     dev: false
 
-  /@prisma/engines@4.12.0-integration-views-fs.1:
-    resolution: {integrity: sha512-myUi/ngBQdXjnLXRFQYUz+a2gLakcmhEeb2BvkBbJj3ksNI9YLdGK0CFGL/U8OWJGmVoUMZTpFkqHXJNpfxX3g==}
+  /@prisma/engines@4.12.0:
+    resolution: {integrity: sha512-0alKtnxhNB5hYU+ymESBlGI4b9XrGGSdv7Ud+8TE/fBNOEhIud0XQsAR+TrvUZgS4na5czubiMsODw0TUrgkIA==}
     requiresBuild: true
 
   /@sinclair/typebox@0.25.24:
@@ -4369,13 +4369,13 @@ packages:
       ansi-styles: 5.2.0
       react-is: 18.2.0
 
-  /prisma@4.12.0-integration-views-fs.1:
-    resolution: {integrity: sha512-egI2+Wesul60f7kFSZ+9oLaJLZr4+pOJ9/Wm5qVf4sXJ9qyvpmREgH34yQFdB2d3YSHNtATbf2Gj/Evmh1XBhw==}
+  /prisma@4.12.0:
+    resolution: {integrity: sha512-xqVper4mbwl32BWzLpdznHAYvYDWQQWK2tBfXjdUD397XaveRyAP7SkBZ6kFlIg8kKayF4hvuaVtYwXd9BodAg==}
     engines: {node: '>=14.17'}
     hasBin: true
     requiresBuild: true
     dependencies:
-      '@prisma/engines': 4.12.0-integration-views-fs.1
+      '@prisma/engines': 4.12.0
 
   /process@0.11.10:
     resolution: {integrity: sha512-cdGef/drWFoydD1JsMzuFf8100nZl+GT+yacc2bEced5f9Rjk4z+WtFUTBu9PhOi9j/jfmBPu0mMEY4wIdAF8A==}
