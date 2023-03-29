@@ -60,7 +60,12 @@
           "lastOrg": "Apfel",
           "lastRole": "Just some guy",
           "yoe": 20,
-          "currentLocation": "The Moon"
+          "currentLocation": "The Moon",
+          "interestGovt": true,
+          "openToRelocate": "not sure",
+          "previousImpactExperience": true,
+          "workAuthorization": "authorized",
+          "essayResponse": "Flubber was the greatest movie of all time"
         }
       ]
     },
@@ -77,7 +82,12 @@
           "lastRole": "Supreme Emperor",
           "yoe": 1,
           "currentLocation": "Mars",
-          "desiredSalary": "$3"
+          "desiredSalary": "$3",
+          "interestGovt": true,
+          "openToRelocate": "not sure",
+          "previousImpactExperience": false,
+          "workAuthorization": "authorized",
+          "essayResponse": "Good ideas are always crazy until they're not."
         }
       ]
     }
