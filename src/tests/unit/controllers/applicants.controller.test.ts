@@ -20,40 +20,7 @@ export type PrismaCreateInputType = Prisma.ApplicantSelect;
 describe('Applicant Controller', () => {
   describe('Create Applicant', () => {
     // test('Should throw if Auth0 fails to create user', async () => {
-    //   jest
-    //   .spyOn(AuthService.prototype, 'createUser')
-    //   .mockImplementation(() => Promise.reject(new Error('The user already exists.')));
-
-    //   const mockResolved = {
-    //     id: 1,
-    //     auth0Id: 'auth0|123456789',
-    //     name: 'Bob Boberson',
-    //     email: 'bboberson@gmail.com',
-    //     preferredContact: 'sms',
-    //     searchStatus: 'active',
-    //     phone: '123-456-7777',
-    //     pronoun: 'them/they',
-    //     acceptedTerms: new Date('2021-04-01'),
-    //     acceptedPrivacy: new Date('2021-04-01'),
-    //   };
-    //   mockCtx.prisma.applicant.create.mockResolvedValue(mockResolved);
-    //   const applicantController = new ApplicantController(
-    //     new AuthService(),
-    //     ctx.prisma,
-    //   );
-    //   await expect(applicantController.createApplicant(
-    //     {
-    //       name: 'Bob Boberson',
-    //       email: 'bboerson@schmidtfutures.com',
-    //       preferredContact: 'email',
-    //       searchStatus: 'active',
-    //       acceptedTerms: true,
-    //       acceptedPrivacy: true,
-    //     })
-    //   ).rejects.toHaveProperty(
-    //     'problem.detail',
-    //     'User already exists',
-    //   );
+    // TODO: Flesh me out
     // });
     test('Should throw error if Prisma fails to create applicant', async () => {
       mockCtx.prisma.applicant.create.mockRejectedValue(
