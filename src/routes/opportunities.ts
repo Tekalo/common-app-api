@@ -4,19 +4,23 @@ import { OpportunityBatchRequestBodySchema } from '@App/resources/schemas/opport
 import { OpportunityBatchRequestBody } from '@App/resources/types/opportunities.js';
 import express, { Request, Response } from 'express';
 
-const opportunityController = new OpportunityController(prisma);
-
 const router = express.Router();
 
-router.post('/batch', (req: Request, res: Response, next) => {
-  const appBody = req.body as OpportunityBatchRequestBody;
-  const validatedBody = OpportunityBatchRequestBodySchema.parse(appBody);
-  opportunityController
-    .createOpportunityBatch(validatedBody)
-    .then((result) => {
-      res.status(200).json(result);
-    })
-    .catch((err) => next(err));
-});
+const opportunitiesRoutes = () => {
+  const opportunityController = new OpportunityController(prisma);
 
-export default router;
+  router.post('/batch', (req: Request, res: Response, next) => {
+    const appBody = req.body as OpportunityBatchRequestBody;
+    const validatedBody = OpportunityBatchRequestBodySchema.parse(appBody);
+    opportunityController
+      .createOpportunityBatch(validatedBody)
+      .then((result) => {
+        res.status(200).json(result);
+      })
+      .catch((err) => next(err));
+  });
+
+  return router;
+};
+
+export default opportunitiesRoutes;

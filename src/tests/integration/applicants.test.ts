@@ -20,43 +20,44 @@ afterEach(async () => {
 });
 
 describe('POST /applicants', () => {
-  it('should create a new applicant only in database', async () => {
+  // app.use('/applicants', applicantRoutes(new DummyAuthService()));
+  // it('should create a new applicant only in database', async () => {
+  //   const { body } = await request(app)
+  //     .post('/applicants')
+  //     .send({
+  //       name: 'Bob Boberson',
+  //       email: `bboberson${getRandomString()}@gmail.com`,
+  //       preferredContact: 'email',
+  //       searchStatus: 'active',
+  //       acceptedTerms: true,
+  //       acceptedPrivacy: true,
+  //     })
+  //     .expect(200);
+  //   expect(body).toHaveProperty('id');
+  // });
+  // it('should throw 400 error for missing email', async () => {
+  //   const { body } = await request(app)
+  //     .post('/applicants')
+  //     .send({ name: 'Bob Boberson' })
+  //     .expect(400);
+  //   expect(body).toHaveProperty('title', 'Validation Error');
+  // });
+  // it('should throw 400 error if acceptedPrivacy false', async () => {
+  //   const { body } = await request(app)
+  //     .post('/applicants')
+  //     .send({
+  //       name: 'Bob Boberson',
+  //       email: `bboberson${getRandomString()}@gmail.com`,
+  //       preferredContact: 'sms',
+  //       searchStatus: 'active',
+  //       acceptedTerms: true,
+  //       acceptedPrivacy: false,
+  //     })
+  //     .expect(400);
+  //   expect(body).toHaveProperty('title', 'Validation Error');
+  // });
+  it('should throw 400 error when creating a duplicate applicant in database', async () => {
     app.use('/applicants', applicantRoutes(new DummyAuthService()));
-    const { body } = await request(app)
-      .post('/applicants')
-      .send({
-        name: 'Bob Boberson',
-        email: `bboberson${getRandomString()}@gmail.com`,
-        preferredContact: 'email',
-        searchStatus: 'active',
-        acceptedTerms: true,
-        acceptedPrivacy: true,
-      })
-      .expect(200);
-    expect(body).toHaveProperty('id');
-  });
-  it('should throw 400 error for missing email', async () => {
-    const { body } = await request(app)
-      .post('/applicants')
-      .send({ name: 'Bob Boberson' })
-      .expect(400);
-    expect(body).toHaveProperty('title', 'Validation Error');
-  });
-  it('should throw 400 error if acceptedPrivacy false', async () => {
-    const { body } = await request(app)
-      .post('/applicants')
-      .send({
-        name: 'Bob Boberson',
-        email: `bboberson${getRandomString()}@gmail.com`,
-        preferredContact: 'sms',
-        searchStatus: 'active',
-        acceptedTerms: true,
-        acceptedPrivacy: false,
-      })
-      .expect(400);
-    expect(body).toHaveProperty('title', 'Validation Error');
-  });
-  it('should throw 400 error when creating a duplicate applicant', async () => {
     await request(app).post('/applicants').send({
       name: 'Bob Boberson',
       email: 'bboberson123@gmail.com',

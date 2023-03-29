@@ -1,5 +1,6 @@
 import ApplicantController from '@App/controllers/ApplicantController.js';
 import AuthService from '@App/services/AuthService.js';
+import DummyAuthService from '@App/tests/fixtures/DummyAuthService.js';
 import {
   MockContext,
   Context,
@@ -30,7 +31,7 @@ describe('Applicant Controller', () => {
         }),
       );
       const applicantController = new ApplicantController(
-        new AuthService(),
+        new DummyAuthService(),
         ctx.prisma,
       );
       await expect(
