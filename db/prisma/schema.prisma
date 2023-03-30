@@ -46,7 +46,7 @@ model ApplicantSubmission {
     interestCauses         String[] // Interested In - Impact Causes   //enum
     interestGovt           Boolean // Interested In - Govt
 
-    otherCauses String? // Additional cause(s) they are interested in
+    otherCause  String? // Additional cause(s) they are interested in
     skills      String[] // Enum or FKs
     otherSkills String[] // Additional skill(s) they have
 

@@ -81,7 +81,7 @@ const ApplicantSubmissionRequestBodySchema = z.object({
   openToRemote: OpenToRemote,
   desiredSalary: z.string().nullable().optional(),
   interestCauses: z.array(z.string()), // order matters
-  otherCauses: z.string().nullable().optional(),
+  otherCause: z.string().nullable().optional(),
   workAuthorization: WorkAuthorization,
   interestGovt: z.boolean(),
   previousImpactExperience: z.boolean(),
