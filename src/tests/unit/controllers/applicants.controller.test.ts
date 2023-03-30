@@ -1,5 +1,4 @@
 import ApplicantController from '@App/controllers/ApplicantController.js';
-import AuthService from '@App/services/AuthService.js';
 import DummyAuthService from '@App/tests/fixtures/DummyAuthService.js';
 import {
   MockContext,

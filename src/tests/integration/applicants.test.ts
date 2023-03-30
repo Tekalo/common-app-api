@@ -1,14 +1,15 @@
 import request from 'supertest';
-import app from '@App/app.js';
+import getApp from '@App/app.js';
+import { Application } from 'express';
 import { ApplicantResponseBody } from '@App/resources/types/applicants.js';
 import { itif, getRandomString } from '@App/tests/util/helpers.js';
 import prisma from '@App/resources/client.js';
-import applicantRoutes from '@App/routes/applicants.js';
 
 import AuthService from '@App/services/AuthService.js';
 import DummyAuthService from '../fixtures/DummyAuthService.js';
 
 let testUserID: string;
+let app: Application;
 const authService = new AuthService();
 
 afterEach(async () => {
@@ -19,8 +20,11 @@ afterEach(async () => {
   await prisma.applicant.deleteMany();
 });
 
+beforeEach(() => {
+  app = getApp(new DummyAuthService());
+});
+
 describe('POST /applicants', () => {
-  app.use('/applicants', applicantRoutes(new DummyAuthService()));
   it('should create a new applicant only in database', async () => {
     const { body } = await request(app)
       .post('/applicants')
@@ -57,7 +61,6 @@ describe('POST /applicants', () => {
     expect(body).toHaveProperty('title', 'Validation Error');
   });
   it('should throw 400 error when creating a duplicate applicant in database', async () => {
-    app.use('/applicants', applicantRoutes(new DummyAuthService()));
     await request(app).post('/applicants').send({
       name: 'Bob Boberson',
       email: 'bboberson123@gmail.com',

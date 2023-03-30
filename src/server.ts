@@ -1,4 +1,7 @@
-import app from './app.js';
+import getApp from '@App/app.js';
+import AuthService from './services/AuthService.js';
+
+const app = getApp(new AuthService());
 
 const port = +app.get('port');
 

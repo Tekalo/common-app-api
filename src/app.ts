@@ -12,25 +12,27 @@ import AuthService from './services/AuthService.js';
 const router = express.Router();
 const app: Application = express();
 
-app.use(express.json());
+const getApp = (authService: AuthService): Application => {
+  app.use(express.json());
+  /**
+   * Sets the app to use router and auth
+   */
+  app.use(router);
 
-/**
- * Sets the app to use router and auth
- */
-app.use(router);
+  app.use('/applicants', applicantRoutes(authService));
+  app.use('/opportunities', opportunitiesRoutes());
+  app.use('/health', healthRoutes());
+  /**
+   * Swagger UI documentation endpoint
+   */
+  router.use('/docs', swaggerUi.serve);
+  router.get('/docs', swaggerUi.setup(spec));
 
-app.use('/applicants', applicantRoutes(new AuthService()));
-app.use('/opportunities', opportunitiesRoutes());
-app.use('/health', healthRoutes());
-/**
- * Swagger UI documentation endpoint
- */
-router.use('/docs', swaggerUi.serve);
-router.get('/docs', swaggerUi.setup(spec));
+  router.get('/health', healthRoutes());
 
-router.get('/health', healthRoutes());
+  app.use(errorHandler);
+  app.set('port', process.env.PORT);
+  return app;
+};
 
-app.use(errorHandler);
-app.set('port', process.env.PORT);
-
-export default app;
+export default getApp;
