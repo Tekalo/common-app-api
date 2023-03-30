@@ -8,8 +8,8 @@ dependencies:
     specifier: 1.0.1
     version: 1.0.1
   '@types/auth0':
-    specifier: 3.3.0
-    version: 3.3.0
+    specifier: 3.3.1
+    version: 3.3.1
   auth0:
     specifier: 3.3.0
     version: 3.3.0
@@ -990,8 +990,8 @@ packages:
     resolution: {integrity: sha512-sNFeK6X2ATlhlvzyH4kKYQlfHXE2f2/wxtB9ClvYXevWpmwkUT7VaSrjIN9E76Qebz8qP5JOJJ9jD3QoD/Z9TA==}
     dev: false
 
-  /@types/auth0@3.3.0:
-    resolution: {integrity: sha512-hNh10bdY6N0iJcRVRvdFgCdRrBjAjvWHoomu2gk9/SejoesURGNrIhaTCtyruvqD9Ru8NYyOGvZkdYx+tMIqgA==}
+  /@types/auth0@3.3.1:
+    resolution: {integrity: sha512-jUGOLIiZ8tE4ZYwVH+fSRfg4MT13nC1xbNq+wHhTQVRzEZhckRnAGEoGntRKvXs4MGxS8hQq846c/dLLTipg5g==}
     dev: false
 
   /@types/babel__core@7.20.0:
