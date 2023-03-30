@@ -29,7 +29,7 @@ const YOE = z.enum([
   '8',
   '9',
   '10',
-  '11+',
+  '>11',
 ]);
 const OpenToRelocate = z.enum(['yes', 'no', 'not sure']);
 const OpenToRemote = z.enum(['yes', 'no', 'both', 'not sure']);
