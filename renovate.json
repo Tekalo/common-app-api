@@ -2,7 +2,6 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:base"],
   "enabled": true,
-  "ignoreDeps": ["prisma"],
   "packageRules": [
     {
       "matchUpdateTypes": ["patch"],
@@ -24,6 +23,10 @@
       "matchUpdateTypes": ["minor", "patch"],
       "automerge": false,
       "matchPaths": [".github/workflows/*"]
+    },
+    {
+      "extends": "monorepo:prisma",
+      "automerge": false
     }
   ]
 }
