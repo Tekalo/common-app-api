@@ -13,18 +13,13 @@ let app: Application;
 const authService = new AuthService();
 
 afterEach(async () => {
-  if (testUserID) {
-    const auth0Service = authService.getClient();
-    await auth0Service.deleteUser({ id: testUserID });
-  }
   await prisma.applicant.deleteMany();
 });
 
-beforeEach(() => {
-  app = getApp(new DummyAuthService());
-});
-
 describe('POST /applicants', () => {
+  beforeAll(() => {
+    app = getApp(new DummyAuthService());
+  });
   it('should create a new applicant only in database', async () => {
     const { body } = await request(app)
       .post('/applicants')
@@ -96,59 +91,65 @@ describe('POST /applicants', () => {
       .expect(400);
     expect(body).toHaveProperty('title', 'Validation Error');
   });
+});
 
-  describe('Auth0 Integration', () => {
-    itif('CI' in process.env)(
-      'should create a new applicant and store in Auth0',
-      async () => {
-        const { body }: { body: ApplicantResponseBody } = await request(app)
-          .post('/applicants')
-          .send({
-            name: 'Bob Boberson',
-            email: `bboberson${getRandomString()}@gmail.com`,
-            preferredContact: 'sms',
-            searchStatus: 'active',
-            acceptedTerms: true,
-            acceptedPrivacy: true,
-          })
-          .expect(200);
-        if (body.auth0Id) {
-          testUserID = body.auth0Id;
-        }
-        expect(body).toHaveProperty('auth0Id');
-        expect(body).toHaveProperty('email');
-      },
-    );
-    itif('CI' in process.env)(
-      'should throw 409 if user already exists in Auth0',
-      async () => {
-        const { body }: { body: ApplicantResponseBody } = await request(app)
-          .post('/applicants')
-          .send({
-            name: 'Bob Boberson',
-            email: 'bboberson333@gmail.com',
-            preferredContact: 'sms',
-            searchStatus: 'active',
-            acceptedTerms: true,
-            acceptedPrivacy: true,
-          });
-        if (body.auth0Id) {
-          testUserID = body.auth0Id;
-        }
-        const { body: conflictBody } = await request(app)
-          .post('/applicants')
-          .send({
-            name: 'Bob Boberson',
-            email: 'bboberson333@gmail.com',
-            preferredContact: 'sms',
-            searchStatus: 'active',
-            acceptedTerms: true,
-            acceptedPrivacy: true,
-          })
-          .expect(409);
-        expect(conflictBody).toHaveProperty('title', 'User Creation Error');
-        expect(conflictBody).toHaveProperty('detail', 'User already exists');
-      },
-    );
+describe('POST /applicants - Auth0 Integration', () => {
+  afterEach(async () => {
+    if (testUserID) {
+      const auth0Service = authService.getClient();
+      await auth0Service.deleteUser({ id: testUserID });
+    }
   });
+  itif('CI' in process.env)(
+    'should create a new applicant and store in Auth0',
+    async () => {
+      const { body }: { body: ApplicantResponseBody } = await request(app)
+        .post('/applicants')
+        .send({
+          name: 'Bob Boberson',
+          email: `bboberson${getRandomString()}@gmail.com`,
+          preferredContact: 'sms',
+          searchStatus: 'active',
+          acceptedTerms: true,
+          acceptedPrivacy: true,
+        })
+        .expect(200);
+      if (body.auth0Id) {
+        testUserID = body.auth0Id;
+      }
+      expect(body).toHaveProperty('auth0Id');
+      expect(body).toHaveProperty('email');
+    },
+  );
+  itif('CI' in process.env)(
+    'should throw 409 if user already exists in Auth0',
+    async () => {
+      const { body }: { body: ApplicantResponseBody } = await request(app)
+        .post('/applicants')
+        .send({
+          name: 'Bob Boberson',
+          email: 'bboberson333@gmail.com',
+          preferredContact: 'sms',
+          searchStatus: 'active',
+          acceptedTerms: true,
+          acceptedPrivacy: true,
+        });
+      if (body.auth0Id) {
+        testUserID = body.auth0Id;
+      }
+      const { body: conflictBody } = await request(app)
+        .post('/applicants')
+        .send({
+          name: 'Bob Boberson',
+          email: 'bboberson333@gmail.com',
+          preferredContact: 'sms',
+          searchStatus: 'active',
+          acceptedTerms: true,
+          acceptedPrivacy: true,
+        })
+        .expect(409);
+      expect(conflictBody).toHaveProperty('title', 'User Creation Error');
+      expect(conflictBody).toHaveProperty('detail', 'User already exists');
+    },
+  );
 });
