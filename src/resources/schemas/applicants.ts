@@ -18,15 +18,4 @@ const ApplicantResponseBodySchema = z.object({
   email: z.string(),
 });
 
-const ApplicantQueryParamsSchema = z.object({
-  auth0: z
-    .string()
-    .optional()
-    .refine((val) => val === undefined || val === 'true' || val === 'false'),
-});
-
-export {
-  ApplicantRequestBodySchema,
-  ApplicantResponseBodySchema,
-  ApplicantQueryParamsSchema,
-};
+export { ApplicantRequestBodySchema, ApplicantResponseBodySchema };
