@@ -16,6 +16,7 @@ const prisma = new PrismaClient();
  * even though we are doing upserts (to be defensive against duplicate data)
  */
 type ApplicantType = Prisma.ApplicantCreateInput;
+type ApplicantSubmissionType = Prisma.ApplicantSubmissionCreateInput;
 type OpportunityBatchType = Prisma.OpportunityBatchCreateInput;
 
 /**
@@ -25,7 +26,11 @@ type OpportunityBatchType = Prisma.OpportunityBatchCreateInput;
  * @throws CAPPError if any issues in the upsert
  */
 async function doUpsert(
-  upsertPromises: Array<Promise<ApplicantType> | Promise<OpportunityBatchType>>,
+  upsertPromises: Array<
+    | Promise<ApplicantType>
+    | Promise<OpportunityBatchType>
+    | Promise<ApplicantSubmissionType>
+  >,
 ): Promise<Array<PromiseFulfilledResult<any>>> {
   let successful: Array<PromiseFulfilledResult<any>> = [];
   await Promise.allSettled(upsertPromises).then(
@@ -54,17 +59,33 @@ async function doUpsert(
 }
 
 async function seedApplicants() {
-  const { applicants }: { applicants: Array<ApplicantType> } = seedData;
-  const applicantsUpserts = applicants.map((app) =>
-    prisma.applicant.upsert({
+  const { applicants } = seedData;
+  const submissionUpserts: Array<Promise<any>> = [];
+  const applicantsUpserts: Array<Promise<any>> = [];
+  applicants.forEach((app) => {
+    const { name, email, preferredContact, searchStatus, application } = app;
+    const applicantUpsert = prisma.applicant.upsert({
       update: {},
       create: {
-        ...app,
+        name,
+        email,
+        preferredContact,
+        searchStatus,
       },
       where: { email: app.email },
-    }),
-  );
+    });
+    applicantsUpserts.push(applicantUpsert);
+    const submissionUpsert = prisma.applicantSubmission.upsert({
+      update: {},
+      create: {
+        ...application,
+      },
+      where: { applicantId: application.applicantId },
+    });
+    submissionUpserts.push(submissionUpsert);
+  });
   await doUpsert(applicantsUpserts);
+  await doUpsert(submissionUpserts);
 }
 
 async function seedOpportunitySubmissionBatches() {
