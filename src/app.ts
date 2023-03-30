@@ -9,16 +9,14 @@ import {
 import errorHandler from './middleware/ErrorHandler.js';
 import AuthService from './services/AuthService.js';
 
-const router = express.Router();
-const app: Application = express();
-
 const getApp = (authService: AuthService): Application => {
+  const app: Application = express();
+  const router = express.Router();
   app.use(express.json());
   /**
    * Sets the app to use router and auth
    */
   app.use(router);
-
   app.use('/applicants', applicantRoutes(authService));
   app.use('/opportunities', opportunitiesRoutes());
   app.use('/health', healthRoutes());
