@@ -59,16 +59,15 @@ class ApplicantController {
   }
 
   async createSubmission(
-    id: number,
+    applicantId: number,
     data: ApplicantSubmissionBody,
   ): Promise<ApplicantSubmission> {
     try {
-      const prismaData = {
-        ...data,
-        applicantId: id,
-      };
       return await this.prisma.applicantSubmission.create({
-        data: prismaData,
+        data: {
+          ...data,
+          applicantId,
+        },
       });
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {

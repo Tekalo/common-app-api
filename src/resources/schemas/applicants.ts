@@ -17,6 +17,20 @@ const Skills = z.enum([
   'product development',
   'project management',
 ]);
+const YOE = z.enum([
+  '<1',
+  '1',
+  '2',
+  '3',
+  '4',
+  '5',
+  '6',
+  '7',
+  '8',
+  '9',
+  '10',
+  '11+',
+]);
 const OpenToRelocate = z.enum(['yes', 'no', 'not sure']);
 const OpenToRemote = z.enum(['yes', 'no', 'both', 'not sure']);
 const WorkAuthorization = z.enum(['authorized', 'sponsorship']);
@@ -50,7 +64,7 @@ const ApplicantSubmissionRequestBodySchema = z.object({
   originTag: z.string(),
   lastRole: z.string(),
   lastOrg: z.string(),
-  yoe: z.string(),
+  yoe: YOE,
   skills: z.array(Skills),
   otherSkills: z.array(z.string()),
   linkedInUrl: z.string().nullable().optional(),
