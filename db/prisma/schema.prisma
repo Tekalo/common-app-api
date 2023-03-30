@@ -24,7 +24,7 @@ model ApplicantSubmission {
     id Int @id @default(autoincrement())
 
     applicant   Applicant @relation(fields: [applicantId], references: [id])
-    applicantId Int @unique
+    applicantId Int       @unique
 
     dateAdded DateTime @default(now())
     originTag String // Whose link did they click, data attribution  // enum

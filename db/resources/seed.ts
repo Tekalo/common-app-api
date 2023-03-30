@@ -63,20 +63,7 @@ async function seedApplicants() {
   const submissionUpserts: Array<Promise<any>> = [];
   const applicantsUpserts: Array<Promise<any>> = [];
   applicants.forEach((app) => {
-    const { name, email, preferredContact, searchStatus } = app;
-    app.applications.forEach((application) => {
-      const submissionUpsert = prisma.applicantSubmission.create({
-        data: {
-          ...application,
-          applicant: {
-            connect: {
-              email: app.email,
-            },
-          },
-        },
-      });
-      submissionUpserts.push(submissionUpsert);
-    });
+    const { name, email, preferredContact, searchStatus, application } = app;
     const applicantUpsert = prisma.applicant.upsert({
       update: {},
       create: {
@@ -88,6 +75,14 @@ async function seedApplicants() {
       where: { email: app.email },
     });
     applicantsUpserts.push(applicantUpsert);
+    const submissionUpsert = prisma.applicantSubmission.upsert({
+      update: {},
+      create: {
+        ...application,
+      },
+      where: { applicantId: application.applicantId },
+    });
+    submissionUpserts.push(submissionUpsert);
   });
   await doUpsert(applicantsUpserts);
   await doUpsert(submissionUpserts);

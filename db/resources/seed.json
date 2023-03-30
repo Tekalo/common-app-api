@@ -53,43 +53,41 @@
       "email": "rwilliams@robinwilliams.com",
       "preferredContact": "sms",
       "searchStatus": "future",
-      "applications": [
-        {
-          "originTag": "SF",
-          "resumeUrl": "www.myresume.com",
-          "lastOrg": "Apfel",
-          "lastRole": "Just some guy",
-          "yoe": 20,
-          "currentLocation": "The Moon",
-          "interestGovt": true,
-          "openToRelocate": "not sure",
-          "previousImpactExperience": true,
-          "workAuthorization": "authorized",
-          "essayResponse": "Flubber was the greatest movie of all time"
-        }
-      ]
+      "application": {
+        "applicantId": 1,
+        "originTag": "SF",
+        "resumeUrl": "www.myresume.com",
+        "lastOrg": "Apfel",
+        "lastRole": "Just some guy",
+        "yoe": 20,
+        "currentLocation": "The Moon",
+        "interestGovt": true,
+        "openToRelocate": "not sure",
+        "previousImpactExperience": true,
+        "workAuthorization": "authorized",
+        "essayResponse": "Flubber was the greatest movie of all time"
+      }
     },
     {
       "name": "X Æ A-12",
       "email": "X Æ A-12@tesla.com",
       "preferredContact": "whatsapp",
       "searchStatus": "future",
-      "applications": [
-        {
-          "originTag": "TSLA",
-          "resumeUrl": "www.mydadsresume.com",
-          "lastOrg": "Illuminati",
-          "lastRole": "Supreme Emperor",
-          "yoe": 1,
-          "currentLocation": "Mars",
-          "desiredSalary": "$3",
-          "interestGovt": true,
-          "openToRelocate": "not sure",
-          "previousImpactExperience": false,
-          "workAuthorization": "authorized",
-          "essayResponse": "Good ideas are always crazy until they're not."
-        }
-      ]
+      "application": {
+        "applicantId": 2,
+        "originTag": "TSLA",
+        "resumeUrl": "www.mydadsresume.com",
+        "lastOrg": "Illuminati",
+        "lastRole": "Supreme Emperor",
+        "yoe": 1,
+        "currentLocation": "Mars",
+        "desiredSalary": "$3",
+        "interestGovt": true,
+        "openToRelocate": "not sure",
+        "previousImpactExperience": false,
+        "workAuthorization": "authorized",
+        "essayResponse": "Good ideas are always crazy until they're not."
+      }
     }
   ]
 }

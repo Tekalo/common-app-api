@@ -19,7 +19,7 @@
     "preinstall": "npx only-allow pnpm",
     "test": "./scripts/container-test.sh",
     "prepare": "husky install",
-    "prisma:seed": "docker compose run --rm api pnpx prisma db push --force-reset && docker compose run --rm api pnpx prisma db seed",
+    "prisma:seed": "docker compose run --rm api pnpx prisma db seed",
     "prisma:update": "docker compose run --rm api pnpx prisma db push"
   },
   "repository": {
