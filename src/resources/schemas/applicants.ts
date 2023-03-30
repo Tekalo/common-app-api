@@ -45,13 +45,6 @@ const ApplicantResponseBodySchema = z.object({
   email: z.string(),
 });
 
-const ApplicantQueryParamsSchema = z.object({
-  auth0: z
-    .string()
-    .optional()
-    .refine((val) => val === undefined || val === 'true' || val === 'false'),
-});
-
 const ApplicantSubmissionRequestBodySchema = z.object({
   // TODO re name these they are way 2 long
   originTag: z.string(),
@@ -85,6 +78,5 @@ const ApplicantSubmissionRequestBodySchema = z.object({
 export {
   ApplicantRequestBodySchema,
   ApplicantResponseBodySchema,
-  ApplicantQueryParamsSchema,
   ApplicantSubmissionRequestBodySchema,
 };

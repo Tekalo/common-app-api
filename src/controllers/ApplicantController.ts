@@ -1,5 +1,4 @@
 import {
-  ApplicantQueryParams,
   ApplicantResponseBody,
   ApplicantRequestBody,
   ApplicantSubmissionBody,
@@ -20,15 +19,11 @@ class ApplicantController {
 
   async createApplicant(
     data: ApplicantRequestBody,
-    query: ApplicantQueryParams = { auth0: 'true' },
   ): Promise<ApplicantResponseBody> {
-    let auth0User;
-    if (query.auth0 !== 'false') {
-      auth0User = await this.auth0Service.createUser({
-        name: data.name,
-        email: data.email,
-      });
-    }
+    const auth0User = await this.auth0Service.createUser({
+      name: data.name,
+      email: data.email,
+    });
     let returnApplicant;
     try {
       const { acceptedPrivacy, acceptedTerms, ...prismaData } = data;
