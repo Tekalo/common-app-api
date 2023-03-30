@@ -33,6 +33,7 @@ async function doUpsert(
   >,
 ): Promise<Array<PromiseFulfilledResult<any>>> {
   let successful: Array<PromiseFulfilledResult<any>> = [];
+  console.log('about to do upsert');
   await Promise.allSettled(upsertPromises).then(
     (results: Array<PromiseSettledResult<any>>) => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -59,6 +60,7 @@ async function doUpsert(
 }
 
 async function seedApplicants() {
+  console.log('beginning the seed');
   const { applicants } = seedData;
   const submissionUpserts: Array<Promise<any>> = [];
   const applicantsUpserts: Array<Promise<any>> = [];
