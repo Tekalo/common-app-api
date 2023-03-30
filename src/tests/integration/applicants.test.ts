@@ -198,7 +198,7 @@ describe('POST /applicants/:id/submissions', () => {
     expect(body).toHaveProperty('title', 'Validation Error');
   });
 
-  it('should throw error if request body has invalid XXXX', async () => {
+  it('should throw error if request body has invalid openToRelocate value', async () => {
     const testSubmission = applicantSubmissionGenerator.getAPIRequestBody();
     const { body } = await request(dummyAuthApp)
       .post('/applicants/1/submissions')
