@@ -52,7 +52,7 @@ model ApplicantSubmission {
 
     currentLocation String
     openToRelocate  String // enum
-    openToRemote    String
+    openToRemote    String // enum
 
     desiredSalary            String?
     previousImpactExperience Boolean
