@@ -67,8 +67,8 @@ Run all tests: `pnpm run test`
 Run only tests in the integration folder: `pnpm run test --files=integration`
 Run only tests in the unit folder: `pnpm run test --files=unit`
 Run only tests in the unit/controllers folder: `pnpm run test --files=unit/controllers`
-Run only tests that start with 'grants' in the unit/controllers folder: `pnpm run test --files=unit/controllers/grants`
-Run only a specific test: `pnpm run test --files=unit/controllers/grants.controller.test.ts`
+Run only tests that start with 'grants' in the unit/controllers folder: `pnpm run test --files=unit/controllers/applicants`
+Run only a specific test: `pnpm run test --files=unit/controllers/applicants.controller.test.ts`
 
 ## Environment Variables
 
