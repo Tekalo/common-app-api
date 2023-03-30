@@ -15,10 +15,6 @@ let testUserID: string;
 const authService = new AuthService();
 
 afterEach(async () => {
-  if (testUserID) {
-    const auth0Service = authService.getClient();
-    await auth0Service.deleteUser({ id: testUserID });
-  }
   await prisma.applicantSubmission.deleteMany();
   await prisma.applicant.deleteMany();
 });
