@@ -23,6 +23,10 @@
       "matchUpdateTypes": ["minor", "patch"],
       "automerge": false,
       "matchPaths": [".github/workflows/*"]
+    },
+    {
+      "extends": "monorepo:prisma",
+      "automerge": false
     }
   ]
 }
