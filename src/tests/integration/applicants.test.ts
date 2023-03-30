@@ -1,6 +1,5 @@
 import request from 'supertest';
 import getApp from '@App/app.js';
-import { Application } from 'express';
 import { ApplicantResponseBody } from '@App/resources/types/applicants.js';
 import { itif, getRandomString } from '@App/tests/util/helpers.js';
 import prisma from '@App/resources/client.js';
@@ -89,8 +88,8 @@ describe('POST /applicants', () => {
         .expect(400);
       expect(body).toHaveProperty('title', 'Validation Error');
     });
-  })
-  
+  });
+
   describe('Auth0 Integration', () => {
     const app = getApp(authService);
     afterEach(async () => {
@@ -99,7 +98,7 @@ describe('POST /applicants', () => {
         await auth0Service.deleteUser({ id: testUserID });
       }
     });
-    test(
+    itif('CI' in process.env)(
       'should create a new applicant and store in Auth0',
       async () => {
         const { body }: { body: ApplicantResponseBody } = await request(app)
@@ -120,7 +119,7 @@ describe('POST /applicants', () => {
         expect(body).toHaveProperty('email');
       },
     );
-    test(
+    itif('CI' in process.env)(
       'should throw 409 if user already exists in Auth0',
       async () => {
         const { body }: { body: ApplicantResponseBody } = await request(app)

@@ -5,11 +5,10 @@ import AuthService from '@App/services/AuthService.js';
 import prisma from '@App/resources/client.js';
 import express, { Request, Response } from 'express';
 
-const router = express.Router();
-
 export type EmptyObject = Record<string, unknown>;
 
 const applicantRoutes = (authService: AuthService) => {
+  const router = express.Router();
   const applicantController = new ApplicantController(authService, prisma);
   router.post('/', (req: Request, res: Response, next) => {
     const appBody = req.body as ApplicantRequestBody;

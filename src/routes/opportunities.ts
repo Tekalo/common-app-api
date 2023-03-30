@@ -4,10 +4,9 @@ import { OpportunityBatchRequestBodySchema } from '@App/resources/schemas/opport
 import { OpportunityBatchRequestBody } from '@App/resources/types/opportunities.js';
 import express, { Request, Response } from 'express';
 
-const router = express.Router();
-
 const opportunitiesRoutes = () => {
   const opportunityController = new OpportunityController(prisma);
+  const router = express.Router();
 
   router.post('/batch', (req: Request, res: Response, next) => {
     const appBody = req.body as OpportunityBatchRequestBody;
