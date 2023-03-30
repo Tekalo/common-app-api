@@ -167,7 +167,6 @@ describe('POST /applicants/:id/submissions', () => {
   it('should create a new applicant submission', async () => {
     const testApplicantResp = await request(dummyAuthApp)
       .post('/applicants')
-      .query('auth0=false')
       .send({
         name: 'Bob Boberson',
         email: 'bboberson@gmail.com',
