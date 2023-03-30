@@ -1,116 +1,116 @@
 generator client {
-  provider = "prisma-client-js"
+    provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
 }
 
 model Applicant {
-  id                          Int                        @id @default(autoincrement())
-  auth0Id                     String?                    @unique
-  name                        String
-  email                       String                     @unique
-  phone                       String?
-  pronoun                     String?
-  preferredContact            String // enum
-  searchStatus                String // Actively looking or not, cadidate open to // enum
-  applications                ApplicantSubmission[]
-  acceptedTerms               DateTime                   @default(now())
-  acceptedPrivacy             DateTime                   @default(now())
+    id               Int                   @id @default(autoincrement())
+    auth0Id          String?               @unique
+    name             String
+    email            String                @unique
+    phone            String?
+    pronoun          String?
+    preferredContact String // enum
+    searchStatus     String // Actively looking or not, cadidate open to // enum
+    applications     ApplicantSubmission[]
+    acceptedTerms    DateTime              @default(now())
+    acceptedPrivacy  DateTime              @default(now())
 }
 
 model ApplicantSubmission {
-  id Int @id @default(autoincrement())
+    id Int @id @default(autoincrement())
 
-  applicant   Applicant @relation(fields: [applicantId], references: [id])
-  applicantId Int
+    applicant   Applicant @relation(fields: [applicantId], references: [id])
+    applicantId Int       @unique
 
-  dateAdded DateTime @default(now())
-  originTag String // Whose link did they click, data attribution  // enum
+    dateAdded DateTime @default(now())
+    originTag String // Whose link did they click, data attribution  // enum
 
-  resumeUrl      String
-  resumePassword String?
+    resumeUrl      String
+    resumePassword String?
 
-  lastOrg  String // Current or Most Recent Org
-  lastRole String // Current or Most Recent Role
-  yoe      Float // Years of Relevant Experience
+    lastOrg  String // Current or Most Recent Org
+    lastRole String // Current or Most Recent Role
+    yoe      Float // Years of Relevant Experience
 
-  linkedInUrl       String?
-  githubUrl         String?
-  portfolioUrl      String?
-  portfolioPassword String?
+    linkedInUrl       String?
+    githubUrl         String?
+    portfolioUrl      String?
+    portfolioPassword String?
 
-  interestOpportunities String[] // Interested In - Opportunities    //enum
-  interestRoles         String[] // Interested In - Roles            //enum
-  interestCauses        String[] // Interested In - Impact Causes   //enum
-  interestGovt          Boolean // Interested In - Govt
+    interestOpportunities String[] // Interested In - Opportunities    //enum
+    interestRoles         String[] // Interested In - Roles            //enum
+    interestCauses        String[] // Interested In - Impact Causes   //enum
+    interestGovt          Boolean // Interested In - Govt
 
-  otherCause  String? // Additional cause(s) they are interested in
-  skills      String[] // Enum or FKs
-  otherSkills String[] // Additional skill(s) they have
+    otherCause  String? // Additional cause(s) they are interested in
+    skills      String[] // Enum or FKs
+    otherSkills String[] // Additional skill(s) they have
 
-  currentLocation String
-  openToRelocate  String // enum
+    currentLocation String
+    openToRelocate  String // enum
 
-  desiredSalary            String?
-  previousImpactExperience Boolean
-  workAuthorization        String // enum
-  hoursPerWeek             String? // Only part-time
+    desiredSalary            String?
+    previousImpactExperience Boolean
+    workAuthorization        String // enum
+    hoursPerWeek             String? // Only part-time
 
-  essayResponse String
+    essayResponse String
 
-  referenceAttribution String? //How did you hear about us  //enum
+    referenceAttribution String? //How did you hear about us  //enum
 }
 
 model OpportunityBatch {
-  id                     Int                     @id @default(autoincrement())
-  opportunitySubmissions OpportunitySubmission[]
-  orgName                String
-  orgType                String // enum
-  orgSize                String // enum
-  impactAreas            String[] // enum
-  contactName            String
-  contactEmail           String
-  contactPhone           String
+    id                     Int                     @id @default(autoincrement())
+    opportunitySubmissions OpportunitySubmission[]
+    orgName                String
+    orgType                String // enum
+    orgSize                String // enum
+    impactAreas            String[] // enum
+    contactName            String
+    contactEmail           String
+    contactPhone           String
 }
 
 model ApplicantDeletionRequests {
-  id        Int         @id @default(autoincrement())
-  dateAdded DateTime    @default(now())
-  email     String
-  auth0Id   String?
+    id        Int      @id @default(autoincrement())
+    dateAdded DateTime @default(now())
+    email     String
+    auth0Id   String?
 }
 
 model OpportunitySubmission {
-  id Int @id @default(autoincrement())
+    id Int @id @default(autoincrement())
 
-  opportunityBatch   OpportunityBatch @relation(fields: [opportunityBatchId], references: [id])
-  opportunityBatchId Int
+    opportunityBatch   OpportunityBatch @relation(fields: [opportunityBatchId], references: [id])
+    opportunityBatchId Int
 
-  dateAdded      DateTime @default(now())
-  source         String // enum
-  employmentType String // enum
+    dateAdded      DateTime @default(now())
+    source         String // enum
+    employmentType String // enum
 
-  paid        Boolean // Whether this is paid or volunteer
-  fullTime    Boolean? // Whether this is full or part timeß
-  roleType    String?
-  salaryRange String?
+    paid        Boolean // Whether this is paid or volunteer
+    fullTime    Boolean? // Whether this is full or part timeß
+    roleType    String?
+    salaryRange String?
 
-  location        String
-  visaSponsorship String?
+    location        String
+    visaSponsorship String?
 
-  desiredStartDate   DateTime?
-  desiredEndDate     DateTime?
-  desiredYoe         String[] // enum
-  desiredSkills      String[] // enum, optional
-  desiredSkillsOther String[] // optional
-  desiredImpactExp   String?
+    desiredStartDate   DateTime?
+    desiredEndDate     DateTime?
+    desiredYoe         String[] // enum
+    desiredSkills      String[] // enum, optional
+    desiredSkillsOther String[] // optional
+    desiredImpactExp   String?
 
-  similarStaffed Boolean?
+    similarStaffed Boolean?
 
-  jdUrl String? // Link to job description
+    jdUrl String? // Link to job description
 
-  pitchEssay String // How would you pitch this role in 2 sentences?
+    pitchEssay String // How would you pitch this role in 2 sentences?
 }

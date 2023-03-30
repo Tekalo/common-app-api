@@ -79,7 +79,7 @@ jobs:
         run: pnpm check
 
       - name: Push Prisma schema
-        run: pnpx prisma db push
+        run: pnpx prisma db push --accept-data-loss
 
       - name: Run tests
         run: ./scripts/test-command.sh

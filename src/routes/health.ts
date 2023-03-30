@@ -1,9 +1,11 @@
 import express, { Request, Response } from 'express';
 
-const router = express.Router();
+const healthRoutes = () => {
+  const router = express.Router();
+  router.get('/', (req: Request, res: Response) => {
+    res.status(200).send({ healthy: true });
+  });
+  return router;
+};
 
-router.get('/', (req: Request, res: Response) => {
-  res.status(200).send({ healthy: true });
-});
-
-export default router;
+export default healthRoutes;

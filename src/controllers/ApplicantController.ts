@@ -1,5 +1,4 @@
 import {
-  ApplicantQueryParams,
   ApplicantResponseBody,
   ApplicantRequestBody,
 } from '@App/resources/types/applicants.js';
@@ -19,16 +18,11 @@ class ApplicantController {
 
   async createApplicant(
     data: ApplicantRequestBody,
-    query: ApplicantQueryParams = { auth0: 'true' },
   ): Promise<ApplicantResponseBody> {
-    let auth0User;
-    if (query.auth0 !== 'false') {
-      // Throws error if there is any issue with user creation
-      auth0User = await this.auth0Service.createUser({
-        name: data.name,
-        email: data.email,
-      });
-    }
+    const auth0User = await this.auth0Service.createUser({
+      name: data.name,
+      email: data.email,
+    });
     let returnApplicant;
     try {
       // TODO: If this fails, we want to remove user from Auth0.

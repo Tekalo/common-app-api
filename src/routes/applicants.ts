@@ -1,49 +1,36 @@
 import ApplicantController from '@App/controllers/ApplicantController.js';
-import {
-  ApplicantQueryParamsSchema,
-  ApplicantRequestBodySchema,
-} from '@App/resources/schemas/applicants.js';
-import {
-  ApplicantQueryParams,
-  ApplicantRequestBody,
-} from '@App/resources/types/applicants.js';
+import { ApplicantRequestBodySchema } from '@App/resources/schemas/applicants.js';
+import { ApplicantRequestBody } from '@App/resources/types/applicants.js';
 import AuthService from '@App/services/AuthService.js';
 import prisma from '@App/resources/client.js';
 import express, { Request, Response } from 'express';
 
-const applicantController = new ApplicantController(new AuthService(), prisma);
-
-const router = express.Router();
-
 export type EmptyObject = Record<string, unknown>;
 
-router.post(
-  '/',
-  (
-    req: Request<EmptyObject, EmptyObject, EmptyObject, ApplicantQueryParams>,
-    res: Response,
-    next,
-  ) => {
+const applicantRoutes = (authService: AuthService) => {
+  const router = express.Router();
+  const applicantController = new ApplicantController(authService, prisma);
+  router.post('/', (req: Request, res: Response, next) => {
     const appBody = req.body as ApplicantRequestBody;
     const validatedBody = ApplicantRequestBodySchema.parse(appBody);
-    const validateParams = ApplicantQueryParamsSchema.parse(req.query);
     applicantController
-      .createApplicant(validatedBody, validateParams)
+      .createApplicant(validatedBody)
       .then((result) => {
         res.status(200).json(result);
       })
       .catch((err) => next(err));
-  },
-);
+  });
 
-router.delete('/:id', (req: Request, res: Response, next) => {
-  const applicantID = +req.params.id;
-  applicantController
-    .deleteApplicant(applicantID)
-    .then((result) => {
-      res.status(200).json(result);
-    })
-    .catch((err) => next(err));
-});
+  router.delete('/:id', (req: Request, res: Response, next) => {
+    const applicantID = +req.params.id;
+    applicantController
+      .deleteApplicant(applicantID)
+      .then((result) => {
+        res.status(200).json(result);
+      })
+      .catch((err) => next(err));
+  });
+  return router;
+};
 
-export default router;
+export default applicantRoutes;
