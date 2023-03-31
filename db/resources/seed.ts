@@ -33,33 +33,32 @@ async function doUpsert(
   >,
 ): Promise<Array<PromiseFulfilledResult<any>>> {
   let successful: Array<PromiseFulfilledResult<any>> = [];
-  console.log('trying upsert batch');
+  console.log('Beginning upsert');
   await Promise.allSettled(upsertPromises).then(
     (results: Array<PromiseSettledResult<any>>) => {
-      try {
-        console.log(`number of results ${results.length}`);
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        successful = results.filter((result) => result.status === 'fulfilled');
-        console.log(`number of successful results ${successful.length}`);
-        const rejected: Array<PromiseRejectedResult> = results
-          .filter((result) => result.status === 'rejected')
-          .map((p) => p as PromiseRejectedResult);
-        console.log(`number of rejected results ${rejected.length}`);
-        if (rejected.length) {
-          // eslint-disable-next-line no-console
-          console.error(rejected[rejected.length - 1].reason); // Logging only the last error to get us on the right path of debugging
-          const problem: Problem = {
-            title: 'Insert failure',
-            detail: `Failed to insert ${rejected.length} row${
-              rejected.length > 1 ? 's' : ''
-            }`,
-            status: 500,
-          };
-          throw new CAPPError(problem);
-        }
-      } catch (e) {
-        console.log(e);
+      // eslint-disable-next-line no-console
+      console.log(`Number of results: ${results.length}`);
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      successful = results.filter((result) => result.status === 'fulfilled');
+      // eslint-disable-next-line no-console
+      console.log(`Number of successful results: ${successful.length}`);
+      const rejected: Array<PromiseRejectedResult> = results
+        .filter((result) => result.status === 'rejected')
+        .map((p) => p as PromiseRejectedResult);
+      // eslint-disable-next-line no-console
+      console.log(`Number of rejected results: ${rejected.length}`);
+      if (rejected.length) {
+        // eslint-disable-next-line no-console
+        console.error(rejected[rejected.length - 1].reason); // Logging only the last error to get us on the right path of debugging
+        const problem: Problem = {
+          title: 'Insert failure',
+          detail: `Failed to insert ${rejected.length} row${
+            rejected.length > 1 ? 's' : ''
+          }`,
+          status: 500,
+        };
+        throw new CAPPError(problem);
       }
     },
   );
@@ -119,9 +118,6 @@ async function seedOpportunitySubmissionBatches() {
 }
 
 async function main() {
-  console.log('trying to connect');
-  await prisma.$connect();
-  console.log('connected');
   await seedApplicants();
   await seedOpportunitySubmissionBatches();
 }
