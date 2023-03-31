@@ -119,6 +119,9 @@ async function seedOpportunitySubmissionBatches() {
 }
 
 async function main() {
+  console.log('trying to connect');
+  await prisma.$connect();
+  console.log('connected');
   await seedApplicants();
   await seedOpportunitySubmissionBatches();
 }
