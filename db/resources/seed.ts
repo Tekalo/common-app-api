@@ -33,6 +33,7 @@ async function doUpsert(
   >,
 ): Promise<Array<PromiseFulfilledResult<any>>> {
   let successful: Array<PromiseFulfilledResult<any>> = [];
+  // eslint-disable-next-line no-console
   console.log('Beginning upsert');
   await Promise.allSettled(upsertPromises).then(
     (results: Array<PromiseSettledResult<any>>) => {
