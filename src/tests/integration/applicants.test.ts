@@ -1,16 +1,21 @@
 import request from 'supertest';
 import getApp from '@App/app.js';
-import { ApplicantResponseBody } from '@App/resources/types/applicants.js';
+import {
+  ApplicantResponseBody,
+  ApplicantSubmissionBody,
+} from '@App/resources/types/applicants.js';
 import { itif, getRandomString } from '@App/tests/util/helpers.js';
 import prisma from '@App/resources/client.js';
-
 import AuthService from '@App/services/AuthService.js';
+
+import applicantSubmissionGenerator from '../fixtures/applicantSubmissionGenerator.js';
 import DummyAuthService from '../fixtures/DummyAuthService.js';
 
 let testUserID: string;
 const authService = new AuthService();
 
 afterEach(async () => {
+  await prisma.applicantSubmission.deleteMany();
   await prisma.applicant.deleteMany();
 });
 
@@ -178,24 +183,47 @@ describe('POST /applicants', () => {
   });
 });
 
-describe('DELETE /applicants', () => {
-  it('should delete an existing applicant from database and Auth0', async () => {
-    // TODO check for auth0?
-    // Create applicant to delete
-    const { body }: { body: ApplicantResponseBody } = await request(app)
+describe('POST /applicants/:id/submissions', () => {
+  const dummyAuthApp = getApp(new DummyAuthService());
+  it('should create a new applicant submission', async () => {
+    const testApplicantResp = await request(dummyAuthApp)
       .post('/applicants')
-      .query('auth0=false')
       .send({
         name: 'Bob Boberson',
         email: 'bboberson@gmail.com',
         preferredContact: 'sms',
         searchStatus: 'active',
+        acceptedTerms: true,
+        acceptedPrivacy: true,
       });
-    const { id } = body;
-    await request(app).delete(`/applicants/${id}`).expect(200);
+    const { id }: { id: number } = testApplicantResp.body;
+    const testBody: ApplicantSubmissionBody =
+      applicantSubmissionGenerator.getAPIRequestBody();
+    const { body } = await request(dummyAuthApp)
+      .post(`/applicants/${id}/submissions`)
+      .send(testBody)
+      .expect(200);
+    expect(body).toHaveProperty('id');
   });
-  it('should return 400 for non-existent applicant id', async () => {
-    const { body } = await request(app).delete('/applicants/99999').expect(400);
-    expect(body).toHaveProperty('title', 'Applicant Deletion Error');
+
+  it('should throw 400 error for missing years of experience (yoe)', async () => {
+    const testSubmission = applicantSubmissionGenerator.getAPIRequestBody();
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    delete testSubmission.yoe;
+    const { body } = await request(dummyAuthApp)
+      .post('/applicants/1/submissions')
+      .send({ ...testSubmission })
+      .expect(400);
+    expect(body).toHaveProperty('title', 'Validation Error');
+  });
+
+  it('should throw error if request body has invalid openToRelocate value', async () => {
+    const testSubmission = applicantSubmissionGenerator.getAPIRequestBody();
+    const { body } = await request(dummyAuthApp)
+      .post('/applicants/1/submissions')
+      .send({ ...testSubmission, openToRelocate: 'idk maybe' })
+      .expect(400);
+    expect(body).toHaveProperty('title', 'Validation Error');
   });
 });

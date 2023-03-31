@@ -1,9 +1,10 @@
 import {
   ApplicantResponseBody,
   ApplicantRequestBody,
+  ApplicantSubmissionBody,
 } from '@App/resources/types/applicants.js';
 import CAPPError from '@App/resources/shared/CAPPError.js';
-import { Prisma, PrismaClient } from '@prisma/client';
+import { ApplicantSubmission, Prisma, PrismaClient } from '@prisma/client';
 import AuthService from '@App/services/AuthService.js';
 
 class ApplicantController {
@@ -59,6 +60,42 @@ class ApplicantController {
     };
   }
 
+  async createSubmission(
+    applicantId: number,
+    data: ApplicantSubmissionBody,
+  ): Promise<ApplicantSubmission> {
+    try {
+      return await this.prisma.applicantSubmission.create({
+        data: {
+          ...data,
+          applicantId,
+        },
+      });
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        // TODO : Log e.message in Sentry
+        throw new CAPPError(
+          {
+            title: 'Applicant Submission Creation Error',
+            detail:
+              'Database error encountered when creating applicant submission',
+
+            status: 400,
+          },
+          e instanceof Error ? { cause: e } : undefined,
+        );
+      }
+      throw new CAPPError(
+        {
+          title: 'Applicant Submission Creation Error',
+          detail: 'Unknown error in creating applicant submission',
+          status: 500,
+        },
+        e instanceof Error ? { cause: e } : undefined,
+      );
+    }
+  }
+
   // our applicant ID
   async deleteApplicant(id: number) {
     try {
@@ -77,19 +114,16 @@ class ApplicantController {
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         // TODO : Log e.message in Sentry
-        throw new CAPPError(
-          {
-            title: 'Applicant Deletion Error',
-            detail: 'Database error encountered when deleting applicant',
-            status: 400,
-          },
-          e instanceof Error ? { cause: e } : undefined,
-        );
+        throw new CAPPError({
+          title: 'Applicant Deletion Error',
+          detail: 'Database error encountered when deleting applicant',
+        });
       }
       throw new CAPPError(
         {
           title: 'Applicant Deletion Error',
           detail: 'Unknown error when deleting applicant',
+
           status: 500,
         },
         e instanceof Error ? { cause: e } : undefined,

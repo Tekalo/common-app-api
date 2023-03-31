@@ -56,6 +56,20 @@ pnpm container-install -- pino # same as: pnpm install pino
 pnpm container-install -- --save-dev pino-pretty # same as: pnpm install --save-dev pino-pretty
 ```
 
+### Testing
+
+We use `Jest` and `Supertest` as our testing frameworks. `Supertest` is used for
+our end-to-end testing, while `Jest` is used for unit testing.
+
+The test script allows you to specify an optional `--files` flag with `pnpm test` that argets specific tests. For example:
+
+Run all tests: `pnpm run test`
+Run only tests in the integration folder: `pnpm run test --files=integration`
+Run only tests in the unit folder: `pnpm run test --files=unit`
+Run only tests in the unit/controllers folder: `pnpm run test --files=unit/controllers`
+Run only tests that start with 'grants' in the unit/controllers folder: `pnpm run test --files=unit/controllers/applicants`
+Run only a specific test: `pnpm run test --files=unit/controllers/applicants.controller.test.ts`
+
 ## Environment Variables
 
 ### Local Development
