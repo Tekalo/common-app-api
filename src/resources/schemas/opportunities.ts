@@ -2,6 +2,15 @@ import { z } from 'zod';
 
 const OrgType = z.enum(['nonprofit', 'government']);
 const OrgSize = z.enum(['<50', '>50']);
+const EmploymentType = z.enum([
+  'fulltime job',
+  'contractor',
+  'consultant',
+  'advisor',
+  'internship',
+  'volunteer',
+  'other',
+]);
 
 const OpportunityBatchRequestBodySchema = z.object({
   organization: z.object({
@@ -18,11 +27,12 @@ const OpportunityBatchRequestBodySchema = z.object({
   submissions: z.array(
     z.object({
       fullTime: z.boolean(),
+      hoursPerWeek: z.string().nullable().optional(),
       location: z.string(),
       paid: z.boolean(),
       pitchEssay: z.string(),
       source: z.string(),
-      employmentType: z.string(),
+      employmentType: EmploymentType,
     }),
   ),
 });
