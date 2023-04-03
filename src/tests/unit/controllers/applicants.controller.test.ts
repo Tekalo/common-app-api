@@ -58,6 +58,7 @@ describe('Applicant Controller', () => {
         applicantController.createApplicant({
           name: 'Bob Boberson',
           email: 'bboberson@schmidtfutures.com',
+          pronoun: 'he/his',
           preferredContact: 'email',
           searchStatus: 'active',
           acceptedTerms: true,

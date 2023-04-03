@@ -75,8 +75,9 @@ async function seedApplicants() {
       name,
       email,
       preferredContact,
-      searchStatus,
       auth0Id,
+      pronoun,
+      searchStatus,
       application,
     } = app;
     const applicantUpsert = prisma.applicant.upsert({
@@ -85,6 +86,7 @@ async function seedApplicants() {
         name,
         auth0Id,
         email,
+        pronoun: pronoun || undefined,
         preferredContact,
         searchStatus,
       },

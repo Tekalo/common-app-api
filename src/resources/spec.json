@@ -149,6 +149,9 @@
           "email": {
             "type": "string"
           },
+          "pronoun": {
+            "type": "string"
+          },
           "preferredContact": {
             "type": "string"
           },

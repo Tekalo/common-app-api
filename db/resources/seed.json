@@ -53,6 +53,7 @@
       "auth0Id": "auth0|123456",
       "email": "rwilliams@robinwilliams.com",
       "preferredContact": "sms",
+      "pronoun": "he/his",
       "searchStatus": "future",
       "application": {
         "applicantId": 1,
