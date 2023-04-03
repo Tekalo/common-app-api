@@ -21,18 +21,18 @@ class ApplicantController {
     data: ApplicantRequestBody,
   ): Promise<ApplicantResponseBody> {
     let returnApplicant;
-    try {
-      const auth0User = await this.auth0Service.createUser({
-        name: data.name,
-        email: data.email,
+    const auth0User = await this.auth0Service.createUser({
+      name: data.name,
+      email: data.email,
+    });
+    if (!auth0User.user_id) {
+      throw new CAPPError({
+        title: 'Auth0 User Creation Error',
+        detail: 'Failed to create new user in Auth0',
+        status: 400,
       });
-      if (!auth0User.user_id) {
-        throw new CAPPError({
-          title: 'Auth0 User Creation Error',
-          detail: 'Failed to create new user in Auth0',
-          status: 400,
-        });
-      }
+    }
+    try {
       // TODO: If this fails, we want to remove user from Auth0.
       // We can't "rollback" Auth0 operation, but maybe we manually delete or try to delete here?
       const { acceptedPrivacy, acceptedTerms, ...prismaData } = data;

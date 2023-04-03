@@ -126,33 +126,6 @@ describe('POST /applicants', () => {
       },
     );
     itif('CI' in process.env)(
-      'should throw error if DB user creation succeeds but Auth0 user creation fails',
-      async () => {
-        // Make user in DB only
-        await request(app).post('/applicants').send({
-          name: 'Bob Boberson',
-          auth0Id: 'auth0|123456',
-          email: 'bboberson@gmail.com',
-          preferredContact: 'sms',
-          searchStatus: 'active',
-        });
-        // User DB Creation should fail (dupe) auth0 should succeed but we want to not complete the transaction
-        await request(app).post('/applicants').send({
-          name: 'Bob Boberson',
-          auth0Id: 'auth0|123456',
-          email: 'bboberson@gmail.com',
-          preferredContact: 'sms',
-          searchStatus: 'active',
-        });
-        // .expect(409);
-        // if (body.auth0Id) {
-        //   testUserID = body.auth0Id;
-        // }
-        // expect(body).toHaveProperty('auth0Id');
-        // expect(body).toHaveProperty('email');
-      },
-    );
-    itif('CI' in process.env)(
       'should throw 409 if user already exists in Auth0',
       async () => {
         const { body }: { body: ApplicantResponseBody } = await request(app)
