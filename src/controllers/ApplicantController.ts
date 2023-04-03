@@ -33,8 +33,8 @@ class ApplicantController {
       });
     }
     try {
-      // TODO: If this fails, we want to remove user from Auth0.
-      // We can't "rollback" Auth0 operation, but maybe we manually delete or try to delete here?
+      // If DB creation fails, we want to remove user from Auth0.
+      // TODO We can't "rollback" Auth0 operation, log in Sentry and trigger alarm/alert to manually delete?
       const { acceptedPrivacy, acceptedTerms, ...prismaData } = data;
       returnApplicant = await this.prisma.applicant.create({
         data: {
@@ -106,8 +106,9 @@ class ApplicantController {
   }
 
   async deleteApplicant(applicantId: number) {
+    let applicantToDelete;
     try {
-      const applicantToDelete = await this.prisma.applicant.findUniqueOrThrow({
+      applicantToDelete = await this.prisma.applicant.findUniqueOrThrow({
         where: { id: applicantId },
       });
       await this.prisma.$transaction([
@@ -125,7 +126,6 @@ class ApplicantController {
         this.prisma.applicant.delete({ where: { id: applicantId } }),
       ]);
       // Delete from Auth0
-      await this.auth0Service.deleteUser(applicantToDelete.auth0Id);
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         // TODO : Log e.message in Sentry
@@ -135,8 +135,6 @@ class ApplicantController {
           status: 400,
         });
       }
-      // TODO Catch an error that Auth0 would throw if the deletion failed!
-      // Or just log something like "make sure to check Auth0 for this user"
       throw new CAPPError(
         {
           title: 'Applicant Deletion Error',
@@ -146,6 +144,8 @@ class ApplicantController {
         e instanceof Error ? { cause: e } : undefined,
       );
     }
+    // Delete user from Auth0
+    await this.auth0Service.deleteUser(applicantToDelete.auth0Id);
   }
 }
 

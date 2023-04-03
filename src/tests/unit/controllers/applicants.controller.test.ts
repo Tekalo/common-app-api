@@ -1,4 +1,5 @@
 import ApplicantController from '@App/controllers/ApplicantController.js';
+import CAPPError from '@App/resources/shared/CAPPError.js';
 import DummyAuthService from '@App/tests/fixtures/DummyAuthService.js';
 import {
   MockContext,
@@ -116,7 +117,10 @@ describe('Applicant Controller', () => {
       mockCtx.prisma.$transaction.mockResolvedValue(true);
       const dummyAuthService = new DummyAuthService();
       dummyAuthService.deleteUser = () => {
-        throw new Error('Mock Auth0 Deletion Error');
+        throw new CAPPError({
+          detail: 'Mock Auth0 Deletion Error',
+          title: 'Mock Error',
+        });
       };
       const applicantController = new ApplicantController(
         dummyAuthService,
@@ -124,10 +128,7 @@ describe('Applicant Controller', () => {
       );
       await expect(
         applicantController.deleteApplicant(3),
-      ).rejects.toHaveProperty(
-        'problem.detail',
-        'Error when deleting applicant',
-      );
+      ).rejects.toHaveProperty('problem.detail', 'Mock Auth0 Deletion Error');
     });
   });
 });
