@@ -125,7 +125,6 @@ class ApplicantController {
         // Delete from applicant table
         this.prisma.applicant.delete({ where: { id: applicantId } }),
       ]);
-      // Delete from Auth0
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         // TODO : Log e.message in Sentry
