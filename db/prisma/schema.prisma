@@ -9,7 +9,7 @@ datasource db {
 
 model Applicant {
     id               Int                   @id @default(autoincrement())
-    auth0Id          String?               @unique
+    auth0Id          String                @unique
     name             String
     email            String                @unique
     phone            String?
@@ -78,10 +78,13 @@ model OpportunityBatch {
 }
 
 model ApplicantDeletionRequests {
-    id        Int      @id @default(autoincrement())
-    dateAdded DateTime @default(now())
-    email     String
-    auth0Id   String?
+    id              Int      @id @default(autoincrement())
+    applicantId     Int      @unique
+    dateAdded       DateTime @default(now())
+    email           String
+    auth0Id         String
+    acceptedTerms   DateTime
+    acceptedPrivacy DateTime
 }
 
 model OpportunitySubmission {

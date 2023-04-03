@@ -60,7 +60,7 @@ describe('Opportunity Controller', () => {
     );
     expect(response).toEqual(mockResolved);
   });
-  test('Should throw CAPP error when Prisma throws an invalid input error', async () => {
+  test('Should return error when Prisma throws an invalid input error', async () => {
     mockCtx.prisma.opportunityBatch.create.mockRejectedValue(
       new Prisma.PrismaClientKnownRequestError('ERROR', {
         code: '101',

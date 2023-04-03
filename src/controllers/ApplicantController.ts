@@ -20,18 +20,33 @@ class ApplicantController {
   async createApplicant(
     data: ApplicantRequestBody,
   ): Promise<ApplicantResponseBody> {
-    const auth0User = await this.auth0Service.createUser({
-      name: data.name,
-      email: data.email,
-    });
     let returnApplicant;
     try {
+      const auth0User = await this.auth0Service.createUser({
+        name: data.name,
+        email: data.email,
+      });
+      if (!auth0User.user_id) {
+        throw new CAPPError({
+          title: 'Auth0 User Creation Error',
+          detail: 'Failed to create new user in Auth0',
+          status: 400,
+        });
+      }
       // TODO: If this fails, we want to remove user from Auth0.
       // We can't "rollback" Auth0 operation, but maybe we manually delete or try to delete here?
       const { acceptedPrivacy, acceptedTerms, ...prismaData } = data;
       returnApplicant = await this.prisma.applicant.create({
-        data: prismaData,
+        data: {
+          ...prismaData,
+          auth0Id: auth0User.user_id,
+        },
       });
+      return {
+        id: returnApplicant.id,
+        auth0Id: auth0User.user_id || null,
+        email: returnApplicant.email,
+      };
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         // TODO : Log e.message in Sentry
@@ -53,11 +68,6 @@ class ApplicantController {
         e instanceof Error ? { cause: e } : undefined,
       );
     }
-    return {
-      id: returnApplicant.id,
-      auth0Id: auth0User?.user_id || null,
-      email: returnApplicant.email,
-    };
   }
 
   async createSubmission(
@@ -79,7 +89,6 @@ class ApplicantController {
             title: 'Applicant Submission Creation Error',
             detail:
               'Database error encountered when creating applicant submission',
-
             status: 400,
           },
           e instanceof Error ? { cause: e } : undefined,
@@ -96,20 +105,26 @@ class ApplicantController {
     }
   }
 
-  // our applicant ID
-  async deleteApplicant(id: number) {
+  async deleteApplicant(applicantId: number) {
     try {
-      // TODO:
       const applicantToDelete = await this.prisma.applicant.findUniqueOrThrow({
-        where: { id },
+        where: { id: applicantId },
       });
-      await this.prisma.applicantDeletionRequests.create({
-        data: {
-          email: applicantToDelete.email,
-          auth0Id: applicantToDelete.auth0Id || '',
-        },
-      });
-      await this.prisma.applicant.delete({ where: { id } });
+      await this.prisma.$transaction([
+        // Create deletion request
+        this.prisma.applicantDeletionRequests.create({
+          data: {
+            email: applicantToDelete.email,
+            applicantId: applicantToDelete.id,
+            auth0Id: applicantToDelete.auth0Id,
+            acceptedTerms: applicantToDelete.acceptedTerms,
+            acceptedPrivacy: applicantToDelete.acceptedPrivacy,
+          },
+        }),
+        // Delete from applicant table
+        this.prisma.applicant.delete({ where: { id: applicantId } }),
+      ]);
+      // Delete from Auth0
       await this.auth0Service.deleteUser(applicantToDelete.auth0Id);
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
@@ -117,13 +132,15 @@ class ApplicantController {
         throw new CAPPError({
           title: 'Applicant Deletion Error',
           detail: 'Database error encountered when deleting applicant',
+          status: 400,
         });
       }
+      // TODO Catch an error that Auth0 would throw if the deletion failed!
+      // Or just log something like "make sure to check Auth0 for this user"
       throw new CAPPError(
         {
           title: 'Applicant Deletion Error',
-          detail: 'Unknown error when deleting applicant',
-
+          detail: 'Error when deleting applicant',
           status: 500,
         },
         e instanceof Error ? { cause: e } : undefined,

@@ -33,6 +33,7 @@ async function doUpsert(
   >,
 ): Promise<Array<PromiseFulfilledResult<any>>> {
   let successful: Array<PromiseFulfilledResult<any>> = [];
+  // eslint-disable-next-line no-console
   console.log('Beginning upsert');
   await Promise.allSettled(upsertPromises).then(
     (results: Array<PromiseSettledResult<any>>) => {
@@ -70,11 +71,19 @@ async function seedApplicants() {
   const submissionUpserts: Array<Promise<any>> = [];
   const applicantsUpserts: Array<Promise<any>> = [];
   applicants.forEach((app) => {
-    const { name, email, preferredContact, searchStatus, application } = app;
+    const {
+      name,
+      email,
+      preferredContact,
+      searchStatus,
+      auth0Id,
+      application,
+    } = app;
     const applicantUpsert = prisma.applicant.upsert({
       update: {},
       create: {
         name,
+        auth0Id,
         email,
         preferredContact,
         searchStatus,
