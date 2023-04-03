@@ -47,6 +47,7 @@ const EmploymentType = z.enum(['full', 'part']);
 const ApplicantRequestBodySchema = z.object({
   name: z.string(),
   email: z.string().email(),
+  pronoun: z.string().optional(),
   preferredContact: PreferredContact,
   searchStatus: SearchStatus,
   acceptedTerms: z.literal(true),
