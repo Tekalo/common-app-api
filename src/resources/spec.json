@@ -85,9 +85,17 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "additionalProperties": false,
-                  "properties": {}
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
                 }
               }
             }
