@@ -2,9 +2,15 @@ import {
   ApplicantResponseBody,
   ApplicantRequestBody,
   ApplicantSubmissionBody,
+  ApplicantDraftSubmissionBody,
 } from '@App/resources/types/applicants.js';
 import CAPPError from '@App/resources/shared/CAPPError.js';
-import { ApplicantSubmission, Prisma, PrismaClient } from '@prisma/client';
+import {
+  ApplicantDraftSubmission,
+  ApplicantSubmission,
+  Prisma,
+  PrismaClient,
+} from '@prisma/client';
 import AuthService from '@App/services/AuthService.js';
 
 class ApplicantController {
@@ -86,6 +92,45 @@ class ApplicantController {
         {
           title: 'Applicant Submission Creation Error',
           detail: 'Unknown error in creating applicant submission',
+          status: 500,
+        },
+        e instanceof Error ? { cause: e } : undefined,
+      );
+    }
+  }
+
+  async createOrUpdateDraftSubmission(
+    applicantId: number,
+    data: ApplicantDraftSubmissionBody,
+  ): Promise<ApplicantDraftSubmission> {
+    try {
+      return await this.prisma.applicantDraftSubmission.upsert({
+        create: {
+          ...data,
+          applicantId,
+        },
+        update: {
+          ...data,
+        },
+        where: { applicantId },
+      });
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        // TODO : Log e.message in Sentry
+        throw new CAPPError(
+          {
+            title: 'Applicant Draft Submission Creation Error',
+            detail:
+              'Database error encountered when creating applicant draft submission',
+            status: 400,
+          },
+          e instanceof Error ? { cause: e } : undefined,
+        );
+      }
+      throw new CAPPError(
+        {
+          title: 'Applicant Draft Submission Creation Error',
+          detail: 'Unknown error in creating applicant draft submission',
           status: 500,
         },
         e instanceof Error ? { cause: e } : undefined,
