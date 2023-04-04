@@ -49,12 +49,14 @@
   ],
   "applicants": [
     {
+      "id": 1,
       "name": "Robin Williams",
       "email": "rwilliams@robinwilliams.com",
       "preferredContact": "sms",
       "pronoun": "he/his",
       "searchStatus": "future",
       "application": {
+        "id": 1,
         "applicantId": 1,
         "originTag": "SF",
         "resumeUrl": "www.myresume.com",
@@ -71,11 +73,13 @@
       }
     },
     {
+      "id": 2,
       "name": "X Æ A-12",
       "email": "X Æ A-12@tesla.com",
       "preferredContact": "whatsapp",
       "searchStatus": "future",
       "application": {
+        "id": 2,
         "applicantId": 2,
         "originTag": "TSLA",
         "resumeUrl": "www.mydadsresume.com",
