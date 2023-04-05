@@ -48,6 +48,7 @@ module "app" {
   cert_arn             = module.envconfig.cert_arn
   image                = var.image
   cli_image            = var.cli_image
+  auth0_domain         = var.auth0_domain
 
   rotation_vpc_security_group_id = module.envconfig.database_ingress_security_group_id
   rotation_vpc_subnet_ids        = module.envconfig.private_subnet_ids

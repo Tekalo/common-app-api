@@ -75,6 +75,7 @@ async function seedApplicants() {
       name,
       email,
       preferredContact,
+      auth0Id,
       pronoun,
       searchStatus,
       application,
@@ -83,6 +84,7 @@ async function seedApplicants() {
       update: {},
       create: {
         name,
+        auth0Id,
         email,
         pronoun: pronoun || undefined,
         preferredContact,
