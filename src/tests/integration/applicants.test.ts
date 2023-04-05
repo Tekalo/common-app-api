@@ -1,6 +1,7 @@
 import request from 'supertest';
 import getApp from '@App/app.js';
 import {
+  ApplicantDraftSubmissionBody,
   ApplicantResponseBody,
   ApplicantSubmissionBody,
 } from '@App/resources/types/applicants.js';
@@ -15,6 +16,7 @@ let testUserID: string;
 const authService = new AuthService();
 
 afterEach(async () => {
+  await prisma.applicantDraftSubmission.deleteMany();
   await prisma.applicantSubmission.deleteMany();
   await prisma.applicant.deleteMany();
 });
@@ -201,5 +203,60 @@ describe('POST /applicants/:id/submissions', () => {
       .send({ ...testSubmission, openToRelocate: 'idk maybe' })
       .expect(400);
     expect(body).toHaveProperty('title', 'Validation Error');
+  });
+});
+
+describe('POST /applicants/:id/submissions/draft', () => {
+  const dummyAuthApp = getApp(new DummyAuthService());
+  it('should create a new draft applicant submission', async () => {
+    const testApplicantResp = await request(dummyAuthApp)
+      .post('/applicants')
+      .send({
+        name: 'Bob Boberson',
+        email: 'bboberson@gmail.com',
+        preferredContact: 'sms',
+        searchStatus: 'active',
+        acceptedTerms: true,
+        acceptedPrivacy: true,
+      });
+    const { id }: { id: number } = testApplicantResp.body;
+    const testBody: ApplicantDraftSubmissionBody = {
+      resumeUrl: 'https://bobcanbuild.com',
+    };
+    const { body } = await request(dummyAuthApp)
+      .post(`/applicants/${id}/submissions/draft`)
+      .send(testBody)
+      .expect(200);
+    expect(body).toHaveProperty('id');
+  });
+
+  it('should update an existing draft applicant submission', async () => {
+    const testApplicantResp = await request(dummyAuthApp)
+      .post('/applicants')
+      .send({
+        name: 'Bob Boberson',
+        email: 'bboberson@gmail.com',
+        preferredContact: 'sms',
+        searchStatus: 'active',
+        acceptedTerms: true,
+        acceptedPrivacy: true,
+      });
+    const { id }: { id: number } = testApplicantResp.body;
+    const draftBody: ApplicantDraftSubmissionBody = {
+      resumeUrl: 'https://bobcanbuild.com',
+    };
+    const draftUpdateBody: ApplicantDraftSubmissionBody = {
+      resumeUrl: 'https://bobcanREALLYbuild.org',
+    };
+    const { body: draftResp } = await request(dummyAuthApp)
+      .post(`/applicants/${id}/submissions/draft`)
+      .send(draftBody)
+      .expect(200);
+    expect(draftResp).toHaveProperty('resumeUrl', 'https://bobcanbuild.com');
+    const { body } = await request(dummyAuthApp)
+      .post(`/applicants/${id}/submissions/draft`)
+      .send(draftUpdateBody)
+      .expect(200);
+    expect(body).toHaveProperty('resumeUrl', 'https://bobcanREALLYbuild.org');
   });
 });

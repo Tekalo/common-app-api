@@ -90,8 +90,12 @@ const ApplicantSubmissionRequestBodySchema = z.object({
   referenceAttribution: ReferenceAttribution.nullable().optional(),
 });
 
+const ApplicantDraftSubmissionRequestBodySchema =
+  ApplicantSubmissionRequestBodySchema.partial();
+
 export {
   ApplicantRequestBodySchema,
   ApplicantResponseBodySchema,
   ApplicantSubmissionRequestBodySchema,
+  ApplicantDraftSubmissionRequestBodySchema,
 };
