@@ -196,9 +196,6 @@
             "items": {
               "type": "object",
               "properties": {
-                "fullTime": {
-                  "type": "boolean"
-                },
                 "location": {
                   "type": "string"
                 },
