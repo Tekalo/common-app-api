@@ -25,12 +25,11 @@ describe('POST /opportunities', () => {
     },
     submissions: [
       {
-        fullTime: true,
         location: 'Burgerville',
         paid: true,
         pitchEssay: 'Come flip burgers for Bob',
         source: 'Commercial',
-        employmentType: 'nonprofit',
+        employmentType: 'fulltime job',
       },
     ],
   };
@@ -44,12 +43,11 @@ describe('POST /opportunities', () => {
   it('should create multiple new batches of opportunities', async () => {
     const secondOppSubmissionPayload = { ...oppBatchPayload };
     secondOppSubmissionPayload.submissions.push({
-      fullTime: false,
       location: 'Fryville',
       paid: true,
       pitchEssay: 'Come make french fries for Bob',
       source: 'Advertisement',
-      employmentType: 'nonprofit',
+      employmentType: 'fulltime job',
     });
     const { body } = await request(app)
       .post('/opportunities/batch')

@@ -10,20 +10,18 @@
       "impactAreas": ["Clean Energy"],
       "submissions": [
         {
-          "fullTime": true,
           "location": "Burgerville",
           "paid": true,
           "pitchEssay": "Come flip burgers for Bob",
           "source": "Commercial",
-          "employmentType": "fulltime"
+          "employmentType": "contractor"
         },
         {
-          "fullTime": true,
           "location": "Remote",
           "paid": true,
           "pitchEssay": "Come fry somem fries for Bob",
           "source": "",
-          "employmentType": "parttime"
+          "employmentType": "full-time job"
         }
       ]
     },
@@ -37,12 +35,11 @@
       "impactAreas": ["Internet Freedom"],
       "submissions": [
         {
-          "fullTime": true,
           "location": "San Francisco",
           "paid": true,
           "pitchEssay": "Support and collectively lead the open source Mozilla project",
           "source": "All Tech is Human",
-          "employmentType": "fulltime"
+          "employmentType": "other"
         }
       ]
     }
