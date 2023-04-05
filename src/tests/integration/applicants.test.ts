@@ -19,6 +19,7 @@ afterEach(async () => {
   await prisma.applicantDraftSubmission.deleteMany();
   await prisma.applicantSubmission.deleteMany();
   await prisma.applicant.deleteMany();
+  await prisma.applicantDeletionRequests.deleteMany();
 });
 
 describe('POST /applicants', () => {
@@ -147,6 +148,7 @@ describe('POST /applicants', () => {
           .post('/applicants')
           .send({
             name: 'Bob Boberson',
+            auth0Id: 'auth0|123456',
             email: 'bboberson333@gmail.com',
             preferredContact: 'sms',
             searchStatus: 'active',
@@ -168,8 +170,9 @@ describe('POST /applicants/:id/submissions', () => {
       .post('/applicants')
       .send({
         name: 'Bob Boberson',
-        email: 'bboberson@gmail.com',
-        preferredContact: 'sms',
+        auth0Id: 'auth0|123456',
+        email: `bboberson${getRandomString()}@gmail.com`,
+        preferredContact: 'email',
         searchStatus: 'active',
         acceptedTerms: true,
         acceptedPrivacy: true,
@@ -203,6 +206,66 @@ describe('POST /applicants/:id/submissions', () => {
       .send({ ...testSubmission, openToRelocate: 'idk maybe' })
       .expect(400);
     expect(body).toHaveProperty('title', 'Validation Error');
+  });
+});
+
+describe('DELETE /applicants', () => {
+  describe('Auth0 Integration', () => {
+    afterEach(async () => {
+      if (testUserID) {
+        const auth0Service = authService.getClient();
+        await auth0Service.deleteUser({ id: testUserID });
+      }
+    });
+    const app = getApp(authService);
+    itif('CI' in process.env)(
+      'should delete an existing applicant from Auth0 and from database',
+      async () => {
+        const { body }: { body: ApplicantResponseBody } = await request(app)
+          .post('/applicants')
+          .send({
+            name: 'Bob Boberson',
+            email: `bboberson${getRandomString()}@gmail.com`,
+            preferredContact: 'email',
+            searchStatus: 'active',
+            acceptedTerms: true,
+            acceptedPrivacy: true,
+          });
+        if (body.auth0Id) {
+          testUserID = body.auth0Id;
+        }
+        const { id } = body;
+        await request(app).delete(`/applicants/${id}`).expect(200);
+      },
+    );
+  });
+  describe('No Auth0 Integration', () => {
+    const appNoAuth = getApp(new DummyAuthService());
+
+    it('should return 400 for non-existent applicant id', async () => {
+      const { body } = await request(appNoAuth)
+        .delete('/applicants/99999')
+        .expect(400);
+      expect(body).toHaveProperty('title', 'Applicant Deletion Error');
+    });
+
+    it('should delete applicant from database', async () => {
+      const { body }: { body: ApplicantResponseBody } = await request(appNoAuth)
+        .post('/applicants')
+        .send({
+          name: 'Bob Boberson',
+          email: `bboberson${getRandomString()}@gmail.com`,
+          preferredContact: 'email',
+          searchStatus: 'active',
+          acceptedTerms: true,
+          acceptedPrivacy: true,
+        });
+      if (body.auth0Id) {
+        testUserID = body.auth0Id;
+      }
+      const { id } = body;
+      await request(appNoAuth).delete(`/applicants/${id}`).expect(200);
+    });
   });
 });
 

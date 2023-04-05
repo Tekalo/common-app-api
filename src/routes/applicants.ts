@@ -42,6 +42,16 @@ const applicantRoutes = (authService: AuthService) => {
       .catch((err) => next(err));
   });
 
+  router.delete('/:id', (req: Request, res: Response, next) => {
+    const applicantID = +req.params.id;
+    applicantController
+      .deleteApplicant(applicantID)
+      .then((result) => {
+        res.status(200).json(result);
+      })
+      .catch((err) => next(err));
+  });
+
   router.post('/:id/submissions/draft', (req: Request, res: Response, next) => {
     const appBody = req.body as ApplicantDraftSubmissionBody;
     const applicantID = +req.params.id;
