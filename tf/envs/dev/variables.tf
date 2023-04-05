@@ -30,3 +30,13 @@ output "cli_image" {
   description = "Image with which we are running ad-hoc CLI commands on"
   value       = module.app.cli_image
 }
+
+variable "auth0_domain" {
+  description = "Auth0 subdomain for CNAME record"
+  type        = string
+}
+
+output "auth0_domain" {
+  description = "Auth0 subdomain for CNAME record"
+  value       = module.app.auth0_domain
+}
