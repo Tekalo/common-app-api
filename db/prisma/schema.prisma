@@ -111,15 +111,16 @@ model ApplicantDraftSubmission {
 }
 
 model OpportunityBatch {
-    id                     Int                     @id @default(autoincrement())
-    opportunitySubmissions OpportunitySubmission[]
-    orgName                String
-    orgType                String // enum
-    orgSize                String // enum
-    impactAreas            String[] // enum
-    contactName            String
-    contactEmail           String
-    contactPhone           String
+    id                       Int                     @id @default(autoincrement())
+    opportunitySubmissions   OpportunitySubmission[]
+    orgName                  String
+    orgType                  String // enum
+    orgSize                  String // enum
+    impactAreas              String[] // enum
+    contactName              String
+    contactEmail             String
+    contactPhone             String
+    equalOpportunityEmployer Boolean
 }
 
 model OpportunitySubmission {
@@ -132,20 +133,23 @@ model OpportunitySubmission {
     source         String // enum
     employmentType String // enum
 
-    paid        Boolean // Whether this is paid or volunteer
-    fullTime    Boolean? // Whether this is full or part timeß
-    roleType    String?
-    salaryRange String?
+    paid          Boolean // Whether this is paid or volunteer
+    fullTime      Boolean? // Whether this is full or part timeß
+    roleType      String?
+    salaryRange   String?
+    positionTitle String
 
+    fullyRemote     Boolean
     location        String
     visaSponsorship String?
 
-    desiredStartDate   DateTime?
-    desiredEndDate     DateTime?
-    desiredYoe         String[] // enum
-    desiredSkills      String[] // enum, optional
-    desiredSkillsOther String[] // optional
-    desiredImpactExp   String?
+    desiredHoursPerWeek String?
+    desiredStartDate    DateTime?
+    desiredEndDate      DateTime?
+    desiredYoe          String[] // enum
+    desiredSkills       String[] // enum, optional
+    desiredSkillsOther  String[] // optional
+    desiredImpactExp    String?
 
     similarStaffed Boolean?
 
