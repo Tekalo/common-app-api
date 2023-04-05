@@ -97,3 +97,13 @@ variable "alarm_sns_arns" {
   default     = []
 }
 
+variable "auth0_domain" {
+  description = "Auth0 subdomain for CNAME record"
+  type        = string
+}
+
+output "auth0_domain" {
+  description = "Auth0 subdomain for CNAME record"
+  value       = var.auth0_domain
+}
+

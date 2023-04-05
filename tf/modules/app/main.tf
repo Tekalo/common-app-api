@@ -288,6 +288,15 @@ resource "aws_route53_record" "api" {
   }
 }
 
+# DNS for auth0
+resource "aws_route53_record" "auth" {
+  zone_id = var.dns_zone_id
+  name    = "capp-auth.${data.aws_route53_zone.main.name}"
+  type    = "CNAME"
+  ttl     = "300"
+  records = [var.auth0_domain]
+}
+
 module "rds-secret" {
   source = "../rds-secret-postgres"
 
