@@ -29,7 +29,7 @@ model ApplicantSubmission {
     dateAdded DateTime @default(now())
     originTag String // Whose link did they click, data attribution  // enum
 
-    resumeUrl      String
+    resumeUrl      String?
     resumePassword String?
 
     lastOrg  String // Current or Most Recent Org
