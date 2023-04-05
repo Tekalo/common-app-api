@@ -111,7 +111,6 @@ class ApplicantController {
     }
   }
 
-  // <<<<<<< HEAD
   async deleteApplicant(applicantId: number) {
     let applicantToDelete;
     try {
