@@ -8,17 +8,17 @@ datasource db {
 }
 
 model Applicant {
-    id               Int                   @id @default(autoincrement())
-    name             String
-    email            String                @unique
-    phone            String?
-    pronoun          String?
-    preferredContact String // enum
-    searchStatus     String // Actively looking or not, cadidate open to // enum
-    applications     ApplicantSubmission[]
-    draftApplications     ApplicantDraftSubmission[]
-    acceptedTerms    DateTime              @default(now())
-    acceptedPrivacy  DateTime              @default(now())
+    id                Int                        @id @default(autoincrement())
+    name              String
+    email             String                     @unique
+    phone             String?
+    pronoun           String?
+    preferredContact  String // enum
+    searchStatus      String // Actively looking or not, cadidate open to // enum
+    applications      ApplicantSubmission[]
+    draftApplications ApplicantDraftSubmission[]
+    acceptedTerms     DateTime                   @default(now())
+    acceptedPrivacy   DateTime                   @default(now())
 }
 
 model ApplicantSubmission {
@@ -71,8 +71,8 @@ model ApplicantDraftSubmission {
     applicant   Applicant @relation(fields: [applicantId], references: [id])
     applicantId Int       @unique
 
-    createdAt DateTime    @default(now())
-    updatedAt DateTime    @updatedAt
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
     originTag String? // Whose link did they click, data attribution  // enum
 
     resumeUrl      String?
