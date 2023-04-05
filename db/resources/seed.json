@@ -16,7 +16,7 @@
           "location": "Burgerville",
           "paid": true,
           "roleType": "Flipper",
-          "postitionTitle": "First Flipper",
+          "positionTitle": "First Flipper",
           "pitchEssay": "Come flip burgers for Bob",
           "source": "Commercial",
           "employmentType": "fulltime"
@@ -27,7 +27,7 @@
           "location": "Remote",
           "paid": true,
           "roleType": "Fryer",
-          "postitionTitle": "First Fryer",
+          "positionTitle": "First Fryer",
           "pitchEssay": "Come fry somem fries for Bob",
           "source": "",
           "employmentType": "parttime"
@@ -50,7 +50,7 @@
           "location": "San Francisco / Remote",
           "paid": true,
           "roleType": "Backend Engineer",
-          "postitionTitle": "Sr Backend Engineer 2",
+          "positionTitle": "Sr Backend Engineer 2",
           "pitchEssay": "Support and collectively lead the open source Mozilla project",
           "source": "All Tech is Human",
           "employmentType": "fulltime"

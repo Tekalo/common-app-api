@@ -117,6 +117,7 @@ async function seedOpportunitySubmissionBatches() {
         contactEmail: batch.contactEmail,
         contactName: batch.contactName,
         contactPhone: batch.contactPhone,
+        equalOpportunityEmployer: batch.equalOpportunityEmployer,
         opportunitySubmissions: {
           createMany: {
             data: batch.submissions,
