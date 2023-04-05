@@ -135,7 +135,7 @@ model OpportunitySubmission {
 
     paid          Boolean // Whether this is paid or volunteer
     fullTime      Boolean? // Whether this is full or part timeß
-    roleType      String?
+    roleType      String
     salaryRange   String?
     positionTitle String
 
