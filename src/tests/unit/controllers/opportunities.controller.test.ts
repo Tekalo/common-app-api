@@ -34,12 +34,11 @@ describe('Opportunity Controller', () => {
       },
       submissions: [
         {
-          fullTime: true,
           location: 'Burgerville',
           paid: true,
           pitchEssay: 'Come flip burgers for Bob',
           source: 'Commercial',
-          employmentType: 'nonprofit',
+          employmentType: 'full-time job',
         },
       ],
     };
@@ -82,12 +81,11 @@ describe('Opportunity Controller', () => {
       },
       submissions: [
         {
-          fullTime: true,
           location: 'Burgerville',
           paid: true,
           pitchEssay: 'Come flip burgers for Bob',
           source: 'Commercial',
-          employmentType: 'nonprofit',
+          employmentType: 'consultant',
         },
       ],
     };
