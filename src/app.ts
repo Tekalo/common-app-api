@@ -16,22 +16,22 @@ const getApp = (authService: AuthService): Application => {
   /**
    * Initialize Sentry
    */
-  // Sentry.init({
-  //   dsn: 'https://c38ab9f98fd0404f9d2bfb95d015da8d@o4504962952724480.ingest.sentry.io/4504963428777984',
-  //   integrations: [
-  //     // enable HTTP calls tracing
-  //     new Sentry.Integrations.Http({ tracing: true }),
-  //     // enable Express.js middleware tracing
-  //     new Sentry.Integrations.Express({ app }),
-  //     // Automatically instrument Node.js libraries and frameworks
-  //     ...Sentry.autoDiscoverNodePerformanceMonitoringIntegrations(),
-  //   ],
+  Sentry.init({
+    dsn: 'https://c38ab9f98fd0404f9d2bfb95d015da8d@o4504962952724480.ingest.sentry.io/4504963428777984',
+    integrations: [
+      // enable HTTP calls tracing
+      new Sentry.Integrations.Http({ tracing: true }),
+      // enable Express.js middleware tracing
+      new Sentry.Integrations.Express({ app }),
+      // Automatically instrument Node.js libraries and frameworks
+      ...Sentry.autoDiscoverNodePerformanceMonitoringIntegrations(),
+    ],
 
-  //   // Set tracesSampleRate to 1.0 to capture 100%
-  //   // of transactions for performance monitoring.
-  //   // We recommend adjusting this value in production
-  //   tracesSampleRate: 1.0,
-  // });
+    // Set tracesSampleRate to 1.0 to capture 100%
+    // of transactions for performance monitoring.
+    // We recommend adjusting this value in production
+    tracesSampleRate: 1.0,
+  });
 
   // // RequestHandler creates a separate execution context using domains, so that every
   // // transaction/span/breadcrumb is attached to its own Hub instance
