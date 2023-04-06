@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-const OrgType = z.enum(['501c(3', 'Other']);
+const OrgType = z.enum(['501c(3)', 'Other']);
 const OrgSize = z.enum([
   '<20',
   '20-50',
@@ -62,8 +62,8 @@ const OpportunityBatchRequestBodySchema = z.object({
       salaryRange: z.string(),
       positionTitle: z.string(),
       desiredHoursPerWeek: z.string(),
-      desiredStartDate: z.string().datetime().optional(),
-      desiredEndDate: z.string().datetime().optional(),
+      desiredStartDate: z.coerce.date().optional(),
+      desiredEndDate: z.coerce.date().optional(),
       jdUrl: z.string().optional(),
       desiredYoe: z.array(YOE),
       desiredSkills: z.array(Skills),
