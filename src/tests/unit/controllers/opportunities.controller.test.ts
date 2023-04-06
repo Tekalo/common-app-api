@@ -53,6 +53,7 @@ describe('Opportunity Controller', () => {
       contactName: contact.name,
       contactPhone: contact.phone,
       contactEmail: contact.email,
+      equalOpportunityEmployer: true,
     };
     mockCtx.prisma.opportunityBatch.create.mockResolvedValue(mockResolved);
     const response = await opportunityController.createOpportunityBatch(
