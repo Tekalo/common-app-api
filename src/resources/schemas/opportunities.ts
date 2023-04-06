@@ -18,6 +18,7 @@ const OpportunityBatchRequestBodySchema = z.object({
     type: OrgType,
     size: OrgSize,
     impactAreas: z.array(z.string()),
+    eoe: z.boolean(),
   }),
   contact: z.object({
     name: z.string(),
@@ -26,6 +27,9 @@ const OpportunityBatchRequestBodySchema = z.object({
   }),
   submissions: z.array(
     z.object({
+      roleType: z.string(),
+      positionTitle: z.string(),
+      fullyRemote: z.boolean(),
       hoursPerWeek: z.string().nullable().optional(),
       location: z.string(),
       paid: z.boolean(),

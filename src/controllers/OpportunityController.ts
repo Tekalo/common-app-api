@@ -22,6 +22,9 @@ class OpportunityController {
         location: submission.location,
         pitchEssay: submission.pitchEssay,
         employmentType: submission.employmentType,
+        roleType: submission.roleType,
+        positionTitle: submission.positionTitle,
+        fullyRemote: submission.fullyRemote,
       }));
       const { organization, contact } = data;
       return await this.prisma.opportunityBatch.create({
@@ -32,6 +35,7 @@ class OpportunityController {
           contactName: contact.name,
           contactPhone: contact.phone,
           contactEmail: contact.email,
+          equalOpportunityEmployer: organization.eoe,
           opportunitySubmissions: {
             createMany: {
               data: opportunitySubmissions,
