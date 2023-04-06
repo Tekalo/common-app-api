@@ -64,7 +64,6 @@
       "pronoun": "he/his",
       "searchStatus": "future",
       "application": {
-        "applicantId": 1,
         "originTag": "SF",
         "resumeUrl": "www.myresume.com",
         "lastOrg": "Apfel",
@@ -86,7 +85,6 @@
       "preferredContact": "whatsapp",
       "searchStatus": "future",
       "application": {
-        "applicantId": 2,
         "originTag": "TSLA",
         "resumeUrl": "www.mydadsresume.com",
         "lastOrg": "Illuminati",
