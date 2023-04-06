@@ -5,6 +5,7 @@ import { Auth0ConfigSchema } from '@App/resources/schemas/auth0.js';
 export type BaseConfig = {
   port: number;
   auth0: Auth0Config;
+  sentryDSN: string;
 };
 function loadConfig(): BaseConfig {
   if (!process.env.AUTH0_CONFIG) {
@@ -16,11 +17,10 @@ function loadConfig(): BaseConfig {
   const validatedAuth0Config = Auth0ConfigSchema.parse(
     JSON.parse(process.env.AUTH0_CONFIG),
   );
-
   const configObj = {
     port: Number(process.env.PORT) || 3000,
     auth0: validatedAuth0Config,
-    sentryDSN: process.env.SENTRY_DSN,
+    sentryDSN: process.env.SENTRY_DSN || '',
   };
   return configObj;
 }
