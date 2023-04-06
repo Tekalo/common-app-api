@@ -35,9 +35,9 @@ const getApp = (authService: AuthService): Application => {
 
   // RequestHandler creates a separate execution context using domains, so that every
   // transaction/span/breadcrumb is attached to its own Hub instance
-  app.use(Sentry.Handlers.requestHandler());
+  // app.use(Sentry.Handlers.requestHandler());
   // TracingHandler creates a trace for every incoming request
-  app.use(Sentry.Handlers.tracingHandler());
+  // app.use(Sentry.Handlers.tracingHandler());
 
   const router = express.Router();
   app.use(express.json());
@@ -62,7 +62,7 @@ const getApp = (authService: AuthService): Application => {
   });
 
   // The error handler must be before any other error middleware and after all controllers
-  // app.use(Sentry.Handlers.errorHandler());
+  app.use(Sentry.Handlers.errorHandler());
 
   app.use(errorHandler);
   app.set('port', process.env.PORT);
