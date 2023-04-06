@@ -25,6 +25,8 @@ AUTH0_CLIENT_ID={Auth0 Tenant Client ID}
 AUTH0_DOMAIN={Auth0 Tenant Domain}
 ```
 
+These values can be found [here](https://manage.auth0.com/dashboard/us/sf-capp-dev/applications/AzRVLnVmcru9u0hR5dl5VW84c21GLNEM/settings).
+
 We use Docker for local development and testing. This ensures consistency in environments amongst all contributors. Our Docker environment consists of 2 containers: API and Postgres DB containers. The local dev dir is volume-mounted at `/api` into the container, so there is no need to rebuild the image for code or package changes.
 
 > As a general rule, _all_ package.json scripts should be run _inside_ the development Docker container, not on the local host machine. To do so, you can execute: `docker compose run -u node --no-deps --rm api {your-command-here}`
