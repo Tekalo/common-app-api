@@ -10,4 +10,4 @@ else
 fi
 
 # Now run the command whether a test file was specified
-node --experimental-vm-modules ./node_modules/jest/bin/jest.js --config ./jest.config.js --runInBand --detectOpenHandles src/tests/${1}
+node --experimental-vm-modules ./node_modules/jest/bin/jest.js --config ./jest.config.js --runInBand src/tests/${1}
