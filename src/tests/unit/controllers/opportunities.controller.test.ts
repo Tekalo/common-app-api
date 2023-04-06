@@ -38,7 +38,7 @@ describe('Opportunity Controller', () => {
           paid: true,
           pitchEssay: 'Come flip burgers for Bob',
           source: 'Commercial',
-          employmentType: 'full-time job',
+          employmentType: 'volunteer',
         },
       ],
     };
@@ -81,6 +81,7 @@ describe('Opportunity Controller', () => {
       },
       submissions: [
         {
+          hoursPerWeek: '20/week',
           location: 'Burgerville',
           paid: true,
           pitchEssay: 'Come flip burgers for Bob',

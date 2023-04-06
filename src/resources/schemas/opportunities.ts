@@ -26,6 +26,7 @@ const OpportunityBatchRequestBodySchema = z.object({
   }),
   submissions: z.array(
     z.object({
+      hoursPerWeek: z.string().nullable().optional(),
       location: z.string(),
       paid: z.boolean(),
       pitchEssay: z.string(),
