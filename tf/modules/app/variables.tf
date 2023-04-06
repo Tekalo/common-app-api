@@ -107,3 +107,13 @@ output "auth0_domain" {
   value       = var.auth0_domain
 }
 
+variable "sentry_dsn" {
+  description = "DSN for Sentry, where we collect performance monitoring data"
+  type        = string
+}
+
+output "sentry_dsn" {
+  description = "DSN for Sentry, where we collect performance monitoring data"
+  value       = var.sentry_dsn
+}
+

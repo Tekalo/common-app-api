@@ -40,3 +40,13 @@ output "auth0_domain" {
   description = "Auth0 subdomain for CNAME record"
   value       = module.app.auth0_domain
 }
+
+variable "sentry_dsn" {
+  description = "DSN for Sentry, where we collect performance monitoring data"
+  type        = string
+}
+
+output "sentry_dsn" {
+  description = "DSN for Sentry, where we collect performance monitoring data"
+  value       = module.app.sentry_dsn
+}

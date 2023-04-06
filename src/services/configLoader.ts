@@ -16,9 +16,11 @@ function loadConfig(): BaseConfig {
   const validatedAuth0Config = Auth0ConfigSchema.parse(
     JSON.parse(process.env.AUTH0_CONFIG),
   );
+
   const configObj = {
     port: Number(process.env.PORT) || 3000,
     auth0: validatedAuth0Config,
+    sentryDSN: process.env.SENTRY_DSN,
   };
   return configObj;
 }
