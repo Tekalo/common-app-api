@@ -1,5 +1,5 @@
 import express, { Application } from 'express';
-// import * as Sentry from '@sentry/node';
+import * as Sentry from '@sentry/node';
 import * as swaggerUi from 'swagger-ui-express';
 import spec from '@App/resources/spec.json' assert { type: 'json' };
 import {
