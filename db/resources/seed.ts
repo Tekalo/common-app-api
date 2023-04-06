@@ -68,7 +68,6 @@ async function doUpsert(
 
 async function seedApplicantsAndApplicantSubmissions() {
   const { applicants } = seedData;
-  const submissionUpserts: Array<Promise<any>> = [];
   const applicantsUpserts: Array<Promise<any>> = [];
   applicants.forEach((app) => {
     const {
