@@ -19,7 +19,7 @@ on:
 
 env:
   AUTH0_CONFIG: '{"domain": "${{ vars.AUTH0_DOMAIN }}", "clientId": "${{ vars.AUTH0_CLIENT_ID }}", "clientSecret": "${{ secrets.AUTH0_CLIENT_SECRET }}"}'
-  SENTRY_DSN: '${{ vars.SENTRY_DSN }}'
+  SENTRY_DSN: ${{ vars.SENTRY_DSN }}
   PORT: 3000
 
 permissions:
