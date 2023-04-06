@@ -303,7 +303,51 @@
                 "source": {
                   "type": "string"
                 },
-                "type": {
+                "hoursPerWeek": {
+                  "type": "string"
+                },
+                "employmentType": {
+                  "type": "string"
+                },
+                "salaryRange": {
+                  "type": "string"
+                },
+                "desiredHoursPerWeek": {
+                  "type": "string"
+                },
+                "desiredStartDate": {
+                  "type": "string",
+                  "format": "date"
+                },
+                "desiredEndDate": {
+                  "type": "string",
+                  "format": "date"
+                },
+                "jdUrl": {
+                  "type": "string"
+                },
+                "desiredYoe": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "desiredSkills": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "desiredSkillsOther": {
+                  "type": "string"
+                },
+                "visaSponsorship": {
+                  "type": "string"
+                },
+                "similarStaffed": {
+                  "type": "boolean"
+                },
+                "desiredImpactExp": {
                   "type": "string"
                 }
               }
