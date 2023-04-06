@@ -66,7 +66,7 @@ async function doUpsert(
   return successful;
 }
 
-async function seedApplicants() {
+async function seedApplicantsAndApplicantSubmissions() {
   const { applicants } = seedData;
   const submissionUpserts: Array<Promise<any>> = [];
   const applicantsUpserts: Array<Promise<any>> = [];
@@ -89,21 +89,17 @@ async function seedApplicants() {
         pronoun: pronoun || undefined,
         preferredContact,
         searchStatus,
+        applications: {
+          create: {
+            ...application,
+          },
+        },
       },
       where: { email: app.email },
     });
     applicantsUpserts.push(applicantUpsert);
-    const submissionUpsert = prisma.applicantSubmission.upsert({
-      update: {},
-      create: {
-        ...application,
-      },
-      where: { applicantId: application.applicantId },
-    });
-    submissionUpserts.push(submissionUpsert);
   });
   await doUpsert(applicantsUpserts);
-  await doUpsert(submissionUpserts);
 }
 
 async function seedOpportunitySubmissionBatches() {
@@ -130,7 +126,7 @@ async function seedOpportunitySubmissionBatches() {
 }
 
 async function main() {
-  await seedApplicants();
+  await seedApplicantsAndApplicantSubmissions();
   await seedOpportunitySubmissionBatches();
 }
 
