@@ -19,7 +19,6 @@ on:
 
 env:
   AUTH0_CONFIG: '{"domain": "${{ vars.AUTH0_DOMAIN }}", "clientId": "${{ vars.AUTH0_CLIENT_ID }}", "clientSecret": "${{ secrets.AUTH0_CLIENT_SECRET }}"}'
-  SENTRY_DSN: https://c38ab9f98fd0404f9d2bfb95d015da8d@o4504962952724480.ingest.sentry.io/4504963428777984
   PORT: 3000
 
 permissions:
