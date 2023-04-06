@@ -5,7 +5,7 @@ dependencies:
     specifier: 4.12.0-integration-rtld-deepbind.3
     version: 4.12.0-integration-rtld-deepbind.3(prisma@4.12.0-integration-rtld-deepbind.3)
   '@sentry/node':
-    specifier: ^7.47.0
+    specifier: 7.47.0
     version: 7.47.0
   '@tsconfig/node18':
     specifier: 1.0.1
