@@ -355,7 +355,7 @@ resource "aws_iam_role_policy" "execution_role" {
 data "aws_iam_policy_document" "execution_role" {
   statement {
     actions   = ["secretsmanager:GetSecretValue"]
-    resources = [aws_secretsmanager_secret.auth_config.arn, module.rds-secret.secret_arn]
+    resources = [aws_secretsmanager_secret.auth0_config.arn, module.rds-secret.secret_arn]
   }
 
   statement {
