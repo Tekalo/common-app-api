@@ -11,15 +11,6 @@ const EmploymentType = z.enum([
   'other',
 ]);
 const OrgSize = z.enum(['<50', '>50']);
-const EmploymentType = z.enum([
-  'fulltime job',
-  'contractor',
-  'consultant',
-  'advisor',
-  'internship',
-  'volunteer',
-  'other',
-]);
 
 const OpportunityBatchRequestBodySchema = z.object({
   organization: z.object({
