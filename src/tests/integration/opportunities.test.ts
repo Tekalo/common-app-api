@@ -42,7 +42,7 @@ describe('POST /opportunities', () => {
         desiredSkillsOther: 'really good at flipping burgers',
         visaSponsorship: 'no',
         similarStaffed: true,
-        desiredImpactExperience:
+        desiredImpactExp:
           'We would love to find someone who has non-profit fast food experience.',
       },
     ],
@@ -74,7 +74,7 @@ describe('POST /opportunities', () => {
         'really good at frying fries, specifically of the waffle persuasion',
       visaSponsorship: 'no',
       similarStaffed: false,
-      desiredImpactExperience:
+      desiredImpactExp:
         'A candidate who has experience frying fries in the non-profit space',
     });
     const { body } = await request(app)
