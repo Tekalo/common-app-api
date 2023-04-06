@@ -7,6 +7,7 @@ import {
   healthRoutes,
   opportunitiesRoutes,
 } from '@App/routes/index.js';
+import configLoader from './services/configLoader.js';
 import errorHandler from './middleware/ErrorHandler.js';
 import AuthService from './services/AuthService.js';
 
@@ -16,8 +17,9 @@ const getApp = (authService: AuthService): Application => {
   /**
    * Initialize Sentry
    */
+  const { sentryDSN }: { sentryDSN: string } = configLoader.loadConfig();
   Sentry.init({
-    dsn: 'https://c38ab9f98fd0404f9d2bfb95d015da8d@o4504962952724480.ingest.sentry.io/4504963428777984',
+    dsn: sentryDSN,
     integrations: [
       // enable HTTP calls tracing
       new Sentry.Integrations.Http({ tracing: true }),
