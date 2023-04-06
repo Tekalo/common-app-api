@@ -34,6 +34,7 @@ describe('Opportunity Controller', () => {
       },
       submissions: [
         {
+          hoursPerWeek: '30/week',
           location: 'Burgerville',
           paid: true,
           pitchEssay: 'Come flip burgers for Bob',
