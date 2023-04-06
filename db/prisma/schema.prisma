@@ -9,6 +9,7 @@ datasource db {
 
 model Applicant {
     id               Int                   @id @default(autoincrement())
+    auth0Id          String                @unique
     name             String
     email            String                @unique
     phone            String?
@@ -16,6 +17,7 @@ model Applicant {
     preferredContact String // enum
     searchStatus     String // Actively looking or not, cadidate open to // enum
     applications     ApplicantSubmission[]
+    draftApplications     ApplicantDraftSubmission[]
     acceptedTerms    DateTime              @default(now())
     acceptedPrivacy  DateTime              @default(now())
 }
@@ -26,10 +28,10 @@ model ApplicantSubmission {
     applicant   Applicant @relation(fields: [applicantId], references: [id])
     applicantId Int       @unique
 
-    dateAdded DateTime @default(now())
+    createdAt DateTime @default(now())
     originTag String // Whose link did they click, data attribution  // enum
 
-    resumeUrl      String
+    resumeUrl      String?
     resumePassword String?
 
     lastOrg  String // Current or Most Recent Org
@@ -64,6 +66,51 @@ model ApplicantSubmission {
     referenceAttribution String? //How did you hear about us  //enum
 }
 
+model ApplicantDraftSubmission {
+    id Int @id @default(autoincrement())
+
+    applicant   Applicant @relation(fields: [applicantId], references: [id])
+    applicantId Int       @unique
+
+    createdAt DateTime    @default(now())
+    updatedAt DateTime    @updatedAt
+    originTag String? // Whose link did they click, data attribution  // enum
+
+    resumeUrl      String?
+    resumePassword String?
+
+    lastOrg  String? // Current or Most Recent Org
+    lastRole String? // Current or Most Recent Role
+    yoe      String? // Years of Relevant Experience
+
+    linkedInUrl       String?
+    githubUrl         String?
+    portfolioUrl      String?
+    portfolioPassword String?
+
+    interestEmploymentType String[] // Interested In - Opportunities    //enum
+    interestRoles          String[] // Interested In - Roles            //enum
+    interestCauses         String[] // Interested In - Impact Causes   //enum
+    interestGovt           Boolean? // Interested In - Govt
+
+    otherCause  String? // Additional cause(s) they are interested in
+    skills      String[] // Enum or FKs
+    otherSkills String[] // Additional skill(s) they have
+
+    currentLocation String?
+    openToRelocate  String? // enum
+    openToRemote    String? // enum
+
+    desiredSalary            String?
+    previousImpactExperience Boolean?
+    workAuthorization        String? // enum
+    hoursPerWeek             String? // Only part-time
+
+    essayResponse String?
+
+    referenceAttribution String? //How did you hear about us  //enum
+}
+
 model OpportunityBatch {
     id                     Int                     @id @default(autoincrement())
     opportunitySubmissions OpportunitySubmission[]
@@ -76,6 +123,16 @@ model OpportunityBatch {
     contactPhone           String
 }
 
+model ApplicantDeletionRequests {
+    id              Int      @id @default(autoincrement())
+    applicantId     Int      @unique
+    dateAdded       DateTime @default(now())
+    email           String
+    auth0Id         String
+    acceptedTerms   DateTime
+    acceptedPrivacy DateTime
+}
+
 model OpportunitySubmission {
     id Int @id @default(autoincrement())
 
@@ -85,6 +142,7 @@ model OpportunitySubmission {
     dateAdded      DateTime @default(now())
     source         String // enum
     employmentType String // enum
+    hoursPerWeek   String? // Only part-time
 
     paid        Boolean // Whether this is paid or volunteer
     roleType    String?

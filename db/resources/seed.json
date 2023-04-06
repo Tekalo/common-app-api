@@ -47,6 +47,7 @@
   "applicants": [
     {
       "name": "Robin Williams",
+      "auth0Id": "auth0|123456",
       "email": "rwilliams@robinwilliams.com",
       "preferredContact": "sms",
       "pronoun": "he/his",
@@ -69,6 +70,7 @@
     },
     {
       "name": "X Æ A-12",
+      "auth0Id": "auth0|789999",
       "email": "X Æ A-12@tesla.com",
       "preferredContact": "whatsapp",
       "searchStatus": "future",

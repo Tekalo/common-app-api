@@ -2,10 +2,12 @@ import ApplicantController from '@App/controllers/ApplicantController.js';
 import {
   ApplicantRequestBodySchema,
   ApplicantSubmissionRequestBodySchema,
+  ApplicantDraftSubmissionRequestBodySchema,
 } from '@App/resources/schemas/applicants.js';
 import {
   ApplicantRequestBody,
   ApplicantSubmissionBody,
+  ApplicantDraftSubmissionBody,
 } from '@App/resources/types/applicants.js';
 
 import AuthService from '@App/services/AuthService.js';
@@ -40,6 +42,28 @@ const applicantRoutes = (authService: AuthService) => {
       .catch((err) => next(err));
   });
 
+  router.delete('/:id', (req: Request, res: Response, next) => {
+    const applicantID = +req.params.id;
+    applicantController
+      .deleteApplicant(applicantID)
+      .then((result) => {
+        res.status(200).json(result);
+      })
+      .catch((err) => next(err));
+  });
+
+  router.post('/:id/submissions/draft', (req: Request, res: Response, next) => {
+    const appBody = req.body as ApplicantDraftSubmissionBody;
+    const applicantID = +req.params.id;
+    const validatedBody =
+      ApplicantDraftSubmissionRequestBodySchema.parse(appBody);
+    applicantController
+      .createOrUpdateDraftSubmission(applicantID, validatedBody)
+      .then((result) => {
+        res.status(200).json(result);
+      })
+      .catch((err) => next(err));
+  });
   return router;
 };
 

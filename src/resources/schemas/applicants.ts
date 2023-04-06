@@ -72,7 +72,7 @@ const ApplicantSubmissionRequestBodySchema = z.object({
   githubUrl: z.string().nullable().optional(),
   portfolioUrl: z.string().nullable().optional(),
   portfolioPassword: z.string().nullable().optional(),
-  resumeUrl: z.string(),
+  resumeUrl: z.string().optional(),
   resumePassword: z.string().nullable().optional(),
   hoursPerWeek: z.string().nullable().optional(),
   interestEmploymentType: z.array(EmploymentType),
@@ -90,8 +90,12 @@ const ApplicantSubmissionRequestBodySchema = z.object({
   referenceAttribution: ReferenceAttribution.nullable().optional(),
 });
 
+const ApplicantDraftSubmissionRequestBodySchema =
+  ApplicantSubmissionRequestBodySchema.partial();
+
 export {
   ApplicantRequestBodySchema,
   ApplicantResponseBodySchema,
   ApplicantSubmissionRequestBodySchema,
+  ApplicantDraftSubmissionRequestBodySchema,
 };
