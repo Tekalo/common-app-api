@@ -17,6 +17,7 @@ describe('POST /opportunities', () => {
       type: '501c(3)',
       size: '<20',
       impactAreas: ['Clean Energy'],
+      eoe: true,
     },
     contact: {
       name: 'Bob Boberson',
@@ -25,21 +26,20 @@ describe('POST /opportunities', () => {
     },
     submissions: [
       {
-        fullTime: true,
+        fullyRemote: false,
+        roleType: 'Flipper',
+        positionTitle: 'Flipper 1',
         location: 'Burgerville',
         paid: true,
         pitchEssay: 'Come flip burgers for Bob',
         source: 'Commercial',
-        employmentType: 'fulltime job',
-        roleType: 'burger flipper',
+        employmentType: 'full-time job',
         salaryRange: '20-30$/hr',
-        positionTitle: 'Founding Burger Flipper!',
         desiredHoursPerWeek: '40',
         desiredStartDate: '2023-01-01',
         desiredYoe: ['0-2', '2-4'],
         desiredSkills: ['react', 'sketch'],
         desiredSkillsOther: 'really good at flipping burgers',
-        fullyRemote: false,
         visaSponsorship: 'no',
         similarStaffed: true,
         desiredImpactExperience:
@@ -57,22 +57,21 @@ describe('POST /opportunities', () => {
   it('should create multiple new batches of opportunities', async () => {
     const secondOppSubmissionPayload = { ...oppBatchPayload };
     secondOppSubmissionPayload.submissions.push({
-      fullTime: false,
+      fullyRemote: false,
+      roleType: 'Frencher',
+      positionTitle: 'French Guy',
       location: 'Fryville',
       paid: true,
       pitchEssay: 'Come make french fries for Bob',
       source: 'Advertisement',
-      employmentType: 'fulltime job',
-      roleType: 'fry flipper',
+      employmentType: 'full-time job',
       salaryRange: '20-30$/hr',
-      positionTitle: 'Founding Fry Flipper!',
       desiredHoursPerWeek: '30',
       desiredStartDate: '2023-12-01',
       desiredYoe: ['15+'],
       desiredSkills: ['figma', 'project management'],
       desiredSkillsOther:
         'really good at frying fries, specifically of the waffle persuasion',
-      fullyRemote: false,
       visaSponsorship: 'no',
       similarStaffed: false,
       desiredImpactExperience:
@@ -84,25 +83,25 @@ describe('POST /opportunities', () => {
       .expect(200);
     expect(body).toEqual(expect.objectContaining({ id: expect.any(Number) }));
   });
-  // it('should throw 400 error if request body is missing organization type', async () => {
-  //   const missingOrgType = { ...oppBatchPayload };
-  //   // @ts-expect-error: Ignore TS error for invalid request body
-  //   delete { ...oppBatchPayload }.organization.type;
-  //   const { body } = await request(app)
-  //     .post('/opportunities/batch')
-  //     .send([missingOrgType])
-  //     .expect(400);
-  //   expect(body).toHaveProperty('title', 'Validation Error');
-  // });
-  // test('Should throw error if request body has invalid org size', async () => {
-  //   const invalidOrgSize = {
-  //     ...oppBatchPayload,
-  //     organization: { ...oppBatchPayload.organization, size: '100' },
-  //   };
-  //   const { body } = await request(app)
-  //     .post('/opportunities/batch')
-  //     .send([invalidOrgSize])
-  //     .expect(400);
-  //   expect(body).toHaveProperty('title', 'Validation Error');
-  // });
+  it('should throw 400 error if request body is missing organization type', async () => {
+    const missingOrgType = { ...oppBatchPayload };
+    // @ts-expect-error: Ignore TS error for invalid request body
+    delete { ...oppBatchPayload }.organization.type;
+    const { body } = await request(app)
+      .post('/opportunities/batch')
+      .send([missingOrgType])
+      .expect(400);
+    expect(body).toHaveProperty('title', 'Validation Error');
+  });
+  test('Should throw error if request body has invalid org size', async () => {
+    const invalidOrgSize = {
+      ...oppBatchPayload,
+      organization: { ...oppBatchPayload.organization, size: '100' },
+    };
+    const { body } = await request(app)
+      .post('/opportunities/batch')
+      .send([invalidOrgSize])
+      .expect(400);
+    expect(body).toHaveProperty('title', 'Validation Error');
+  });
 });

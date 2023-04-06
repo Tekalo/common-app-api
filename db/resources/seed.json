@@ -8,22 +8,27 @@
       "contactEmail": "bboberson@gmail.com",
       "contactPhone": "4258287733",
       "impactAreas": ["Clean Energy"],
+      "equalOpportunityEmployer": true,
       "submissions": [
         {
-          "fullTime": true,
+          "fullyRemote": false,
           "location": "Burgerville",
           "paid": true,
+          "roleType": "Flipper",
+          "positionTitle": "First Flipper",
           "pitchEssay": "Come flip burgers for Bob",
           "source": "Commercial",
-          "employmentType": "fulltime"
+          "employmentType": "contractor"
         },
         {
-          "fullTime": true,
+          "fullyRemote": false,
           "location": "Remote",
           "paid": true,
+          "roleType": "Fryer",
+          "positionTitle": "First Fryer",
           "pitchEssay": "Come fry somem fries for Bob",
           "source": "",
-          "employmentType": "parttime"
+          "employmentType": "full-time job"
         }
       ]
     },
@@ -35,14 +40,17 @@
       "contactEmail": "milla@mozilla.org",
       "contactPhone": "+45559847193",
       "impactAreas": ["Internet Freedom"],
+      "equalOpportunityEmployer": true,
       "submissions": [
         {
-          "fullTime": true,
-          "location": "San Francisco",
+          "fullyRemote": true,
+          "location": "San Francisco / Remote",
           "paid": true,
+          "roleType": "Backend Engineer",
+          "positionTitle": "Sr Backend Engineer 2",
           "pitchEssay": "Support and collectively lead the open source Mozilla project",
           "source": "All Tech is Human",
-          "employmentType": "fulltime"
+          "employmentType": "other"
         }
       ]
     }

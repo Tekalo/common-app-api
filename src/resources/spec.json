@@ -230,6 +230,9 @@
             "items": {
               "type": "string"
             }
+          },
+          "eoe": {
+            "type": "boolean"
           }
         }
       },
@@ -268,6 +271,9 @@
               },
               "type": {
                 "type": "string"
+              },
+              "eoe": {
+                "type": "boolean"
               }
             }
           },
@@ -276,7 +282,7 @@
             "items": {
               "type": "object",
               "properties": {
-                "fullTime": {
+                "fullyRemote": {
                   "type": "boolean"
                 },
                 "location": {
@@ -284,6 +290,12 @@
                 },
                 "paid": {
                   "type": "boolean"
+                },
+                "roleType": {
+                  "type": "string"
+                },
+                "positionTitle": {
+                  "type": "string"
                 },
                 "pitchEssay": {
                   "type": "string"

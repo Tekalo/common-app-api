@@ -26,13 +26,14 @@ const Skills = z.enum([
   'product development',
   'project management',
 ]);
+
 const EmploymentType = z.enum([
-  'fulltime job',
+  'full-time job',
+  'volunteer',
   'contractor',
   'consultant',
   'advisor',
   'internship',
-  'volunteer',
   'other',
 ]);
 const YOE = z.enum(['0-2', '2-4', '4-8', '8-12', '12-15', '15+']);
@@ -43,6 +44,7 @@ const OpportunityBatchRequestBodySchema = z.object({
     type: OrgType,
     size: OrgSize,
     impactAreas: z.array(z.string()),
+    eoe: z.boolean(),
   }),
   contact: z.object({
     name: z.string(),
@@ -51,16 +53,16 @@ const OpportunityBatchRequestBodySchema = z.object({
   }),
   submissions: z.array(
     z.object({
-      fullTime: z.boolean(),
+      roleType: z.string(),
+      positionTitle: z.string(),
+      fullyRemote: z.boolean(),
       hoursPerWeek: z.string().nullable().optional(),
       location: z.string(),
       paid: z.boolean(),
       pitchEssay: z.string(),
       source: z.string(),
       employmentType: EmploymentType,
-      roleType: z.string(),
       salaryRange: z.string(),
-      positionTitle: z.string(),
       desiredHoursPerWeek: z.string(),
       desiredStartDate: z.coerce.date().optional(),
       desiredEndDate: z.coerce.date().optional(),
@@ -68,7 +70,6 @@ const OpportunityBatchRequestBodySchema = z.object({
       desiredYoe: z.array(YOE),
       desiredSkills: z.array(Skills),
       desiredSkillsOther: z.string().optional(),
-      fullyRemote: z.boolean(),
       visaSponsorship: VisaSponsorship,
       similarStaffed: z.boolean(),
       desiredImpactExp: z.string().optional(),

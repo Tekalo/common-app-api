@@ -26,6 +26,7 @@ describe('Opportunity Controller', () => {
         type: 'nonprofit',
         size: '<50',
         impactAreas: ['Clean Energy'],
+        eoe: true,
       },
       contact: {
         name: 'Bob Boberson',
@@ -34,8 +35,10 @@ describe('Opportunity Controller', () => {
       },
       submissions: [
         {
-          fullTime: false,
-          hoursPerWeek: '20/week',
+          fullyRemote: false,
+          roleType: 'Flipper',
+          positionTitle: 'Line Cook 1',
+          hoursPerWeek: '30/week',
           location: 'Burgerville',
           paid: true,
           pitchEssay: 'Come flip burgers for Bob',
@@ -54,6 +57,7 @@ describe('Opportunity Controller', () => {
       contactName: contact.name,
       contactPhone: contact.phone,
       contactEmail: contact.email,
+      equalOpportunityEmployer: organization.eoe,
     };
     mockCtx.prisma.opportunityBatch.create.mockResolvedValue(mockResolved);
     const response = await opportunityController.createOpportunityBatch(
@@ -75,6 +79,7 @@ describe('Opportunity Controller', () => {
         type: 'nonprofit',
         size: '<50',
         impactAreas: ['Clean Energy'],
+        eoe: false,
       },
       contact: {
         name: 'Bob Boberson',
@@ -83,12 +88,15 @@ describe('Opportunity Controller', () => {
       },
       submissions: [
         {
-          fullTime: true,
+          fullyRemote: true,
+          roleType: 'A guy',
+          positionTitle: 'That Dude',
+          hoursPerWeek: '20/week',
           location: 'Burgerville',
           paid: true,
           pitchEssay: 'Come flip burgers for Bob',
           source: 'Commercial',
-          employmentType: 'fulltime job',
+          employmentType: 'consultant',
         },
       ],
     };
