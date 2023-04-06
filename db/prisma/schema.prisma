@@ -8,18 +8,18 @@ datasource db {
 }
 
 model Applicant {
-    id               Int                   @id @default(autoincrement())
-    auth0Id          String                @unique
-    name             String
-    email            String                @unique
-    phone            String?
-    pronoun          String?
-    preferredContact String // enum
-    searchStatus     String // Actively looking or not, cadidate open to // enum
-    applications     ApplicantSubmission[]
-    draftApplications     ApplicantDraftSubmission[]
-    acceptedTerms    DateTime              @default(now())
-    acceptedPrivacy  DateTime              @default(now())
+    id                Int                        @id @default(autoincrement())
+    auth0Id           String                     @unique
+    name              String
+    email             String                     @unique
+    phone             String?
+    pronoun           String?
+    preferredContact  String // enum
+    searchStatus      String // Actively looking or not, cadidate open to // enum
+    applications      ApplicantSubmission[]
+    draftApplications ApplicantDraftSubmission[]
+    acceptedTerms     DateTime                   @default(now())
+    acceptedPrivacy   DateTime                   @default(now())
 }
 
 model ApplicantSubmission {
@@ -72,8 +72,8 @@ model ApplicantDraftSubmission {
     applicant   Applicant @relation(fields: [applicantId], references: [id])
     applicantId Int       @unique
 
-    createdAt DateTime    @default(now())
-    updatedAt DateTime    @updatedAt
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
     originTag String? // Whose link did they click, data attribution  // enum
 
     resumeUrl      String?
@@ -112,15 +112,16 @@ model ApplicantDraftSubmission {
 }
 
 model OpportunityBatch {
-    id                     Int                     @id @default(autoincrement())
-    opportunitySubmissions OpportunitySubmission[]
-    orgName                String
-    orgType                String // enum
-    orgSize                String // enum
-    impactAreas            String[] // enum
-    contactName            String
-    contactEmail           String
-    contactPhone           String
+    id                       Int                     @id @default(autoincrement())
+    opportunitySubmissions   OpportunitySubmission[]
+    orgName                  String
+    orgType                  String // enum
+    orgSize                  String // enum
+    impactAreas              String[] // enum
+    contactName              String
+    contactEmail             String
+    contactPhone             String
+    equalOpportunityEmployer Boolean
 }
 
 model ApplicantDeletionRequests {
@@ -144,19 +145,22 @@ model OpportunitySubmission {
     employmentType String // enum
     hoursPerWeek   String? // Only part-time
 
-    paid        Boolean // Whether this is paid or volunteer
-    roleType    String?
-    salaryRange String?
+    paid          Boolean // Whether this is paid or volunteer
+    roleType      String
+    salaryRange   String?
+    positionTitle String
 
+    fullyRemote     Boolean
     location        String
     visaSponsorship String?
 
-    desiredStartDate   DateTime?
-    desiredEndDate     DateTime?
-    desiredYoe         String[] // enum
-    desiredSkills      String[] // enum, optional
-    desiredSkillsOther String[] // optional
-    desiredImpactExp   String?
+    desiredHoursPerWeek String?
+    desiredStartDate    DateTime?
+    desiredEndDate      DateTime?
+    desiredYoe          String[] // enum
+    desiredSkills       String[] // enum, optional
+    desiredSkillsOther  String[] // optional
+    desiredImpactExp    String?
 
     similarStaffed Boolean?
 

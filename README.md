@@ -34,6 +34,12 @@ We use Docker for local development and testing. This ensures consistency in env
 
 We also make use of a `.env` file to hold local environment variables.
 
+3\. Initialize the Prisma client
+
+```bash
+pnpm prisma:update
+```
+
 ### Running the dev server
 
 Run the following command to launch the API (and a dev postgres instance) in Docker containers in dev mode:
@@ -56,6 +62,22 @@ pnpm container-install -- args to pnpm install
 # examples
 pnpm container-install -- pino # same as: pnpm install pino
 pnpm container-install -- --save-dev pino-pretty # same as: pnpm install --save-dev pino-pretty
+```
+
+## Database
+
+We make use of Prisma as an ORM over our Postgres database
+
+To make experimental database schema changes during local development (that will not use or effect existing migrations) execute:
+
+```bash
+npm run prisma:update
+```
+
+To seed your local instance with test data, execute:
+
+```bash
+npm run prisma:seed
 ```
 
 ### Testing

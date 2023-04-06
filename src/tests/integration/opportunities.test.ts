@@ -17,6 +17,7 @@ describe('POST /opportunities', () => {
       type: 'nonprofit',
       size: '<50',
       impactAreas: ['Clean Energy'],
+      eoe: true,
     },
     contact: {
       name: 'Bob Boberson',
@@ -25,6 +26,9 @@ describe('POST /opportunities', () => {
     },
     submissions: [
       {
+        fullyRemote: false,
+        roleType: 'Flipper',
+        positionTitle: 'Flipper 1',
         location: 'Burgerville',
         paid: true,
         pitchEssay: 'Come flip burgers for Bob',
@@ -43,6 +47,9 @@ describe('POST /opportunities', () => {
   it('should create multiple new batches of opportunities', async () => {
     const secondOppSubmissionPayload = { ...oppBatchPayload };
     secondOppSubmissionPayload.submissions.push({
+      fullyRemote: false,
+      roleType: 'Frencher',
+      positionTitle: 'French Guy',
       location: 'Fryville',
       paid: true,
       pitchEssay: 'Come make french fries for Bob',
