@@ -1,17 +1,25 @@
 import { Application } from 'express';
 import * as Sentry from '@sentry/node';
+import { Transport } from '@sentry/types';
 import configLoader from './configLoader.js';
 
 class MonitoringService {
+  private sentryTransport?: () => Transport;
+
+  constructor(sentryTransport?: () => Transport) {
+    if (sentryTransport) {
+      this.sentryTransport = sentryTransport;
+    }
+  }
+
   // eslint-disable-next-line class-methods-use-this
   sentryInit(app: Application) {
-    // eslint-disable-next-line no-console
-    console.log('CALLED SENTRY INIT IN TEST');
     /**
      * Initialize Sentry
      */
     const { sentryDSN }: { sentryDSN: string } = configLoader.loadConfig();
-    Sentry.init({
+
+    const options: Sentry.NodeOptions = {
       dsn: sentryDSN,
       integrations: [
         // enable HTTP calls tracing
@@ -26,7 +34,12 @@ class MonitoringService {
       // of transactions for performance monitoring.
       // We recommend adjusting this value in production
       tracesSampleRate: 1.0,
-    });
+
+      // optionally include overriden Transport in options for testing
+      ...(this.sentryTransport && { transport: this.sentryTransport }),
+    };
+
+    Sentry.init(options);
 
     // RequestHandler creates a separate execution context using domains, so that every
     // transaction/span/breadcrumb is attached to its own Hub instance
