@@ -439,6 +439,12 @@
           "interestGovt": {
             "type": "boolean"
           },
+          "interestGovtEmplTypes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
           "previousImpactExperience": {
             "type": "boolean"
           },
