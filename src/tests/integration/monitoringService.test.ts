@@ -38,7 +38,7 @@ describe('Error Handling', () => {
       })
       .expect(500);
 
-    await sleep(100);
+    await sleep(200);
 
     expect(testkit.transactions()).toHaveLength(1);
     expect(testkit.reports()).toHaveLength(1);
@@ -54,7 +54,7 @@ describe('Error Handling', () => {
 
     await request(dummyAuthApp).get('/health').expect(200);
 
-    await sleep(100);
+    await sleep(200);
 
     expect(testkit.transactions()).toHaveLength(2);
     const transaction = testkit.transactions()[1];
