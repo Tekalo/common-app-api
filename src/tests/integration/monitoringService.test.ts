@@ -13,6 +13,10 @@ function sleep(timeMillis: number) {
   return new Promise((resolve) => setTimeout(resolve, timeMillis));
 }
 
+afterAll(async () => {
+  await MonitoringService.exitHandler();
+});
+
 describe('Error Handling', () => {
   const dummyAuthService = new DummyAuthService();
   dummyAuthService.createUser = () => {
