@@ -42,7 +42,8 @@ class MonitoringService {
 
     // RequestHandler creates a separate execution context using domains, so that every
     // transaction/span/breadcrumb is attached to its own Hub instance
-    app.use(Sentry.Handlers.requestHandler());
+    // TODO: figure out why jest tests don't exit when using requestHandler
+    // app.use(Sentry.Handlers.requestHandler());
     // TracingHandler creates a trace for every incoming request
     app.use(Sentry.Handlers.tracingHandler());
   }
