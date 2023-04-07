@@ -50,6 +50,10 @@ class MonitoringService {
   static addSentryErrorHandler(app: Application) {
     app.use(Sentry.Handlers.errorHandler());
   }
+
+  static async exitHandler() {
+    await Sentry.close(2000);
+  }
 }
 
 export default MonitoringService;
