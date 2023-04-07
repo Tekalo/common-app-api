@@ -14,8 +14,8 @@ describe('POST /opportunities', () => {
   const oppBatchPayload = {
     organization: {
       name: 'Bobs Burgers Foundation',
-      type: 'nonprofit',
-      size: '<50',
+      type: '501c(3)',
+      size: '<20',
       impactAreas: ['Clean Energy'],
       eoe: true,
     },
@@ -34,6 +34,16 @@ describe('POST /opportunities', () => {
         pitchEssay: 'Come flip burgers for Bob',
         source: 'Commercial',
         employmentType: 'full-time job',
+        salaryRange: '20-30$/hr',
+        desiredHoursPerWeek: '40',
+        desiredStartDate: '2023-01-01',
+        desiredYoe: ['0-2', '2-4'],
+        desiredSkills: ['react', 'sketch'],
+        desiredSkillsOther: 'really good at flipping burgers',
+        visaSponsorship: 'no',
+        similarStaffed: true,
+        desiredImpactExp:
+          'We would love to find someone who has non-profit fast food experience.',
       },
     ],
   };
@@ -55,6 +65,17 @@ describe('POST /opportunities', () => {
       pitchEssay: 'Come make french fries for Bob',
       source: 'Advertisement',
       employmentType: 'full-time job',
+      salaryRange: '20-30$/hr',
+      desiredHoursPerWeek: '30',
+      desiredStartDate: '2023-12-01',
+      desiredYoe: ['15+'],
+      desiredSkills: ['figma', 'project management'],
+      desiredSkillsOther:
+        'really good at frying fries, specifically of the waffle persuasion',
+      visaSponsorship: 'no',
+      similarStaffed: false,
+      desiredImpactExp:
+        'A candidate who has experience frying fries in the non-profit space',
     });
     const { body } = await request(app)
       .post('/opportunities/batch')
