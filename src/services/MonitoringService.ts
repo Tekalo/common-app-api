@@ -12,7 +12,6 @@ class MonitoringService {
     }
   }
 
-  // eslint-disable-next-line class-methods-use-this
   sentryInit(app: Application) {
     /**
      * Initialize Sentry
