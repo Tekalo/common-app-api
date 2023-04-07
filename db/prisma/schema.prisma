@@ -143,7 +143,6 @@ model OpportunitySubmission {
     dateAdded      DateTime @default(now())
     source         String // enum
     employmentType String // enum
-    hoursPerWeek   String? // Only part-time
 
     paid          Boolean // Whether this is paid or volunteer
     roleType      String

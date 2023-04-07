@@ -25,6 +25,17 @@ class OpportunityController {
         roleType: submission.roleType,
         positionTitle: submission.positionTitle,
         fullyRemote: submission.fullyRemote,
+        salaryRange: submission.salaryRange,
+        desiredHoursPerWeek: submission.desiredHoursPerWeek,
+        desiredStartDate: submission.desiredStartDate,
+        desiredEndDate: submission.desiredEndDate,
+        jdUrl: submission.jdUrl,
+        desiredYoe: submission.desiredYoe,
+        desiredSkills: submission.desiredSkills,
+        desiredSkillsOther: submission.desiredSkillsOther,
+        visaSponsorship: submission.visaSponsorship,
+        similarStaffed: submission.similarStaffed,
+        desiredImpactExp: submission.desiredImpactExp,
       }));
       const { organization, contact } = data;
       return await this.prisma.opportunityBatch.create({

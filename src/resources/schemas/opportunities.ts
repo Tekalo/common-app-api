@@ -1,6 +1,32 @@
 import { z } from 'zod';
 
-const OrgType = z.enum(['nonprofit', 'government']);
+const OrgType = z.enum(['501c(3)', 'other']);
+const OrgSize = z.enum([
+  '<20',
+  '20-50',
+  '51-100',
+  '101-200',
+  '201-500',
+  '500+',
+]);
+const VisaSponsorship = z.enum(['yes', 'no', 'sometimes']);
+const Skills = z.enum([
+  'react',
+  'javascript',
+  'python',
+  'java',
+  'sql',
+  'privacy',
+  'security',
+  'devops',
+  'figma',
+  'sketch',
+  'prototyping',
+  'user research',
+  'product development',
+  'project management',
+]);
+
 const EmploymentType = z.enum([
   'full-time job',
   'volunteer',
@@ -10,7 +36,7 @@ const EmploymentType = z.enum([
   'internship',
   'other',
 ]);
-const OrgSize = z.enum(['<50', '>50']);
+const YOE = z.enum(['0-2', '2-4', '4-8', '8-12', '12-15', '15+']);
 
 const OpportunityBatchRequestBodySchema = z.object({
   organization: z.object({
@@ -30,12 +56,22 @@ const OpportunityBatchRequestBodySchema = z.object({
       roleType: z.string(),
       positionTitle: z.string(),
       fullyRemote: z.boolean(),
-      hoursPerWeek: z.string().nullable().optional(),
       location: z.string(),
       paid: z.boolean(),
       pitchEssay: z.string(),
       source: z.string(),
       employmentType: EmploymentType,
+      salaryRange: z.string(),
+      desiredHoursPerWeek: z.string().nullable().optional(),
+      desiredStartDate: z.coerce.date().optional(),
+      desiredEndDate: z.coerce.date().optional(),
+      jdUrl: z.string().optional(),
+      desiredYoe: z.array(YOE),
+      desiredSkills: z.array(Skills),
+      desiredSkillsOther: z.string().optional(),
+      visaSponsorship: VisaSponsorship,
+      similarStaffed: z.boolean(),
+      desiredImpactExp: z.string().optional(),
     }),
   ),
 });
