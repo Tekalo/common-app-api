@@ -47,8 +47,7 @@ class MonitoringService {
     app.use(Sentry.Handlers.tracingHandler());
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  addSentryErrorHandler(app: Application) {
+  static addSentryErrorHandler(app: Application) {
     app.use(Sentry.Handlers.errorHandler());
   }
 }
