@@ -22,12 +22,12 @@ describe('Error Handling', () => {
   dummyAuthService.createUser = () => {
     throw new Error('Auth0 Creation Error');
   };
+  const monitoringService = new MonitoringService(
+    sentryTransport as () => Transport,
+  );
 
   it('should collect error events for 500 error', async () => {
-    const dummyAuthApp = getApp(
-      dummyAuthService,
-      new MonitoringService(sentryTransport as () => Transport),
-    );
+    const dummyAuthApp = getApp(dummyAuthService, monitoringService);
 
     await request(dummyAuthApp)
       .post('/applicants')
@@ -51,10 +51,7 @@ describe('Error Handling', () => {
   });
 
   it('should collect performance events', async () => {
-    const dummyAuthApp = getApp(
-      new DummyAuthService(),
-      new MonitoringService(sentryTransport as () => Transport),
-    );
+    const dummyAuthApp = getApp(new DummyAuthService(), monitoringService);
 
     await request(dummyAuthApp).get('/health').expect(200);
 

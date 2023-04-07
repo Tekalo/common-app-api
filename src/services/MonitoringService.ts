@@ -52,7 +52,8 @@ class MonitoringService {
   }
 
   static async exitHandler() {
-    await Sentry.close(2000);
+    console.log('Shutting down Sentry');
+    await Sentry.close(500);
   }
 }
 
