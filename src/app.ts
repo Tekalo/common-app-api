@@ -1,5 +1,4 @@
 import express, { Application } from 'express';
-import * as Sentry from '@sentry/node';
 import * as swaggerUi from 'swagger-ui-express';
 import spec from '@App/resources/spec.json' assert { type: 'json' };
 import {
@@ -7,39 +6,17 @@ import {
   healthRoutes,
   opportunitiesRoutes,
 } from '@App/routes/index.js';
-import configLoader from './services/configLoader.js';
 import errorHandler from './middleware/ErrorHandler.js';
 import AuthService from './services/AuthService.js';
+import MonitoringService from './services/MonitoringService.js';
 
-const getApp = (authService: AuthService): Application => {
+const getApp = (
+  authService: AuthService,
+  monitoringService: MonitoringService,
+): Application => {
   const app: Application = express();
 
-  /**
-   * Initialize Sentry
-   */
-  const { sentryDSN }: { sentryDSN: string } = configLoader.loadConfig();
-  Sentry.init({
-    dsn: sentryDSN,
-    integrations: [
-      // enable HTTP calls tracing
-      new Sentry.Integrations.Http({ tracing: true }),
-      // enable Express.js middleware tracing
-      new Sentry.Integrations.Express({ app }),
-      // Automatically instrument Node.js libraries and frameworks
-      ...Sentry.autoDiscoverNodePerformanceMonitoringIntegrations(),
-    ],
-
-    // Set tracesSampleRate to 1.0 to capture 100%
-    // of transactions for performance monitoring.
-    // We recommend adjusting this value in production
-    tracesSampleRate: 1.0,
-  });
-
-  // RequestHandler creates a separate execution context using domains, so that every
-  // transaction/span/breadcrumb is attached to its own Hub instance
-  // app.use(Sentry.Handlers.requestHandler());
-  // TracingHandler creates a trace for every incoming request
-  app.use(Sentry.Handlers.tracingHandler());
+  monitoringService.sentryInit(app);
 
   const router = express.Router();
   app.use(express.json());
@@ -64,7 +41,7 @@ const getApp = (authService: AuthService): Application => {
   });
 
   // The error handler must be before any other error middleware and after all controllers
-  app.use(Sentry.Handlers.errorHandler());
+  monitoringService.addSentryErrorHandler(app);
 
   app.use(errorHandler);
   app.set('port', process.env.PORT);
