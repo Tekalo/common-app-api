@@ -11,6 +11,7 @@ import AuthService from '@App/services/AuthService.js';
 
 import applicantSubmissionGenerator from '../fixtures/applicantSubmissionGenerator.js';
 import DummyAuthService from '../fixtures/DummyAuthService.js';
+import DummyMonitoringService from '../fixtures/DummyMonitoringService.js';
 
 let testUserID: string;
 const authService = new AuthService();
@@ -24,7 +25,10 @@ afterEach(async () => {
 
 describe('POST /applicants', () => {
   describe('No Auth0', () => {
-    const dummyAuthApp = getApp(new DummyAuthService());
+    const dummyAuthApp = getApp(
+      new DummyAuthService(),
+      new DummyMonitoringService(),
+    );
     it('should create a new applicant only in database', async () => {
       const { body } = await request(dummyAuthApp)
         .post('/applicants')
@@ -100,7 +104,7 @@ describe('POST /applicants', () => {
   });
 
   describe('Auth0 Integration', () => {
-    const app = getApp(authService);
+    const app = getApp(authService, new DummyMonitoringService());
     afterEach(async () => {
       if (testUserID) {
         const auth0Service = authService.getClient();
@@ -164,7 +168,10 @@ describe('POST /applicants', () => {
 });
 
 describe('POST /applicants/:id/submissions', () => {
-  const dummyAuthApp = getApp(new DummyAuthService());
+  const dummyAuthApp = getApp(
+    new DummyAuthService(),
+    new DummyMonitoringService(),
+  );
   it('should create a new applicant submission', async () => {
     const testApplicantResp = await request(dummyAuthApp)
       .post('/applicants')
@@ -217,7 +224,7 @@ describe('DELETE /applicants', () => {
         await auth0Service.deleteUser({ id: testUserID });
       }
     });
-    const app = getApp(authService);
+    const app = getApp(authService, new DummyMonitoringService());
     itif('CI' in process.env)(
       'should delete an existing applicant from Auth0 and from database',
       async () => {
@@ -240,7 +247,10 @@ describe('DELETE /applicants', () => {
     );
   });
   describe('No Auth0 Integration', () => {
-    const appNoAuth = getApp(new DummyAuthService());
+    const appNoAuth = getApp(
+      new DummyAuthService(),
+      new DummyMonitoringService(),
+    );
 
     it('should return 400 for non-existent applicant id', async () => {
       const { body } = await request(appNoAuth)
@@ -270,7 +280,10 @@ describe('DELETE /applicants', () => {
 });
 
 describe('POST /applicants/:id/submissions/draft', () => {
-  const dummyAuthApp = getApp(new DummyAuthService());
+  const dummyAuthApp = getApp(
+    new DummyAuthService(),
+    new DummyMonitoringService(),
+  );
   it('should create a new draft applicant submission', async () => {
     const testApplicantResp = await request(dummyAuthApp)
       .post('/applicants')

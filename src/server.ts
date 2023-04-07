@@ -1,7 +1,8 @@
 import getApp from '@App/app.js';
 import AuthService from './services/AuthService.js';
+import MonitoringService from './services/MonitoringService.js';
 
-const app = getApp(new AuthService());
+const app = getApp(new AuthService(), new MonitoringService());
 
 const port = +app.get('port');
 
