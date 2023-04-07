@@ -8,7 +8,7 @@ dependencies:
     specifier: 7.47.0
     version: 7.47.0
   '@sentry/types':
-    specifier: ^7.47.0
+    specifier: 7.47.0
     version: 7.47.0
   '@tsconfig/node18':
     specifier: 1.0.1
@@ -109,7 +109,7 @@ devDependencies:
     specifier: 4.12.0-integration-rtld-deepbind.3
     version: 4.12.0-integration-rtld-deepbind.3
   sentry-testkit:
-    specifier: ^5.0.5
+    specifier: 5.0.5
     version: 5.0.5
   supertest:
     specifier: 6.3.3
