@@ -43,7 +43,7 @@ class MonitoringService {
     // RequestHandler creates a separate execution context using domains, so that every
     // transaction/span/breadcrumb is attached to its own Hub instance
     // TODO: figure out why jest tests don't exit when using requestHandler
-    app.use(Sentry.Handlers.requestHandler());
+    // app.use(Sentry.Handlers.requestHandler());
     // TracingHandler creates a trace for every incoming request
     app.use(Sentry.Handlers.tracingHandler());
   }
@@ -53,6 +53,7 @@ class MonitoringService {
   }
 
   static async exitHandler() {
+    // eslint-disable-next-line no-console
     console.log('Shutting down Sentry');
     await Sentry.close(500);
   }
