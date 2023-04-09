@@ -34,6 +34,7 @@ const getAPIRequestBody = (
   otherCause: 'animal rights',
   workAuthorization: 'sponsorship',
   interestGovt: true,
+  interestGovtEmplTypes: ['paid'],
   previousImpactExperience: false,
   essayResponse:
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non iaculis erat.',

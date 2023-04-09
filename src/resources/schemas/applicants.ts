@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 const PreferredContact = z.enum(['sms', 'whatsapp', 'email']);
 const SearchStatus = z.enum(['active', 'passive', 'future']);
+const InterestGovtEmplTypes = z.enum(['paid', 'unpaid']);
 const Skills = z.enum([
   'react',
   'javascript',
@@ -86,10 +87,12 @@ const ApplicantSubmissionRequestBodySchema = z.object({
   otherCause: z.string().nullable().optional(),
   workAuthorization: WorkAuthorization,
   interestGovt: z.boolean(),
+  interestGovtEmplTypes: z.array(InterestGovtEmplTypes).optional(),
   previousImpactExperience: z.boolean(),
   essayResponse: z.string(),
   referenceAttribution: ReferenceAttribution.nullable().optional(),
 });
+// TOOD: Figure out typesript error on refining interestGovtTypes to ensure it is filled if interestGovt is true
 
 const ApplicantDraftSubmissionRequestBodySchema =
   ApplicantSubmissionRequestBodySchema.partial();
