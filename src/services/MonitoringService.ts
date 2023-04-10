@@ -33,6 +33,8 @@ class MonitoringService {
       // of transactions for performance monitoring.
       // We recommend adjusting this value in production
       tracesSampleRate: 1.0,
+      // turning this off because it causes the RequestHandler to hang when tests are run.
+      autoSessionTracking: false,
 
       // optionally include overriden Transport in options for testing
       ...(this.sentryTransport && { transport: this.sentryTransport }),
@@ -42,8 +44,7 @@ class MonitoringService {
 
     // RequestHandler creates a separate execution context using domains, so that every
     // transaction/span/breadcrumb is attached to its own Hub instance
-    // TODO: figure out why jest tests don't exit when using requestHandler
-    // app.use(Sentry.Handlers.requestHandler());
+    app.use(Sentry.Handlers.requestHandler());
     // TracingHandler creates a trace for every incoming request
     app.use(Sentry.Handlers.tracingHandler());
   }
