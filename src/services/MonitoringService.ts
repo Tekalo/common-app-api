@@ -16,10 +16,12 @@ class MonitoringService {
     /**
      * Initialize Sentry
      */
-    const { sentryDSN }: { sentryDSN: string } = configLoader.loadConfig();
+    const { env, sentryDSN }: { env: string; sentryDSN: string } =
+      configLoader.loadConfig();
 
     const options: Sentry.NodeOptions = {
       dsn: sentryDSN,
+      environment: env,
       integrations: [
         // enable HTTP calls tracing
         new Sentry.Integrations.Http({ tracing: true }),

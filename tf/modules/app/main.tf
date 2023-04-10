@@ -155,6 +155,9 @@ resource "aws_ecs_task_definition" "api" {
         }, {
         name  = "PORT"
         value = tostring(var.api_port)
+        }, {
+        name  = "SENTRY_DSN"
+        value = "${var.sentry_dsn}"
       }]
     }
   ])
