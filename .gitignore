@@ -4,3 +4,4 @@
 **/build
 **/.pnpm-store/*
 .env
+.DS_Store

@@ -8,9 +8,16 @@ import {
 } from '@App/routes/index.js';
 import errorHandler from './middleware/ErrorHandler.js';
 import AuthService from './services/AuthService.js';
+import MonitoringService from './services/MonitoringService.js';
 
-const getApp = (authService: AuthService): Application => {
+const getApp = (
+  authService: AuthService,
+  monitoringService: MonitoringService,
+): Application => {
   const app: Application = express();
+
+  monitoringService.sentryInit(app);
+
   const router = express.Router();
   app.use(express.json());
   /**
@@ -27,6 +34,14 @@ const getApp = (authService: AuthService): Application => {
   router.get('/docs', swaggerUi.setup(spec));
 
   router.get('/health', healthRoutes());
+
+  // for testing error capturing in Sentry
+  router.get('/debug-sentry', () => {
+    throw new Error('Debug Sentry error!');
+  });
+
+  // The error handler must be before any other error middleware and after all controllers
+  MonitoringService.addSentryErrorHandler(app);
 
   app.use(errorHandler);
   app.set('port', process.env.PORT);
