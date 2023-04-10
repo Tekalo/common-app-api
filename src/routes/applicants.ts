@@ -64,6 +64,13 @@ const applicantRoutes = (authService: AuthService) => {
       })
       .catch((err) => next(err));
   });
+
+  router.get('/me/submissions', (req: Request, res: Response, next) => {
+    res.status(200).send({
+      isFinal: false,
+      submission: null,
+    });
+  });
   return router;
 };
 
