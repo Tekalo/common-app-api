@@ -4,7 +4,7 @@
   "mappings": [
     {
       "to": "Date Added",
-      "from": "dateAdded",
+      "from": "createdAt",
       "type": "standard"
     },
     {

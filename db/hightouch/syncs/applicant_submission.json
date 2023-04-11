@@ -153,11 +153,6 @@
       "type": "standard"
     },
     {
-      "to": "Other Impact Causes",
-      "from": "otherCause",
-      "type": "standard"
-    },
-    {
       "to": "Interested In - State & Local Govt",
       "from": "interestGovt",
       "type": "standard"
