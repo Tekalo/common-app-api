@@ -1,0 +1,177 @@
+{
+  "mode": "upsert",
+  "baseId": "appU5cDvUtz44Wbm4",
+  "mappings": [
+    {
+      "to": "Name",
+      "from": "name",
+      "type": "standard"
+    },
+    {
+      "to": "Pronouns",
+      "from": "pronoun",
+      "type": "standard"
+    },
+    {
+      "to": "Date Added",
+      "from": "createdAt",
+      "type": "standard"
+    },
+    {
+      "to": "YOE",
+      "from": "yoe",
+      "type": "standard"
+    },
+    {
+      "to": "Resume Password",
+      "from": "resumePassword",
+      "type": "standard"
+    },
+    {
+      "to": "Portfolio",
+      "from": "portfolioUrl",
+      "type": "standard"
+    },
+    {
+      "to": "Portfolio Password",
+      "from": "portfolioPassword",
+      "type": "standard"
+    },
+    {
+      "to": "Skills",
+      "from": "allSkills",
+      "type": "standard"
+    },
+    {
+      "to": "Work Authorization",
+      "from": "workAuthorization",
+      "type": "standard"
+    },
+    {
+      "to": "Current Location",
+      "from": "currentLocation",
+      "type": "standard"
+    },
+    {
+      "to": "Open to Relocate",
+      "from": "openToRelocate",
+      "type": "standard"
+    },
+    {
+      "to": "Open to Remote",
+      "from": "openToRemote",
+      "type": "standard"
+    },
+    {
+      "to": "Desired Salary",
+      "from": "desiredSalary",
+      "type": "standard"
+    },
+    {
+      "to": "Previous Impact Experience",
+      "from": "previousImpactExperience",
+      "type": "standard"
+    },
+    {
+      "to": "Essay Response",
+      "from": "essayResponse",
+      "type": "standard"
+    },
+    {
+      "to": "Email",
+      "from": "email",
+      "type": "standard"
+    },
+    {
+      "to": "Internal Submission ID",
+      "from": "id",
+      "type": "standard"
+    },
+    {
+      "to": "Data Attribution",
+      "from": "originTag",
+      "type": "standard"
+    },
+    {
+      "to": "Candidate open to",
+      "from": "searchStatus",
+      "type": "standard"
+    },
+    {
+      "to": "Interested In - Opportunities",
+      "from": "interestEmploymentType",
+      "type": "standard"
+    },
+    {
+      "to": "Interested In - Roles",
+      "from": "interestRoles",
+      "type": "standard"
+    },
+    {
+      "to": "Current or Most Recent Role",
+      "from": "lastRole",
+      "type": "standard"
+    },
+    {
+      "to": "Current or Most Recent Org",
+      "from": "lastOrg",
+      "type": "standard"
+    },
+    {
+      "to": "Resume",
+      "from": "resumeUrl",
+      "type": "standard"
+    },
+    {
+      "to": "Mobile Number",
+      "from": "phone",
+      "type": "standard"
+    },
+    {
+      "to": "LinkedIn",
+      "from": "linkedInUrl",
+      "type": "standard"
+    },
+    {
+      "to": "Github",
+      "from": "githubUrl",
+      "type": "standard"
+    },
+    {
+      "to": "Hours per week (part-time)",
+      "from": "hoursPerWeek",
+      "type": "standard"
+    },
+    {
+      "to": "Interested In - Impact Causes",
+      "from": "allCauses",
+      "type": "standard"
+    },
+    {
+      "to": "Preferred Contact Method",
+      "from": "preferredContact",
+      "type": "standard"
+    },
+    {
+      "to": "Other Impact Causes",
+      "from": "otherCause",
+      "type": "standard"
+    },
+    {
+      "to": "Interested In - State & Local Govt",
+      "from": "interestGovt",
+      "type": "standard"
+    },
+    {
+      "to": "Interested in USDR Role Types",
+      "from": "interestGovtEmplTypes",
+      "type": "standard"
+    }
+  ],
+  "tableName": "Candidates",
+  "configVersion": 0,
+  "externalIdMapping": {
+    "to": "Internal ID",
+    "from": "applicantId"
+  }
+}

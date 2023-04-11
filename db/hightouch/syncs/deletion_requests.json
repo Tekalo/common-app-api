@@ -1,0 +1,18 @@
+{
+  "mode": "update",
+  "baseId": "appU5cDvUtz44Wbm4",
+  "mappings": [
+    {
+      "to": "Deletion Requested",
+      "type": "static",
+      "value": true,
+      "valueType": "BOOLEAN"
+    }
+  ],
+  "tableName": "Candidates",
+  "configVersion": 0,
+  "externalIdMapping": {
+    "to": "Internal ID",
+    "from": "applicantid"
+  }
+}
