@@ -1,6 +1,7 @@
 import express, { Application } from 'express';
 import * as swaggerUi from 'swagger-ui-express';
 import spec from '@App/resources/spec.json' assert { type: 'json' };
+import { auth } from 'express-oauth2-jwt-bearer';
 import {
   applicantRoutes,
   healthRoutes,
@@ -9,6 +10,7 @@ import {
 import errorHandler from './middleware/ErrorHandler.js';
 import AuthService from './services/AuthService.js';
 import MonitoringService from './services/MonitoringService.js';
+import configLoader from './services/configLoader.js';
 
 const getApp = (
   authService: AuthService,
@@ -24,6 +26,15 @@ const getApp = (
    * Sets the app to use router and auth
    */
   app.use(router);
+
+  // TODO - move this to per-route but why the FK does this throw a 500?!?!?
+  app.use(
+    auth({
+      issuerBaseURL: 'htps://sf-capp-dev.us.auth0.comt',
+      audience: 'https://capp-auth.dev.apps.futurestech.cloud',
+    }),
+  );
+
   app.use('/applicants', applicantRoutes(authService));
   app.use('/opportunities', opportunitiesRoutes());
   app.use('/health', healthRoutes());

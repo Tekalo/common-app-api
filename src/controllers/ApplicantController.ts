@@ -191,6 +191,42 @@ class ApplicantController {
       );
     }
   }
+
+  async getMySubmissions(email: string) {
+    let applicant;
+    let submission: ApplicantDraftSubmission | ApplicantSubmission | null;
+    let isFinal: boolean = false;
+    try {
+      applicant = await this.prisma.applicant.findUniqueOrThrow({
+        where: { email },
+      });
+      submission = await this.prisma.applicantSubmission.findFirst({
+        where: { applicantId: applicant.id },
+      });
+      if (submission) {
+        isFinal = true;
+      } else {
+        submission = await this.prisma.applicantDraftSubmission.findFirst({
+          where: { applicantId: applicant.id },
+        });
+      }
+      return { isFinal, submission };
+    } catch (e) {
+      console.log(e);
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        // TODO : Log e.message in Sentry
+        throw new CAPPError({
+          title: 'Applicant Submissions Retrieval Error',
+          detail: 'Could not find applicant submissions',
+          status: 400,
+        });
+      }
+      throw new CAPPError({
+        title: 'Applicant Submissions Retrieval Error',
+        detail: "Error when retrieving applicant's submission",
+      });
+    }
+  }
 }
 
 export default ApplicantController;

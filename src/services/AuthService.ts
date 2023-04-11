@@ -1,8 +1,10 @@
 import CAPPError from '@App/resources/shared/CAPPError.js';
 import { Auth0UserBody, Auth0Config } from '@App/resources/types/auth0.js';
-import { ManagementClient } from 'auth0';
+import { AuthenticationClient, ManagementClient } from 'auth0';
 import { randomBytes } from 'node:crypto';
 import configLoader from './configLoader.js';
+import { auth } from 'express-oauth2-jwt-bearer';
+import { Handler } from 'express';
 
 class AuthService {
   private auth0Client: ManagementClient | undefined;
@@ -58,6 +60,11 @@ class AuthService {
       throw e;
     }
     return responseBody;
+  }
+
+  getAuthMiddleware(): Handler {
+    const { audience, issuerBaseURL } = configLoader.loadConfig().auth0;
+    return auth({ audience, issuerBaseURL });
   }
 }
 

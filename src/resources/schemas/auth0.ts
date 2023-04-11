@@ -14,6 +14,8 @@ const Auth0ConfigSchema = z.object({
   domain: z.string(),
   clientId: z.string(),
   clientSecret: z.string(),
+  audience: z.string(),
+  issuerBaseURL: z.string(),
 });
 
 export { ShellUserPayloadSchema, Auth0ConfigSchema };

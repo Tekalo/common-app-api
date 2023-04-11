@@ -12,9 +12,10 @@ import {
 
 import AuthService from '@App/services/AuthService.js';
 import prisma from '@App/resources/client.js';
-import express, { Request, Response } from 'express';
-
-export type EmptyObject = Record<string, unknown>;
+import express, { NextFunction, Request, Response } from 'express';
+import { auth } from 'express-oauth2-jwt-bearer';
+import configLoader from '@App/services/configLoader.js';
+import { requestHandler } from '@sentry/node/types/handlers.js';
 
 const applicantRoutes = (authService: AuthService) => {
   const router = express.Router();
@@ -65,12 +66,29 @@ const applicantRoutes = (authService: AuthService) => {
       .catch((err) => next(err));
   });
 
-  router.get('/me/submissions', (req: Request, res: Response, next) => {
-    res.status(200).send({
-      isFinal: false,
-      submission: null,
-    });
-  });
+  router.get(
+    '/me/submissions',
+    (req: Request, res: Response, next: NextFunction) => {
+      // auth({ audience: 'https://auth0.capp.com' , issuerBaseURL: 'https://sf-capp-dev.us.auth0.com' });
+      // console.log(theauth);
+      const theauth = authService.getAuthMiddleware();
+      console.log('here!!');
+      const authToken = req.get('Authorization') || '';
+      console.log(theauth);
+      // todo: is this realiable?
+      const { email } = JSON.parse(
+        Buffer.from(authToken.split('.')[1], 'base64').toString(),
+      );
+      console.log(email);
+      applicantController
+        .getMySubmissions(email)
+        .then((result) => {
+          res.status(200).json(result);
+        })
+        .catch((err) => next(err));
+    },
+  );
+
   return router;
 };
 

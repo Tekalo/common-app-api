@@ -146,6 +146,16 @@
         }
       }
     },
+    "/applicants/me/submissions": {
+      "get": {
+        "description": "Get current applicant's submission",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
     "/opportunities/batch": {
       "post": {
         "description": "Create a new opportunity",
