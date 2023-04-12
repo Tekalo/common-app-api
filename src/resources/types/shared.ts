@@ -5,3 +5,8 @@ export type Problem = {
   type?: string;
   instance?: string;
 };
+
+export type SessionCookie = {
+  applicantId: number;
+  registered: boolean;
+};

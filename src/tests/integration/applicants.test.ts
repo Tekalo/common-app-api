@@ -285,6 +285,63 @@ describe('POST /applicants/:id/submissions/draft', () => {
     new DummyMonitoringService(),
   );
   it('should create a new draft applicant submission', async () => {
+    const agent = request.agent(dummyAuthApp);
+    const testApplicantResp = await agent.post('/applicants').send({
+      name: 'Bob Boberson',
+      email: 'bboberson@gmail.com',
+      preferredContact: 'sms',
+      searchStatus: 'active',
+      acceptedTerms: true,
+      acceptedPrivacy: true,
+    });
+    const { id }: { id: number } = testApplicantResp.body;
+    const testBody: ApplicantDraftSubmissionBody = {
+      resumeUrl: 'https://bobcanbuild.com',
+    };
+    const { body } = await agent
+      .post(`/applicants/${id}/submissions/draft`)
+      .send(testBody)
+      .expect(200);
+    expect(body).toHaveProperty('id');
+  });
+
+  it('should update an existing draft applicant submission', async () => {
+    const agent = request.agent(dummyAuthApp);
+    const testApplicantResp = await agent.post('/applicants').send({
+      name: 'Bob Boberson',
+      email: 'bboberson@gmail.com',
+      preferredContact: 'sms',
+      searchStatus: 'active',
+      acceptedTerms: true,
+      acceptedPrivacy: true,
+    });
+    const { id }: { id: number } = testApplicantResp.body;
+    const draftBody: ApplicantDraftSubmissionBody = {
+      resumeUrl: 'https://bobcanbuild.com/resume',
+    };
+    const draftUpdateBody: ApplicantDraftSubmissionBody = {
+      resumeUrl: 'https://bobcanREALLYbuild.com/resume',
+    };
+    const { body: draftResp } = await agent
+      .post(`/applicants/${id}/submissions/draft`)
+      .send(draftBody)
+      .expect(200);
+    expect(draftResp).toHaveProperty(
+      'resumeUrl',
+      'https://bobcanbuild.com/resume',
+    );
+    const { body } = await agent
+      .post(`/applicants/${id}/submissions/draft`)
+      .send(draftUpdateBody)
+      .expect(200);
+    expect(body).toHaveProperty(
+      'resumeUrl',
+      'https://bobcanREALLYbuild.com/resume',
+    );
+  });
+
+  it('should not allow applicant to save draft submission without a valid cookie supplied', async () => {
+    // Supertest's request() will not save cookies as each request as a separate cookie jar
     const testApplicantResp = await request(dummyAuthApp)
       .post('/applicants')
       .send({
@@ -302,37 +359,7 @@ describe('POST /applicants/:id/submissions/draft', () => {
     const { body } = await request(dummyAuthApp)
       .post(`/applicants/${id}/submissions/draft`)
       .send(testBody)
-      .expect(200);
-    expect(body).toHaveProperty('id');
-  });
-
-  it('should update an existing draft applicant submission', async () => {
-    const testApplicantResp = await request(dummyAuthApp)
-      .post('/applicants')
-      .send({
-        name: 'Bob Boberson',
-        email: 'bboberson@gmail.com',
-        preferredContact: 'sms',
-        searchStatus: 'active',
-        acceptedTerms: true,
-        acceptedPrivacy: true,
-      });
-    const { id }: { id: number } = testApplicantResp.body;
-    const draftBody: ApplicantDraftSubmissionBody = {
-      resumeUrl: 'https://bobcanbuild.com',
-    };
-    const draftUpdateBody: ApplicantDraftSubmissionBody = {
-      resumeUrl: 'https://bobcanREALLYbuild.org',
-    };
-    const { body: draftResp } = await request(dummyAuthApp)
-      .post(`/applicants/${id}/submissions/draft`)
-      .send(draftBody)
-      .expect(200);
-    expect(draftResp).toHaveProperty('resumeUrl', 'https://bobcanbuild.com');
-    const { body } = await request(dummyAuthApp)
-      .post(`/applicants/${id}/submissions/draft`)
-      .send(draftUpdateBody)
-      .expect(200);
-    expect(body).toHaveProperty('resumeUrl', 'https://bobcanREALLYbuild.org');
+      .expect(401);
+    expect(body).toHaveProperty('title', 'Cannot verify applicant request');
   });
 });

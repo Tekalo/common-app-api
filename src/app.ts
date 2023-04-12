@@ -6,9 +6,11 @@ import {
   healthRoutes,
   opportunitiesRoutes,
 } from '@App/routes/index.js';
+import cookieSession from 'cookie-session';
 import errorHandler from './middleware/ErrorHandler.js';
 import AuthService from './services/AuthService.js';
 import MonitoringService from './services/MonitoringService.js';
+import configLoader from './services/configLoader.js';
 
 const getApp = (
   authService: AuthService,
@@ -20,6 +22,20 @@ const getApp = (
 
   const router = express.Router();
   app.use(express.json());
+
+  /**
+   * Setup cookie session middleware
+   * for authenticating new appliants who have not yet created an account
+   */
+  const { clientSecret } = configLoader.loadConfig().auth0;
+  app.use(
+    cookieSession({
+      name: 'session',
+      keys: [clientSecret], // can be any signing key
+      httpOnly: true,
+      maxAge: 12 * 60 * 60 * 1000, // 12 hours
+    }),
+  );
   /**
    * Sets the app to use router and auth
    */
@@ -27,6 +43,7 @@ const getApp = (
   app.use('/applicants', applicantRoutes(authService));
   app.use('/opportunities', opportunitiesRoutes());
   app.use('/health', healthRoutes());
+
   /**
    * Swagger UI documentation endpoint
    */
