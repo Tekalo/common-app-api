@@ -57,8 +57,8 @@
     "@types/node": "18.15.11",
     "@types/supertest": "2.0.12",
     "@types/swagger-ui-express": "4.1.3",
-    "@typescript-eslint/eslint-plugin": "5.57.1",
-    "@typescript-eslint/parser": "5.57.1",
+    "@typescript-eslint/eslint-plugin": "5.58.0",
+    "@typescript-eslint/parser": "5.58.0",
     "eslint": "8.38.0",
     "eslint-config-airbnb-base": "15.0.0",
     "eslint-config-airbnb-typescript": "17.0.0",
@@ -75,7 +75,7 @@
     "sentry-testkit": "5.0.5",
     "supertest": "6.3.3",
     "ts-node": "10.9.1",
-    "typescript": "4.9.5"
+    "typescript": "5.0.4"
   },
   "prisma": {
     "schema": "db/prisma/schema.prisma",

@@ -129,7 +129,7 @@ model OpportunityBatch {
 model ApplicantDeletionRequests {
     id              Int      @id @default(autoincrement())
     applicantId     Int      @unique
-    dateAdded       DateTime @default(now())
+    createdAt       DateTime @default(now())
     email           String
     auth0Id         String
     acceptedTerms   DateTime
@@ -142,7 +142,7 @@ model OpportunitySubmission {
     opportunityBatch   OpportunityBatch @relation(fields: [opportunityBatchId], references: [id])
     opportunityBatchId Int
 
-    dateAdded      DateTime @default(now())
+    createdAt      DateTime @default(now())
     source         String // enum
     employmentType String // enum
 
