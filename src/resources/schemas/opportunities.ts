@@ -68,7 +68,7 @@ const OpportunityBatchRequestBodySchema = z.object({
       jdUrl: z.string().optional(),
       desiredYoe: z.array(YOE),
       desiredSkills: z.array(Skills),
-      desiredSkillsOther: z.string().optional(),
+      desiredOtherSkills: z.string().optional(),
       visaSponsorship: VisaSponsorship,
       similarStaffed: z.boolean(),
       desiredImpactExp: z.string().optional(),

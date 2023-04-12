@@ -49,7 +49,7 @@ describe('Opportunity Controller', () => {
           desiredYoe: ['0-2', '2-4'],
           desiredSkills: ['react', 'sketch'],
           jdUrl: 'comeflipforbob.com/apply',
-          desiredSkillsOther: 'really good at flipping burgers',
+          desiredOtherSkills: 'really good at flipping burgers',
           visaSponsorship: 'no',
           similarStaffed: true,
           desiredImpactExp:
@@ -112,7 +112,7 @@ describe('Opportunity Controller', () => {
           desiredEndDate: new Date('2024-12-01'),
           desiredYoe: ['15+'],
           desiredSkills: ['figma', 'project management'],
-          desiredSkillsOther:
+          desiredOtherSkills:
             'really good at frying fries, specifically of the waffle persuasion',
           jdUrl: 'comeflipforbob.com/apply',
           visaSponsorship: 'no',
