@@ -362,4 +362,26 @@ describe('POST /applicants/:id/submissions/draft', () => {
       .expect(401);
     expect(body).toHaveProperty('title', 'Cannot verify applicant request');
   });
+
+  it('should not allow applicant to save draft submission of another user', async () => {
+    // Supertest's request() will not save cookies as each request as a separate cookie jar
+    const agent = request.agent(dummyAuthApp);
+    const testApplicantResp = await agent.post('/applicants').send({
+      name: 'Bob Boberson',
+      email: 'bboberson@gmail.com',
+      preferredContact: 'sms',
+      searchStatus: 'active',
+      acceptedTerms: true,
+      acceptedPrivacy: true,
+    });
+    const { id }: { id: number } = testApplicantResp.body;
+    const testBody: ApplicantDraftSubmissionBody = {
+      resumeUrl: 'https://bobcanbuild.com',
+    };
+    const { body } = await request(dummyAuthApp)
+      .post(`/applicants/${id + 1}/submissions/draft`)
+      .send(testBody)
+      .expect(401);
+    expect(body).toHaveProperty('title', 'Cannot verify applicant request');
+  });
 });

@@ -27,7 +27,7 @@ const applicantRoutes = (authService: AuthService) => {
     applicantController
       .createApplicant(validatedBody)
       .then((result) => {
-        req.session = setCookie(result);
+        req.session.applicant = setCookie(result);
         res.status(200).json(result);
       })
       .catch((err) => next(err));

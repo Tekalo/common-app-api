@@ -4,8 +4,9 @@ import { SessionCookie } from '@App/resources/types/shared.js';
 import { Request } from 'express';
 
 function validateCookie(req: Request) {
-  if (req.session?.isPopulated) {
-    if (req.session.registered === true && req.session.applicantId) {
+  if (req.session.applicant) {
+    const pathApplicantId = +req.params.id;
+    if (req.session.applicant.id === pathApplicantId) {
       return true;
     }
   }
@@ -16,11 +17,9 @@ function validateCookie(req: Request) {
   });
 }
 
-// TOOD: is there anything more helpful I should put in here
 function setCookie(applicant: ApplicantResponseBody): SessionCookie {
   return {
-    applicantId: applicant.id,
-    registered: true,
+    id: applicant.id,
   };
 }
 

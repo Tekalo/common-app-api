@@ -7,6 +7,11 @@ export type Problem = {
 };
 
 export type SessionCookie = {
-  applicantId: number;
-  registered: boolean;
+  id: number;
 };
+
+declare module 'express-session' {
+  interface Session {
+    applicant: SessionCookie;
+  }
+}

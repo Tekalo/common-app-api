@@ -6,7 +6,8 @@ import {
   healthRoutes,
   opportunitiesRoutes,
 } from '@App/routes/index.js';
-import cookieSession from 'cookie-session';
+import session from 'express-session';
+import ConnectPg from 'connect-pg-simple';
 import errorHandler from './middleware/ErrorHandler.js';
 import AuthService from './services/AuthService.js';
 import MonitoringService from './services/MonitoringService.js';
@@ -27,13 +28,17 @@ const getApp = (
    * Setup cookie session middleware
    * for authenticating new appliants who have not yet created an account
    */
+  const PgClient = ConnectPg(session);
   const { clientSecret } = configLoader.loadConfig().auth0;
   app.use(
-    cookieSession({
-      name: 'session',
-      keys: [clientSecret], // can be any signing key
-      httpOnly: true,
-      maxAge: 12 * 60 * 60 * 1000, // 12 hours
+    session({
+      store: new PgClient({
+        tableName: 'ApplicantSession',
+      }),
+      secret: clientSecret,
+      resave: false,
+      saveUninitialized: true,
+      cookie: { httpOnly: true, maxAge: 12 * 60 * 60 * 1000 }, // 12 hours
     }),
   );
   /**
