@@ -431,7 +431,7 @@
             }
           },
           "otherCause": {
-            "type": "string"
+            "type": "array"
           },
           "workAuthorization": {
             "type": "string"
