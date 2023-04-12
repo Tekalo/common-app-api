@@ -38,11 +38,6 @@
       "type": "standard"
     },
     {
-      "to": "Desired Skills",
-      "from": "desiredSkills",
-      "type": "standard"
-    },
-    {
       "to": "Contact Name",
       "from": "contactName",
       "type": "standard"
@@ -116,9 +111,40 @@
       "to": "Contact Phone Number",
       "from": "contactPhone",
       "type": "standard"
+    },
+    {
+      "to": "Position Title",
+      "from": "positionTitle",
+      "type": "standard"
+    },
+    {
+      "to": "Is fully remote?",
+      "from": "fullyRemote",
+      "type": "standard"
+    },
+    {
+      "to": "Equal Opportunity Employer?",
+      "from": "equalOpportunityEmployer",
+      "type": "standard"
+    },
+    {
+      "to": "Paid or Unpaid",
+      "from": "paymentStatus",
+      "type": "standard"
+    },
+    {
+      "to": "Opportunity Name",
+      "from": "opportunityName",
+      "type": "standard"
+    },
+    {
+      "to": "Desired Skills",
+      "from": "desiredSkillsAll",
+      "type": "standard"
     }
   ],
   "tableName": "Opportunities",
+  "deleteMode": null,
   "configVersion": 0,
   "externalIdMapping": {
     "to": "Internal ID",
