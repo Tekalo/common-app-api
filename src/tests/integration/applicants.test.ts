@@ -347,8 +347,30 @@ describe('POST /applicants/:id/submissions/draft', () => {
     );
   });
 
+  it('should not allow applicant to save draft submission of another user', async () => {
+    // Using superagent here so each request share's a cookie jar
+    const agent = request.agent(dummyAuthApp);
+    const testApplicantResp = await agent.post('/applicants').send({
+      name: 'Bob Boberson',
+      email: 'bboberson@gmail.com',
+      preferredContact: 'sms',
+      searchStatus: 'active',
+      acceptedTerms: true,
+      acceptedPrivacy: true,
+    });
+    const { id }: { id: number } = testApplicantResp.body;
+    const testBody: ApplicantDraftSubmissionBody = {
+      resumeUrl: 'https://bobcanbuild.com',
+    };
+    const { body } = await agent
+      .post(`/applicants/${id + 1}/submissions/draft`)
+      .send(testBody)
+      .expect(401);
+    expect(body).toHaveProperty('title', 'Cannot verify applicant request');
+  });
+
   it('should not allow applicant to save draft submission without a valid cookie supplied', async () => {
-    // Supertest's request() will not save cookies as each request as a separate cookie jar
+    // Supertest will not save cookies (each request has a separate cookie jar)
     const testApplicantResp = await request(dummyAuthApp)
       .post('/applicants')
       .send({
@@ -365,28 +387,6 @@ describe('POST /applicants/:id/submissions/draft', () => {
     };
     const { body } = await request(dummyAuthApp)
       .post(`/applicants/${id}/submissions/draft`)
-      .send(testBody)
-      .expect(401);
-    expect(body).toHaveProperty('title', 'Cannot verify applicant request');
-  });
-
-  it('should not allow applicant to save draft submission of another user', async () => {
-    // Supertest's request() will not save cookies as each request as a separate cookie jar
-    const agent = request.agent(dummyAuthApp);
-    const testApplicantResp = await agent.post('/applicants').send({
-      name: 'Bob Boberson',
-      email: 'bboberson@gmail.com',
-      preferredContact: 'sms',
-      searchStatus: 'active',
-      acceptedTerms: true,
-      acceptedPrivacy: true,
-    });
-    const { id }: { id: number } = testApplicantResp.body;
-    const testBody: ApplicantDraftSubmissionBody = {
-      resumeUrl: 'https://bobcanbuild.com',
-    };
-    const { body } = await request(dummyAuthApp)
-      .post(`/applicants/${id + 1}/submissions/draft`)
       .send(testBody)
       .expect(401);
     expect(body).toHaveProperty('title', 'Cannot verify applicant request');
