@@ -8,6 +8,7 @@ import {
 import { itif, getRandomString } from '@App/tests/util/helpers.js';
 import prisma from '@App/resources/client.js';
 import AuthService from '@App/services/AuthService.js';
+import configLoader from '@App/services/configLoader.js';
 
 import applicantSubmissionGenerator from '../fixtures/applicantSubmissionGenerator.js';
 import DummyAuthService from '../fixtures/DummyAuthService.js';
@@ -23,11 +24,14 @@ afterEach(async () => {
   await prisma.applicantDeletionRequests.deleteMany();
 });
 
+const appConfig = configLoader.loadConfig();
+
 describe('POST /applicants', () => {
   describe('No Auth0', () => {
     const dummyAuthApp = getApp(
       new DummyAuthService(),
       new DummyMonitoringService(),
+      appConfig,
     );
     it('should create a new applicant only in database', async () => {
       const { body } = await request(dummyAuthApp)
@@ -104,7 +108,7 @@ describe('POST /applicants', () => {
   });
 
   describe('Auth0 Integration', () => {
-    const app = getApp(authService, new DummyMonitoringService());
+    const app = getApp(authService, new DummyMonitoringService(), appConfig);
     afterEach(async () => {
       if (testUserID) {
         const auth0Service = authService.getClient();
@@ -171,6 +175,7 @@ describe('POST /applicants/:id/submissions', () => {
   const dummyAuthApp = getApp(
     new DummyAuthService(),
     new DummyMonitoringService(),
+    appConfig,
   );
   it('should create a new applicant submission', async () => {
     const testApplicantResp = await request(dummyAuthApp)
@@ -224,7 +229,7 @@ describe('DELETE /applicants', () => {
         await auth0Service.deleteUser({ id: testUserID });
       }
     });
-    const app = getApp(authService, new DummyMonitoringService());
+    const app = getApp(authService, new DummyMonitoringService(), appConfig);
     itif('CI' in process.env)(
       'should delete an existing applicant from Auth0 and from database',
       async () => {
@@ -250,6 +255,7 @@ describe('DELETE /applicants', () => {
     const appNoAuth = getApp(
       new DummyAuthService(),
       new DummyMonitoringService(),
+      appConfig,
     );
 
     it('should return 400 for non-existent applicant id', async () => {
@@ -283,6 +289,7 @@ describe('POST /applicants/:id/submissions/draft', () => {
   const dummyAuthApp = getApp(
     new DummyAuthService(),
     new DummyMonitoringService(),
+    appConfig,
   );
   it('should create a new draft applicant submission', async () => {
     const agent = request.agent(dummyAuthApp);

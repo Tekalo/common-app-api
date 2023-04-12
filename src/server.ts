@@ -1,8 +1,13 @@
 import getApp from '@App/app.js';
 import AuthService from './services/AuthService.js';
+import configLoader from './services/configLoader.js';
 import MonitoringService from './services/MonitoringService.js';
 
-const app = getApp(new AuthService(), new MonitoringService());
+const app = getApp(
+  new AuthService(),
+  new MonitoringService(),
+  configLoader.loadConfig(),
+);
 
 const port = +app.get('port');
 

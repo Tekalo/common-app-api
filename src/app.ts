@@ -11,11 +11,12 @@ import ConnectPg from 'connect-pg-simple';
 import errorHandler from './middleware/ErrorHandler.js';
 import AuthService from './services/AuthService.js';
 import MonitoringService from './services/MonitoringService.js';
-import configLoader from './services/configLoader.js';
+import { BaseConfig } from './services/configLoader.js';
 
 const getApp = (
   authService: AuthService,
   monitoringService: MonitoringService,
+  config: BaseConfig,
 ): Application => {
   const app: Application = express();
 
@@ -29,7 +30,7 @@ const getApp = (
    * for authenticating new appliants who have not yet created an account
    */
   const PgClient = ConnectPg(session);
-  const { clientSecret } = configLoader.loadConfig().auth0;
+  const { clientSecret } = config.auth0;
   app.use(
     session({
       store: new PgClient({
