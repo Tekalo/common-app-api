@@ -7,7 +7,7 @@ function validateCookie(req: Request) {
   if (req.session.applicant) {
     const pathApplicantId = +req.params.id;
     if (req.session.applicant.id === pathApplicantId) {
-      return true;
+      return req.session.applicant.id;
     }
   }
   throw new CAPPError({

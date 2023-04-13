@@ -56,9 +56,8 @@ const applicantRoutes = (authService: AuthService) => {
   });
 
   router.post('/:id/submissions/draft', (req: Request, res: Response, next) => {
-    validateCookie(req);
+    const applicantID = validateCookie(req);
     const appBody = req.body as ApplicantDraftSubmissionBody;
-    const applicantID = +req.params.id;
     const validatedBody =
       ApplicantDraftSubmissionRequestBodySchema.parse(appBody);
     applicantController
