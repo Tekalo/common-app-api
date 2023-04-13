@@ -28,7 +28,7 @@ const Skills = z.enum([
 ]);
 
 const EmploymentType = z.enum([
-  'full-time job',
+  'full-time employee',
   'volunteer',
   'contractor',
   'consultant',
