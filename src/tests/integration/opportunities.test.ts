@@ -1,10 +1,16 @@
 import request from 'supertest';
 import getApp from '@App/app.js';
 import prisma from '@App/resources/client.js';
+import configLoader from '@App/services/configLoader.js';
 import DummyAuthService from '../fixtures/DummyAuthService.js';
 import DummyMonitoringService from '../fixtures/DummyMonitoringService.js';
 
-const app = getApp(new DummyAuthService(), new DummyMonitoringService());
+const appConfig = configLoader.loadConfig();
+const app = getApp(
+  new DummyAuthService(),
+  new DummyMonitoringService(),
+  appConfig,
+);
 
 afterEach(async () => {
   await prisma.opportunitySubmission.deleteMany();

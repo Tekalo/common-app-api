@@ -5,3 +5,13 @@ export type Problem = {
   type?: string;
   instance?: string;
 };
+
+export type SessionCookie = {
+  id: number;
+};
+
+declare module 'express-session' {
+  interface Session {
+    applicant: SessionCookie;
+  }
+}

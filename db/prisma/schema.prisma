@@ -7,6 +7,12 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
+model ApplicantSession {
+    sid    String   @id
+    sess   Json
+    expire DateTime
+}
+
 model Applicant {
     id                Int                        @id @default(autoincrement())
     auth0Id           String                     @unique

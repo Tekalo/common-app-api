@@ -8,6 +8,7 @@ import {
 import { itif, getRandomString } from '@App/tests/util/helpers.js';
 import prisma from '@App/resources/client.js';
 import AuthService from '@App/services/AuthService.js';
+import configLoader from '@App/services/configLoader.js';
 
 import applicantSubmissionGenerator from '../fixtures/applicantSubmissionGenerator.js';
 import DummyAuthService from '../fixtures/DummyAuthService.js';
@@ -23,11 +24,14 @@ afterEach(async () => {
   await prisma.applicantDeletionRequests.deleteMany();
 });
 
+const appConfig = configLoader.loadConfig();
+
 describe('POST /applicants', () => {
   describe('No Auth0', () => {
     const dummyAuthApp = getApp(
       new DummyAuthService(),
       new DummyMonitoringService(),
+      appConfig,
     );
     it('should create a new applicant only in database', async () => {
       const { body } = await request(dummyAuthApp)
@@ -104,7 +108,7 @@ describe('POST /applicants', () => {
   });
 
   describe('Auth0 Integration', () => {
-    const app = getApp(authService, new DummyMonitoringService());
+    const app = getApp(authService, new DummyMonitoringService(), appConfig);
     afterEach(async () => {
       if (testUserID) {
         const auth0Service = authService.getClient();
@@ -171,6 +175,7 @@ describe('POST /applicants/:id/submissions', () => {
   const dummyAuthApp = getApp(
     new DummyAuthService(),
     new DummyMonitoringService(),
+    appConfig,
   );
   it('should create a new applicant submission', async () => {
     const testApplicantResp = await request(dummyAuthApp)
@@ -224,7 +229,7 @@ describe('DELETE /applicants', () => {
         await auth0Service.deleteUser({ id: testUserID });
       }
     });
-    const app = getApp(authService, new DummyMonitoringService());
+    const app = getApp(authService, new DummyMonitoringService(), appConfig);
     itif('CI' in process.env)(
       'should delete an existing applicant from Auth0 and from database',
       async () => {
@@ -250,6 +255,7 @@ describe('DELETE /applicants', () => {
     const appNoAuth = getApp(
       new DummyAuthService(),
       new DummyMonitoringService(),
+      appConfig,
     );
 
     it('should return 400 for non-existent applicant id', async () => {
@@ -283,8 +289,88 @@ describe('POST /applicants/:id/submissions/draft', () => {
   const dummyAuthApp = getApp(
     new DummyAuthService(),
     new DummyMonitoringService(),
+    appConfig,
   );
   it('should create a new draft applicant submission', async () => {
+    const agent = request.agent(dummyAuthApp);
+    const testApplicantResp = await agent.post('/applicants').send({
+      name: 'Bob Boberson',
+      email: 'bboberson@gmail.com',
+      preferredContact: 'sms',
+      searchStatus: 'active',
+      acceptedTerms: true,
+      acceptedPrivacy: true,
+    });
+    const { id }: { id: number } = testApplicantResp.body;
+    const testBody: ApplicantDraftSubmissionBody = {
+      resumeUrl: 'https://bobcanbuild.com',
+    };
+    const { body } = await agent
+      .post(`/applicants/${id}/submissions/draft`)
+      .send(testBody)
+      .expect(200);
+    expect(body).toHaveProperty('id');
+  });
+
+  it('should update an existing draft applicant submission', async () => {
+    const agent = request.agent(dummyAuthApp);
+    const testApplicantResp = await agent.post('/applicants').send({
+      name: 'Bob Boberson',
+      email: 'bboberson@gmail.com',
+      preferredContact: 'sms',
+      searchStatus: 'active',
+      acceptedTerms: true,
+      acceptedPrivacy: true,
+    });
+    const { id }: { id: number } = testApplicantResp.body;
+    const draftBody: ApplicantDraftSubmissionBody = {
+      resumeUrl: 'https://bobcanbuild.com/resume',
+    };
+    const draftUpdateBody: ApplicantDraftSubmissionBody = {
+      resumeUrl: 'https://bobcanREALLYbuild.com/resume',
+    };
+    const { body: draftResp } = await agent
+      .post(`/applicants/${id}/submissions/draft`)
+      .send(draftBody)
+      .expect(200);
+    expect(draftResp).toHaveProperty(
+      'resumeUrl',
+      'https://bobcanbuild.com/resume',
+    );
+    const { body } = await agent
+      .post(`/applicants/${id}/submissions/draft`)
+      .send(draftUpdateBody)
+      .expect(200);
+    expect(body).toHaveProperty(
+      'resumeUrl',
+      'https://bobcanREALLYbuild.com/resume',
+    );
+  });
+
+  it('should not allow applicant to save draft submission of another user', async () => {
+    // Using superagent here so each request share's a cookie jar
+    const agent = request.agent(dummyAuthApp);
+    const testApplicantResp = await agent.post('/applicants').send({
+      name: 'Bob Boberson',
+      email: 'bboberson@gmail.com',
+      preferredContact: 'sms',
+      searchStatus: 'active',
+      acceptedTerms: true,
+      acceptedPrivacy: true,
+    });
+    const { id }: { id: number } = testApplicantResp.body;
+    const testBody: ApplicantDraftSubmissionBody = {
+      resumeUrl: 'https://bobcanbuild.com',
+    };
+    const { body } = await agent
+      .post(`/applicants/${id + 1}/submissions/draft`)
+      .send(testBody)
+      .expect(401);
+    expect(body).toHaveProperty('title', 'Cannot verify applicant request');
+  });
+
+  it('should not allow applicant to save draft submission without a valid cookie supplied', async () => {
+    // Supertest will not save cookies (each request has a separate cookie jar)
     const testApplicantResp = await request(dummyAuthApp)
       .post('/applicants')
       .send({
@@ -302,37 +388,7 @@ describe('POST /applicants/:id/submissions/draft', () => {
     const { body } = await request(dummyAuthApp)
       .post(`/applicants/${id}/submissions/draft`)
       .send(testBody)
-      .expect(200);
-    expect(body).toHaveProperty('id');
-  });
-
-  it('should update an existing draft applicant submission', async () => {
-    const testApplicantResp = await request(dummyAuthApp)
-      .post('/applicants')
-      .send({
-        name: 'Bob Boberson',
-        email: 'bboberson@gmail.com',
-        preferredContact: 'sms',
-        searchStatus: 'active',
-        acceptedTerms: true,
-        acceptedPrivacy: true,
-      });
-    const { id }: { id: number } = testApplicantResp.body;
-    const draftBody: ApplicantDraftSubmissionBody = {
-      resumeUrl: 'https://bobcanbuild.com',
-    };
-    const draftUpdateBody: ApplicantDraftSubmissionBody = {
-      resumeUrl: 'https://bobcanREALLYbuild.org',
-    };
-    const { body: draftResp } = await request(dummyAuthApp)
-      .post(`/applicants/${id}/submissions/draft`)
-      .send(draftBody)
-      .expect(200);
-    expect(draftResp).toHaveProperty('resumeUrl', 'https://bobcanbuild.com');
-    const { body } = await request(dummyAuthApp)
-      .post(`/applicants/${id}/submissions/draft`)
-      .send(draftUpdateBody)
-      .expect(200);
-    expect(body).toHaveProperty('resumeUrl', 'https://bobcanREALLYbuild.org');
+      .expect(401);
+    expect(body).toHaveProperty('title', 'Cannot verify applicant request');
   });
 });
