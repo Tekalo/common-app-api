@@ -50,7 +50,7 @@
   "devDependencies": {
     "@jest/globals": "29.5.0",
     "@swc/cli": "0.1.62",
-    "@swc/core": "1.3.49",
+    "@swc/core": "1.3.50",
     "@swc/jest": "0.2.24",
     "@types/connect-pg-simple": "7.0.0",
     "@types/express-session": "1.17.7",
