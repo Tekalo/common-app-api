@@ -1,0 +1,11 @@
+version: 2
+
+models:
+  - name: opportunity_submission
+    description: 'A model for opportunity submissions'
+    columns:
+      - name: id
+        description: 'The primary key for this table'
+        tests:
+          - unique
+          - not_null
