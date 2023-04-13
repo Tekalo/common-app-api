@@ -49,7 +49,7 @@ model ApplicantSubmission {
     interestGovt           Boolean // Interested In - Govt
     interestGovtEmplTypes  String[] // Interested In - Govt Paid/Unpaid //enum
 
-    otherCause  String? // Additional cause(s) they are interested in
+    otherCauses String[] // Additional cause(s) they are interested in
     skills      String[] // Enum or FKs
     otherSkills String[] // Additional skill(s) they have
 
@@ -95,7 +95,7 @@ model ApplicantDraftSubmission {
     interestGovt           Boolean? // Interested In - Govt
     interestGovtEmplTypes  String[] // Interested In - Govt Paid/Unpaid // enum
 
-    otherCause  String? // Additional cause(s) they are interested in
+    otherCauses String[] // Additional cause(s) they are interested in
     skills      String[] // Enum or FKs
     otherSkills String[] // Additional skill(s) they have
 
@@ -160,7 +160,7 @@ model OpportunitySubmission {
     desiredEndDate      DateTime?
     desiredYoe          String[] // enum
     desiredSkills       String[] // enum, optional
-    desiredSkillsOther  String[] // optional
+    desiredOtherSkills  String[] // optional
     desiredImpactExp    String?
 
     similarStaffed Boolean?
