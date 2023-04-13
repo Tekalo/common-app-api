@@ -430,7 +430,7 @@
               "type": "string"
             }
           },
-          "otherCause": {
+          "otherCauses": {
             "type": "array"
           },
           "workAuthorization": {
