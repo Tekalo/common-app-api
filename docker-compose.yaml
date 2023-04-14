@@ -17,7 +17,8 @@ services:
       target: development
     environment:
       - DATABASE_URL=postgresql://postgres:password@postgres:5432/devdb
-      - 'AUTH0_CONFIG={"domain":"${AUTH0_DOMAIN}", "clientId": "${AUTH0_CLIENT_ID}", "clientSecret": "${AUTH0_CLIENT_SECRET}", "audience":"https://auth0.capp.com", "issuerBaseURL":"https://sf-capp-dev.us.auth0.com"}'
+      - 'AUTH0_API_CONFIG={"domain":"${AUTH0_DOMAIN}", "clientId": "${AUTH0_CLIENT_ID}", "clientSecret": "${AUTH0_CLIENT_SECRET}"}'
+      - 'AUTH0_EXPRESS_CONFIG={"audience":"${AUTH0_AUDIENCE}", "issuerBaseURL": "${AUTH0_ISSUER}"}'
       - PORT=3000
     ports:
       - "3000:3000"
@@ -58,7 +59,8 @@ services:
     environment:
       - PORT=3000
       - DATABASE_URL=postgresql://postgres:password@test-postgres:5432/testdb
-      - 'AUTH0_CONFIG={"domain":"${AUTH0_DOMAIN}", "clientId": "${AUTH0_CLIENT_ID}", "clientSecret": "${AUTH0_CLIENT_SECRET}" }'
+      - 'AUTH0_API_CONFIG={"domain":"${AUTH0_DOMAIN}", "clientId": "${AUTH0_CLIENT_ID}", "clientSecret": "${AUTH0_CLIENT_SECRET}"}'
+      - 'AUTH0_EXPRESS_CONFIG={"audience":"${AUTH0_AUDIENCE}", "secret":"mysupersecretsecret", "tokenSigningAlg":"HS256", "issuer": "${AUTH0_ISSUER}/"}'
     profiles:
       - test
     depends_on:

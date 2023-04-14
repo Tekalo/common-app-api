@@ -10,12 +10,22 @@ const ShellUserPayloadSchema = z.object({
   connection: z.string(),
 });
 
-const Auth0ConfigSchema = z.object({
+const Auth0ApiConfigSchema = z.object({
   domain: z.string(),
   clientId: z.string(),
   clientSecret: z.string(),
-  audience: z.string(),
-  issuerBaseURL: z.string(),
 });
 
-export { ShellUserPayloadSchema, Auth0ConfigSchema };
+const Auth0ExpressConfigSchema = z.object({
+  audience: z.string(),
+  issuerBaseURL: z.string().optional(),
+  issuer: z.string().optional(),
+  tokenSigningAlg: z.string().optional(),
+  secret: z.string().optional(),
+});
+
+export {
+  ShellUserPayloadSchema,
+  Auth0ApiConfigSchema,
+  Auth0ExpressConfigSchema,
+};

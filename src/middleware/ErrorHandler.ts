@@ -10,6 +10,10 @@ const errorHandler = (
   next: NextFunction, // eslint-disable-line @typescript-eslint/no-unused-vars
 ) => {
   const problem: Problem = err.problem || {};
+  if (err.message === 'Unauthorized') {
+    problem.title = 'Unauthorized';
+    problem.status = 401;
+  }
   if (err instanceof ZodError) {
     const { issues } = err;
     problem.title = 'Validation Error';

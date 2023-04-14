@@ -97,9 +97,15 @@ const ApplicantSubmissionRequestBodySchema = z.object({
 const ApplicantDraftSubmissionRequestBodySchema =
   ApplicantSubmissionRequestBodySchema.partial();
 
+const ApplicantDraftSubmissionResponseBodySchema = z.object({
+  submission: ApplicantDraftSubmissionRequestBodySchema,
+  isFinal: z.boolean(),
+});
+
 export {
   ApplicantRequestBodySchema,
   ApplicantResponseBodySchema,
   ApplicantSubmissionRequestBodySchema,
   ApplicantDraftSubmissionRequestBodySchema,
+  ApplicantDraftSubmissionResponseBodySchema,
 };

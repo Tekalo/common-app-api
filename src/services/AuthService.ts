@@ -1,21 +1,19 @@
 import CAPPError from '@App/resources/shared/CAPPError.js';
-import { Auth0UserBody, Auth0Config } from '@App/resources/types/auth0.js';
-import { AuthenticationClient, ManagementClient } from 'auth0';
+import { Auth0UserBody, Auth0ApiConfig } from '@App/resources/types/auth0.js';
+import { ManagementClient } from 'auth0';
 import { randomBytes } from 'node:crypto';
 import configLoader from './configLoader.js';
-import { auth } from 'express-oauth2-jwt-bearer';
-import { Handler } from 'express';
 
 class AuthService {
   private auth0Client: ManagementClient | undefined;
 
   getClient(): ManagementClient {
     if (!this.auth0Client) {
-      const { auth0 }: { auth0: Auth0Config } = configLoader.loadConfig();
+      const { api }: { api: Auth0ApiConfig } = configLoader.loadConfig().auth0;
       this.auth0Client = new ManagementClient({
-        domain: auth0.domain,
-        clientId: auth0.clientId,
-        clientSecret: auth0.clientSecret,
+        domain: api.domain,
+        clientId: api.clientId,
+        clientSecret: api.clientSecret,
         scope: 'create:users',
       });
     }
@@ -60,11 +58,6 @@ class AuthService {
       throw e;
     }
     return responseBody;
-  }
-
-  getAuthMiddleware(): Handler {
-    const { audience, issuerBaseURL } = configLoader.loadConfig().auth0;
-    return auth({ audience, issuerBaseURL });
   }
 }
 

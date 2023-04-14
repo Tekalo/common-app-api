@@ -13,13 +13,13 @@ import {
 import AuthService from '@App/services/AuthService.js';
 import prisma from '@App/resources/client.js';
 import express, { NextFunction, Request, Response } from 'express';
-import { auth } from 'express-oauth2-jwt-bearer';
-import configLoader from '@App/services/configLoader.js';
-import { requestHandler } from '@sentry/node/types/handlers.js';
+import { verifyJwt } from '@App/middleware/Authenticator.js';
+import CAPPError from '@App/resources/shared/CAPPError.js';
 
 const applicantRoutes = (authService: AuthService) => {
   const router = express.Router();
   const applicantController = new ApplicantController(authService, prisma);
+
   router.post('/', (req: Request, res: Response, next) => {
     const appBody = req.body as ApplicantRequestBody;
     const validatedBody = ApplicantRequestBodySchema.parse(appBody);
@@ -68,20 +68,19 @@ const applicantRoutes = (authService: AuthService) => {
 
   router.get(
     '/me/submissions',
+    verifyJwt,
     (req: Request, res: Response, next: NextFunction) => {
-      // auth({ audience: 'https://auth0.capp.com' , issuerBaseURL: 'https://sf-capp-dev.us.auth0.com' });
-      // console.log(theauth);
-      const theauth = authService.getAuthMiddleware();
-      console.log('here!!');
-      const authToken = req.get('Authorization') || '';
-      console.log(theauth);
-      // todo: is this realiable?
-      const { email } = JSON.parse(
-        Buffer.from(authToken.split('.')[1], 'base64').toString(),
-      );
-      console.log(email);
+      if (!req.auth) {
+        throw new CAPPError({
+          title: 'Unauthorized',
+          detail: 'Could not authenticate user',
+          status: 401,
+        });
+      }
+
+      const { payload } = req.auth;
       applicantController
-        .getMySubmissions(email)
+        .getMySubmissions(payload['auth0.capp.com/email'])
         .then((result) => {
           res.status(200).json(result);
         })
