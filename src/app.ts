@@ -6,13 +6,17 @@ import {
   healthRoutes,
   opportunitiesRoutes,
 } from '@App/routes/index.js';
+import session from 'express-session';
+import ConnectPg from 'connect-pg-simple';
 import errorHandler from './middleware/ErrorHandler.js';
 import AuthService from './services/AuthService.js';
 import MonitoringService from './services/MonitoringService.js';
+import { BaseConfig } from './services/configLoader.js';
 
 const getApp = (
   authService: AuthService,
   monitoringService: MonitoringService,
+  config: BaseConfig,
 ): Application => {
   const app: Application = express();
 
@@ -20,6 +24,24 @@ const getApp = (
 
   const router = express.Router();
   app.use(express.json());
+
+  /**
+   * Setup cookie session middleware
+   * for authenticating new appliants who have not yet created an account
+   */
+  const PgClient = ConnectPg(session);
+  const { clientSecret } = config.auth0.api;
+  app.use(
+    session({
+      store: new PgClient({
+        tableName: 'ApplicantSession',
+      }),
+      secret: clientSecret,
+      resave: false,
+      saveUninitialized: true,
+      cookie: { httpOnly: true, maxAge: 12 * 60 * 60 * 1000 }, // 12 hours
+    }),
+  );
   /**
    * Sets the app to use router and auth
    */
@@ -28,6 +50,7 @@ const getApp = (
   app.use('/applicants', applicantRoutes(authService));
   app.use('/opportunities', opportunitiesRoutes());
   app.use('/health', healthRoutes());
+
   /**
    * Swagger UI documentation endpoint
    */

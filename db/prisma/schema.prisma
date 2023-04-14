@@ -7,6 +7,12 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
+model ApplicantSession {
+    sid    String   @id
+    sess   Json
+    expire DateTime
+}
+
 model Applicant {
     id                Int                        @id @default(autoincrement())
     auth0Id           String                     @unique
@@ -49,7 +55,7 @@ model ApplicantSubmission {
     interestGovt           Boolean // Interested In - Govt
     interestGovtEmplTypes  String[] // Interested In - Govt Paid/Unpaid //enum
 
-    otherCause  String? // Additional cause(s) they are interested in
+    otherCauses String[] // Additional cause(s) they are interested in
     skills      String[] // Enum or FKs
     otherSkills String[] // Additional skill(s) they have
 
@@ -95,7 +101,7 @@ model ApplicantDraftSubmission {
     interestGovt           Boolean? // Interested In - Govt
     interestGovtEmplTypes  String[] // Interested In - Govt Paid/Unpaid // enum
 
-    otherCause  String? // Additional cause(s) they are interested in
+    otherCauses String[] // Additional cause(s) they are interested in
     skills      String[] // Enum or FKs
     otherSkills String[] // Additional skill(s) they have
 
@@ -129,7 +135,7 @@ model OpportunityBatch {
 model ApplicantDeletionRequests {
     id              Int      @id @default(autoincrement())
     applicantId     Int      @unique
-    dateAdded       DateTime @default(now())
+    createdAt       DateTime @default(now())
     email           String
     auth0Id         String
     acceptedTerms   DateTime
@@ -142,7 +148,7 @@ model OpportunitySubmission {
     opportunityBatch   OpportunityBatch @relation(fields: [opportunityBatchId], references: [id])
     opportunityBatchId Int
 
-    dateAdded      DateTime @default(now())
+    createdAt      DateTime @default(now())
     source         String // enum
     employmentType String // enum
 
@@ -160,7 +166,7 @@ model OpportunitySubmission {
     desiredEndDate      DateTime?
     desiredYoe          String[] // enum
     desiredSkills       String[] // enum, optional
-    desiredSkillsOther  String[] // optional
+    desiredOtherSkills  String[] // optional
     desiredImpactExp    String?
 
     similarStaffed Boolean?

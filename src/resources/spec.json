@@ -348,7 +348,7 @@
                     "type": "string"
                   }
                 },
-                "desiredSkillsOther": {
+                "desiredOtherSkills": {
                   "type": "string"
                 },
                 "visaSponsorship": {
@@ -440,8 +440,8 @@
               "type": "string"
             }
           },
-          "otherCause": {
-            "type": "string"
+          "otherCauses": {
+            "type": "array"
           },
           "workAuthorization": {
             "type": "string"

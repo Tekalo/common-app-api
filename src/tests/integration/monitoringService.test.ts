@@ -2,6 +2,7 @@ import request from 'supertest';
 import getApp from '@App/app.js';
 import sentryTestkit from 'sentry-testkit';
 import { Transport } from '@sentry/types';
+import configLoader from '@App/services/configLoader.js';
 import MonitoringService from '../../services/MonitoringService.js';
 import DummyAuthService from '../fixtures/DummyAuthService.js';
 
@@ -25,9 +26,10 @@ describe('Error Handling', () => {
   const monitoringService = new MonitoringService(
     sentryTransport as () => Transport,
   );
+  const appConfig = configLoader.loadConfig();
 
   it('should collect error events for 500 error', async () => {
-    const dummyAuthApp = getApp(dummyAuthService, monitoringService);
+    const dummyAuthApp = getApp(dummyAuthService, monitoringService, appConfig);
 
     await request(dummyAuthApp)
       .post('/applicants')
@@ -51,7 +53,11 @@ describe('Error Handling', () => {
   });
 
   it('should collect performance events', async () => {
-    const dummyAuthApp = getApp(new DummyAuthService(), monitoringService);
+    const dummyAuthApp = getApp(
+      new DummyAuthService(),
+      monitoringService,
+      appConfig,
+    );
 
     await request(dummyAuthApp).get('/health').expect(200);
 

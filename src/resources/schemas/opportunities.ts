@@ -28,7 +28,7 @@ const Skills = z.enum([
 ]);
 
 const EmploymentType = z.enum([
-  'full-time job',
+  'full-time employee',
   'volunteer',
   'contractor',
   'consultant',
@@ -68,7 +68,7 @@ const OpportunityBatchRequestBodySchema = z.object({
       jdUrl: z.string().optional(),
       desiredYoe: z.array(YOE),
       desiredSkills: z.array(Skills),
-      desiredSkillsOther: z.string().optional(),
+      desiredOtherSkills: z.string().optional(),
       visaSponsorship: VisaSponsorship,
       similarStaffed: z.boolean(),
       desiredImpactExp: z.string().optional(),

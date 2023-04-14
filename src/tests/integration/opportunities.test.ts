@@ -1,10 +1,16 @@
 import request from 'supertest';
 import getApp from '@App/app.js';
 import prisma from '@App/resources/client.js';
+import configLoader from '@App/services/configLoader.js';
 import DummyAuthService from '../fixtures/DummyAuthService.js';
 import DummyMonitoringService from '../fixtures/DummyMonitoringService.js';
 
-const app = getApp(new DummyAuthService(), new DummyMonitoringService());
+const appConfig = configLoader.loadConfig();
+const app = getApp(
+  new DummyAuthService(),
+  new DummyMonitoringService(),
+  appConfig,
+);
 
 afterEach(async () => {
   await prisma.opportunitySubmission.deleteMany();
@@ -34,13 +40,13 @@ describe('POST /opportunities', () => {
         paid: true,
         pitchEssay: 'Come flip burgers for Bob',
         source: 'Commercial',
-        employmentType: 'full-time job',
+        employmentType: 'full-time employee',
         salaryRange: '20-30$/hr',
         desiredHoursPerWeek: '40',
         desiredStartDate: '2023-01-01',
         desiredYoe: ['0-2', '2-4'],
         desiredSkills: ['react', 'sketch'],
-        desiredSkillsOther: 'really good at flipping burgers',
+        desiredOtherSkills: 'really good at flipping burgers',
         visaSponsorship: 'no',
         similarStaffed: true,
         desiredImpactExp:
@@ -65,13 +71,13 @@ describe('POST /opportunities', () => {
       paid: true,
       pitchEssay: 'Come make french fries for Bob',
       source: 'Advertisement',
-      employmentType: 'full-time job',
+      employmentType: 'full-time employee',
       salaryRange: '20-30$/hr',
       desiredHoursPerWeek: '30',
       desiredStartDate: '2023-12-01',
       desiredYoe: ['15+'],
       desiredSkills: ['figma', 'project management'],
-      desiredSkillsOther:
+      desiredOtherSkills:
         'really good at frying fries, specifically of the waffle persuasion',
       visaSponsorship: 'no',
       similarStaffed: false,

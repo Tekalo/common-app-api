@@ -9,6 +9,7 @@ import {
   ApplicantSubmissionBody,
   ApplicantDraftSubmissionBody,
 } from '@App/resources/types/applicants.js';
+import { validateCookie, setCookie } from '@App/services/cookieService.js';
 
 import AuthService from '@App/services/AuthService.js';
 import prisma from '@App/resources/client.js';
@@ -26,6 +27,7 @@ const applicantRoutes = (authService: AuthService) => {
     applicantController
       .createApplicant(validatedBody)
       .then((result) => {
+        req.session.applicant = setCookie(result);
         res.status(200).json(result);
       })
       .catch((err) => next(err));
@@ -54,8 +56,8 @@ const applicantRoutes = (authService: AuthService) => {
   });
 
   router.post('/:id/submissions/draft', (req: Request, res: Response, next) => {
+    const applicantID = validateCookie(req);
     const appBody = req.body as ApplicantDraftSubmissionBody;
-    const applicantID = +req.params.id;
     const validatedBody =
       ApplicantDraftSubmissionRequestBodySchema.parse(appBody);
     applicantController

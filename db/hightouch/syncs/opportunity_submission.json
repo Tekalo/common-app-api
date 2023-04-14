@@ -1,0 +1,153 @@
+{
+  "mode": "upsert",
+  "baseId": "appU5cDvUtz44Wbm4",
+  "mappings": [
+    {
+      "to": "Date Added",
+      "from": "createdAt",
+      "type": "standard"
+    },
+    {
+      "to": "Role Type",
+      "from": "roleType",
+      "type": "standard"
+    },
+    {
+      "to": "Impact Area(s)",
+      "from": "impactAreas",
+      "type": "standard"
+    },
+    {
+      "to": "Location",
+      "from": "location",
+      "type": "standard"
+    },
+    {
+      "to": "Visa Sponsorship",
+      "from": "visaSponsorship",
+      "type": "standard"
+    },
+    {
+      "to": "Desired Start Date",
+      "from": "desiredStartDate",
+      "type": "standard"
+    },
+    {
+      "to": "Desired End Date",
+      "from": "desiredEndDate",
+      "type": "standard"
+    },
+    {
+      "to": "Contact Name",
+      "from": "contactName",
+      "type": "standard"
+    },
+    {
+      "to": "Contact Email",
+      "from": "contactEmail",
+      "type": "standard"
+    },
+    {
+      "to": "Org Type",
+      "from": "orgType",
+      "type": "standard"
+    },
+    {
+      "to": "Org Size",
+      "from": "orgSize",
+      "type": "standard"
+    },
+    {
+      "to": "Internal Batch ID",
+      "from": "opportunityBatchId",
+      "type": "standard"
+    },
+    {
+      "to": "Opportunity Source",
+      "from": "source",
+      "type": "standard"
+    },
+    {
+      "to": "Opportunity Type",
+      "from": "employmentType",
+      "type": "standard"
+    },
+    {
+      "to": "Pay Range",
+      "from": "salaryRange",
+      "type": "standard"
+    },
+    {
+      "to": "Desired Years Of Experience",
+      "from": "desiredYoe",
+      "type": "standard"
+    },
+    {
+      "to": "Link to JD",
+      "from": "jdUrl",
+      "type": "standard"
+    },
+    {
+      "to": "Employees On Staff With Similar Role",
+      "from": "similarStaffed",
+      "type": "standard"
+    },
+    {
+      "to": "Desired Impact Experience",
+      "from": "desiredImpactExp",
+      "type": "standard"
+    },
+    {
+      "to": "How would you pitch this role in 2 sentences?",
+      "from": "pitchEssay",
+      "type": "standard"
+    },
+    {
+      "to": "Organization Name",
+      "from": "orgName",
+      "type": "standard"
+    },
+    {
+      "to": "Contact Phone Number",
+      "from": "contactPhone",
+      "type": "standard"
+    },
+    {
+      "to": "Position Title",
+      "from": "positionTitle",
+      "type": "standard"
+    },
+    {
+      "to": "Is fully remote?",
+      "from": "fullyRemote",
+      "type": "standard"
+    },
+    {
+      "to": "Equal Opportunity Employer?",
+      "from": "equalOpportunityEmployer",
+      "type": "standard"
+    },
+    {
+      "to": "Paid or Unpaid",
+      "from": "paymentStatus",
+      "type": "standard"
+    },
+    {
+      "to": "Opportunity Name",
+      "from": "opportunityName",
+      "type": "standard"
+    },
+    {
+      "to": "Desired Skills",
+      "from": "desiredSkillsAll",
+      "type": "standard"
+    }
+  ],
+  "tableName": "Opportunities",
+  "deleteMode": null,
+  "configVersion": 0,
+  "externalIdMapping": {
+    "to": "Internal ID",
+    "from": "id"
+  }
+}

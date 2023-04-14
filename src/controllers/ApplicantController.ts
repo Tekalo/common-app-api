@@ -84,6 +84,7 @@ class ApplicantController {
       return await this.prisma.applicantSubmission.create({
         data: {
           ...data,
+          otherCauses: data.otherCauses ? data.otherCauses : [],
           applicantId,
         },
       });
@@ -161,10 +162,12 @@ class ApplicantController {
       return await this.prisma.applicantDraftSubmission.upsert({
         create: {
           ...data,
+          otherCauses: data.otherCauses ? data.otherCauses : [],
           applicantId,
         },
         update: {
           ...data,
+          otherCauses: data.otherCauses ? data.otherCauses : [],
         },
         where: { applicantId },
       });
