@@ -151,7 +151,23 @@
         "description": "Get current applicant's submission",
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "isFinal": {
+                      "type": "boolean"
+                    },
+                    "submission": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }

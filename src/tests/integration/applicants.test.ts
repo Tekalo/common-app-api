@@ -399,6 +399,7 @@ describe('GET /applicants/me/submissions', () => {
   const dummyAuthApp = getApp(
     new DummyAuthService(),
     new DummyMonitoringService(),
+    appConfig,
   );
   it('should get current applicants draft submission when provided JWT', async () => {
     const token = await authHelper.getToken('bboberson@gmail.com');
@@ -459,12 +460,11 @@ describe('GET /applicants/me/submissions', () => {
     expect(body.submission).toHaveProperty('id');
   });
 
-  // it('should get current applicants draft submission when provided session cookie', async () => {});
   it('should return 401 if no JWT provided', async () => {
     await request(dummyAuthApp).get('/applicants/me/submissions').expect(401);
   });
 
-  it('should return 404 if no applicant found in the database', async () => {
+  it('should return 404 if applicant does not exist', async () => {
     const token = await authHelper.getToken('bboberson@gmail.com');
     const { body } = await request(dummyAuthApp)
       .get('/applicants/me/submissions')
