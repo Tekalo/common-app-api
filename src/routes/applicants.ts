@@ -9,12 +9,15 @@ import {
   ApplicantSubmissionBody,
   ApplicantDraftSubmissionBody,
 } from '@App/resources/types/applicants.js';
-import { validateCookie, setCookie } from '@App/services/cookieService.js';
+import { setCookie } from '@App/services/cookieService.js';
 
 import AuthService from '@App/services/AuthService.js';
 import prisma from '@App/resources/client.js';
 import express, { NextFunction, Request, Response } from 'express';
-import { verifyJwt } from '@App/middleware/Authenticator.js';
+import {
+  verifyJwtOrCookie,
+  validateJwt,
+} from '@App/middleware/authenticator.js';
 import CAPPError from '@App/resources/shared/CAPPError.js';
 
 const applicantRoutes = (authService: AuthService) => {
@@ -55,22 +58,26 @@ const applicantRoutes = (authService: AuthService) => {
       .catch((err) => next(err));
   });
 
-  router.post('/:id/submissions/draft', (req: Request, res: Response, next) => {
-    const applicantID = validateCookie(req);
-    const appBody = req.body as ApplicantDraftSubmissionBody;
-    const validatedBody =
-      ApplicantDraftSubmissionRequestBodySchema.parse(appBody);
-    applicantController
-      .createOrUpdateDraftSubmission(applicantID, validatedBody)
-      .then((result) => {
-        res.status(200).json(result);
-      })
-      .catch((err) => next(err));
-  });
+  router.post(
+    '/:id/submissions/draft',
+    verifyJwtOrCookie,
+    (req: Request, res: Response, next) => {
+      const appBody = req.body as ApplicantDraftSubmissionBody;
+      const applicantID = +req.params.id;
+      const validatedBody =
+        ApplicantDraftSubmissionRequestBodySchema.parse(appBody);
+      applicantController
+        .createOrUpdateDraftSubmission(applicantID, validatedBody)
+        .then((result) => {
+          res.status(200).json(result);
+        })
+        .catch((err) => next(err));
+    },
+  );
 
   router.get(
     '/me/submissions',
-    verifyJwt,
+    validateJwt,
     (req: Request, res: Response, next: NextFunction) => {
       if (!req.auth) {
         throw new CAPPError({

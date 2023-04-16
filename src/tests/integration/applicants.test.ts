@@ -350,7 +350,7 @@ describe('POST /applicants/:id/submissions/draft', () => {
   });
 
   it('should not allow applicant to save draft submission of another user', async () => {
-    // Using superagent here so each request share's a cookie jar
+    // Using superagent here so each request shares a cookie jar
     const agent = request.agent(dummyAuthApp);
     const testApplicantResp = await agent.post('/applicants').send({
       name: 'Bob Boberson',
@@ -371,7 +371,7 @@ describe('POST /applicants/:id/submissions/draft', () => {
     expect(body).toHaveProperty('title', 'Cannot verify applicant request');
   });
 
-  it('should not allow applicant to save draft submission without a valid cookie supplied', async () => {
+  it('should not allow applicant to save draft submission without a valid cookie or JWT supplied', async () => {
     // Supertest will not save cookies (each request has a separate cookie jar)
     const testApplicantResp = await request(dummyAuthApp)
       .post('/applicants')
@@ -393,15 +393,8 @@ describe('POST /applicants/:id/submissions/draft', () => {
       .expect(401);
     expect(body).toHaveProperty('title', 'Cannot verify applicant request');
   });
-});
 
-describe('GET /applicants/me/submissions', () => {
-  const dummyAuthApp = getApp(
-    new DummyAuthService(),
-    new DummyMonitoringService(),
-    appConfig,
-  );
-  it('should get current applicants draft submission when provided JWT', async () => {
+  it('should allow applicant to save draft submission with a valid JWT but without a cookie', async () => {
     const token = await authHelper.getToken('bboberson@gmail.com');
     const testApplicantResp = await request(dummyAuthApp)
       .post('/applicants')
@@ -417,7 +410,38 @@ describe('GET /applicants/me/submissions', () => {
     const testBody: ApplicantDraftSubmissionBody = {
       resumeUrl: 'https://bobcanbuild.com',
     };
-    await request(dummyAuthApp)
+    const { body } = await request(dummyAuthApp)
+      .post(`/applicants/${id}/submissions/draft`)
+      .send(testBody)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200);
+    expect(body).toHaveProperty('id');
+  });
+});
+
+describe('GET /applicants/me/submissions', () => {
+  const dummyAuthApp = getApp(
+    new DummyAuthService(),
+    new DummyMonitoringService(),
+    appConfig,
+  );
+  it('should get current applicants draft submission when provided JWT', async () => {
+    // We create draft submission with cookie, get /me/submissions with JWT
+    const agent = request.agent(dummyAuthApp);
+    const token = await authHelper.getToken('bboberson@gmail.com');
+    const testApplicantResp = await agent.post('/applicants').send({
+      name: 'Bob Boberson',
+      email: 'bboberson@gmail.com',
+      preferredContact: 'sms',
+      searchStatus: 'active',
+      acceptedTerms: true,
+      acceptedPrivacy: true,
+    });
+    const { id }: { id: number } = testApplicantResp.body;
+    const testBody: ApplicantDraftSubmissionBody = {
+      resumeUrl: 'https://bobcanbuild.com',
+    };
+    await agent
       .post(`/applicants/${id}/submissions/draft`)
       .send(testBody)
       .expect(200);
