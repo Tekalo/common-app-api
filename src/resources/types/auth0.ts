@@ -11,6 +11,7 @@ export type Auth0ApiConfig = z.infer<typeof Auth0ApiConfigSchema>;
 
 export type Auth0ExpressConfig = z.infer<typeof Auth0ExpressConfigSchema>;
 
+// Declaration merging for our custom added JWT claim
 declare module 'express-oauth2-jwt-bearer' {
   export interface JWTPayload {
     'auth0.capp.com/email': string;

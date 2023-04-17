@@ -1,6 +1,6 @@
 import {
   verifyJwtOrCookie,
-  verifyCookie,
+  validateCookie,
 } from '@App/middleware/authenticator.js';
 import CAPPError from '@App/resources/shared/CAPPError.js';
 import { NextFunction, Request, Response } from 'express';
@@ -16,7 +16,7 @@ describe('Authenticator', () => {
       session: {},
     } as Request;
     const mockNext: NextFunction = jest.fn();
-    verifyCookie(mockRequest, {} as Response, mockNext);
+    validateCookie(mockRequest, {} as Response, mockNext);
     expect(mockNext).toBeCalledWith(
       new CAPPError({
         title: 'Cannot verify applicant request',
