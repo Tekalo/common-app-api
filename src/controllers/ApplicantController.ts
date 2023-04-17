@@ -55,7 +55,6 @@ class ApplicantController {
       };
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        // TODO : Log e.message in Sentry
         throw new CAPPError(
           {
             title: 'User Creation Error',
@@ -90,7 +89,6 @@ class ApplicantController {
       });
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        // TODO : Log e.message in Sentry
         throw new CAPPError(
           {
             title: 'Applicant Submission Creation Error',
@@ -139,7 +137,6 @@ class ApplicantController {
       ]);
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        // TODO : Log e.message in Sentry
         throw new CAPPError({
           title: 'Applicant Deletion Error',
           detail: 'Database error encountered when deleting applicant',
@@ -173,7 +170,6 @@ class ApplicantController {
       });
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        // TODO : Log e.message in Sentry
         throw new CAPPError(
           {
             title: 'Applicant Draft Submission Creation Error',
@@ -217,7 +213,6 @@ class ApplicantController {
       return { isFinal, submission };
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        // TODO : Log e.message in Sentry
         throw new CAPPError({
           title: 'Applicant Submissions Retrieval Error',
           detail: 'Could not find applicant submissions',
