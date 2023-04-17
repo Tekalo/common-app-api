@@ -128,6 +128,7 @@ class ApplicantController {
           status: 400,
         };
         if (e.meta?.cause === 'Record to update not found.') {
+          problem.detail = 'Applicant not found';
           problem.status = 404;
         }
         throw new CAPPError(problem);
