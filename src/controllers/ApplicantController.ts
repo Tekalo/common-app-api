@@ -112,6 +112,29 @@ class ApplicantController {
     }
   }
 
+  async pauseApplicant(applicantId: number, pauseStatus: boolean) {
+    try {
+      const { id, isPaused } = await this.prisma.applicant.update({
+        data: { isPaused: pauseStatus },
+        where: { id: applicantId },
+      });
+      return { id, isPaused };
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        // TODO : Log e.message in Sentry
+        throw new CAPPError({
+          title: 'Applicant Pause Error',
+          detail: 'Database error encountered when pausing applicant status',
+          status: 400,
+        });
+      }
+      throw new CAPPError({
+        title: 'Applicant Pause Error',
+        detail: 'Error when pausing applicant status',
+      });
+    }
+  }
+
   async deleteApplicant(applicantId: number) {
     let applicantToDelete;
     try {

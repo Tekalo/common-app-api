@@ -392,3 +392,36 @@ describe('POST /applicants/:id/submissions/draft', () => {
     expect(body).toHaveProperty('title', 'Cannot verify applicant request');
   });
 });
+
+describe('PUT /applicants/:id/state', () => {
+  const dummyAuthApp = getApp(
+    new DummyAuthService(),
+    new DummyMonitoringService(),
+    appConfig,
+  );
+
+  it('should pause and un-pause an applicants status', async () => {
+    const testApplicantResp = await request(dummyAuthApp)
+      .post('/applicants')
+      .send({
+        name: 'Bob Boberson',
+        auth0Id: 'auth0|123456',
+        email: `bboberson${getRandomString()}@gmail.com`,
+        preferredContact: 'email',
+        searchStatus: 'active',
+        acceptedTerms: true,
+        acceptedPrivacy: true,
+      });
+    const { id }: { id: number } = testApplicantResp.body;
+    const { body: pausedBody } = await request(dummyAuthApp)
+      .put(`/applicants/${id}/state`)
+      .send({ pause: true })
+      .expect(200);
+    expect(pausedBody).toEqual({ id, isPaused: true });
+    const { body: unPausedBody } = await request(dummyAuthApp)
+      .put(`/applicants/${id}/state`)
+      .send({ pause: false })
+      .expect(200);
+    expect(unPausedBody).toEqual({ id, isPaused: false });
+  });
+});

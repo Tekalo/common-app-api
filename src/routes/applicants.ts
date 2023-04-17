@@ -3,11 +3,13 @@ import {
   ApplicantRequestBodySchema,
   ApplicantSubmissionRequestBodySchema,
   ApplicantDraftSubmissionRequestBodySchema,
+  ApplicantStateRequestBodySchema,
 } from '@App/resources/schemas/applicants.js';
 import {
   ApplicantRequestBody,
   ApplicantSubmissionBody,
   ApplicantDraftSubmissionBody,
+  ApplicantStateBody,
 } from '@App/resources/types/applicants.js';
 import { validateCookie, setCookie } from '@App/services/cookieService.js';
 
@@ -39,6 +41,18 @@ const applicantRoutes = (authService: AuthService) => {
     const validatedBody = ApplicantSubmissionRequestBodySchema.parse(appBody);
     applicantController
       .createSubmission(applicantID, validatedBody)
+      .then((result) => {
+        res.status(200).json(result);
+      })
+      .catch((err) => next(err));
+  });
+
+  router.put('/:id/state', (req: Request, res: Response, next) => {
+    const appBody = req.body as ApplicantStateBody;
+    const applicantID = +req.params.id;
+    const { pause } = ApplicantStateRequestBodySchema.parse(appBody);
+    applicantController
+      .pauseApplicant(applicantID, pause)
       .then((result) => {
         res.status(200).json(result);
       })
