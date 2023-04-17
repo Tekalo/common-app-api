@@ -424,4 +424,11 @@ describe('PUT /applicants/:id/state', () => {
       .expect(200);
     expect(unPausedBody).toEqual({ id, isPaused: false });
   });
+
+  it('should return 404 for non-existent applicant', async () => {
+    await request(dummyAuthApp)
+      .put('/applicants/99/state')
+      .send({ pause: true })
+      .expect(404);
+  });
 });
