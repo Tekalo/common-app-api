@@ -192,6 +192,9 @@
           "preferredContact": {
             "type": "string"
           },
+          "searchStatus": {
+            "type": "string"
+          },
           "acceptedTerms": {
             "type": "boolean"
           },
