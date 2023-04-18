@@ -113,7 +113,7 @@ async function seedOpportunitySubmissionBatches() {
         orgType: batch.orgType,
         contactEmail: batch.contactEmail,
         contactName: batch.contactName,
-        contactPhone: batch.contactPhone,
+        contactPhone: String(randomInt(1000000)),
         impactAreas: batch.impactAreas,
         equalOpportunityEmployer: batch.equalOpportunityEmployer,
         opportunitySubmissions: {
