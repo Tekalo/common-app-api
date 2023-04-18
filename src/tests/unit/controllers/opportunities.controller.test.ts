@@ -65,7 +65,7 @@ describe('Opportunity Controller', () => {
       orgSize: organization.size,
       impactAreas: organization.impactAreas,
       contactName: contact.name,
-      contactPhone: contact.phone,
+      contactPhone: contact.phone || null,
       contactEmail: contact.email,
       equalOpportunityEmployer: organization.eoe,
     };

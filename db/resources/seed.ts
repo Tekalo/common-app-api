@@ -5,6 +5,7 @@
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { PrismaClient, Prisma } from '@prisma/client';
+import { randomInt } from 'crypto';
 import CAPPError from '../../src/resources/shared/CAPPError.js';
 import { Problem } from '../../src/resources/types/shared.js';
 import seedData from './seed.json' assert { type: 'json' };
@@ -88,6 +89,7 @@ async function seedApplicantsAndApplicantSubmissions() {
         pronoun: pronoun || undefined,
         preferredContact,
         searchStatus,
+        phone: String(randomInt(1000000)),
         applications: {
           create: {
             ...application,
@@ -111,7 +113,7 @@ async function seedOpportunitySubmissionBatches() {
         orgType: batch.orgType,
         contactEmail: batch.contactEmail,
         contactName: batch.contactName,
-        contactPhone: batch.contactPhone,
+        contactPhone: String(randomInt(1000000)),
         impactAreas: batch.impactAreas,
         equalOpportunityEmployer: batch.equalOpportunityEmployer,
         opportunitySubmissions: {
