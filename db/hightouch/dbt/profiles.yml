@@ -1,0 +1,11 @@
+rise_app_pipeline:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: capp-dev20230221185055321900000003.cluster-ckuehwdskxyo.us-east-1.rds.amazonaws.com
+      user: "{{ env_var('POSTGRES_USERNAME')|upper }}"
+      password: "{{ env_var('POSTGRES_PASSWORD') }}"
+      port: 5432
+      dbname: capp
+      schema: public
