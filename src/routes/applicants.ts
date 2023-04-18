@@ -14,15 +14,17 @@ import { setCookie } from '@App/services/cookieService.js';
 import AuthService from '@App/services/AuthService.js';
 import prisma from '@App/resources/client.js';
 import express, { NextFunction, Request, Response } from 'express';
-import {
-  verifyJwtOrCookie,
-  validateJwt,
-} from '@App/middleware/authenticator.js';
-import CAPPError from '@App/resources/shared/CAPPError.js';
+import Authenticator from '@App/middleware/authenticator.js';
+import configLoader from '@App/services/configLoader.js';
+import { RequestWithJWT } from '@App/resources/types/auth0.js';
 
 const applicantRoutes = (authService: AuthService) => {
   const router = express.Router();
   const applicantController = new ApplicantController(authService, prisma);
+  const authenticator = new Authenticator(
+    prisma,
+    configLoader.loadConfig().auth0.express,
+  );
 
   router.post('/', (req: Request, res: Response, next) => {
     const appBody = req.body as ApplicantRequestBody;
@@ -36,17 +38,21 @@ const applicantRoutes = (authService: AuthService) => {
       .catch((err) => next(err));
   });
 
-  router.post('/:id/submissions', (req: Request, res: Response, next) => {
-    const appBody = req.body as ApplicantSubmissionBody;
-    const applicantID = +req.params.id;
-    const validatedBody = ApplicantSubmissionRequestBodySchema.parse(appBody);
-    applicantController
-      .createSubmission(applicantID, validatedBody)
-      .then((result) => {
-        res.status(200).json(result);
-      })
-      .catch((err) => next(err));
-  });
+  router.post(
+    '/me/submissions',
+    authenticator.verifyJwtOrCookie.bind(authenticator),
+    (req: Request, res: Response, next) => {
+      const appBody = req.body as ApplicantSubmissionBody;
+      const validatedBody = ApplicantSubmissionRequestBodySchema.parse(appBody);
+      const applicantID = req.auth?.payload.id || req.session.applicant.id;
+      applicantController
+        .createSubmission(applicantID, validatedBody)
+        .then((result) => {
+          res.status(200).json(result);
+        })
+        .catch((err) => next(err));
+    },
+  );
 
   router.delete('/:id', (req: Request, res: Response, next) => {
     const applicantID = +req.params.id;
@@ -59,11 +65,11 @@ const applicantRoutes = (authService: AuthService) => {
   });
 
   router.post(
-    '/:id/submissions/draft',
-    verifyJwtOrCookie,
+    '/me/submissions/draft',
+    authenticator.verifyJwtOrCookie.bind(authenticator),
     (req: Request, res: Response, next) => {
       const appBody = req.body as ApplicantDraftSubmissionBody;
-      const applicantID = +req.params.id;
+      const applicantID = req.auth?.payload.id || req.session.applicant.id;
       const validatedBody =
         ApplicantDraftSubmissionRequestBodySchema.parse(appBody);
       applicantController
@@ -77,19 +83,13 @@ const applicantRoutes = (authService: AuthService) => {
 
   router.get(
     '/me/submissions',
-    validateJwt,
+    authenticator.validateJwt.bind(authenticator),
     (req: Request, res: Response, next: NextFunction) => {
-      if (!req.auth) {
-        throw new CAPPError({
-          title: 'Unauthorized',
-          detail: 'Could not authenticate user',
-          status: 401,
-        });
-      }
-
-      const { payload } = req.auth;
+      // Cast req as RequestWithJWT because our middleware above asserts that there will be an auth property included
+      const reqWithAuth = req as RequestWithJWT;
+      const applicantID = reqWithAuth.auth.payload.id;
       applicantController
-        .getMySubmissions(payload['auth0.capp.com/email'])
+        .getMySubmissions(applicantID)
         .then((result) => {
           res.status(200).json(result);
         })

@@ -4,21 +4,17 @@ import { SessionCookie } from '@App/resources/types/shared.js';
 import { NextFunction, Request, Response } from 'express';
 
 function verifyCookie(req: Request, res: Response, next: NextFunction) {
-  // check if request's applicant id matches id inside the cookie
-  if (req.session.applicant) {
-    const pathApplicantId = +req.params.id;
-    if (req.session.applicant.id === pathApplicantId) {
-      next();
-      return;
-    }
+  if (!req.session.applicant || !req.session.applicant.id) {
+    next(
+      new CAPPError({
+        title: 'Cannot authenticate request',
+        detail: 'Applicant cannot be authenticated',
+        status: 401,
+      }),
+    );
+  } else {
+    next();
   }
-  next(
-    new CAPPError({
-      title: 'Cannot verify applicant request',
-      detail: 'Applicant cannot be verified',
-      status: 401,
-    }),
-  );
 }
 
 function setCookie(applicant: ApplicantResponseBody): SessionCookie {

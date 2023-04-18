@@ -1,29 +1,81 @@
-import configLoader from '@App/services/configLoader.js';
 import { Request, Response, NextFunction } from 'express';
 import { auth } from 'express-oauth2-jwt-bearer';
 import { verifyCookie } from '@App/services/cookieService.js';
+import { PrismaClient } from '@prisma/client';
+import {
+  Auth0ExpressConfig,
+  Claims,
+  RequestWithJWT,
+} from '@App/resources/types/auth0.js';
+import CAPPError from '@App/resources/shared/CAPPError.js';
 
-/**
- * middleware to check valid JWT or session cookie
- */
-const authConfig = configLoader.loadConfig().auth0.express;
+class Authenticator {
+  private prisma: PrismaClient;
 
-const validateJwt = (req: Request, res: Response, next: NextFunction) => {
-  auth(authConfig)(req, res, next);
-};
+  private authConfig: Auth0ExpressConfig;
 
-const validateCookie = (req: Request, res: Response, next: NextFunction) => {
-  verifyCookie(req, res, next);
-};
+  constructor(prisma: PrismaClient, authConfig: Auth0ExpressConfig) {
+    this.prisma = prisma;
+    this.authConfig = authConfig;
+  }
 
-const verifyJwtOrCookie = (req: Request, res: Response, next: NextFunction) => {
-  auth(authConfig)(req, res, () => {
-    if (!req.auth) {
-      verifyCookie(req, res, next);
-    } else {
+  // Attach to requests that can only authenticate with a JWT
+  validateJwt(req: Request, res: Response, next: NextFunction) {
+    auth(this.authConfig)(req, res, (async () => {
+      if (!req.auth) {
+        next(
+          new CAPPError({
+            title: 'Cannot authenticate request',
+            detail: 'Applicant cannot be authenticated',
+            status: 401,
+          }),
+        );
+        return;
+      }
+      await this.setApplicantID(req as RequestWithJWT, res, next);
+    }) as NextFunction);
+  }
+
+  // Attach to requests that can only authenticate with a cookie
+  static validateCookie(req: Request, res: Response, next: NextFunction) {
+    verifyCookie(req, res, next);
+  }
+
+  // Attach to requests that can authenticate with either JWT or cookie
+  verifyJwtOrCookie(req: Request, res: Response, next: NextFunction) {
+    auth(this.authConfig)(req, res, (async () => {
+      if (!req.auth) {
+        verifyCookie(req, res, next);
+      } else {
+        await this.setApplicantID(req as RequestWithJWT, res, next);
+      }
+    }) as NextFunction);
+  }
+
+  // Fetch and set the applicant ID from postgres in our auth token payload.
+  private async setApplicantID(
+    req: RequestWithJWT,
+    res: Response,
+    next: NextFunction,
+  ) {
+    const email = req.auth.payload[Claims.email] as string;
+    try {
+      const { id } = await this.prisma.applicant.findFirstOrThrow({
+        where: { email },
+      });
+      req.auth.payload.id = id;
       next();
+    } catch (e) {
+      // Could not find applicant in Postgres
+      next(
+        new CAPPError({
+          title: 'Not Found',
+          detail: 'Applicant cannot be found',
+          status: 404,
+        }),
+      );
     }
-  });
-};
+  }
+}
 
-export { validateJwt, validateCookie, verifyJwtOrCookie };
+export default Authenticator;

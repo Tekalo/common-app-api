@@ -1,3 +1,5 @@
+import { Request } from 'express';
+import { AuthResult } from 'express-oauth2-jwt-bearer';
 import { z } from 'zod';
 import {
   Auth0ApiConfigSchema,
@@ -11,9 +13,21 @@ export type Auth0ApiConfig = z.infer<typeof Auth0ApiConfigSchema>;
 
 export type Auth0ExpressConfig = z.infer<typeof Auth0ExpressConfigSchema>;
 
+export const Claims = {
+  email: 'auth0.capp.com/email',
+};
+
 // Declaration merging for our custom added JWT claim
 declare module 'express-oauth2-jwt-bearer' {
   export interface JWTPayload {
-    'auth0.capp.com/email': string;
+    'auth0.capp.com/email': string; // comes from Auth0
+    id: number; // comes from Auth0
   }
+  export interface AuthResult {
+    payload: JWTPayload;
+  }
+}
+
+export interface RequestWithJWT extends Request {
+  auth: AuthResult;
 }

@@ -1,14 +1,18 @@
-import {
-  verifyJwtOrCookie,
-  validateCookie,
-} from '@App/middleware/authenticator.js';
+import Authenticator from '@App/middleware/authenticator.js';
 import CAPPError from '@App/resources/shared/CAPPError.js';
 import { NextFunction, Request, Response } from 'express';
 import { jest } from '@jest/globals';
+import prisma from '@App/resources/client.js';
+import configLoader from '@App/services/configLoader.js';
 
 type MockRequestWithParams = Request & {
   params: { id: string };
 };
+
+const authenticator = new Authenticator(
+  prisma,
+  configLoader.loadConfig().auth0.express,
+);
 
 describe('Authenticator', () => {
   test('should throw error for no valid cookie', () => {
@@ -16,11 +20,11 @@ describe('Authenticator', () => {
       session: {},
     } as Request;
     const mockNext: NextFunction = jest.fn();
-    validateCookie(mockRequest, {} as Response, mockNext);
+    Authenticator.validateCookie(mockRequest, {} as Response, mockNext);
     expect(mockNext).toBeCalledWith(
       new CAPPError({
-        title: 'Cannot verify applicant request',
-        detail: 'Applicant cannot be verified',
+        title: 'Cannot authenticate request',
+        detail: 'Applicant cannot be authenticated',
         status: 401,
       }),
     );
@@ -31,11 +35,11 @@ describe('Authenticator', () => {
       session: {},
     } as Request;
     const mockNext: NextFunction = jest.fn();
-    verifyJwtOrCookie(mockRequest, {} as Response, mockNext);
+    authenticator.verifyJwtOrCookie(mockRequest, {} as Response, mockNext);
     expect(mockNext).toBeCalledWith(
       new CAPPError({
-        title: 'Cannot verify applicant request',
-        detail: 'Applicant cannot be verified',
+        title: 'Cannot authenticate request',
+        detail: 'Applicant cannot be authenticated',
         status: 401,
       }),
     );
@@ -48,7 +52,7 @@ describe('Authenticator', () => {
       params: { id: '1' },
     } as MockRequestWithParams;
     const mockNext = jest.fn();
-    verifyJwtOrCookie(mockRequest, {} as Response, mockNext);
+    authenticator.verifyJwtOrCookie(mockRequest, {} as Response, mockNext);
     // we expect the request to go through to next() without passing an error
     expect(mockNext).toBeCalledWith();
   });

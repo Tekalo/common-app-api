@@ -191,23 +191,19 @@ class ApplicantController {
     }
   }
 
-  async getMySubmissions(email: string) {
-    let applicant;
+  async getMySubmissions(id: number) {
     let submission: ApplicantDraftSubmission | ApplicantSubmission | null;
     let isFinal = false;
     try {
-      applicant = await this.prisma.applicant.findUniqueOrThrow({
-        where: { email },
-      });
       submission = await this.prisma.applicantSubmission.findFirst({
-        where: { applicantId: applicant.id },
+        where: { applicantId: id },
       });
 
       if (submission) {
         isFinal = true;
       } else {
         submission = await this.prisma.applicantDraftSubmission.findFirst({
-          where: { applicantId: applicant.id },
+          where: { applicantId: id },
         });
       }
       return { isFinal, submission };
