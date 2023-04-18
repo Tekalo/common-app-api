@@ -128,7 +128,7 @@ model OpportunityBatch {
     impactAreas              String[] // enum
     contactName              String
     contactEmail             String
-    contactPhone             String
+    contactPhone             String?
     equalOpportunityEmployer Boolean
 }
 

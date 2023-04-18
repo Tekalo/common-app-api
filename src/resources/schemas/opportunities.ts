@@ -49,7 +49,7 @@ const OpportunityBatchRequestBodySchema = z.object({
   contact: z.object({
     name: z.string(),
     email: z.string(),
-    phone: z.string(),
+    phone: z.string().optional(),
   }),
   submissions: z.array(
     z.object({
@@ -80,7 +80,7 @@ const OpportunityBatchResponseBodySchema = z.object({
   id: z.number(),
   contactEmail: z.string(),
   contactName: z.string(),
-  contactPhone: z.string(),
+  contactPhone: z.string().optional(),
   impactAreas: z.array(z.string()),
   orgName: z.string(),
   orgSize: z.string(),
