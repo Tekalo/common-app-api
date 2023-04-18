@@ -89,10 +89,10 @@ async function seedApplicantsAndApplicantSubmissions() {
         pronoun: pronoun || undefined,
         preferredContact,
         searchStatus,
+        phone: String(randomInt(1000000)),
         applications: {
           create: {
             ...application,
-            desiredSalary: String(randomInt(1000000)),
           },
         },
       },
