@@ -71,7 +71,7 @@ const OpportunityBatchRequestBodySchema = z.object({
       desiredOtherSkills: z.string().max(255).optional(),
       visaSponsorship: VisaSponsorship,
       similarStaffed: z.boolean(),
-      desiredImpactExp: z.string().max(255).optional(),
+      desiredImpactExp: z.string().max(5000).optional(),
     }),
   ),
 });
