@@ -22,11 +22,7 @@ SELECT
   appsub."interestRoles",
   appsub."interestGovt",
   appsub."interestGovtEmplTypes",
-  ARRAY_CAT(
-    appsub."interestCauses",
-    STRING_TO_ARRAY(appsub."otherCause", ',')
-  ) AS "allCauses",
-  -- ARRAY_CAT(appsub."interestCauses", appsub."otherCauses") AS "allCauses",  -- Uncomment if/when otherCause becomes otherCauses
+  ARRAY_CAT(appsub."interestCauses", appsub."otherCauses") AS "allCauses",
   ARRAY_CAT(appsub.skills, appsub."otherSkills") AS "allSkills",
   appsub."currentLocation",
   appsub."openToRelocate",
