@@ -80,7 +80,7 @@ const OpportunityBatchResponseBodySchema = z.object({
   id: z.number(),
   contactEmail: z.string(),
   contactName: z.string(),
-  contactPhone: z.string().optional(),
+  contactPhone: z.string().nullable().optional(),
   impactAreas: z.array(z.string()),
   orgName: z.string(),
   orgSize: z.string(),
