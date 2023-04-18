@@ -18,17 +18,15 @@ afterAll(async () => {
   await MonitoringService.exitHandler();
 });
 
-describe('Error Handling', () => {
+describe('Monitoring Service', () => {
   const dummyAuthService = new DummyAuthService();
-  dummyAuthService.createUser = () => {
-    throw new Error('Auth0 Creation Error');
-  };
+
   const monitoringService = new MonitoringService(
     sentryTransport as () => Transport,
   );
   const appConfig = configLoader.loadConfig();
 
-  it('should collect error events for 500 error', async () => {
+  it('should collect performance events', async () => {
     const dummyAuthApp = getApp(dummyAuthService, monitoringService, appConfig);
 
     await request(dummyAuthApp)
@@ -42,17 +40,31 @@ describe('Error Handling', () => {
         acceptedTerms: true,
         acceptedPrivacy: true,
       })
-      .expect(500);
+      .expect(200);
 
     await sleep(100);
 
     expect(testkit.transactions()).toHaveLength(1);
+    const transaction = testkit.transactions()[0];
+    expect(transaction.name).toContain('applicants');
+  });
+
+  it('should collect error events for 500 error', async () => {
+    const dummyAuthApp = getApp(dummyAuthService, monitoringService, appConfig);
+
+    await request(dummyAuthApp).post('/opportunities/batch').expect(400);
+
+    await sleep(100);
+
+    expect(testkit.transactions()).toHaveLength(2);
+    const transaction = testkit.transactions()[1];
+    expect(transaction.name).toContain('opportunities');
     expect(testkit.reports()).toHaveLength(1);
     const report = testkit.reports()[0];
     expect(report).toHaveProperty('error');
   });
 
-  it('should collect performance events', async () => {
+  it('should not collect data for health check events', async () => {
     const dummyAuthApp = getApp(
       new DummyAuthService(),
       monitoringService,
@@ -64,7 +76,5 @@ describe('Error Handling', () => {
     await sleep(100);
 
     expect(testkit.transactions()).toHaveLength(2);
-    const transaction = testkit.transactions()[1];
-    expect(transaction.name).toContain('health');
   });
 });
