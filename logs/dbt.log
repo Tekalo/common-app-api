@@ -1,0 +1,124 @@
+
+
+============================== 2023-04-18 16:11:11.506069 | 0c581e3f-8d29-4988-a5c3-3f3c561ce244 ==============================
+[0m16:11:11.506069 [info ] [MainThread]: Running with dbt=1.4.5
+[0m16:11:11.506791 [debug] [MainThread]: running dbt with arguments {'write_json': True, 'use_colors': True, 'printer_width': 80, 'version_check': True, 'partial_parse': True, 'static_parser': True, 'profiles_dir': '/Users/logangittelson/.dbt', 'send_anonymous_usage_stats': True, 'quiet': False, 'no_print': False, 'cache_selected_only': False, 'config_dir': False, 'which': 'debug', 'indirect_selection': 'eager'}
+[0m16:11:11.506883 [debug] [MainThread]: Tracking: tracking
+[0m16:11:11.517052 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x106647910>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x106691b10>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x106690c70>]}
+[0m16:11:11.536613 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x106690c70>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x106692050>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x1066b09d0>]}
+[0m16:11:11.536771 [debug] [MainThread]: Flushing usage events
+[0m16:11:11.630015 [error] [MainThread]: Encountered an error:
+Parsing Error
+  Env var required but not provided: 'DBT_USERNAME'
+
+
+============================== 2023-04-18 16:11:23.240679 | f830be7e-232b-4e4c-ae8c-07bd76d90e2f ==============================
+[0m16:11:23.240679 [info ] [MainThread]: Running with dbt=1.4.5
+[0m16:11:23.241412 [debug] [MainThread]: running dbt with arguments {'write_json': True, 'use_colors': True, 'printer_width': 80, 'version_check': True, 'partial_parse': True, 'static_parser': True, 'profiles_dir': '/Users/logangittelson/.dbt', 'send_anonymous_usage_stats': True, 'quiet': False, 'no_print': False, 'cache_selected_only': False, 'config_dir': False, 'which': 'debug', 'indirect_selection': 'eager'}
+[0m16:11:23.241501 [debug] [MainThread]: Tracking: tracking
+[0m16:11:23.247807 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x106122dd0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x106169990>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x106168c40>]}
+[0m16:11:23.251293 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x106168c40>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x106169fc0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x106188940>]}
+[0m16:11:23.251421 [debug] [MainThread]: Flushing usage events
+[0m16:11:23.321069 [error] [MainThread]: Encountered an error:
+Parsing Error
+  Env var required but not provided: 'DBT_USERNAME'
+
+
+============================== 2023-04-18 16:12:29.851821 | 13da45e9-774c-44ad-9eae-8f128985c319 ==============================
+[0m16:12:29.851821 [info ] [MainThread]: Running with dbt=1.4.5
+[0m16:12:29.852553 [debug] [MainThread]: running dbt with arguments {'write_json': True, 'use_colors': True, 'printer_width': 80, 'version_check': True, 'partial_parse': True, 'static_parser': True, 'profiles_dir': '/Users/logangittelson/.dbt', 'send_anonymous_usage_stats': True, 'quiet': False, 'no_print': False, 'cache_selected_only': False, 'config_dir': False, 'which': 'debug', 'indirect_selection': 'eager'}
+[0m16:12:29.852661 [debug] [MainThread]: Tracking: tracking
+[0m16:12:29.860625 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x105eaa800>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x105ef5ba0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x105ef4c10>]}
+[0m16:12:29.865971 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x105ef4c10>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x105ef5210>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x105ef6230>]}
+[0m16:12:29.866122 [debug] [MainThread]: Flushing usage events
+[0m16:12:29.950597 [error] [MainThread]: Encountered an error:
+cannot import name 'RuntimeException' from 'dbt.exceptions' (/opt/homebrew/lib/python3.10/site-packages/dbt/exceptions.py)
+[0m16:12:29.953713 [error] [MainThread]: Traceback (most recent call last):
+  File "/opt/homebrew/lib/python3.10/site-packages/dbt/main.py", line 136, in main
+    results, succeeded = handle_and_check(args)
+  File "/opt/homebrew/lib/python3.10/site-packages/dbt/main.py", line 206, in handle_and_check
+    task, res = run_from_args(parsed)
+  File "/opt/homebrew/lib/python3.10/site-packages/dbt/main.py", line 253, in run_from_args
+    results = task.run()
+  File "/opt/homebrew/lib/python3.10/site-packages/dbt/task/debug.py", line 109, in run
+    self.test_configuration()
+  File "/opt/homebrew/lib/python3.10/site-packages/dbt/task/debug.py", line 281, in test_configuration
+    profile_status = self._load_profile()
+  File "/opt/homebrew/lib/python3.10/site-packages/dbt/task/debug.py", line 252, in _load_profile
+    profile: Profile = Profile.render_from_args(self.args, renderer, profile_name)
+  File "/opt/homebrew/lib/python3.10/site-packages/dbt/config/profile.py", line 428, in render_from_args
+    return cls.from_raw_profiles(
+  File "/opt/homebrew/lib/python3.10/site-packages/dbt/config/profile.py", line 394, in from_raw_profiles
+    return cls.from_raw_profile_info(
+  File "/opt/homebrew/lib/python3.10/site-packages/dbt/config/profile.py", line 348, in from_raw_profile_info
+    credentials: Credentials = cls._credentials_from_profile(
+  File "/opt/homebrew/lib/python3.10/site-packages/dbt/config/profile.py", line 181, in _credentials_from_profile
+    cls = load_plugin(typename)
+  File "/opt/homebrew/lib/python3.10/site-packages/dbt/adapters/factory.py", line 202, in load_plugin
+    return FACTORY.load_plugin(name)
+  File "/opt/homebrew/lib/python3.10/site-packages/dbt/adapters/factory.py", line 57, in load_plugin
+    mod: Any = import_module("." + name, "dbt.adapters")
+  File "/opt/homebrew/Cellar/python@3.10/3.10.11/Frameworks/Python.framework/Versions/3.10/lib/python3.10/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1050, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 688, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 883, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/opt/homebrew/lib/python3.10/site-packages/dbt/adapters/snowflake/__init__.py", line 1, in <module>
+    from dbt.adapters.snowflake.column import SnowflakeColumn  # noqa
+  File "/opt/homebrew/lib/python3.10/site-packages/dbt/adapters/snowflake/column.py", line 4, in <module>
+    from dbt.exceptions import RuntimeException
+ImportError: cannot import name 'RuntimeException' from 'dbt.exceptions' (/opt/homebrew/lib/python3.10/site-packages/dbt/exceptions.py)
+
+
+
+============================== 2023-04-18 16:12:49.243920 | fced2f66-d481-4907-aaa9-9ad21c424847 ==============================
+[0m16:12:49.243920 [info ] [MainThread]: Running with dbt=1.4.5
+[0m16:12:49.244638 [debug] [MainThread]: running dbt with arguments {'write_json': True, 'use_colors': True, 'printer_width': 80, 'version_check': True, 'partial_parse': True, 'static_parser': True, 'profiles_dir': '/Users/logangittelson/.dbt', 'send_anonymous_usage_stats': True, 'quiet': False, 'no_print': False, 'cache_selected_only': False, 'config_dir': False, 'which': 'debug', 'indirect_selection': 'eager'}
+[0m16:12:49.244748 [debug] [MainThread]: Tracking: tracking
+[0m16:12:49.253316 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x105ea32e0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x105eed6f0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x105eecb50>]}
+[0m16:12:49.258339 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x105eecb50>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x105eed4b0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x105eed6c0>]}
+[0m16:12:49.258483 [debug] [MainThread]: Flushing usage events
+[0m16:12:49.343473 [error] [MainThread]: Encountered an error:
+cannot import name 'RuntimeException' from 'dbt.exceptions' (/opt/homebrew/lib/python3.10/site-packages/dbt/exceptions.py)
+[0m16:12:49.346428 [error] [MainThread]: Traceback (most recent call last):
+  File "/opt/homebrew/lib/python3.10/site-packages/dbt/main.py", line 136, in main
+    results, succeeded = handle_and_check(args)
+  File "/opt/homebrew/lib/python3.10/site-packages/dbt/main.py", line 206, in handle_and_check
+    task, res = run_from_args(parsed)
+  File "/opt/homebrew/lib/python3.10/site-packages/dbt/main.py", line 253, in run_from_args
+    results = task.run()
+  File "/opt/homebrew/lib/python3.10/site-packages/dbt/task/debug.py", line 109, in run
+    self.test_configuration()
+  File "/opt/homebrew/lib/python3.10/site-packages/dbt/task/debug.py", line 281, in test_configuration
+    profile_status = self._load_profile()
+  File "/opt/homebrew/lib/python3.10/site-packages/dbt/task/debug.py", line 252, in _load_profile
+    profile: Profile = Profile.render_from_args(self.args, renderer, profile_name)
+  File "/opt/homebrew/lib/python3.10/site-packages/dbt/config/profile.py", line 428, in render_from_args
+    return cls.from_raw_profiles(
+  File "/opt/homebrew/lib/python3.10/site-packages/dbt/config/profile.py", line 394, in from_raw_profiles
+    return cls.from_raw_profile_info(
+  File "/opt/homebrew/lib/python3.10/site-packages/dbt/config/profile.py", line 348, in from_raw_profile_info
+    credentials: Credentials = cls._credentials_from_profile(
+  File "/opt/homebrew/lib/python3.10/site-packages/dbt/config/profile.py", line 181, in _credentials_from_profile
+    cls = load_plugin(typename)
+  File "/opt/homebrew/lib/python3.10/site-packages/dbt/adapters/factory.py", line 202, in load_plugin
+    return FACTORY.load_plugin(name)
+  File "/opt/homebrew/lib/python3.10/site-packages/dbt/adapters/factory.py", line 57, in load_plugin
+    mod: Any = import_module("." + name, "dbt.adapters")
+  File "/opt/homebrew/Cellar/python@3.10/3.10.11/Frameworks/Python.framework/Versions/3.10/lib/python3.10/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1050, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 688, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 883, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/opt/homebrew/lib/python3.10/site-packages/dbt/adapters/snowflake/__init__.py", line 1, in <module>
+    from dbt.adapters.snowflake.column import SnowflakeColumn  # noqa
+  File "/opt/homebrew/lib/python3.10/site-packages/dbt/adapters/snowflake/column.py", line 4, in <module>
+    from dbt.exceptions import RuntimeException
+ImportError: cannot import name 'RuntimeException' from 'dbt.exceptions' (/opt/homebrew/lib/python3.10/site-packages/dbt/exceptions.py)
+

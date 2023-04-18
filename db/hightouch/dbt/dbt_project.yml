@@ -24,5 +24,3 @@ models:
       materialized: view
     opportunity_submission:
       materialized: view
-    deletion_request:
-      materialized: view
