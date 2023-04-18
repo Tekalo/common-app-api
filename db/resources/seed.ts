@@ -5,6 +5,7 @@
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { PrismaClient, Prisma } from '@prisma/client';
+import { randomInt } from 'crypto';
 import CAPPError from '../../src/resources/shared/CAPPError.js';
 import { Problem } from '../../src/resources/types/shared.js';
 import seedData from './seed.json' assert { type: 'json' };
@@ -91,6 +92,7 @@ async function seedApplicantsAndApplicantSubmissions() {
         applications: {
           create: {
             ...application,
+            desiredSalary: String(randomInt(1000000)),
           },
         },
       },
