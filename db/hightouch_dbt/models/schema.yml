@@ -9,3 +9,19 @@ models:
         tests:
           - unique
           - not_null
+  - name: applicant_submission
+    description: 'A model for applicant submissions'
+    columns:
+      - name: id
+        description: 'The primary key for this table'
+        tests:
+          - unique
+          - not_null
+  - name: deletion_request
+    description: 'A model for applicant data deletion requests'
+    columns:
+      - name: id
+        description: 'The primary key for this table'
+        tests:
+          - unique
+          - not_null
