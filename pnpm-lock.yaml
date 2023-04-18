@@ -2,8 +2,8 @@ lockfileVersion: '6.0'
 
 dependencies:
   '@prisma/client':
-    specifier: 4.12.0-integration-rtld-deepbind.3
-    version: 4.12.0-integration-rtld-deepbind.3(prisma@4.12.0-integration-rtld-deepbind.3)
+    specifier: 4.13.0
+    version: 4.13.0(prisma@4.13.0)
   '@sentry/node':
     specifier: 7.48.0
     version: 7.48.0
@@ -118,8 +118,8 @@ devDependencies:
     specifier: 2.8.7
     version: 2.8.7
   prisma:
-    specifier: 4.12.0-integration-rtld-deepbind.3
-    version: 4.12.0-integration-rtld-deepbind.3
+    specifier: 4.13.0
+    version: 4.13.0
   sentry-testkit:
     specifier: 5.0.5
     version: 5.0.5
@@ -817,8 +817,8 @@ packages:
       tslib: 2.5.0
     dev: true
 
-  /@prisma/client@4.12.0-integration-rtld-deepbind.3(prisma@4.12.0-integration-rtld-deepbind.3):
-    resolution: {integrity: sha512-IvZc4I+Z97UepsAgqr4adA3318ADGfUJJLbAHjxFNdRRXwPXhBy59Uvn7lB9dodtcir9eVY5diWt6GpToLiGoQ==}
+  /@prisma/client@4.13.0(prisma@4.13.0):
+    resolution: {integrity: sha512-YaiiICcRB2hatxsbnfB66uWXjcRw3jsZdlAVxmx0cFcTc/Ad/sKdHCcWSnqyDX47vAewkjRFwiLwrOUjswVvmA==}
     engines: {node: '>=14.17'}
     requiresBuild: true
     peerDependencies:
@@ -827,16 +827,16 @@ packages:
       prisma:
         optional: true
     dependencies:
-      '@prisma/engines-version': 4.12.0-22.3b9f029aeb9a91829e6648c61146b02f3646d1e7
-      prisma: 4.12.0-integration-rtld-deepbind.3
+      '@prisma/engines-version': 4.13.0-50.1e7af066ee9cb95cf3a403c78d9aab3e6b04f37a
+      prisma: 4.13.0
     dev: false
 
-  /@prisma/engines-version@4.12.0-22.3b9f029aeb9a91829e6648c61146b02f3646d1e7:
-    resolution: {integrity: sha512-c0Jcy/23oDwpVkTjhDJL6dD1QRrGrUTObwGjkS6LJIg5C1D+TFZgYSbZLrJjrioQ6tEXPMPSh9T7dQaXN6EvLw==}
+  /@prisma/engines-version@4.13.0-50.1e7af066ee9cb95cf3a403c78d9aab3e6b04f37a:
+    resolution: {integrity: sha512-fsQlbkhPJf08JOzKoyoD9atdUijuGBekwoOPZC3YOygXEml1MTtgXVpnUNchQlRSY82OQ6pSGQ9PxUe4arcSLQ==}
     dev: false
 
-  /@prisma/engines@4.12.0-integration-rtld-deepbind.3:
-    resolution: {integrity: sha512-nVjhcIKSNj/PkuEzEXrC3yEh40uSLhb0odetF9/Y64yKbmbpUAjcs7gooAqy0MjTEiehtsIwXppeNN4N19mavA==}
+  /@prisma/engines@4.13.0:
+    resolution: {integrity: sha512-HrniowHRZXHuGT9XRgoXEaP2gJLXM5RMoItaY2PkjvuZ+iHc0Zjbm/302MB8YsPdWozAPHHn+jpFEcEn71OgPw==}
     requiresBuild: true
 
   /@sentry-internal/tracing@7.48.0:
@@ -4578,13 +4578,13 @@ packages:
       ansi-styles: 5.2.0
       react-is: 18.2.0
 
-  /prisma@4.12.0-integration-rtld-deepbind.3:
-    resolution: {integrity: sha512-jGVX/KwRmuJ6SW7X0mSXkKuiNuxZ/NmmQCfaXcpsZKplNRDJCVxFJeFASDwFDZ7Ai0+4niAI2jdOa45FFGIdgw==}
+  /prisma@4.13.0:
+    resolution: {integrity: sha512-L9mqjnSmvWIRCYJ9mQkwCtj4+JDYYTdhoyo8hlsHNDXaZLh/b4hR0IoKIBbTKxZuyHQzLopb/+0Rvb69uGV7uA==}
     engines: {node: '>=14.17'}
     hasBin: true
     requiresBuild: true
     dependencies:
-      '@prisma/engines': 4.12.0-integration-rtld-deepbind.3
+      '@prisma/engines': 4.13.0
 
   /process@0.11.10:
     resolution: {integrity: sha512-cdGef/drWFoydD1JsMzuFf8100nZl+GT+yacc2bEced5f9Rjk4z+WtFUTBu9PhOi9j/jfmBPu0mMEY4wIdAF8A==}
