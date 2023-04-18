@@ -1,4 +1,5 @@
 SELECT
-  *
+  id,
+  "applicantId"
 FROM
-  PUBLIC.applicantdeletionrequest;
+  PUBLIC."ApplicantDeletionRequests";

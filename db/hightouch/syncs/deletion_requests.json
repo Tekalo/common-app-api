@@ -13,6 +13,6 @@
   "configVersion": 0,
   "externalIdMapping": {
     "to": "Internal ID",
-    "from": "applicantid"
+    "from": "applicantId"
   }
 }
