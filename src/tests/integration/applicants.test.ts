@@ -452,7 +452,7 @@ describe('POST /applicants/me/submissions/draft', () => {
       expect(body).toHaveProperty('id');
     });
 
-    it('should not allow applicant to save draft submission of another user', async () => {
+    it('should not allow applicant to save draft submission of a non-existent user', async () => {
       const token = await authHelper.getToken('bibbitybobbityboo@gmail.com');
       await request(dummyAuthApp).post('/applicants').send({
         name: 'Pat Patterson',
@@ -470,7 +470,7 @@ describe('POST /applicants/me/submissions/draft', () => {
         .set('Authorization', `Bearer ${token}`)
         .send(testBody)
         .expect(404);
-      expect(body).toHaveProperty('title', 'Cannot authenticate request');
+      expect(body).toHaveProperty('title', 'Not Found');
     });
   });
 });
