@@ -33,5 +33,5 @@ SELECT
   os."jdUrl",
   os."pitchEssay"
 FROM
-  "OpportunitySubmission" os
-  LEFT JOIN "OpportunityBatch" ob ON os."opportunityBatchId" = ob.id;
+  {{ source("capp_sources", "OpportunitySubmission") }} os
+  LEFT JOIN {{ source("capp_sources", "OpportunityBatch") }} ob ON os."opportunityBatchId" = ob.id;

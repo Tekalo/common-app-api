@@ -1,0 +1,12 @@
+version: 2
+
+sources:
+  - name: capp_sources
+    description: 'Production tables for CAPP'
+    database: capp
+    schema: public
+    tables:
+      - name: Applicant
+      - name: ApplicantSubmission
+      - name: OpportunityBatch
+      - name: OpportunitySubmission

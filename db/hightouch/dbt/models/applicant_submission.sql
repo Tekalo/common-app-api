@@ -33,5 +33,5 @@ SELECT
   appsub."hoursPerWeek",
   appsub."essayResponse"
 FROM
-  PUBLIC."ApplicantSubmission" appsub
-  LEFT JOIN PUBLIC."Applicant" apl ON appsub."applicantId" = apl.id;
+  {{ source("capp_sources", "ApplicantSubmission") }} appsub
+  LEFT JOIN {{ source("capp_sources", "Applicant") }} apl ON appsub."applicantId" = apl.id;
