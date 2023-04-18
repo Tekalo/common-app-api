@@ -11,8 +11,8 @@ dependencies:
     specifier: 7.48.0
     version: 7.48.0
   '@tsconfig/node18':
-    specifier: 1.0.1
-    version: 1.0.1
+    specifier: 1.0.2
+    version: 1.0.2
   '@types/auth0':
     specifier: 3.3.1
     version: 3.3.1
@@ -1060,8 +1060,8 @@ packages:
   /@tsconfig/node16@1.0.3:
     resolution: {integrity: sha512-yOlFc+7UtL/89t2ZhjPvvB/DeAr3r+Dq58IgzsFkOAvVC6NMJXmCGjbptdXdR9qsX7pKcTL+s87FtYREi2dEEQ==}
 
-  /@tsconfig/node18@1.0.1:
-    resolution: {integrity: sha512-sNFeK6X2ATlhlvzyH4kKYQlfHXE2f2/wxtB9ClvYXevWpmwkUT7VaSrjIN9E76Qebz8qP5JOJJ9jD3QoD/Z9TA==}
+  /@tsconfig/node18@1.0.2:
+    resolution: {integrity: sha512-4//KMPpqhtqw4g25Zh27ELuMD+vgcidW4VLozYWtRn8VXJEiRPm7GqrVNFwBiL3rM9/3k0a07X5NpI78DvTpfQ==}
     dev: false
 
   /@types/auth0@3.3.1:
