@@ -68,11 +68,14 @@ class Authenticator {
     } catch (e) {
       // Could not find applicant in Postgres
       next(
-        new CAPPError({
-          title: 'Not Found',
-          detail: 'Applicant cannot be found',
-          status: 404,
-        }),
+        new CAPPError(
+          {
+            title: 'Not Found',
+            detail: 'Applicant cannot be found',
+            status: 404,
+          },
+          e instanceof Error ? { cause: e } : undefined,
+        ),
       );
     }
   }

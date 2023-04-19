@@ -47,7 +47,7 @@ const getApp = (
    */
   app.use(router);
 
-  app.use('/applicants', applicantRoutes(authService));
+  app.use('/applicants', applicantRoutes(authService, config));
   app.use('/opportunities', opportunitiesRoutes());
   app.use('/health', healthRoutes());
 
