@@ -45,7 +45,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
           aws-region: us-east-1
-          role-to-assume: ${{ vars[format('{0}_AWS_PLAN_ROLE', input.env)] }}
+          role-to-assume: ${{ vars[format('{0}_AWS_PLAN_ROLE', inputs.env)] }}
           role-session-name: GithubActions
           mask-aws-account-id: false
 
