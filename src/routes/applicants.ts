@@ -51,15 +51,19 @@ const applicantRoutes = (authService: AuthService, config: BaseConfig) => {
     },
   );
 
-  router.delete('/:id', (req: Request, res: Response, next) => {
-    const applicantID = +req.params.id;
-    applicantController
-      .deleteApplicant(applicantID)
-      .then((result) => {
-        res.status(200).json(result);
-      })
-      .catch((err) => next(err));
-  });
+  router.delete(
+    '/:id',
+    authenticator.validateJwt.bind(authenticator),
+    (req: Request, res: Response, next) => {
+      const applicantID = +req.params.id;
+      applicantController
+        .deleteApplicant(applicantID)
+        .then((result) => {
+          res.status(200).json(result);
+        })
+        .catch((err) => next(err));
+    },
+  );
 
   router.post(
     '/me/submissions/draft',
