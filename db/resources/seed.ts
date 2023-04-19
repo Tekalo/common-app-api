@@ -108,8 +108,9 @@ async function seedApplicantsAndApplicantSubmissions() {
 async function seedOpportunitySubmissionBatches() {
   const { opportunityBatches } = seedData;
   const opportunityBatchUpserts = opportunityBatches.map((batch) =>
-    prisma.opportunityBatch.create({
-      data: {
+    prisma.opportunityBatch.upsert({
+      create: {
+        id: batch.id,
         orgName: batch.orgName,
         orgSize: batch.orgSize,
         orgType: batch.orgType,
@@ -124,6 +125,8 @@ async function seedOpportunitySubmissionBatches() {
           },
         },
       },
+      update: { contactPhone: String(randomInt(1000000)) },
+      where: { id: batch.id },
     }),
   );
   await doUpsert(opportunityBatchUpserts);
