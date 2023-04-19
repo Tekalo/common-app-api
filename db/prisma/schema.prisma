@@ -31,7 +31,7 @@ model Applicant {
 model ApplicantSubmission {
     id Int @id @default(autoincrement())
 
-    applicant   Applicant @relation(fields: [applicantId], references: [id])
+    applicant   Applicant @relation(fields: [applicantId], references: [id], onDelete: Cascade)
     applicantId Int       @unique
 
     createdAt DateTime @default(now())
@@ -76,7 +76,7 @@ model ApplicantSubmission {
 model ApplicantDraftSubmission {
     id Int @id @default(autoincrement())
 
-    applicant   Applicant @relation(fields: [applicantId], references: [id])
+    applicant   Applicant @relation(fields: [applicantId], references: [id], onDelete: Cascade)
     applicantId Int       @unique
 
     createdAt DateTime @default(now())

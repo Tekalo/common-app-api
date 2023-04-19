@@ -129,12 +129,6 @@ class ApplicantController {
             acceptedPrivacy: applicantToDelete.acceptedPrivacy,
           },
         }),
-        // We use deleteMany() as a workaround because delete() throws if there are no submissions
-        // TODO: Make sure we should do this (would we need to revert data at any point?)
-        this.prisma.applicantSubmission.deleteMany({ where: { applicantId } }),
-        this.prisma.applicantDraftSubmission.deleteMany({
-          where: { applicantId },
-        }),
         // Delete from applicant table
         this.prisma.applicant.delete({ where: { id: applicantId } }),
       ]);
