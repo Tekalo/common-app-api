@@ -296,12 +296,15 @@ describe('DELETE /applicants/:id', () => {
     itif('CI' in process.env)(
       'should delete an existing applicant from Auth0 and from database',
       async () => {
-        const token = await authHelper.getToken('bboberson@gmail.com');
+        const randomString = getRandomString();
+        const token = await authHelper.getToken(
+          `bboberson${randomString}@gmail.com`,
+        );
         const { body }: { body: ApplicantResponseBody } = await request(app)
           .post('/applicants')
           .send({
             name: 'Bob Boberson',
-            email: `bboberson${getRandomString()}@gmail.com`,
+            email: `bboberson${randomString}@gmail.com`,
             preferredContact: 'email',
             searchStatus: 'active',
             acceptedTerms: true,
