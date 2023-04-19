@@ -81,7 +81,9 @@ async function seedApplicantsAndApplicantSubmissions() {
       application,
     } = app;
     const applicantUpsert = prisma.applicant.upsert({
-      update: {},
+      update: {
+        phone: String(randomInt(1000000)),
+      },
       create: {
         name,
         auth0Id,
