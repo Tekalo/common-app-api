@@ -127,7 +127,7 @@ class ApplicantController {
           detail: 'Database error encountered when pausing applicant status',
           status: 400,
         };
-        if (e.meta?.cause === 'Record to update not found.') {
+        if (e.code === 'P2001') {
           problem.detail = 'Applicant not found';
           problem.status = 404;
         }
