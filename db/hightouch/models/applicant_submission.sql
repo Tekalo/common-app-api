@@ -3,8 +3,20 @@ SELECT
   apl.email,
   apl.phone,
   apl.pronoun,
-  apl."preferredContact",
-  apl."searchStatus",
+  CASE
+    apl."preferredContact"
+    WHEN 'sms' THEN 'Text message'
+    WHEN 'whatsapp' THEN 'WhatsApp message'
+    WHEN 'email' THEN 'Email'
+    ELSE apl."preferredContact"
+  END "preferredContact",
+  CASE
+    apl."searchStatus"
+    WHEN 'active' THEN 'Actively looking'
+    WHEN 'passive' THEN 'Flexible, casually looking'
+    WHEN 'future' THEN 'Want to stay in touch for future opportunities'
+    ELSE apl."searchStatus"
+  END "searchStatus",
   appsub.id,
   appsub."applicantId",
   appsub."createdAt",
@@ -18,7 +30,19 @@ SELECT
   appsub."githubUrl",
   appsub."portfolioUrl",
   appsub."portfolioPassword",
-  appsub."interestEmploymentType",
+  (
+    SELECT
+      ARRAY_AGG(
+        CASE
+          x
+          WHEN 'full' THEN 'Full-time'
+          WHEN 'part' THEN 'Part-time / short-term'
+          ELSE x
+        END
+      )
+    FROM
+      UNNEST(appsub."interestEmploymentType") AS x
+  ) AS "interestEmploymentType",
   appsub."interestRoles",
   appsub."interestGovt",
   appsub."interestGovtEmplTypes",
@@ -29,7 +53,12 @@ SELECT
   appsub."openToRemote",
   appsub."desiredSalary",
   appsub."previousImpactExperience",
-  appsub."workAuthorization",
+  CASE
+    appsub."workAuthorization"
+    WHEN 'authorized' THEN 'Authorized to work in the U.S.'
+    WHEN 'sponsorship' THEN 'Will now or in the future require sponsorship to work in the U.S.'
+    ELSE appsub."workAuthorization"
+  END "workAuthorization",
   appsub."hoursPerWeek",
   appsub."essayResponse"
 FROM
