@@ -1,3 +1,7 @@
 ---
+prod:
+  aws_account_id: 297669039735
+staging:
+  aws_account_id: 297530360210
 dev:
   aws_account_id: 297530360210
