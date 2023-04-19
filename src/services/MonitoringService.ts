@@ -16,7 +16,11 @@ class MonitoringService {
     /**
      * Initialize Sentry
      */
-    const { env, sentryDSN }: { env: string; sentryDSN: string } =
+    const {
+      env,
+      sentryDSN,
+      isLoadTest,
+    }: { env: string; sentryDSN: string; isLoadTest: boolean } =
       configLoader.loadConfig();
 
     const options: Sentry.NodeOptions = {
@@ -31,6 +35,10 @@ class MonitoringService {
         ...Sentry.autoDiscoverNodePerformanceMonitoringIntegrations(),
       ],
       beforeSendTransaction: (event: TransactionEvent) => {
+        // if we're doing a load test, don't send any data
+        if (isLoadTest) {
+          return null;
+        }
         // don't send traces of requests to the health check endpoint
         if (event.transaction === 'GET /health') {
           return null;

@@ -7,6 +7,7 @@ export type BaseConfig = {
   port: number;
   auth0: Auth0Config;
   sentryDSN: string;
+  isLoadTest: boolean;
 };
 function loadConfig(): BaseConfig {
   if (!process.env.AUTH0_CONFIG) {
@@ -23,6 +24,7 @@ function loadConfig(): BaseConfig {
     port: Number(process.env.PORT) || 3000,
     auth0: validatedAuth0Config,
     sentryDSN: process.env.SENTRY_DSN || '',
+    loadTest: Boolean(process.env.LOAD_TEST) || false,
   };
   return configObj;
 }
