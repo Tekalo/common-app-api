@@ -12,6 +12,7 @@
       "submissions": [
         {
           "id": 1,
+          "opportunityBatchId": 1,
           "fullyRemote": false,
           "location": "Burgerville",
           "paid": true,
@@ -23,6 +24,7 @@
         },
         {
           "id": 2,
+          "opportunityBatchId": 1,
           "fullyRemote": false,
           "location": "Remote",
           "paid": true,
@@ -46,6 +48,7 @@
       "submissions": [
         {
           "id": 3,
+          "opportunityBatchId": 2,
           "fullyRemote": true,
           "location": "San Francisco / Remote",
           "paid": true,
@@ -69,6 +72,7 @@
       "searchStatus": "future",
       "application": {
         "id": 1,
+        "applicantId": 1,
         "originTag": "SF",
         "resumeUrl": "www.myresume.com",
         "lastOrg": "Apfel",
@@ -93,6 +97,7 @@
       "searchStatus": "future",
       "application": {
         "id": 2,
+        "applicantId": 2,
         "originTag": "TSLA",
         "resumeUrl": "www.mydadsresume.com",
         "lastOrg": "Illuminati",
