@@ -4,12 +4,17 @@ import {
   ApplicantResponseBodySchema,
   ApplicantSubmissionRequestBodySchema,
   ApplicantDraftSubmissionRequestBodySchema,
+  ApplicantDraftSubmissionResponseBodySchema,
 } from '../schemas/applicants.js';
 
 export type ApplicantRequestBody = z.infer<typeof ApplicantRequestBodySchema>;
 
 export type ApplicantDraftSubmissionBody = z.infer<
   typeof ApplicantDraftSubmissionRequestBodySchema
+>;
+
+export type ApplicantDraftSubmissionResponseBody = z.infer<
+  typeof ApplicantDraftSubmissionResponseBodySchema
 >;
 
 export type ApplicantSubmissionBody = z.infer<

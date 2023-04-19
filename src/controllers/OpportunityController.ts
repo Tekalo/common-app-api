@@ -56,7 +56,6 @@ class OpportunityController {
       });
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        // TODO : Log e.message in Sentry
         throw new CAPPError(
           {
             title: 'Opportunity Submission Creation Error',
