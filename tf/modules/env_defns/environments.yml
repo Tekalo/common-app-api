@@ -1,3 +1,5 @@
 ---
 dev:
   aws_account_id: 297530360210
+staging:
+  aws_account_id: 297530360210
