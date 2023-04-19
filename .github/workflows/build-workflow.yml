@@ -3,6 +3,11 @@ name: Build image
 
 on:
   workflow_call:
+    inputs:
+      env:
+        description: 'Environment to deploy to'
+        type: string
+        required: true
     outputs:
       image:
         description: 'Built docker image'
@@ -33,7 +38,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
           aws-region: us-east-1
-          role-to-assume: arn:aws:iam::297530360210:role/github-actions
+          role-to-assume: ${{ vars[format('{0}_AWS_PLAN_ROLE', input.env)] }}
           role-session-name: GithubActions
           mask-aws-account-id: false
 

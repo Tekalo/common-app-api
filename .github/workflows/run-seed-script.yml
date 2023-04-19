@@ -42,7 +42,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
           aws-region: us-east-1
-          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_INFRA }}
+          role-to-assume: "${{ vars[format('{0}_AWS_PLAN_ROLE', input.env)] }}"
           role-session-name: GithubActions
 
       - name: Run dev seed script
