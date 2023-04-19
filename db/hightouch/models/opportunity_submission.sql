@@ -22,7 +22,13 @@ SELECT
   os."positionTitle",
   os."fullyRemote",
   os."location",
-  os."visaSponsorship",
+  CASE
+    os."visaSponsorship"
+    WHEN 'yes' THEN 'Sponsors U.S. Visas'
+    WHEN 'no' THEN 'Does not sponsor U.S. Visas'
+    WHEN 'sometimes' THEN 'Sponsors U.S. Visas in some cases'
+    ELSE os."visaSponsorship"
+  END "visaSponsorship",
   os."desiredHoursPerWeek",
   os."desiredStartDate",
   os."desiredEndDate",
