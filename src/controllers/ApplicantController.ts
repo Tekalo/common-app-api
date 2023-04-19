@@ -132,16 +132,22 @@ class ApplicantController {
       ]);
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        throw new CAPPError({
-          title: 'Applicant Deletion Error',
-          detail: 'Database error encountered when deleting applicant',
-          status: 400,
-        });
+        throw new CAPPError(
+          {
+            title: 'Applicant Deletion Error',
+            detail: 'Database error encountered when deleting applicant',
+            status: 400,
+          },
+          e instanceof Error ? { cause: e } : undefined,
+        );
       }
-      throw new CAPPError({
-        title: 'Applicant Deletion Error',
-        detail: 'Error when deleting applicant',
-      });
+      throw new CAPPError(
+        {
+          title: 'Applicant Deletion Error',
+          detail: 'Error when deleting applicant',
+        },
+        e instanceof Error ? { cause: e } : undefined,
+      );
     }
     await this.auth0Service.deleteUser(applicantToDelete.auth0Id);
   }
@@ -204,16 +210,22 @@ class ApplicantController {
       return { isFinal, submission };
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        throw new CAPPError({
-          title: 'Applicant Submissions Retrieval Error',
-          detail: 'Could not find applicant submissions',
-          status: 404,
-        });
+        throw new CAPPError(
+          {
+            title: 'Applicant Submissions Retrieval Error',
+            detail: 'Could not find applicant submissions',
+            status: 404,
+          },
+          e instanceof Error ? { cause: e } : undefined,
+        );
       }
-      throw new CAPPError({
-        title: 'Applicant Submissions Retrieval Error',
-        detail: "Error when retrieving applicant's submission",
-      });
+      throw new CAPPError(
+        {
+          title: 'Applicant Submissions Retrieval Error',
+          detail: "Error when retrieving applicant's submission",
+        },
+        e instanceof Error ? { cause: e } : undefined,
+      );
     }
   }
 }
