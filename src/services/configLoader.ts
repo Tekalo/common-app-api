@@ -24,7 +24,7 @@ function loadConfig(): BaseConfig {
     port: Number(process.env.PORT) || 3000,
     auth0: validatedAuth0Config,
     sentryDSN: process.env.SENTRY_DSN || '',
-    loadTest: Boolean(process.env.LOAD_TEST) || false,
+    isLoadTest: Boolean(process.env.LOAD_TEST) || false,
   };
   return configObj;
 }
