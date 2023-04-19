@@ -55,7 +55,6 @@ class ApplicantController {
       };
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        // TODO : Log e.message in Sentry
         throw new CAPPError(
           {
             title: 'User Creation Error',
@@ -90,7 +89,6 @@ class ApplicantController {
       });
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        // TODO : Log e.message in Sentry
         throw new CAPPError(
           {
             title: 'Applicant Submission Creation Error',
@@ -134,7 +132,6 @@ class ApplicantController {
       ]);
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        // TODO : Log e.message in Sentry
         throw new CAPPError({
           title: 'Applicant Deletion Error',
           detail: 'Database error encountered when deleting applicant',
@@ -168,7 +165,6 @@ class ApplicantController {
       });
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        // TODO : Log e.message in Sentry
         throw new CAPPError(
           {
             title: 'Applicant Draft Submission Creation Error',
@@ -187,6 +183,37 @@ class ApplicantController {
         },
         e instanceof Error ? { cause: e } : undefined,
       );
+    }
+  }
+
+  async getMySubmissions(id: number) {
+    let submission: ApplicantDraftSubmission | ApplicantSubmission | null;
+    let isFinal = false;
+    try {
+      submission = await this.prisma.applicantSubmission.findFirst({
+        where: { applicantId: id },
+      });
+
+      if (submission) {
+        isFinal = true;
+      } else {
+        submission = await this.prisma.applicantDraftSubmission.findFirst({
+          where: { applicantId: id },
+        });
+      }
+      return { isFinal, submission };
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        throw new CAPPError({
+          title: 'Applicant Submissions Retrieval Error',
+          detail: 'Could not find applicant submissions',
+          status: 404,
+        });
+      }
+      throw new CAPPError({
+        title: 'Applicant Submissions Retrieval Error',
+        detail: "Error when retrieving applicant's submission",
+      });
     }
   }
 }

@@ -1,6 +1,7 @@
 {
   "opportunityBatches": [
     {
+      "id": 1,
       "orgName": "Bobs Burgers Foundation",
       "orgType": "nonprofit",
       "orgSize": "<50",
@@ -32,6 +33,7 @@
       ]
     },
     {
+      "id": 2,
       "orgName": "Mozilla Foundation",
       "orgType": "nonprofit",
       "orgSize": ">50",

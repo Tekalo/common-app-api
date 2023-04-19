@@ -8,7 +8,7 @@ import {
 } from '@App/routes/index.js';
 import session from 'express-session';
 import ConnectPg from 'connect-pg-simple';
-import errorHandler from './middleware/ErrorHandler.js';
+import errorHandler from './middleware/errorHandler.js';
 import AuthService from './services/AuthService.js';
 import MonitoringService from './services/MonitoringService.js';
 import { BaseConfig } from './services/configLoader.js';
@@ -27,10 +27,10 @@ const getApp = (
 
   /**
    * Setup cookie session middleware
-   * for authenticating new appliants who have not yet created an account
+   * for authenticating new applicants who have not yet created an account
    */
   const PgClient = ConnectPg(session);
-  const { clientSecret } = config.auth0;
+  const { clientSecret } = config.auth0.api;
   app.use(
     session({
       store: new PgClient({
@@ -46,7 +46,8 @@ const getApp = (
    * Sets the app to use router and auth
    */
   app.use(router);
-  app.use('/applicants', applicantRoutes(authService));
+
+  app.use('/applicants', applicantRoutes(authService, config));
   app.use('/opportunities', opportunitiesRoutes());
   app.use('/health', healthRoutes());
 
