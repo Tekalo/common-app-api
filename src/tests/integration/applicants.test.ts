@@ -582,7 +582,7 @@ describe('PUT /applicants/me/state', () => {
     const token = await authHelper.getToken(
       `bboberson${randomString}@gmail.com`,
     );
-    const resp = await request(dummyAuthApp)
+    await request(dummyAuthApp)
       .post('/applicants')
       .send({
         name: 'Bob Boberson',
@@ -606,7 +606,7 @@ describe('PUT /applicants/me/state', () => {
       .set('Authorization', `Bearer ${token}`)
       .expect(200);
     expect(unPausedBody).toHaveProperty('id');
-    expect(unPausedBody).toHaveProperty('isPaused', true);
+    expect(unPausedBody).toHaveProperty('isPaused', false);
   });
 
   it('should return 404 for non-existent applicant', async () => {
