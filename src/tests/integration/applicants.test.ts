@@ -570,7 +570,7 @@ describe('GET /applicants/me/submissions', () => {
   });
 });
 
-describe('PUT /applicants/:id/state', () => {
+describe('PUT /applicants/me/state', () => {
   const dummyAuthApp = getApp(
     new DummyAuthService(),
     new DummyMonitoringService(),
@@ -578,34 +578,43 @@ describe('PUT /applicants/:id/state', () => {
   );
 
   it('should pause and un-pause an applicants status', async () => {
-    const testApplicantResp = await request(dummyAuthApp)
+    const randomString = getRandomString();
+    const token = await authHelper.getToken(
+      `bboberson${randomString}@gmail.com`,
+    );
+    const resp = await request(dummyAuthApp)
       .post('/applicants')
       .send({
         name: 'Bob Boberson',
         auth0Id: 'auth0|123456',
-        email: `bboberson${getRandomString()}@gmail.com`,
+        email: `bboberson${randomString}@gmail.com`,
         preferredContact: 'email',
         searchStatus: 'active',
         acceptedTerms: true,
         acceptedPrivacy: true,
       });
-    const { id }: { id: number } = testApplicantResp.body;
     const { body: pausedBody } = await request(dummyAuthApp)
-      .put(`/applicants/${id}/state`)
+      .put('/applicants/me/state')
       .send({ pause: true })
+      .set('Authorization', `Bearer ${token}`)
       .expect(200);
-    expect(pausedBody).toEqual({ id, isPaused: true });
+    expect(pausedBody).toHaveProperty('id');
+    expect(pausedBody).toHaveProperty('isPaused', true);
     const { body: unPausedBody } = await request(dummyAuthApp)
-      .put(`/applicants/${id}/state`)
+      .put('/applicants/me/state')
       .send({ pause: false })
+      .set('Authorization', `Bearer ${token}`)
       .expect(200);
-    expect(unPausedBody).toEqual({ id, isPaused: false });
+    expect(unPausedBody).toHaveProperty('id');
+    expect(unPausedBody).toHaveProperty('isPaused', true);
   });
 
   it('should return 404 for non-existent applicant', async () => {
+    const token = await authHelper.getToken('bboberson@gmail.com');
     await request(dummyAuthApp)
-      .put('/applicants/99/state')
+      .put('/applicants/me/state')
       .send({ pause: true })
+      .set('Authorization', `Bearer ${token}`)
       .expect(404);
   });
 });

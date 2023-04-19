@@ -53,17 +53,22 @@ const applicantRoutes = (authService: AuthService, config: BaseConfig) => {
     },
   );
 
-  router.put('/:id/state', (req: Request, res: Response, next) => {
-    const appBody = req.body as ApplicantStateBody;
-    const applicantID = +req.params.id;
-    const { pause } = ApplicantStateRequestBodySchema.parse(appBody);
-    applicantController
-      .pauseApplicant(applicantID, pause)
-      .then((result) => {
-        res.status(200).json(result);
-      })
-      .catch((err) => next(err));
-  });
+  router.put(
+    '/me/state',
+    authenticator.validateJwt.bind(authenticator),
+    (req: Request, res: Response, next) => {
+      const appBody = req.body as ApplicantStateBody;
+      const reqWithAuth = req as RequestWithJWT;
+      const applicantID = reqWithAuth.auth.payload.id;
+      const { pause } = ApplicantStateRequestBodySchema.parse(appBody);
+      applicantController
+        .pauseApplicant(applicantID, pause)
+        .then((result) => {
+          res.status(200).json(result);
+        })
+        .catch((err) => next(err));
+    },
+  );
 
   router.delete('/:id', (req: Request, res: Response, next) => {
     const applicantID = +req.params.id;

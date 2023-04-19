@@ -129,12 +129,18 @@ class ApplicantController {
           problem.detail = 'Applicant not found';
           problem.status = 404;
         }
-        throw new CAPPError(problem);
+        throw new CAPPError(
+          problem,
+          e instanceof Error ? { cause: e } : undefined,
+        );
       }
-      throw new CAPPError({
-        title: 'Applicant Pause Error',
-        detail: 'Error when pausing applicant status',
-      });
+      throw new CAPPError(
+        {
+          title: 'Applicant Pause Error',
+          detail: 'Error when pausing applicant status',
+        },
+        e instanceof Error ? { cause: e } : undefined,
+      );
     }
   }
 
