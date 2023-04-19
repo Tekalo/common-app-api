@@ -16,9 +16,15 @@ class MonitoringService {
     /**
      * Initialize Sentry
      */
-    const { env, sentryDSN }: { env: string; sentryDSN: string } =
+    const {
+      env,
+      sentryDSN,
+      isLoadTest,
+    }: { env: string; sentryDSN: string; isLoadTest: boolean } =
       configLoader.loadConfig();
 
+    // set a low sample rate for load test
+    const sampleRate = isLoadTest ? 0.25 : 1.0;
     const options: Sentry.NodeOptions = {
       dsn: sentryDSN,
       environment: env,
@@ -41,7 +47,7 @@ class MonitoringService {
       // Set tracesSampleRate to 1.0 to capture 100%
       // of transactions for performance monitoring.
       // We recommend adjusting this value in production
-      tracesSampleRate: 1.0,
+      tracesSampleRate: sampleRate,
       // turning this off because it causes the RequestHandler to hang when tests are run.
       autoSessionTracking: false,
 
