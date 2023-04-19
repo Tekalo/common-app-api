@@ -47,9 +47,9 @@ const ReferenceAttribution = z.enum([
 const EmploymentType = z.enum(['full', 'part']);
 
 const ApplicantRequestBodySchema = z.object({
-  name: z.string(),
+  name: z.string().max(255),
   email: z.string().email(),
-  pronoun: z.string().optional(),
+  pronoun: z.string().max(255).optional(),
   preferredContact: PreferredContact,
   searchStatus: SearchStatus,
   acceptedTerms: z.literal(true),
@@ -69,31 +69,31 @@ const ApplicantResponseBodySchema = z.object({
 const ApplicantSubmissionRequestBodySchema = z.object({
   // TODO re name these they are way 2 long
   originTag: z.string(),
-  lastRole: z.string(),
-  lastOrg: z.string(),
+  lastRole: z.string().max(255),
+  lastOrg: z.string().max(255),
   yoe: YOE,
   skills: z.array(Skills),
-  otherSkills: z.array(z.string()),
-  linkedInUrl: z.string().nullable().optional(),
-  githubUrl: z.string().nullable().optional(),
-  portfolioUrl: z.string().nullable().optional(),
-  portfolioPassword: z.string().nullable().optional(),
-  resumeUrl: z.string().optional(),
-  resumePassword: z.string().nullable().optional(),
-  hoursPerWeek: z.string().nullable().optional(),
+  otherSkills: z.array(z.string().max(255)),
+  linkedInUrl: z.string().max(500).nullable().optional(),
+  githubUrl: z.string().max(500).nullable().optional(),
+  portfolioUrl: z.string().max(500).nullable().optional(),
+  portfolioPassword: z.string().max(255).nullable().optional(),
+  resumeUrl: z.string().max(500).optional(),
+  resumePassword: z.string().max(255).nullable().optional(),
+  hoursPerWeek: z.string().max(255).nullable().optional(),
   interestEmploymentType: z.array(EmploymentType),
-  interestRoles: z.array(z.string()), // keep this as non-zod-enum?
-  currentLocation: z.string(),
+  interestRoles: z.array(z.string().max(255)), // keep this as non-zod-enum?
+  currentLocation: z.string().max(255),
   openToRelocate: OpenToRelocate,
   openToRemote: OpenToRemote,
-  desiredSalary: z.string().nullable().optional(),
-  interestCauses: z.array(z.string()), // order matters
-  otherCauses: z.array(z.string()).nullable(),
+  desiredSalary: z.string().max(255).nullable().optional(),
+  interestCauses: z.array(z.string().max(255)), // order matters
+  otherCauses: z.array(z.string().max(255)).nullable(),
   workAuthorization: WorkAuthorization,
   interestGovt: z.boolean(),
   interestGovtEmplTypes: z.array(InterestGovtEmplTypes).optional(),
   previousImpactExperience: z.boolean(),
-  essayResponse: z.string(),
+  essayResponse: z.string().max(5000),
   referenceAttribution: ReferenceAttribution.nullable().optional(),
 });
 // TOOD: Figure out typesript error on refining interestGovtTypes to ensure it is filled if interestGovt is true
@@ -101,10 +101,16 @@ const ApplicantSubmissionRequestBodySchema = z.object({
 const ApplicantDraftSubmissionRequestBodySchema =
   ApplicantSubmissionRequestBodySchema.partial();
 
+const ApplicantDraftSubmissionResponseBodySchema = z.object({
+  submission: ApplicantDraftSubmissionRequestBodySchema,
+  isFinal: z.boolean(),
+});
+
 export {
   ApplicantRequestBodySchema,
   ApplicantResponseBodySchema,
   ApplicantSubmissionRequestBodySchema,
   ApplicantDraftSubmissionRequestBodySchema,
   ApplicantStateRequestBodySchema,
+  ApplicantDraftSubmissionResponseBodySchema,
 };

@@ -27,7 +27,7 @@ SELECT
   os."desiredStartDate",
   os."desiredEndDate",
   os."desiredYoe",
-  ARRAY_CAT(os."desiredSkills", os."desiredSkillsOther") AS "desiredSkillsAll",
+  ARRAY_CAT(os."desiredSkills", os."desiredOtherSkills") AS "desiredAllSkills",
   os."desiredImpactExp",
   os."similarStaffed",
   os."jdUrl",

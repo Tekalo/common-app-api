@@ -1,12 +1,12 @@
 {
   "opportunityBatches": [
     {
+      "id": 1,
       "orgName": "Bobs Burgers Foundation",
       "orgType": "nonprofit",
       "orgSize": "<50",
       "contactName": "Bob Boberson",
       "contactEmail": "bboberson@gmail.com",
-      "contactPhone": "4258287733",
       "impactAreas": ["Clean Energy"],
       "equalOpportunityEmployer": true,
       "submissions": [
@@ -33,12 +33,12 @@
       ]
     },
     {
+      "id": 2,
       "orgName": "Mozilla Foundation",
       "orgType": "nonprofit",
       "orgSize": ">50",
       "contactName": "Moz Illa",
       "contactEmail": "milla@mozilla.org",
-      "contactPhone": "+45559847193",
       "impactAreas": ["Internet Freedom"],
       "equalOpportunityEmployer": true,
       "submissions": [

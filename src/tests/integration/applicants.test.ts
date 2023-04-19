@@ -2,6 +2,7 @@ import request from 'supertest';
 import getApp from '@App/app.js';
 import {
   ApplicantDraftSubmissionBody,
+  ApplicantDraftSubmissionResponseBody,
   ApplicantResponseBody,
   ApplicantSubmissionBody,
 } from '@App/resources/types/applicants.js';
@@ -13,6 +14,7 @@ import configLoader from '@App/services/configLoader.js';
 import applicantSubmissionGenerator from '../fixtures/applicantSubmissionGenerator.js';
 import DummyAuthService from '../fixtures/DummyAuthService.js';
 import DummyMonitoringService from '../fixtures/DummyMonitoringService.js';
+import authHelper from '../util/auth.js';
 
 let testUserID: string;
 const authService = new AuthService();
@@ -171,53 +173,114 @@ describe('POST /applicants', () => {
   });
 });
 
-describe('POST /applicants/:id/submissions', () => {
+describe('POST /applicants/me/submissions', () => {
   const dummyAuthApp = getApp(
     new DummyAuthService(),
     new DummyMonitoringService(),
     appConfig,
   );
-  it('should create a new applicant submission', async () => {
-    const testApplicantResp = await request(dummyAuthApp)
-      .post('/applicants')
-      .send({
+
+  describe('JWT authentication', () => {
+    it('should create a new applicant submission', async () => {
+      const randomString = getRandomString();
+      const token = await authHelper.getToken(
+        `bboberson${randomString}@gmail.com`,
+      );
+      await request(dummyAuthApp)
+        .post('/applicants')
+        .send({
+          name: 'Bob Boberson',
+          auth0Id: 'auth0|123456',
+          email: `bboberson${randomString}@gmail.com`,
+          preferredContact: 'email',
+          searchStatus: 'active',
+          acceptedTerms: true,
+          acceptedPrivacy: true,
+        });
+      const testBody: ApplicantSubmissionBody =
+        applicantSubmissionGenerator.getAPIRequestBody();
+      const { body } = await request(dummyAuthApp)
+        .post('/applicants/me/submissions')
+        .send(testBody)
+        .set('Authorization', `Bearer ${token}`)
+        .expect(200);
+      expect(body).toHaveProperty('id');
+    });
+
+    it('should return 400 error for missing years of experience (yoe)', async () => {
+      const randomString = getRandomString();
+      const testSubmission = applicantSubmissionGenerator.getAPIRequestBody();
+      const token = await authHelper.getToken(
+        `bboberson${randomString}@gmail.com`,
+      );
+      await request(dummyAuthApp)
+        .post('/applicants')
+        .send({
+          name: 'Bob Boberson',
+          auth0Id: 'auth0|123456',
+          email: `bboberson${randomString}@gmail.com`,
+          preferredContact: 'email',
+          searchStatus: 'active',
+          acceptedTerms: true,
+          acceptedPrivacy: true,
+        });
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      delete testSubmission.yoe;
+      const { body } = await request(dummyAuthApp)
+        .post('/applicants/me/submissions')
+        .send({ ...testSubmission })
+        .set('Authorization', `Bearer ${token}`)
+        .expect(400);
+      expect(body).toHaveProperty('title', 'Validation Error');
+    });
+
+    it('should return 400 error if request body has invalid openToRelocate value', async () => {
+      const randomString = getRandomString();
+      const testSubmission = applicantSubmissionGenerator.getAPIRequestBody();
+      const token = await authHelper.getToken(
+        `bboberson${randomString}@gmail.com`,
+      );
+      await request(dummyAuthApp)
+        .post('/applicants')
+        .send({
+          name: 'Bob Boberson',
+          auth0Id: 'auth0|123456',
+          email: `bboberson${randomString}@gmail.com`,
+          preferredContact: 'email',
+          searchStatus: 'active',
+          acceptedTerms: true,
+          acceptedPrivacy: true,
+        });
+      const { body } = await request(dummyAuthApp)
+        .post('/applicants/me/submissions')
+        .send({ ...testSubmission, openToRelocate: 'idk maybe' })
+        .set('Authorization', `Bearer ${token}`)
+        .expect(400);
+      expect(body).toHaveProperty('title', 'Validation Error');
+    });
+  });
+
+  describe('Cookie authentication', () => {
+    it('should create a new applicant submission', async () => {
+      const agent = request.agent(dummyAuthApp);
+      await agent.post('/applicants').send({
         name: 'Bob Boberson',
         auth0Id: 'auth0|123456',
-        email: `bboberson${getRandomString()}@gmail.com`,
+        email: 'bboberson@gmail.com',
         preferredContact: 'email',
         searchStatus: 'active',
         acceptedTerms: true,
         acceptedPrivacy: true,
       });
-    const { id }: { id: number } = testApplicantResp.body;
-    const testBody: ApplicantSubmissionBody =
-      applicantSubmissionGenerator.getAPIRequestBody();
-    const { body } = await request(dummyAuthApp)
-      .post(`/applicants/${id}/submissions`)
-      .send(testBody)
-      .expect(200);
-    expect(body).toHaveProperty('id');
-  });
-
-  it('should throw 400 error for missing years of experience (yoe)', async () => {
-    const testSubmission = applicantSubmissionGenerator.getAPIRequestBody();
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    delete testSubmission.yoe;
-    const { body } = await request(dummyAuthApp)
-      .post('/applicants/1/submissions')
-      .send({ ...testSubmission })
-      .expect(400);
-    expect(body).toHaveProperty('title', 'Validation Error');
-  });
-
-  it('should throw error if request body has invalid openToRelocate value', async () => {
-    const testSubmission = applicantSubmissionGenerator.getAPIRequestBody();
-    const { body } = await request(dummyAuthApp)
-      .post('/applicants/1/submissions')
-      .send({ ...testSubmission, openToRelocate: 'idk maybe' })
-      .expect(400);
-    expect(body).toHaveProperty('title', 'Validation Error');
+      const testBody: ApplicantSubmissionBody =
+        applicantSubmissionGenerator.getAPIRequestBody();
+      const { body } = await agent
+        .post('/applicants/me/submissions')
+        .send(testBody)
+        .expect(200);
+      expect(body).toHaveProperty('id');
+    });
   });
 });
 
@@ -285,15 +348,15 @@ describe('DELETE /applicants', () => {
   });
 });
 
-describe('POST /applicants/:id/submissions/draft', () => {
+describe('POST /applicants/me/submissions/draft', () => {
   const dummyAuthApp = getApp(
     new DummyAuthService(),
     new DummyMonitoringService(),
     appConfig,
   );
-  it('should create a new draft applicant submission', async () => {
-    const agent = request.agent(dummyAuthApp);
-    const testApplicantResp = await agent.post('/applicants').send({
+  it('should not allow applicant to save draft submission without a valid cookie or JWT supplied', async () => {
+    // Supertest will not save cookies (each request has a separate cookie jar)
+    await request(dummyAuthApp).post('/applicants').send({
       name: 'Bob Boberson',
       email: 'bboberson@gmail.com',
       preferredContact: 'sms',
@@ -301,79 +364,20 @@ describe('POST /applicants/:id/submissions/draft', () => {
       acceptedTerms: true,
       acceptedPrivacy: true,
     });
-    const { id }: { id: number } = testApplicantResp.body;
     const testBody: ApplicantDraftSubmissionBody = {
       resumeUrl: 'https://bobcanbuild.com',
     };
-    const { body } = await agent
-      .post(`/applicants/${id}/submissions/draft`)
-      .send(testBody)
-      .expect(200);
-    expect(body).toHaveProperty('id');
-  });
-
-  it('should update an existing draft applicant submission', async () => {
-    const agent = request.agent(dummyAuthApp);
-    const testApplicantResp = await agent.post('/applicants').send({
-      name: 'Bob Boberson',
-      email: 'bboberson@gmail.com',
-      preferredContact: 'sms',
-      searchStatus: 'active',
-      acceptedTerms: true,
-      acceptedPrivacy: true,
-    });
-    const { id }: { id: number } = testApplicantResp.body;
-    const draftBody: ApplicantDraftSubmissionBody = {
-      resumeUrl: 'https://bobcanbuild.com/resume',
-    };
-    const draftUpdateBody: ApplicantDraftSubmissionBody = {
-      resumeUrl: 'https://bobcanREALLYbuild.com/resume',
-    };
-    const { body: draftResp } = await agent
-      .post(`/applicants/${id}/submissions/draft`)
-      .send(draftBody)
-      .expect(200);
-    expect(draftResp).toHaveProperty(
-      'resumeUrl',
-      'https://bobcanbuild.com/resume',
-    );
-    const { body } = await agent
-      .post(`/applicants/${id}/submissions/draft`)
-      .send(draftUpdateBody)
-      .expect(200);
-    expect(body).toHaveProperty(
-      'resumeUrl',
-      'https://bobcanREALLYbuild.com/resume',
-    );
-  });
-
-  it('should not allow applicant to save draft submission of another user', async () => {
-    // Using superagent here so each request share's a cookie jar
-    const agent = request.agent(dummyAuthApp);
-    const testApplicantResp = await agent.post('/applicants').send({
-      name: 'Bob Boberson',
-      email: 'bboberson@gmail.com',
-      preferredContact: 'sms',
-      searchStatus: 'active',
-      acceptedTerms: true,
-      acceptedPrivacy: true,
-    });
-    const { id }: { id: number } = testApplicantResp.body;
-    const testBody: ApplicantDraftSubmissionBody = {
-      resumeUrl: 'https://bobcanbuild.com',
-    };
-    const { body } = await agent
-      .post(`/applicants/${id + 1}/submissions/draft`)
+    const { body } = await request(dummyAuthApp)
+      .post('/applicants/me/submissions/draft')
       .send(testBody)
       .expect(401);
-    expect(body).toHaveProperty('title', 'Cannot verify applicant request');
+    expect(body).toHaveProperty('title', 'Cannot authenticate request');
   });
 
-  it('should not allow applicant to save draft submission without a valid cookie supplied', async () => {
-    // Supertest will not save cookies (each request has a separate cookie jar)
-    const testApplicantResp = await request(dummyAuthApp)
-      .post('/applicants')
-      .send({
+  describe('Cookie based authentication', () => {
+    it('should create a new draft applicant submission', async () => {
+      const agent = request.agent(dummyAuthApp);
+      await agent.post('/applicants').send({
         name: 'Bob Boberson',
         email: 'bboberson@gmail.com',
         preferredContact: 'sms',
@@ -381,15 +385,188 @@ describe('POST /applicants/:id/submissions/draft', () => {
         acceptedTerms: true,
         acceptedPrivacy: true,
       });
-    const { id }: { id: number } = testApplicantResp.body;
-    const testBody: ApplicantDraftSubmissionBody = {
-      resumeUrl: 'https://bobcanbuild.com',
-    };
-    const { body } = await request(dummyAuthApp)
-      .post(`/applicants/${id}/submissions/draft`)
-      .send(testBody)
-      .expect(401);
-    expect(body).toHaveProperty('title', 'Cannot verify applicant request');
+      const testBody: ApplicantDraftSubmissionBody = {
+        resumeUrl: 'https://bobcanbuild.com',
+      };
+      const { body } = await agent
+        .post('/applicants/me/submissions/draft')
+        .send(testBody)
+        .expect(200);
+      expect(body).toHaveProperty('id');
+    });
+
+    it('should update an existing draft applicant submission', async () => {
+      const agent = request.agent(dummyAuthApp);
+      await agent.post('/applicants').send({
+        name: 'Bob Boberson',
+        email: 'bboberson@gmail.com',
+        preferredContact: 'sms',
+        searchStatus: 'active',
+        acceptedTerms: true,
+        acceptedPrivacy: true,
+      });
+      const draftBody: ApplicantDraftSubmissionBody = {
+        resumeUrl: 'https://bobcanbuild.com/resume',
+      };
+      const draftUpdateBody: ApplicantDraftSubmissionBody = {
+        resumeUrl: 'https://bobcanREALLYbuild.com/resume',
+      };
+      const { body: draftResp } = await agent
+        .post('/applicants/me/submissions/draft')
+        .send(draftBody)
+        .expect(200);
+      expect(draftResp).toHaveProperty(
+        'resumeUrl',
+        'https://bobcanbuild.com/resume',
+      );
+      const { body } = await agent
+        .post('/applicants/me/submissions/draft')
+        .send(draftUpdateBody)
+        .expect(200);
+      expect(body).toHaveProperty(
+        'resumeUrl',
+        'https://bobcanREALLYbuild.com/resume',
+      );
+    });
+  });
+
+  describe('JWT based authentication', () => {
+    it('should create a new draft applicant submission', async () => {
+      const token = await authHelper.getToken('bboberson@gmail.com');
+      await request(dummyAuthApp).post('/applicants').send({
+        name: 'Bob Boberson',
+        email: 'bboberson@gmail.com',
+        preferredContact: 'sms',
+        searchStatus: 'active',
+        acceptedTerms: true,
+        acceptedPrivacy: true,
+      });
+      const testBody: ApplicantDraftSubmissionBody = {
+        resumeUrl: 'https://bobcanbuild.com',
+      };
+      const { body } = await request(dummyAuthApp)
+        .post('/applicants/me/submissions/draft')
+        .set('Authorization', `Bearer ${token}`)
+        .send(testBody)
+        .expect(200);
+      expect(body).toHaveProperty('id');
+    });
+
+    it('should not allow applicant to save draft submission of a non-existent user', async () => {
+      const token = await authHelper.getToken('bibbitybobbityboo@gmail.com');
+      await request(dummyAuthApp).post('/applicants').send({
+        name: 'Pat Patterson',
+        email: 'bboberson@gmail.com',
+        preferredContact: 'sms',
+        searchStatus: 'active',
+        acceptedTerms: true,
+        acceptedPrivacy: true,
+      });
+      const testBody: ApplicantDraftSubmissionBody = {
+        resumeUrl: 'https://bobcanbuild.com',
+      };
+      const { body } = await request(dummyAuthApp)
+        .post('/applicants/me/submissions/draft')
+        .set('Authorization', `Bearer ${token}`)
+        .send(testBody)
+        .expect(404);
+      expect(body).toHaveProperty('title', 'Not Found');
+    });
+  });
+});
+
+describe('GET /applicants/me/submissions', () => {
+  const dummyAuthApp = getApp(
+    new DummyAuthService(),
+    new DummyMonitoringService(),
+    appConfig,
+  );
+
+  describe('JWT authentication', () => {
+    it('should get current applicants draft submission', async () => {
+      // We create draft submission with cookie, get /me/submissions with JWT
+      const agent = request.agent(dummyAuthApp);
+      const token = await authHelper.getToken('bboberson@gmail.com');
+      await agent.post('/applicants').send({
+        name: 'Bob Boberson',
+        email: 'bboberson@gmail.com',
+        preferredContact: 'sms',
+        searchStatus: 'active',
+        acceptedTerms: true,
+        acceptedPrivacy: true,
+      });
+      const testBody: ApplicantDraftSubmissionBody = {
+        resumeUrl: 'https://bobcanbuild.com',
+      };
+      await agent
+        .post('/applicants/me/submissions/draft')
+        .send(testBody)
+        .expect(200);
+      const { body }: { body: ApplicantDraftSubmissionResponseBody } =
+        await request(dummyAuthApp)
+          .get('/applicants/me/submissions')
+          .set('Authorization', `Bearer ${token}`)
+          .expect(200);
+      expect(body).toHaveProperty('isFinal', false);
+      expect(body).toHaveProperty('submission');
+      expect(body.submission).toHaveProperty('id');
+    });
+
+    it('should get current applicants final submission', async () => {
+      const token = await authHelper.getToken('bboberson@gmail.com');
+      await request(dummyAuthApp).post('/applicants').send({
+        name: 'Bob Boberson',
+        email: 'bboberson@gmail.com',
+        preferredContact: 'sms',
+        searchStatus: 'active',
+        acceptedTerms: true,
+        acceptedPrivacy: true,
+      });
+      const testBody: ApplicantDraftSubmissionBody =
+        applicantSubmissionGenerator.getAPIRequestBody();
+      await request(dummyAuthApp)
+        .post('/applicants/me/submissions')
+        .send(testBody)
+        .set('Authorization', `Bearer ${token}`)
+        .expect(200);
+      const { body }: { body: ApplicantDraftSubmissionResponseBody } =
+        await request(dummyAuthApp)
+          .get('/applicants/me/submissions')
+          .set('Authorization', `Bearer ${token}`)
+          .expect(200);
+      expect(body).toHaveProperty('isFinal', true);
+      expect(body).toHaveProperty('submission');
+      expect(body.submission).toHaveProperty('id');
+    });
+
+    it('should return 401 if no JWT provided', async () => {
+      await request(dummyAuthApp).get('/applicants/me/submissions').expect(401);
+    });
+    it('should return 404 if applicant does not exist', async () => {
+      const token = await authHelper.getToken('bboberson@gmail.com');
+      const { body } = await request(dummyAuthApp)
+        .get('/applicants/me/submissions')
+        .set('Authorization', `Bearer ${token}`)
+        .expect(404);
+      expect(body).toHaveProperty('title', 'Not Found');
+    });
+    it('should return 200 if applicant exists but has no submissions', async () => {
+      const token = await authHelper.getToken('bboberson@gmail.com');
+      await request(dummyAuthApp).post('/applicants').send({
+        name: 'Bob Boberson',
+        email: 'bboberson@gmail.com',
+        preferredContact: 'sms',
+        searchStatus: 'active',
+        acceptedTerms: true,
+        acceptedPrivacy: true,
+      });
+      const { body } = await request(dummyAuthApp)
+        .get('/applicants/me/submissions')
+        .set('Authorization', `Bearer ${token}`)
+        .expect(200);
+      expect(body).toHaveProperty('isFinal', false);
+      expect(body).toHaveProperty('submission', null);
+    });
   });
 });
 

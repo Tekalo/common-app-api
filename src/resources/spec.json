@@ -109,7 +109,54 @@
         }
       }
     },
-    "/applicants/:id/submissions": {
+    "/applicants/me/state": {
+      "put": {
+        "description": "Pause an existing applicant",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/applicants/me/submissions": {
+      "get": {
+        "description": "Get current applicant's submission",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "isFinal": {
+                      "type": "boolean"
+                    },
+                    "submission": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
       "post": {
         "description": "Create a new applicant submission",
         "requestBody": {
@@ -190,6 +237,9 @@
             "type": "string"
           },
           "preferredContact": {
+            "type": "string"
+          },
+          "searchStatus": {
             "type": "string"
           },
           "acceptedTerms": {

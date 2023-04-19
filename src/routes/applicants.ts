@@ -11,17 +11,19 @@ import {
   ApplicantDraftSubmissionBody,
   ApplicantStateBody,
 } from '@App/resources/types/applicants.js';
-import { validateCookie, setCookie } from '@App/services/cookieService.js';
+import { setCookie } from '@App/services/cookieService.js';
 
 import AuthService from '@App/services/AuthService.js';
 import prisma from '@App/resources/client.js';
-import express, { Request, Response } from 'express';
+import express, { NextFunction, Request, Response } from 'express';
+import Authenticator from '@App/middleware/authenticator.js';
+import { RequestWithJWT } from '@App/resources/types/auth0.js';
+import { BaseConfig } from '@App/services/configLoader.js';
 
-export type EmptyObject = Record<string, unknown>;
-
-const applicantRoutes = (authService: AuthService) => {
+const applicantRoutes = (authService: AuthService, config: BaseConfig) => {
   const router = express.Router();
   const applicantController = new ApplicantController(authService, prisma);
+  const authenticator = new Authenticator(prisma, config.auth0.express);
 
   router.post('/', (req: Request, res: Response, next) => {
     const appBody = req.body as ApplicantRequestBody;
@@ -35,17 +37,21 @@ const applicantRoutes = (authService: AuthService) => {
       .catch((err) => next(err));
   });
 
-  router.post('/:id/submissions', (req: Request, res: Response, next) => {
-    const appBody = req.body as ApplicantSubmissionBody;
-    const applicantID = +req.params.id;
-    const validatedBody = ApplicantSubmissionRequestBodySchema.parse(appBody);
-    applicantController
-      .createSubmission(applicantID, validatedBody)
-      .then((result) => {
-        res.status(200).json(result);
-      })
-      .catch((err) => next(err));
-  });
+  router.post(
+    '/me/submissions',
+    authenticator.verifyJwtOrCookie.bind(authenticator),
+    (req: Request, res: Response, next) => {
+      const appBody = req.body as ApplicantSubmissionBody;
+      const validatedBody = ApplicantSubmissionRequestBodySchema.parse(appBody);
+      const applicantID = req.auth?.payload.id || req.session.applicant.id;
+      applicantController
+        .createSubmission(applicantID, validatedBody)
+        .then((result) => {
+          res.status(200).json(result);
+        })
+        .catch((err) => next(err));
+    },
+  );
 
   router.put('/:id/state', (req: Request, res: Response, next) => {
     const appBody = req.body as ApplicantStateBody;
@@ -69,27 +75,39 @@ const applicantRoutes = (authService: AuthService) => {
       .catch((err) => next(err));
   });
 
-  router.post('/:id/submissions/draft', (req: Request, res: Response, next) => {
-    const applicantID = validateCookie(req);
-    const appBody = req.body as ApplicantDraftSubmissionBody;
-    const validatedBody =
-      ApplicantDraftSubmissionRequestBodySchema.parse(appBody);
-    applicantController
-      .createOrUpdateDraftSubmission(applicantID, validatedBody)
-      .then((result) => {
-        res.status(200).json(result);
-      })
-      .catch((err) => next(err));
-  });
+  router.post(
+    '/me/submissions/draft',
+    authenticator.verifyJwtOrCookie.bind(authenticator),
+    (req: Request, res: Response, next) => {
+      const appBody = req.body as ApplicantDraftSubmissionBody;
+      const applicantID = req.auth?.payload.id || req.session.applicant.id;
+      const validatedBody =
+        ApplicantDraftSubmissionRequestBodySchema.parse(appBody);
+      applicantController
+        .createOrUpdateDraftSubmission(applicantID, validatedBody)
+        .then((result) => {
+          res.status(200).json(result);
+        })
+        .catch((err) => next(err));
+    },
+  );
 
-  // temporary disable until we implement endpoint
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  router.get('/me/submissions', (req: Request, res: Response, next) => {
-    res.status(200).send({
-      isFinal: false,
-      submission: null,
-    });
-  });
+  router.get(
+    '/me/submissions',
+    authenticator.validateJwt.bind(authenticator),
+    (req: Request, res: Response, next: NextFunction) => {
+      // Cast req as RequestWithJWT because our middleware above asserts that there will be an auth property included
+      const reqWithAuth = req as RequestWithJWT;
+      const applicantID = reqWithAuth.auth.payload.id;
+      applicantController
+        .getMySubmissions(applicantID)
+        .then((result) => {
+          res.status(200).json(result);
+        })
+        .catch((err) => next(err));
+    },
+  );
+
   return router;
 };
 

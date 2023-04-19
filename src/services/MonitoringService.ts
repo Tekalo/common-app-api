@@ -1,6 +1,6 @@
 import { Application } from 'express';
 import * as Sentry from '@sentry/node';
-import { Transport } from '@sentry/types';
+import { TransactionEvent, Transport } from '@sentry/types';
 import configLoader from './configLoader.js';
 
 class MonitoringService {
@@ -30,6 +30,13 @@ class MonitoringService {
         // Automatically instrument Node.js libraries and frameworks
         ...Sentry.autoDiscoverNodePerformanceMonitoringIntegrations(),
       ],
+      beforeSendTransaction: (event: TransactionEvent) => {
+        // don't send traces of requests to the health check endpoint
+        if (event.transaction === 'GET /health') {
+          return null;
+        }
+        return event;
+      },
 
       // Set tracesSampleRate to 1.0 to capture 100%
       // of transactions for performance monitoring.

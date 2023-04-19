@@ -139,7 +139,7 @@
     },
     {
       "to": "Desired Skills",
-      "from": "desiredSkillsAll",
+      "from": "desiredAllSkills",
       "type": "standard"
     }
   ],

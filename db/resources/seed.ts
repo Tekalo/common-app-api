@@ -5,6 +5,7 @@
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { PrismaClient, Prisma } from '@prisma/client';
+import { randomInt } from 'crypto';
 import CAPPError from '../../src/resources/shared/CAPPError.js';
 import { Problem } from '../../src/resources/types/shared.js';
 import seedData from './seed.json' assert { type: 'json' };
@@ -80,7 +81,9 @@ async function seedApplicantsAndApplicantSubmissions() {
       application,
     } = app;
     const applicantUpsert = prisma.applicant.upsert({
-      update: {},
+      update: {
+        phone: String(randomInt(1000000)),
+      },
       create: {
         name,
         auth0Id,
@@ -88,6 +91,7 @@ async function seedApplicantsAndApplicantSubmissions() {
         pronoun: pronoun || undefined,
         preferredContact,
         searchStatus,
+        phone: String(randomInt(1000000)),
         applications: {
           create: {
             ...application,
@@ -104,14 +108,15 @@ async function seedApplicantsAndApplicantSubmissions() {
 async function seedOpportunitySubmissionBatches() {
   const { opportunityBatches } = seedData;
   const opportunityBatchUpserts = opportunityBatches.map((batch) =>
-    prisma.opportunityBatch.create({
-      data: {
+    prisma.opportunityBatch.upsert({
+      create: {
+        id: batch.id,
         orgName: batch.orgName,
         orgSize: batch.orgSize,
         orgType: batch.orgType,
         contactEmail: batch.contactEmail,
         contactName: batch.contactName,
-        contactPhone: batch.contactPhone,
+        contactPhone: String(randomInt(1000000)),
         impactAreas: batch.impactAreas,
         equalOpportunityEmployer: batch.equalOpportunityEmployer,
         opportunitySubmissions: {
@@ -120,6 +125,8 @@ async function seedOpportunitySubmissionBatches() {
           },
         },
       },
+      update: { contactPhone: String(randomInt(1000000)) },
+      where: { id: batch.id },
     }),
   );
   await doUpsert(opportunityBatchUpserts);

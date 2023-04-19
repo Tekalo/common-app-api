@@ -11,8 +11,14 @@ describe('Config Loader', () => {
     process.env = env;
   });
 
-  test('should throw config error for missing AUTH0_CONFIG', () => {
-    delete process.env.AUTH0_CONFIG;
+  test('should throw config error for missing AUTH0_EXPRESS_CONFIG', () => {
+    delete process.env.AUTH0_EXPRESS_CONFIG;
+    expect(() => {
+      configLoader.loadConfig();
+    }).toThrow(Error);
+  });
+  test('should throw config error for missing AUTH0_API_CONFIG', () => {
+    delete process.env.AUTH0_API_CONFIG;
     expect(() => {
       configLoader.loadConfig();
     }).toThrow(Error);
