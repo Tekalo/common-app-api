@@ -50,10 +50,13 @@ class AuthService {
       responseBody = await auth0Client.deleteUser({ id });
     } catch (e) {
       if (e instanceof Error) {
-        throw new CAPPError({
-          title: 'User Deletion Error',
-          detail: 'Problem deleting user from Auth0',
-        });
+        throw new CAPPError(
+          {
+            title: 'User Deletion Error',
+            detail: 'Problem deleting user from Auth0',
+          },
+          { cause: e },
+        );
       }
       throw e;
     }
