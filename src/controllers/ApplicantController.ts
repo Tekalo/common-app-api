@@ -4,7 +4,6 @@ import {
   ApplicantSubmissionBody,
   ApplicantDraftSubmissionBody,
 } from '@App/resources/types/applicants.js';
-import CAPPError from '@App/resources/shared/CAPPError.js';
 import {
   ApplicantDraftSubmission,
   ApplicantSubmission,
@@ -12,6 +11,8 @@ import {
   PrismaClient,
 } from '@prisma/client';
 import AuthService from '@App/services/AuthService.js';
+import CAPPError from '@App/resources/shared/CAPPError.js';
+import { Problem } from '@App/resources/types/shared.js';
 
 class ApplicantController {
   private auth0Service: AuthService;
@@ -104,6 +105,39 @@ class ApplicantController {
           title: 'Applicant Submission Creation Error',
           detail: 'Unknown error in creating applicant submission',
           status: 500,
+        },
+        e instanceof Error ? { cause: e } : undefined,
+      );
+    }
+  }
+
+  async pauseApplicant(applicantId: number, pauseStatus: boolean) {
+    try {
+      const { id, isPaused } = await this.prisma.applicant.update({
+        data: { isPaused: pauseStatus },
+        where: { id: applicantId },
+      });
+      return { id, isPaused };
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        const problem: Problem = {
+          title: 'Applicant Pause Error',
+          detail: 'Database error encountered when pausing applicant status',
+          status: 400,
+        };
+        if (e.code === 'P2001') {
+          problem.detail = 'Applicant not found';
+          problem.status = 404;
+        }
+        throw new CAPPError(
+          problem,
+          e instanceof Error ? { cause: e } : undefined,
+        );
+      }
+      throw new CAPPError(
+        {
+          title: 'Applicant Pause Error',
+          detail: 'Error when pausing applicant status',
         },
         e instanceof Error ? { cause: e } : undefined,
       );

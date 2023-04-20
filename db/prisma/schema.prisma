@@ -26,6 +26,7 @@ model Applicant {
     draftApplications ApplicantDraftSubmission[]
     acceptedTerms     DateTime                   @default(now())
     acceptedPrivacy   DateTime                   @default(now())
+    isPaused          Boolean                    @default(false)
 }
 
 model ApplicantSubmission {
