@@ -70,7 +70,7 @@ jobs:
             # TODO: maybe a better role? ideally, we'd use something associated with the
             # prod environment, but github actions requires a new deploy object for this
             # maybe just merge this into deploy-image script?
-          role-to-assume: ${{ secrets.PROD_AWS_PLAN_ROLE }}
+          role-to-assume: ${{ vars.PROD_AWS_PLAN_ROLE }}
           role-session-name: GithubActions
           mask-aws-account-id: false
 
