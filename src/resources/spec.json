@@ -79,9 +79,9 @@
         }
       }
     },
-    "/applicants/:id": {
+    "/applicants/me": {
       "delete": {
-        "description": "Delete an existing applicant",
+        "description": "Delete current applicant",
         "responses": {
           "200": {
             "description": "Success"

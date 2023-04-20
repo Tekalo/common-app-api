@@ -70,15 +70,20 @@ const applicantRoutes = (authService: AuthService, config: BaseConfig) => {
     },
   );
 
-  router.delete('/:id', (req: Request, res: Response, next) => {
-    const applicantID = +req.params.id;
-    applicantController
-      .deleteApplicant(applicantID)
-      .then((result) => {
-        res.status(200).json(result);
-      })
-      .catch((err) => next(err));
-  });
+  router.delete(
+    '/me',
+    authenticator.validateJwt.bind(authenticator),
+    (req: Request, res: Response, next) => {
+      const reqWithAuth = req as RequestWithJWT;
+      const { id } = reqWithAuth.auth.payload;
+      applicantController
+        .deleteApplicant(id)
+        .then((result) => {
+          res.status(200).json(result);
+        })
+        .catch((err) => next(err));
+    },
+  );
 
   router.post(
     '/me/submissions/draft',
@@ -103,9 +108,9 @@ const applicantRoutes = (authService: AuthService, config: BaseConfig) => {
     (req: Request, res: Response, next: NextFunction) => {
       // Cast req as RequestWithJWT because our middleware above asserts that there will be an auth property included
       const reqWithAuth = req as RequestWithJWT;
-      const applicantID = reqWithAuth.auth.payload.id;
+      const { id } = reqWithAuth.auth.payload;
       applicantController
-        .getMySubmissions(applicantID)
+        .getMySubmissions(id)
         .then((result) => {
           res.status(200).json(result);
         })
