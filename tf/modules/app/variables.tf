@@ -43,7 +43,7 @@ variable "image" {
 
 output "image" {
   description = "Image with which this stack has been deployed"
-  value       = jsondecode(aws_ecs_task_definition.api.container_definitions)[0].image
+  value       = var.image
 }
 
 variable "db_username" {
@@ -67,7 +67,7 @@ variable "cli_image" {
 
 output "cli_image" {
   description = "Image with which we are running ad-hoc CLI commands on"
-  value       = jsondecode(aws_ecs_task_definition.cli.container_definitions)[0].image
+  value       = var.cli_image
 }
 
 variable "cert_arn" {
