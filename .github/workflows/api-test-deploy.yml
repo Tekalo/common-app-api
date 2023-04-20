@@ -16,6 +16,11 @@ on:
     branches-ignore:
       - 'renovate/**'
   workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to apply TF against'
+        type: environment
+        required: true
 
 env:
   AUTH0_API_CONFIG: '{"domain": "${{ vars.AUTH0_DOMAIN }}", "clientId": "${{ vars.AUTH0_CLIENT_ID }}", "clientSecret": "${{ secrets.AUTH0_CLIENT_SECRET }}"}'
