@@ -62,9 +62,10 @@ jobs:
         id: current-image
         run: |
           cur_image=$(terraform output -raw image)
-          if [[ -z "$cur_image" ]]; then
-            echo "hello-world:latest"
+          if [[ -z $cur_image ]]; then
+            cur_image="hello-world:latest"
           fi
+          echo $cur_image
 
       - name: Terraform Plan
         id: plan
