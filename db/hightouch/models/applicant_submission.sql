@@ -50,7 +50,14 @@ SELECT
   ARRAY_CAT(appsub.skills, appsub."otherSkills") AS "allSkills",
   appsub."currentLocation",
   appsub."openToRelocate",
-  appsub."openToRemote",
+  CASE
+    appsub."openToRemote"
+    WHEN 'only remote' THEN 'Only open to remote'
+    WHEN 'no remote' THEN 'Not open to remote'
+    WHEN 'both' THEN 'Open to in-person or remote'
+    WHEN 'not sure' THEN 'Not Sure'
+    ELSE appsub."openToRemote"
+  END "openToRemote",
   appsub."desiredSalary",
   appsub."previousImpactExperience",
   CASE
