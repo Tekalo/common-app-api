@@ -1,6 +1,7 @@
 import { Application } from 'express';
 import * as Sentry from '@sentry/node';
 import { TransactionEvent, Transport } from '@sentry/types';
+import prisma from '@App/resources/client.js';
 import configLoader from './configLoader.js';
 
 class MonitoringService {
@@ -35,6 +36,8 @@ class MonitoringService {
         new Sentry.Integrations.Express({ app }),
         // Automatically instrument Node.js libraries and frameworks
         ...Sentry.autoDiscoverNodePerformanceMonitoringIntegrations(),
+        // enable Prisma tracing
+        new Sentry.Integrations.Prisma({ client: prisma }),
       ],
       beforeSendTransaction: (event: TransactionEvent) => {
         // don't send traces of requests to the health check endpoint
