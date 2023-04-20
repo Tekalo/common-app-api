@@ -35,9 +35,9 @@ jobs:
             dev:
               - 'tf/envs/dev/**'
               - 'tf/modules/**'
-            # staging:
-            #   - 'tf/envs/staging/**'
-            #   - 'tf/modules/**'
+            staging:
+              - 'tf/envs/staging/**'
+              - 'tf/modules/**'
             # prod:
             #   - 'tf/envs/prod/**'
             #   - 'tf/modules/**'
@@ -51,20 +51,20 @@ jobs:
       env: dev
     secrets: inherit
 
-  deploy-staging:
-    name: 'Deploy to Staging'
-    needs: [changes, deploy-dev]
-    if: needs.changes.outputs.staging == 'true'
-    uses: ./.github/workflows/terraform-apply.yml
-    with:
-      env: staging
-    secrets: inherit
+  # deploy-staging:
+  #   name: 'Deploy to Staging'
+  #   needs: [changes, deploy-dev]
+  #   if: needs.changes.outputs.staging == 'true'
+  #   uses: ./.github/workflows/terraform-apply.yml
+  #   with:
+  #     env: staging
+  #   secrets: inherit
 
-  deploy-prod:
-    name: 'Deploy to Prod'
-    needs: [changes, deploy-staging]
-    if: needs.changes.outputs.prod == 'true'
-    uses: ./.github/workflows/terraform-apply.yml
-    with:
-      env: prod
-    secrets: inherit
+  # deploy-prod:
+  #   name: 'Deploy to Prod'
+  #   needs: [changes, deploy-staging]
+  #   if: needs.changes.outputs.prod == 'true'
+  #   uses: ./.github/workflows/terraform-apply.yml
+  #   with:
+  #     env: prod
+  #   secrets: inherit

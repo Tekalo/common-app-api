@@ -34,7 +34,7 @@ const YOE = z.enum([
   '>11',
 ]);
 const OpenToRelocate = z.enum(['yes', 'no', 'not sure']);
-const OpenToRemote = z.enum(['yes', 'no', 'both', 'not sure']);
+const OpenToRemote = z.enum(['only remote', 'no remote', 'both', 'not sure']);
 const WorkAuthorization = z.enum(['authorized', 'sponsorship']);
 const ReferenceAttribution = z.enum([
   'website',
@@ -54,6 +54,10 @@ const ApplicantRequestBodySchema = z.object({
   searchStatus: SearchStatus,
   acceptedTerms: z.literal(true),
   acceptedPrivacy: z.literal(true),
+});
+
+const ApplicantStateRequestBodySchema = z.object({
+  pause: z.boolean(),
 });
 
 const ApplicantResponseBodySchema = z.object({
@@ -107,5 +111,6 @@ export {
   ApplicantResponseBodySchema,
   ApplicantSubmissionRequestBodySchema,
   ApplicantDraftSubmissionRequestBodySchema,
+  ApplicantStateRequestBodySchema,
   ApplicantDraftSubmissionResponseBodySchema,
 };

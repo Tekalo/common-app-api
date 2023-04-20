@@ -4,7 +4,6 @@ import {
   ApplicantSubmissionBody,
   ApplicantDraftSubmissionBody,
 } from '@App/resources/types/applicants.js';
-import CAPPError from '@App/resources/shared/CAPPError.js';
 import {
   ApplicantDraftSubmission,
   ApplicantSubmission,
@@ -12,6 +11,8 @@ import {
   PrismaClient,
 } from '@prisma/client';
 import AuthService from '@App/services/AuthService.js';
+import CAPPError from '@App/resources/shared/CAPPError.js';
+import { Problem } from '@App/resources/types/shared.js';
 
 class ApplicantController {
   private auth0Service: AuthService;
@@ -110,6 +111,39 @@ class ApplicantController {
     }
   }
 
+  async pauseApplicant(applicantId: number, pauseStatus: boolean) {
+    try {
+      const { id, isPaused } = await this.prisma.applicant.update({
+        data: { isPaused: pauseStatus },
+        where: { id: applicantId },
+      });
+      return { id, isPaused };
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        const problem: Problem = {
+          title: 'Applicant Pause Error',
+          detail: 'Database error encountered when pausing applicant status',
+          status: 400,
+        };
+        if (e.code === 'P2001') {
+          problem.detail = 'Applicant not found';
+          problem.status = 404;
+        }
+        throw new CAPPError(
+          problem,
+          e instanceof Error ? { cause: e } : undefined,
+        );
+      }
+      throw new CAPPError(
+        {
+          title: 'Applicant Pause Error',
+          detail: 'Error when pausing applicant status',
+        },
+        e instanceof Error ? { cause: e } : undefined,
+      );
+    }
+  }
+
   async deleteApplicant(applicantId: number) {
     let applicantToDelete;
     try {
@@ -132,16 +166,22 @@ class ApplicantController {
       ]);
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        throw new CAPPError({
-          title: 'Applicant Deletion Error',
-          detail: 'Database error encountered when deleting applicant',
-          status: 400,
-        });
+        throw new CAPPError(
+          {
+            title: 'Applicant Deletion Error',
+            detail: 'Database error encountered when deleting applicant',
+            status: 400,
+          },
+          e instanceof Error ? { cause: e } : undefined,
+        );
       }
-      throw new CAPPError({
-        title: 'Applicant Deletion Error',
-        detail: 'Error when deleting applicant',
-      });
+      throw new CAPPError(
+        {
+          title: 'Applicant Deletion Error',
+          detail: 'Error when deleting applicant',
+        },
+        e instanceof Error ? { cause: e } : undefined,
+      );
     }
     await this.auth0Service.deleteUser(applicantToDelete.auth0Id);
   }
@@ -204,16 +244,22 @@ class ApplicantController {
       return { isFinal, submission };
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        throw new CAPPError({
-          title: 'Applicant Submissions Retrieval Error',
-          detail: 'Could not find applicant submissions',
-          status: 404,
-        });
+        throw new CAPPError(
+          {
+            title: 'Applicant Submissions Retrieval Error',
+            detail: 'Could not find applicant submissions',
+            status: 404,
+          },
+          e instanceof Error ? { cause: e } : undefined,
+        );
       }
-      throw new CAPPError({
-        title: 'Applicant Submissions Retrieval Error',
-        detail: "Error when retrieving applicant's submission",
-      });
+      throw new CAPPError(
+        {
+          title: 'Applicant Submissions Retrieval Error',
+          detail: "Error when retrieving applicant's submission",
+        },
+        e instanceof Error ? { cause: e } : undefined,
+      );
     }
   }
 }

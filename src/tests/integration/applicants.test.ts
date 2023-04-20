@@ -284,7 +284,7 @@ describe('POST /applicants/me/submissions', () => {
   });
 });
 
-describe('DELETE /applicants', () => {
+describe('DELETE /applicants/:id', () => {
   describe('Auth0 Integration', () => {
     afterEach(async () => {
       if (testUserID) {
@@ -296,11 +296,15 @@ describe('DELETE /applicants', () => {
     itif('CI' in process.env)(
       'should delete an existing applicant from Auth0 and from database',
       async () => {
+        const randomString = getRandomString();
+        const token = await authHelper.getToken(
+          `bboberson${randomString}@gmail.com`,
+        );
         const { body }: { body: ApplicantResponseBody } = await request(app)
           .post('/applicants')
           .send({
             name: 'Bob Boberson',
-            email: `bboberson${getRandomString()}@gmail.com`,
+            email: `bboberson${randomString}@gmail.com`,
             preferredContact: 'email',
             searchStatus: 'active',
             acceptedTerms: true,
@@ -309,8 +313,10 @@ describe('DELETE /applicants', () => {
         if (body.auth0Id) {
           testUserID = body.auth0Id;
         }
-        const { id } = body;
-        await request(app).delete(`/applicants/${id}`).expect(200);
+        await request(app)
+          .delete('/applicants/me')
+          .set('Authorization', `Bearer ${token}`)
+          .expect(200);
       },
     );
   });
@@ -321,15 +327,15 @@ describe('DELETE /applicants', () => {
       appConfig,
     );
 
-    it('should return 400 for non-existent applicant id', async () => {
-      const { body } = await request(appNoAuth)
-        .delete('/applicants/99999')
-        .expect(400);
-      expect(body).toHaveProperty('title', 'Applicant Deletion Error');
+    it('should return 401 for un-authed request', async () => {
+      await request(appNoAuth).delete('/applicants/me').expect(401);
     });
 
-    it('should delete applicant from database', async () => {
-      const { body }: { body: ApplicantResponseBody } = await request(appNoAuth)
+    it('should return 404 when authenticating with token of non-existent applicant', async () => {
+      const token = await authHelper.getToken(
+        `bboberson${getRandomString()}@gmail.com`,
+      );
+      await request(appNoAuth)
         .post('/applicants')
         .send({
           name: 'Bob Boberson',
@@ -339,11 +345,32 @@ describe('DELETE /applicants', () => {
           acceptedTerms: true,
           acceptedPrivacy: true,
         });
-      if (body.auth0Id) {
-        testUserID = body.auth0Id;
-      }
-      const { id } = body;
-      await request(appNoAuth).delete(`/applicants/${id}`).expect(200);
+      const { body: deleteBody } = await request(appNoAuth)
+        .delete('/applicants/me')
+        .set('Authorization', `Bearer ${token}`)
+        .expect(404);
+      expect(deleteBody).toHaveProperty('title', 'Not Found');
+    });
+
+    it('should delete applicant from database', async () => {
+      const randomString = getRandomString();
+      const token = await authHelper.getToken(
+        `bboberson${randomString}@gmail.com`,
+      );
+      await request(appNoAuth)
+        .post('/applicants')
+        .send({
+          name: 'Bob Boberson',
+          email: `bboberson${randomString}@gmail.com`,
+          preferredContact: 'email',
+          searchStatus: 'active',
+          acceptedTerms: true,
+          acceptedPrivacy: true,
+        });
+      await request(appNoAuth)
+        .delete('/applicants/me')
+        .set('Authorization', `Bearer ${token}`)
+        .expect(200);
     });
   });
 });
@@ -567,5 +594,54 @@ describe('GET /applicants/me/submissions', () => {
       expect(body).toHaveProperty('isFinal', false);
       expect(body).toHaveProperty('submission', null);
     });
+  });
+});
+
+describe('PUT /applicants/me/state', () => {
+  const dummyAuthApp = getApp(
+    new DummyAuthService(),
+    new DummyMonitoringService(),
+    appConfig,
+  );
+
+  it('should pause and un-pause an applicants status', async () => {
+    const randomString = getRandomString();
+    const token = await authHelper.getToken(
+      `bboberson${randomString}@gmail.com`,
+    );
+    await request(dummyAuthApp)
+      .post('/applicants')
+      .send({
+        name: 'Bob Boberson',
+        auth0Id: 'auth0|123456',
+        email: `bboberson${randomString}@gmail.com`,
+        preferredContact: 'email',
+        searchStatus: 'active',
+        acceptedTerms: true,
+        acceptedPrivacy: true,
+      });
+    const { body: pausedBody } = await request(dummyAuthApp)
+      .put('/applicants/me/state')
+      .send({ pause: true })
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200);
+    expect(pausedBody).toHaveProperty('id');
+    expect(pausedBody).toHaveProperty('isPaused', true);
+    const { body: unPausedBody } = await request(dummyAuthApp)
+      .put('/applicants/me/state')
+      .send({ pause: false })
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200);
+    expect(unPausedBody).toHaveProperty('id');
+    expect(unPausedBody).toHaveProperty('isPaused', false);
+  });
+
+  it('should return 404 for non-existent applicant', async () => {
+    const token = await authHelper.getToken('bboberson@gmail.com');
+    await request(dummyAuthApp)
+      .put('/applicants/me/state')
+      .send({ pause: true })
+      .set('Authorization', `Bearer ${token}`)
+      .expect(404);
   });
 });

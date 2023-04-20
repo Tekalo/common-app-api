@@ -79,9 +79,9 @@
         }
       }
     },
-    "/applicants/:id": {
+    "/applicants/me": {
       "delete": {
-        "description": "Delete an existing applicant",
+        "description": "Delete current applicant",
         "responses": {
           "200": {
             "description": "Success"
@@ -95,6 +95,45 @@
                 }
               }
             }
+          },
+          "500": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/applicants/me/state": {
+      "put": {
+        "description": "Pause an existing applicant",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "pause": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "404": {
+            "description": "Not Found"
           },
           "500": {
             "description": "Error",

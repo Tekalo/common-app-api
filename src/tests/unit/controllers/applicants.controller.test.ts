@@ -84,6 +84,7 @@ describe('Applicant Controller', () => {
         acceptedTerms: new Date('2023-02-01'),
         acceptedPrivacy: new Date('2023-02-01'),
         auth0Id: 'auth0|1234',
+        isPaused: false,
       });
       mockCtx.prisma.$transaction.mockRejectedValue(
         new Prisma.PrismaClientKnownRequestError('ERROR', {
@@ -114,6 +115,7 @@ describe('Applicant Controller', () => {
         acceptedTerms: new Date('2023-02-01'),
         acceptedPrivacy: new Date('2023-02-01'),
         auth0Id: 'auth0|1234',
+        isPaused: false,
       });
       mockCtx.prisma.$transaction.mockResolvedValue(true);
       const dummyAuthService = new DummyAuthService();

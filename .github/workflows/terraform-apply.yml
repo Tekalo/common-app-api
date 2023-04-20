@@ -45,13 +45,14 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
           aws-region: us-east-1
-          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_INFRA }}
+          role-to-assume: ${{ vars[format('{0}_AWS_PLAN_ROLE', inputs.env)] }}
           role-session-name: GithubActions
           mask-aws-account-id: false
 
       - name: Get current image
         id: current-image
-        run: terraform output -raw image
+        run: |
+          terraform output -raw image
 
       # No actual value in a plan right now, since we can't preserve it across workflows
       # The real use case for a plan is that we generate plan, approve PR, and then deploy
@@ -64,6 +65,8 @@ jobs:
 
       - name: Terraform Apply
         run: |
+          cur_image="${{ steps.current-image.outputs.stdout }}" 
+          : "${cur_image:=hello-world:latest}"
           terraform apply -auto-approve -input=false \
-            -var 'cli_image=${{ steps.current-image.outputs.stdout }}' \
-            -var 'image=${{ steps.current-image.outputs.stdout }}'
+            -var "cli_image=$cur_image" \
+            -var "image=$cur_image"
