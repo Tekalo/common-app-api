@@ -51,7 +51,7 @@ jobs:
 
       - name: Get current image
         id: current-image
-        run: echo "297530360210.dkr.ecr.us-east-1.amazonaws.com/capp/api:cd110b"
+        run: echo terraform output -raw image
 
       # No actual value in a plan right now, since we can't preserve it across workflows
       # The real use case for a plan is that we generate plan, approve PR, and then deploy
