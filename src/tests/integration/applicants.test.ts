@@ -596,3 +596,52 @@ describe('GET /applicants/me/submissions', () => {
     });
   });
 });
+
+describe('PUT /applicants/me/state', () => {
+  const dummyAuthApp = getApp(
+    new DummyAuthService(),
+    new DummyMonitoringService(),
+    appConfig,
+  );
+
+  it('should pause and un-pause an applicants status', async () => {
+    const randomString = getRandomString();
+    const token = await authHelper.getToken(
+      `bboberson${randomString}@gmail.com`,
+    );
+    await request(dummyAuthApp)
+      .post('/applicants')
+      .send({
+        name: 'Bob Boberson',
+        auth0Id: 'auth0|123456',
+        email: `bboberson${randomString}@gmail.com`,
+        preferredContact: 'email',
+        searchStatus: 'active',
+        acceptedTerms: true,
+        acceptedPrivacy: true,
+      });
+    const { body: pausedBody } = await request(dummyAuthApp)
+      .put('/applicants/me/state')
+      .send({ pause: true })
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200);
+    expect(pausedBody).toHaveProperty('id');
+    expect(pausedBody).toHaveProperty('isPaused', true);
+    const { body: unPausedBody } = await request(dummyAuthApp)
+      .put('/applicants/me/state')
+      .send({ pause: false })
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200);
+    expect(unPausedBody).toHaveProperty('id');
+    expect(unPausedBody).toHaveProperty('isPaused', false);
+  });
+
+  it('should return 404 for non-existent applicant', async () => {
+    const token = await authHelper.getToken('bboberson@gmail.com');
+    await request(dummyAuthApp)
+      .put('/applicants/me/state')
+      .send({ pause: true })
+      .set('Authorization', `Bearer ${token}`)
+      .expect(404);
+  });
+});

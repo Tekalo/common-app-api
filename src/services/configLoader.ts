@@ -16,6 +16,7 @@ export type BaseConfig = {
     express: Auth0ExpressConfig;
   };
   sentryDSN: string;
+  isLoadTest: boolean;
 };
 function loadConfig(): BaseConfig {
   if (!process.env.AUTH0_EXPRESS_CONFIG) {
@@ -44,6 +45,7 @@ function loadConfig(): BaseConfig {
       express: validatedExpressAuth0Config,
     },
     sentryDSN: process.env.SENTRY_DSN || '',
+    isLoadTest: Boolean(process.env.LOAD_TEST) || false,
   };
   return configObj;
 }

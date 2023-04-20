@@ -2,12 +2,14 @@ import getApp from '@App/app.js';
 import AuthService from './services/AuthService.js';
 import configLoader from './services/configLoader.js';
 import MonitoringService from './services/MonitoringService.js';
+import DummyAuthService from './tests/fixtures/DummyAuthService.js';
 
-const app = getApp(
-  new AuthService(),
-  new MonitoringService(),
-  configLoader.loadConfig(),
-);
+const config = configLoader.loadConfig();
+const authService = config.isLoadTest
+  ? new DummyAuthService()
+  : new AuthService();
+
+const app = getApp(authService, new MonitoringService(), config);
 
 const port = +app.get('port');
 

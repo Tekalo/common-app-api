@@ -60,8 +60,8 @@ To add new packages, you can use:
 pnpm container-install -- args to pnpm install
 
 # examples
-pnpm container-install -- pino # same as: pnpm install pino
-pnpm container-install -- --save-dev pino-pretty # same as: pnpm install --save-dev pino-pretty
+pnpm container-install pino # same as: pnpm install pino
+pnpm container-install --save-dev pino-pretty # same as: pnpm install --save-dev pino-pretty
 ```
 
 ## Database

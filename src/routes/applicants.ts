@@ -3,11 +3,13 @@ import {
   ApplicantRequestBodySchema,
   ApplicantSubmissionRequestBodySchema,
   ApplicantDraftSubmissionRequestBodySchema,
+  ApplicantStateRequestBodySchema,
 } from '@App/resources/schemas/applicants.js';
 import {
   ApplicantRequestBody,
   ApplicantSubmissionBody,
   ApplicantDraftSubmissionBody,
+  ApplicantStateBody,
 } from '@App/resources/types/applicants.js';
 import { setCookie } from '@App/services/cookieService.js';
 
@@ -44,6 +46,23 @@ const applicantRoutes = (authService: AuthService, config: BaseConfig) => {
       const applicantID = req.auth?.payload.id || req.session.applicant.id;
       applicantController
         .createSubmission(applicantID, validatedBody)
+        .then((result) => {
+          res.status(200).json(result);
+        })
+        .catch((err) => next(err));
+    },
+  );
+
+  router.put(
+    '/me/state',
+    authenticator.validateJwt.bind(authenticator),
+    (req: Request, res: Response, next) => {
+      const appBody = req.body as ApplicantStateBody;
+      const reqWithAuth = req as RequestWithJWT;
+      const applicantID = reqWithAuth.auth.payload.id;
+      const { pause } = ApplicantStateRequestBodySchema.parse(appBody);
+      applicantController
+        .pauseApplicant(applicantID, pause)
         .then((result) => {
           res.status(200).json(result);
         })

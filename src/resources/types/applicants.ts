@@ -4,6 +4,7 @@ import {
   ApplicantResponseBodySchema,
   ApplicantSubmissionRequestBodySchema,
   ApplicantDraftSubmissionRequestBodySchema,
+  ApplicantStateRequestBodySchema,
   ApplicantDraftSubmissionResponseBodySchema,
 } from '../schemas/applicants.js';
 
@@ -22,3 +23,7 @@ export type ApplicantSubmissionBody = z.infer<
 >;
 
 export type ApplicantResponseBody = z.infer<typeof ApplicantResponseBodySchema>;
+
+export type ApplicantStateBody = z.infer<
+  typeof ApplicantStateRequestBodySchema
+>;
