@@ -313,9 +313,8 @@ describe('DELETE /applicants/:id', () => {
         if (body.auth0Id) {
           testUserID = body.auth0Id;
         }
-        const { id } = body;
         await request(app)
-          .delete(`/applicants/${id}`)
+          .delete('/applicants/me')
           .set('Authorization', `Bearer ${token}`)
           .expect(200);
       },
@@ -329,29 +328,28 @@ describe('DELETE /applicants/:id', () => {
     );
 
     it('should return 401 for un-authed request', async () => {
-      await request(appNoAuth).delete('/applicants/99999').expect(401);
+      await request(appNoAuth).delete('/applicants/me').expect(401);
     });
 
-    it('should return 404 for non-existent applicant', async () => {
-      const randomString = getRandomString();
+    it('should return 404 when authenticating with token of non-existent applicant', async () => {
       const token = await authHelper.getToken(
-        `bboberson${randomString}@gmail.com`,
+        `bboberson${getRandomString()}@gmail.com`,
       );
       await request(appNoAuth)
         .post('/applicants')
         .send({
           name: 'Bob Boberson',
-          email: `bboberson${randomString}@gmail.com`,
+          email: `bboberson${getRandomString()}@gmail.com`,
           preferredContact: 'email',
           searchStatus: 'active',
           acceptedTerms: true,
           acceptedPrivacy: true,
         });
       const { body: deleteBody } = await request(appNoAuth)
-        .delete('/applicants/123')
+        .delete('/applicants/me')
         .set('Authorization', `Bearer ${token}`)
-        .expect(400);
-      expect(deleteBody).toHaveProperty('title', 'Applicant Deletion Error');
+        .expect(404);
+      expect(deleteBody).toHaveProperty('title', 'Not Found');
     });
 
     it('should delete applicant from database', async () => {
@@ -359,7 +357,7 @@ describe('DELETE /applicants/:id', () => {
       const token = await authHelper.getToken(
         `bboberson${randomString}@gmail.com`,
       );
-      const { body }: { body: ApplicantResponseBody } = await request(appNoAuth)
+      await request(appNoAuth)
         .post('/applicants')
         .send({
           name: 'Bob Boberson',
@@ -369,12 +367,8 @@ describe('DELETE /applicants/:id', () => {
           acceptedTerms: true,
           acceptedPrivacy: true,
         });
-      if (body.auth0Id) {
-        testUserID = body.auth0Id;
-      }
-      const { id } = body;
       await request(appNoAuth)
-        .delete(`/applicants/${id}`)
+        .delete('/applicants/me')
         .set('Authorization', `Bearer ${token}`)
         .expect(200);
     });
