@@ -52,11 +52,7 @@ jobs:
       - name: Get current image
         id: current-image
         run: |
-          cur_image=$(terraform output -raw image)
-          if [[ -z $cur_image ]]; then
-            cur_image="hello-world:latest"
-          fi
-          echo $cur_image
+          terraform output -raw image
 
       # No actual value in a plan right now, since we can't preserve it across workflows
       # The real use case for a plan is that we generate plan, approve PR, and then deploy
@@ -69,6 +65,8 @@ jobs:
 
       - name: Terraform Apply
         run: |
+          cur_image="${{ steps.current-image.outputs.stdout }}" 
+          : "${cur_image:=hello-world:latest}"
           terraform apply -auto-approve -input=false \
-            -var 'cli_image=${{ steps.current-image.outputs.stdout }}' \
-            -var 'image=${{ steps.current-image.outputs.stdout }}'
+            -var "cli_image=$cur_image" \
+            -var "image=$cur_image"

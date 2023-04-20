@@ -61,15 +61,15 @@ jobs:
       - name: Get current image
         id: current-image
         run: |
-          cur_image=$(terraform output -raw image)
-          if [[ -z $cur_image ]]; then
-            cur_image="hello-world:latest"
-          fi
-          echo $cur_image
+          terraform output -raw image
 
       - name: Terraform Plan
         id: plan
-        run: terraform plan -no-color -input=false -out 'tf-${{ inputs.env }}.plan' -var 'cli_image=${{ steps.current-image.outputs.stdout }}' -var 'image=${{ steps.current-image.outputs.stdout }}'
+        run: |
+          cur_image="${{ steps.current-image.outputs.stdout }}" 
+          : "${cur_image:=hello-world:latest}"
+          terraform plan -no-color -input=false -out 'tf-${{ inputs.env }}.plan' \
+          -var "cli_image=$cur_image" -var "image=$cur_image"
         continue-on-error: true
 
       - uses: actions/github-script@v6
