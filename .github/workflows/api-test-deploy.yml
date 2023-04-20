@@ -17,7 +17,7 @@ on:
       - 'renovate/**'
   workflow_dispatch:
     inputs:
-      environment:
+      env:
         description: 'Environment to apply TF against'
         type: environment
         required: true
