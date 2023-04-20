@@ -25,10 +25,10 @@ AUTH0_CLIENT_ID={Auth0 Tenant Client ID}
 AUTH0_DOMAIN={Auth0 Tenant Domain}
 AUTH0_AUDIENCE={Auth0 Tenant Audience Identifier}
 AUTH0_ISSUER={Auth0 Tenant Issuer (same as Domain)}
-SENTRY_DSN=https://c38ab9f98fd0404f9d2bfb95d015da8d@o4504962952724480.ingest.sentry.io/4504963428777984
+SENTRY_DSN={Sentry DSN}
 ```
 
-These values can be found [here](https://manage.auth0.com/dashboard/us/sf-capp-dev/applications/AzRVLnVmcru9u0hR5dl5VW84c21GLNEM/settings).
+The Auth0 values can be found [here](https://manage.auth0.com/dashboard/us/sf-capp-dev/applications/AzRVLnVmcru9u0hR5dl5VW84c21GLNEM/settings).
 
 We use Docker for local development and testing. This ensures consistency in environments amongst all contributors. Our Docker environment consists of 2 containers: API and Postgres DB containers. The local dev dir is volume-mounted at `/api` into the container, so there is no need to rebuild the image for code or package changes.
 
