@@ -42,10 +42,10 @@ To run terraform commands such as `plan` and `apply`, set the AWS profile:
 AWS_PROFILE=fan-apps-admin terraform plan
 ```
 
-### Secrets
+### Secrets / Variables
 
 The terraform configuration makes use of the following environment variables:
 
 `TF_API_TOKEN` - Team wide API token used to authenticate against Terraform Cloud when applying a new Terraform config
 
-`AWS_DEPLOY_ROLE_INFRA` - ARN for the AWS `github-actions-infra` role
+`<ENV>_AWS_PLAN_ROLE` - ARN for the AWS `github-actions-infra` role

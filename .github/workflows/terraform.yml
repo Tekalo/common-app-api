@@ -35,9 +35,9 @@ jobs:
             dev:
               - 'tf/envs/dev/**'
               - 'tf/modules/**'
-            # staging:
-            #   - 'tf/envs/staging/**'
-            #   - 'tf/modules/**'
+            staging:
+              - 'tf/envs/staging/**'
+              - 'tf/modules/**'
             # prod:
             #   - 'tf/envs/prod/**'
             #   - 'tf/modules/**'
