@@ -156,7 +156,6 @@ class ApplicantController {
           data: {
             email: applicantToDelete.email,
             applicantId: applicantToDelete.id,
-            auth0Id: applicantToDelete.auth0Id,
             acceptedTerms: applicantToDelete.acceptedTerms,
             acceptedPrivacy: applicantToDelete.acceptedPrivacy,
           },

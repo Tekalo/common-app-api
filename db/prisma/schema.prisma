@@ -138,7 +138,6 @@ model ApplicantDeletionRequests {
     applicantId     Int      @unique
     createdAt       DateTime @default(now())
     email           String
-    auth0Id         String
     acceptedTerms   DateTime
     acceptedPrivacy DateTime
 }
