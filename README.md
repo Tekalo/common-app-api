@@ -23,6 +23,9 @@ pnpm container-install
 AUTH0_CLIENT_SECRET={Auth0 Tenant Client Secret}
 AUTH0_CLIENT_ID={Auth0 Tenant Client ID}
 AUTH0_DOMAIN={Auth0 Tenant Domain}
+AUTH0_AUDIENCE={Auth0 Tenant Audience Identifier}
+AUTH0_ISSUER={Auth0 Tenant Issuer (same as Domain)}
+SENTRY_DSN=https://c38ab9f98fd0404f9d2bfb95d015da8d@o4504962952724480.ingest.sentry.io/4504963428777984
 ```
 
 These values can be found [here](https://manage.auth0.com/dashboard/us/sf-capp-dev/applications/AzRVLnVmcru9u0hR5dl5VW84c21GLNEM/settings).
