@@ -26,8 +26,8 @@ dependencies:
     specifier: 4.18.2
     version: 4.18.2
   express-oauth2-jwt-bearer:
-    specifier: 1.4.0
-    version: 1.4.0
+    specifier: 1.4.1
+    version: 1.4.1
   express-session:
     specifier: 1.17.3
     version: 1.17.3
@@ -2615,8 +2615,8 @@ packages:
       jest-message-util: 29.5.0
       jest-util: 29.5.0
 
-  /express-oauth2-jwt-bearer@1.4.0:
-    resolution: {integrity: sha512-UPwiVAhKifjtclSJSbRkHbDtZcROuV6CKASpA0BmqFNCWjNonGEbxDaAv5e21lFBpSHevkVaw0JVRB7b/7Dbtg==}
+  /express-oauth2-jwt-bearer@1.4.1:
+    resolution: {integrity: sha512-EtAJbTotIXpN2xcUJLPOoO/WC2HRCjZCOeD0XI6Kyzeelb4/dh43HSJ37C2Z17HarEiAd0xO9Mz8/9OaTM5oHw==}
     engines: {node: ^12.19.0 || ^14.15.0 || ^16.13.0 || ^18.12.0}
     dependencies:
       jose: 4.13.2
