@@ -60,6 +60,7 @@ jobs:
 
       - name: Get current image
         id: current-image
+        continue-on-error: true
         run: |
           terraform output -raw image
 
