@@ -23,9 +23,12 @@ pnpm container-install
 AUTH0_CLIENT_SECRET={Auth0 Tenant Client Secret}
 AUTH0_CLIENT_ID={Auth0 Tenant Client ID}
 AUTH0_DOMAIN={Auth0 Tenant Domain}
+AUTH0_AUDIENCE={Auth0 Tenant Audience Identifier}
+AUTH0_ISSUER={Auth0 Tenant Issuer (same as Domain)}
+SENTRY_DSN={Sentry DSN}
 ```
 
-These values can be found [here](https://manage.auth0.com/dashboard/us/sf-capp-dev/applications/AzRVLnVmcru9u0hR5dl5VW84c21GLNEM/settings).
+The Auth0 values can be found [here](https://manage.auth0.com/dashboard/us/sf-capp-dev/applications/AzRVLnVmcru9u0hR5dl5VW84c21GLNEM/settings).
 
 We use Docker for local development and testing. This ensures consistency in environments amongst all contributors. Our Docker environment consists of 2 containers: API and Postgres DB containers. The local dev dir is volume-mounted at `/api` into the container, so there is no need to rebuild the image for code or package changes.
 
