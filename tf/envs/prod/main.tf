@@ -21,7 +21,7 @@ provider "aws" {
 
   default_tags {
     tags = {
-      Environment = "Staging"
+      Environment = "Prod"
       Project     = "CAPP"
       BillingCode = "TLE-451"
     }
