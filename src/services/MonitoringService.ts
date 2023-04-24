@@ -1,6 +1,6 @@
 import { Application } from 'express';
 import * as Sentry from '@sentry/node';
-import { TransactionEvent, Transport } from '@sentry/types';
+import { ErrorEvent, TransactionEvent, Transport } from '@sentry/types';
 import prisma from '@App/resources/client.js';
 import configLoader from './configLoader.js';
 
@@ -46,7 +46,7 @@ class MonitoringService {
         }
         return event;
       },
-
+      sampleRate,
       // Set tracesSampleRate to 1.0 to capture 100%
       // of transactions for performance monitoring.
       // We recommend adjusting this value in production
