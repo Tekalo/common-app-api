@@ -22,7 +22,7 @@ function loadConfig(): BaseConfig {
   if (!process.env.AUTH0_EXPRESS_CONFIG) {
     throw new CAPPError({
       title: 'Invalid Config',
-      detail: 'Missing AUTH0_CONFIG',
+      detail: 'Missing AUTH0_EXPRESS_CONFIG',
     });
   }
   if (!process.env.AUTH0_API_CONFIG) {

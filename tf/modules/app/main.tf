@@ -145,8 +145,12 @@ resource "aws_ecs_task_definition" "api" {
         valueFrom = module.rds-secret.secret_arn
         },
         {
-          name      = "AUTH0_CONFIG"
-          valueFrom = aws_secretsmanager_secret.auth0_config.arn
+          name      = "AUTH0_EXPRESS_CONFIG"
+          valueFrom = aws_secretsmanager_secret.auth0_express_config.arn
+        },
+        {
+          name      = "AUTH0_API_CONFIG"
+          valueFrom = aws_secretsmanager_secret.auth0_api_config.arn
       }]
 
       environment = [{
@@ -304,9 +308,15 @@ resource "aws_route53_record" "auth" {
   records = [var.auth0_domain]
 }
 
-resource "aws_secretsmanager_secret" "auth0_config" {
-  name        = "projects/capp/${var.env}/auth0_config"
-  description = "CAPP ${var.env} auth0 config"
+resource "aws_secretsmanager_secret" "auth0_express_config" {
+  name        = "projects/capp/${var.env}/auth0_express_config"
+  description = "CAPP ${var.env} auth0 express config"
+  kms_key_id  = aws_kms_key.main.key_id
+}
+
+resource "aws_secretsmanager_secret" "auth0_api_config" {
+  name        = "projects/capp/${var.env}/auth0_api_config"
+  description = "CAPP ${var.env} auth0 management api config"
   kms_key_id  = aws_kms_key.main.key_id
 }
 
