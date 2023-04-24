@@ -18,7 +18,7 @@ afterAll(async () => {
   await MonitoringService.exitHandler();
 });
 
-beforeEach(() => testkit.reset());
+afterEach(() => testkit.reset());
 
 describe('Monitoring Service', () => {
   const dummyAuthService = new DummyAuthService();

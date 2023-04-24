@@ -1,4 +1,4 @@
-import { BaseConfig } from '@App/services/configLoader.js';
+import { BaseConfig } from '@App/resources/types/shared.js';
 
 /**
  * Prepend this function to tests that you want to conditionally run
@@ -33,6 +33,7 @@ const getMockConfig = (): BaseConfig => ({
   },
   sentryDSN: '',
   isLoadTest: false,
+  webUri: '',
 });
 
 export { itif, getRandomString, getMockConfig };

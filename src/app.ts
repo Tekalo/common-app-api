@@ -11,7 +11,7 @@ import ConnectPg from 'connect-pg-simple';
 import errorHandler from './middleware/errorHandler.js';
 import AuthService from './services/AuthService.js';
 import MonitoringService from './services/MonitoringService.js';
-import { BaseConfig } from './services/configLoader.js';
+import { BaseConfig } from './resources/types/shared.js';
 
 const getApp = (
   authService: AuthService,

@@ -23,4 +23,10 @@ describe('Config Loader', () => {
       configLoader.loadConfig();
     }).toThrow(Error);
   });
+  test('should throw config error for missing AWS_ACCESS_KEY_ID', () => {
+    delete process.env.AWS_ACCESS_KEY_ID;
+    expect(() => {
+      configLoader.loadConfig();
+    }).toThrow(Error);
+  });
 });

@@ -46,7 +46,7 @@ class AuthService {
   async generatePasswordReset(auth0Id: string) {
     const auth0Client: ManagementClient = this.getClient();
     const params = {
-      result_url: 'https://head.common-app-frontend.pages.dev', // Redirect after using the ticket.
+      result_url: configLoader.loadConfig().webUri, // Redirect after using the ticket.
       user_id: auth0Id,
     };
     try {
