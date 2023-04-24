@@ -58,3 +58,38 @@ module "app" {
 module "env_defns" {
   source = "../../modules/env_defns"
 }
+
+module "autoscaling" {
+  source = "../../modules/autoscale"
+
+  env                 = module.envconfig.env
+  ecs_cluster         = module.envconfig.ecs_cluster
+  service_name        = module.app.service_name
+
+  metrics = {
+    CPUUtilization = {
+      metric_name             = "CPUUtilization"
+      adjustment_type         = "ChangeInCapacity"
+      cooldown                = 60
+      datapoints_to_alarm     = 1
+      evaluation_periods      = 1
+      metric_aggregation_type = "Average"
+      period                  = 60
+      statistic               = "Average"
+
+      down = {
+        comparison_operator         = "LessThanThreshold"
+        metric_interval_upper_bound = 0
+        scaling_adjustment          = -1
+        threshold                   = 40
+      }
+
+      up = {
+        comparison_operator         = "GreaterThanOrEqualToThreshold"
+        metric_interval_lower_bound = 1
+        scaling_adjustment          = 1
+        threshold                   = 70
+      }      
+    }
+  }
+}
