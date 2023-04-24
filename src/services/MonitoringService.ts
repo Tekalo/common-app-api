@@ -65,7 +65,7 @@ class MonitoringService {
       ...(this.sentryTransport && { transport: this.sentryTransport }),
     };
 
-    Sentry.init(options);
+    // Sentry.init(options);
 
     // RequestHandler creates a separate execution context using domains, so that every
     // transaction/span/breadcrumb is attached to its own Hub instance
