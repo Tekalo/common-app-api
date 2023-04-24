@@ -25,31 +25,21 @@ variable "metrics" {
   description = "Autoscaling metrics configuration"
   type = map(
       object({
-        metric_name             = string
-        actions_enabled         = optional(bool, true)
-        adjustment_type         = string
-        cooldown                = optional(number, null)
-        datapoints_to_alarm     = optional(number, null)
-        evaluation_periods      = number
-        metric_aggregation_type = string
-        period                  = number
-        statistic               = string
-        # TODO: Validate that either lower or upper bound are non-null.
-        down = object({
-          comparison_operator         = string
-          metric_interval_lower_bound = optional(number, null)
-          metric_interval_upper_bound = optional(number, null)
-          scaling_adjustment          = number
-          threshold                   = number
-        })
-        # TODO: Validate that either lower or upper bound are non-null.
-        up = object({
-          comparison_operator         = string
-          metric_interval_lower_bound = optional(number, null)
-          metric_interval_upper_bound = optional(number, null)
-          scaling_adjustment          = number
-          threshold                   = number
-        })
+        target                  = string
+        disable_scale_in        = optional(bool, false)
+        scale_in_cooldown       = optional(number, 120)
+        scale_out_cooldown      = optional(number, 120)
+
+        predefined_metric       = optional(object({
+          type                  = string
+          resource_label        = optional(string, null)
+        }), null)
+        custom_metric_type      = optional(object({
+          metric_name           = string
+          namespace             = string
+          statistic             = optional(string, "Average")
+          unit                  = optional(string, null)
+        }), null)
       })
     )
   default = null
