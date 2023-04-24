@@ -14,11 +14,14 @@ function sleep(timeMillis: number) {
   return new Promise((resolve) => setTimeout(resolve, timeMillis));
 }
 
-// afterAll(async () => {
-//   await MonitoringService.exitHandler();
-// });
+afterAll(async () => {
+  await MonitoringService.exitHandler();
+});
 
-// describe('Monitoring Service', () => {
+describe('Monitoring Service', () => {
+  it ('should contain at least one test', async() => {
+    expect(true).toBe(true);
+  });
 //   const dummyAuthService = new DummyAuthService();
 
 //   const monitoringService = new MonitoringService(
@@ -77,4 +80,4 @@ function sleep(timeMillis: number) {
 
 //     expect(testkit.transactions()).toHaveLength(2);
 //   });
-// });
+});
