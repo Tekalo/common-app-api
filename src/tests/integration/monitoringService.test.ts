@@ -14,8 +14,14 @@ function sleep(timeMillis: number) {
   return new Promise((resolve) => setTimeout(resolve, timeMillis));
 }
 
+const OLD_ENV = process.env;
+beforeEach(() => {
+  process.env = { ...OLD_ENV }; // Make a copy
+});
+
 afterAll(async () => {
   await MonitoringService.exitHandler();
+  process.env = OLD_ENV; // Restore old environment
 });
 
 describe('Monitoring Service', () => {
@@ -25,6 +31,7 @@ describe('Monitoring Service', () => {
     sentryTransport as () => Transport,
   );
   const appConfig = configLoader.loadConfig();
+  process.env.env = 'test';
 
   it('should collect performance events', async () => {
     const dummyAuthApp = getApp(dummyAuthService, monitoringService, appConfig);
