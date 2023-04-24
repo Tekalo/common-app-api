@@ -28,7 +28,8 @@ class EmailService {
                 Thanks for applying to Tekalo! Your assigned Tekalo recruiting liaison will 
                 review your application and contact you via your preferred contact method once matches are available.
                 In the meantime, you can sign in to your Tekalo account (<link to sign in page>) by using your Google 
-                account associated with this email address, or by setting up a <a class="ulink" href="${ticket}" target="_blank">new password</a> for your account.
+                or LinkedIn account associated with this email address, or by setting up a <a class="ulink" href="${ticket}" 
+                target="_blank">new password</a> for your account.
     
                 Thanks,
                 The Tekalo team`,
