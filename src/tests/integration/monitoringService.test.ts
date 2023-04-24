@@ -19,7 +19,7 @@ afterAll(async () => {
 });
 
 describe('Monitoring Service', () => {
-  it ('should contain at least one test', async() => {
+  it('should contain at least one test', () => {
     expect(true).toBe(true);
   });
 //   const dummyAuthService = new DummyAuthService();
