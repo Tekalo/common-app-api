@@ -25,7 +25,7 @@ class MonitoringService {
       configLoader.loadConfig();
 
     // set a low sample rate for load test
-    const sampleRate = isLoadTest ? 0.25 : 1.0;
+    const sampleRate = isLoadTest || env === 'dev' ? 0.25 : 1.0;
     const options: Sentry.NodeOptions = {
       dsn: sentryDSN,
       environment: env,
