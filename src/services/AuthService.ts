@@ -48,6 +48,7 @@ class AuthService {
     const params = {
       result_url: configLoader.loadConfig().webUri, // Redirect after using the ticket.
       user_id: auth0Id,
+      mark_email_as_verified: true,
     };
     try {
       return await auth0Client.createPasswordChangeTicket(params);

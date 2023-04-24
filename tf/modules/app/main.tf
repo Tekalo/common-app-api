@@ -145,8 +145,21 @@ resource "aws_ecs_task_definition" "api" {
         valueFrom = module.rds-secret.secret_arn
         },
         {
+<<<<<<< Updated upstream
           name      = "AUTH0_CONFIG"
           valueFrom = aws_secretsmanager_secret.auth0_config.arn
+=======
+          name      = "AUTH0_EXPRESS_CONFIG"
+          valueFrom = aws_secretsmanager_secret.auth0_express_config.arn
+        },
+        {
+          name      = "AUTH0_API_CONFIG"
+          valueFrom = aws_secretsmanager_secret.auth0_api_config.arn
+      },
+      {
+          name      = "AWS_CONFIG"
+          valueFrom = aws_secretsmanager_secret.auth0_api_config.arn
+>>>>>>> Stashed changes
       }]
 
       environment = [{
