@@ -18,6 +18,8 @@ afterAll(async () => {
   await MonitoringService.exitHandler();
 });
 
+beforeEach(() => testkit.reset());
+
 describe('Monitoring Service', () => {
   const dummyAuthService = new DummyAuthService();
 
@@ -56,7 +58,7 @@ describe('Monitoring Service', () => {
 
     await sleep(100);
 
-    expect(testkit.transactions()).toHaveLength(2);
+    expect(testkit.transactions()).toHaveLength(1);
     const transaction = testkit.transactions()[1];
     expect(transaction.name).toContain('opportunities');
     expect(testkit.reports()).toHaveLength(1);
@@ -75,6 +77,6 @@ describe('Monitoring Service', () => {
 
     await sleep(100);
 
-    expect(testkit.transactions()).toHaveLength(2);
+    expect(testkit.transactions()).toHaveLength(0);
   });
 });

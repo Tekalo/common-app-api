@@ -73,6 +73,11 @@ class MonitoringService {
     console.log('Shutting down Sentry');
     await Sentry.close(500);
   }
+
+  // All thrown errors should be sent to sentry by default. Use this to log errors that don't throw
+  static logError(event: Sentry.Event) {
+    Sentry.captureException(event);
+  }
 }
 
 export default MonitoringService;

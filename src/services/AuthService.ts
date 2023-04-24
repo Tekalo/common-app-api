@@ -43,6 +43,24 @@ class AuthService {
     return responseBody;
   }
 
+  async generatePasswordReset(auth0Id: string) {
+    const auth0Client: ManagementClient = this.getClient();
+    const params = {
+      result_url: 'https://head.common-app-frontend.pages.dev', // Redirect after using the ticket.
+      user_id: auth0Id,
+    };
+    try {
+      return await auth0Client.createPasswordChangeTicket(params);
+    } catch (e) {
+      throw new CAPPError(
+        {
+          title: 'Auth0 Error',
+        },
+        e instanceof Error ? { cause: e } : undefined,
+      );
+    }
+  }
+
   async deleteUser(id: string) {
     const auth0Client: ManagementClient = this.getClient();
     let responseBody;

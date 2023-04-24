@@ -21,7 +21,7 @@
     "test": "./scripts/container-test.sh",
     "prepare": "husky install",
     "prisma:seed": "docker compose run --rm api pnpx prisma db seed",
-    "prisma:update": "docker compose run --rm api pnpx prisma db push"
+    "prisma:update": "docker compose run --rm api pnpx prisma db push --force-reset"
   },
   "repository": {
     "type": "git",
@@ -34,6 +34,7 @@
   },
   "homepage": "https://github.com/schmidtfutures/common-app-api#readme",
   "dependencies": {
+    "@aws-sdk/client-ses": "3.316.0",
     "@prisma/client": "4.13.0",
     "@sentry/node": "7.48.0",
     "@sentry/types": "7.48.0",
