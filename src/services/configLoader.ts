@@ -45,7 +45,7 @@ function loadConfig(): BaseConfig {
       express: validatedExpressAuth0Config,
     },
     sentryDSN: process.env.SENTRY_DSN || '',
-    isLoadTest: Boolean(process.env.LOAD_TEST) || false,
+    isLoadTest: process.env.LOAD_TEST === 'true',
   };
   return configObj;
 }

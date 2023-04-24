@@ -1,6 +1,6 @@
 import { Application } from 'express';
 import * as Sentry from '@sentry/node';
-import { ErrorEvent, TransactionEvent, Transport } from '@sentry/types';
+import { TransactionEvent, Transport } from '@sentry/types';
 import prisma from '@App/resources/client.js';
 import configLoader from './configLoader.js';
 
@@ -25,7 +25,7 @@ class MonitoringService {
       configLoader.loadConfig();
 
     // set a low sample rate for load test
-    const sampleRate = isLoadTest || env === 'dev' ? 0.1 : 1.0;
+    const sampleRate = isLoadTest ? 0.1 : 1.0;
     const options: Sentry.NodeOptions = {
       dsn: sentryDSN,
       environment: env,
@@ -39,13 +39,6 @@ class MonitoringService {
         // enable Prisma tracing
         new Sentry.Integrations.Prisma({ client: prisma }),
       ],
-      beforeSend(event: ErrorEvent) {
-        if (env === 'dev') {
-          // Don't send the error
-          return null;
-        }
-        return event;
-      },
       beforeSendTransaction: (event: TransactionEvent) => {
         // don't send traces of requests to the health check endpoint
         if (event.transaction === 'GET /health') {
@@ -65,7 +58,7 @@ class MonitoringService {
       ...(this.sentryTransport && { transport: this.sentryTransport }),
     };
 
-    // Sentry.init(options);
+    Sentry.init(options);
 
     // RequestHandler creates a separate execution context using domains, so that every
     // transaction/span/breadcrumb is attached to its own Hub instance
