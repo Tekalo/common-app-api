@@ -3,7 +3,7 @@ terraform {
     organization = "schmidtfutures"
 
     workspaces {
-      name = "common-app-infra-backend-dev"
+      name = "common-app-infra-backend-prod"
     }
   }
 
@@ -21,7 +21,7 @@ provider "aws" {
 
   default_tags {
     tags = {
-      Environment = "Dev"
+      Environment = "Prod"
       Project     = "CAPP"
       BillingCode = "TLE-451"
     }

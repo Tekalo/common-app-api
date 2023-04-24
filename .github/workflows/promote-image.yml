@@ -1,0 +1,111 @@
+---
+name: Promote Image
+
+run-name: 'Deploy ${{ inputs.tag || inputs.ref }} to ${{ inputs.environment }} by @${{ github.actor }}'
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy image in'
+        type: environment
+        required: true
+      tag:
+        description: 'Image tag (short SHA) to deploy (defaults to latest commit of ref)'
+        type: string
+        required: false
+        default: ''
+
+env:
+  ECR_REPOSITORY: capp/api
+  PROD_AWS_ACCOUNT_ID: ${{ vars.PROD_AWS_ACCOUNT_ID }}
+  DEV_AWS_ACCOUNT_ID: ${{ vars.DEV_AWS_ACCOUNT_ID }}
+  AWS_REGION: us-east-1
+  DOCKER_BUILDKIT: 1
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  push_image:
+    name: Push image
+    runs-on: ubuntu-latest
+    outputs:
+      image: ${{ steps.image-var.outputs.image }}
+
+    steps:
+      - name: Set source registry
+        run: |
+          echo "SOURCE_ECR_REGISTRY=${DEV_AWS_ACCOUNT_ID:?}.dkr.ecr.${AWS_REGION:?}.amazonaws.com" >> $GITHUB_ENV
+
+      - name: Set destination registry
+        if: inputs.environment == 'prod'
+        run: |
+          echo "DEST_ECR_REGISTRY=${{ env.PROD_AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com" >> "$GITHUB_ENV"
+          echo "NEED_COPY=true" >> $GITHUB_ENV
+
+      - name: Set destination registry
+        if: inputs.environment != 'prod'
+        run: |
+          echo "DEST_ECR_REGISTRY=${SOURCE_ECR_REGISTRY:?}" >> "$GITHUB_ENV"
+          echo "NEED_COPY=false" >> $GITHUB_ENV
+
+      - name: Set short github sha variable
+        env:
+          INPUT_TAG: ${{ inputs.tag }}
+        run: |
+          if [[ -n "${INPUT_TAG}" ]]; then
+            echo "IMAGE_TAG=${INPUT_TAG}" >> "$GITHUB_ENV"
+          else
+            echo "IMAGE_TAG=$(echo "$GITHUB_SHA" | cut -c 1-6)" \
+              >> "$GITHUB_ENV"
+          fi
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          aws-region:
+            us-east-1
+            # TODO: maybe a better role? ideally, we'd use something associated with the
+            # prod environment, but github actions requires a new deploy object for this
+            # maybe just merge this into deploy-image script?
+          role-to-assume: ${{ vars[format('{0}_AWS_PLAN_ROLE', inputs.environment)] }}
+          role-session-name: GithubActions
+          mask-aws-account-id: false
+
+      - name: Verify image exists
+        run: |
+          aws ecr batch-get-image \
+            --registry-id ${DEV_AWS_ACCOUNT_ID:?} \
+            --repository-name "${ECR_REPOSITORY:?}" \
+            --image-ids "imageTag=${IMAGE_TAG:?}"
+
+      - name: Login to Amazon ECR
+        if: env.NEED_COPY == 'true'
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+        with:
+          registries: '${{ env.PROD_AWS_ACCOUNT_ID }},${{ env.DEV_AWS_ACCOUNT_ID }}'
+
+      - name: Build, tag, and push image to Amazon ECR
+        if: env.NEED_COPY == 'true'
+        run: |
+          docker pull "$SOURCE_ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+          docker tag "$SOURCE_ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" "$DEST_ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+          docker push "$DEST_ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+
+      - name: Set image var
+        id: image-var
+        run: |
+          echo "image=$DEST_ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+
+  deploy:
+    name: 'Deploy to ${{ inputs.environment }}'
+    uses: ./.github/workflows/deploy-image.yml
+    needs:
+      - push_image
+    with:
+      env: '${{ inputs.environment }}'
+      image: ${{ needs.push_image.outputs.image }}
+    secrets: inherit

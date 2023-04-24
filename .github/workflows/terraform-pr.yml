@@ -27,12 +27,12 @@ jobs:
             dev:
               - 'tf/envs/dev/**'
               - 'tf/modules/**'
-            # staging:
-            #   - 'tf/envs/staging/**'
-            #   - 'tf/modules/**'
-            # prod:
-            #   - 'tf/envs/prod/**'
-            #   - 'tf/modules/**'
+            staging:
+              - 'tf/envs/staging/**'
+              - 'tf/modules/**'
+            prod:
+              - 'tf/envs/prod/**'
+              - 'tf/modules/**'
 
   plan:
     needs: changes
@@ -43,7 +43,7 @@ jobs:
     uses: ./.github/workflows/terraform-plan.yml
     with:
       env: ${{ matrix.env }}
-      AWS_ROLE_TO_ASSUME: "${{ vars[format('{0}_AWS_PLAN_ROLE', matrix.env)] }}"
+      AWS_ROLE_TO_ASSUME: ${{ vars[format('{0}_AWS_PLAN_ROLE', matrix.env)] }}
     secrets:
       TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
 

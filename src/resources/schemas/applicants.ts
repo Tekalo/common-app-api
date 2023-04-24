@@ -34,7 +34,7 @@ const YOE = z.enum([
   '>11',
 ]);
 const OpenToRelocate = z.enum(['yes', 'no', 'not sure']);
-const OpenToRemote = z.enum(['yes', 'no', 'both', 'not sure']);
+const OpenToRemote = z.enum(['only remote', 'no remote', 'both', 'not sure']);
 const WorkAuthorization = z.enum(['authorized', 'sponsorship']);
 const ReferenceAttribution = z.enum([
   'website',

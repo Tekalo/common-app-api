@@ -41,3 +41,5 @@ To run terraform commands such as `plan` and `apply`, set the AWS profile:
 ```sh
 AWS_PROFILE=fan-apps-admin terraform plan
 ```
+
+Hi I would like a deploy now.
