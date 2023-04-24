@@ -39,6 +39,14 @@ class MonitoringService {
         // enable Prisma tracing
         new Sentry.Integrations.Prisma({ client: prisma }),
       ],
+      beforeSend: (event: ErrorEvent) => {
+        // don't send health check errors to Sentry
+        // we are going to monitor this in CloudWatch instead
+        if (event.transaction === 'GET /health') {
+          return null;
+        }
+        return event;
+      },
       beforeSendTransaction: (event: TransactionEvent) => {
         // don't send traces of requests to the health check endpoint
         if (event.transaction === 'GET /health') {
