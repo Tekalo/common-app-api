@@ -70,11 +70,30 @@ module "autoscaling" {
   max_capacity        = 10
 
   metrics = {
-    CPUUtilization = {
+    CPUAverage = {
       target            = 60
-      predefined_metric = {
+      predefined_metric = [{
         type = "ECSServiceAverageCPUUtilization"
-      }
+      }]
+    }
+    MemoryAverage = {
+      target            = 60
+      predefined_metric = [{
+        type = "ECSServiceAverageMemoryUtilization"
+      }]
+    }
+    CPUSpike = {
+      target            = 85
+      customized_metric = [{
+        metric_name     = "CPUUtilization"
+        namespace       = "AWS/ECS"
+        statistic       = "Maximum"
+        unit            = "Percent"
+        dimensions   = {
+          "ClusterName" = module.envconfig.ecs_cluster
+          "ServiceName" = module.app.service_name
+        }
+      }]
     }
   }
 }

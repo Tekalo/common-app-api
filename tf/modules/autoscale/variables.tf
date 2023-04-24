@@ -30,16 +30,17 @@ variable "metrics" {
         scale_in_cooldown       = optional(number, 120)
         scale_out_cooldown      = optional(number, 120)
 
-        predefined_metric       = optional(object({
+        predefined_metric       = optional(list(object({
           type                  = string
           resource_label        = optional(string, null)
-        }), null)
-        custom_metric_type      = optional(object({
+        })), [])
+        customized_metric       = optional(list(object({
           metric_name           = string
           namespace             = string
           statistic             = optional(string, "Average")
           unit                  = optional(string, null)
-        }), null)
+          dimensions            = optional(map(string), {})
+        })), [])
       })
     )
   default = null

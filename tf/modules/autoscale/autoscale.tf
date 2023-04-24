@@ -53,8 +53,35 @@ resource "aws_appautoscaling_policy" "default" {
     scale_in_cooldown   = each.value.scale_in_cooldown
     scale_out_cooldown  = each.value.scale_out_cooldown
 
-    predefined_metric_specification {
-      predefined_metric_type = each.value.predefined_metric.type
+    dynamic predefined_metric_specification {
+      for_each = each.value.predefined_metric
+      iterator = metric
+
+      content {
+        predefined_metric_type = metric.value.type
+      }
+    }
+
+    dynamic customized_metric_specification {
+      for_each = each.value.customized_metric
+      iterator = metric
+
+      content {
+        metric_name   = metric.value.metric_name
+        namespace     = metric.value.namespace
+        statistic     = metric.value.statistic
+        unit          = metric.value.unit
+
+        dynamic dimensions {
+          for_each = metric.value.dimensions
+          iterator = dim
+
+          content {
+            name  = dim.key
+            value = dim.value
+          }
+        }
+      }
     }
   }
 }
