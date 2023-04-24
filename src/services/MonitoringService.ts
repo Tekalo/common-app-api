@@ -1,6 +1,6 @@
 import { Application } from 'express';
 import * as Sentry from '@sentry/node';
-import { TransactionEvent, Transport } from '@sentry/types';
+import { ErrorEvent, TransactionEvent, Transport } from '@sentry/types';
 import prisma from '@App/resources/client.js';
 import configLoader from './configLoader.js';
 
@@ -39,6 +39,13 @@ class MonitoringService {
         // enable Prisma tracing
         new Sentry.Integrations.Prisma({ client: prisma }),
       ],
+      beforeSend(event: ErrorEvent) {
+        if (env === 'dev') {
+          // Don't send the error
+          return null;
+        }
+        return event;
+      },
       beforeSendTransaction: (event: TransactionEvent) => {
         // don't send traces of requests to the health check endpoint
         if (event.transaction === 'GET /health') {
