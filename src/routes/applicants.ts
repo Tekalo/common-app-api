@@ -104,13 +104,12 @@ const applicantRoutes = (authService: AuthService, config: BaseConfig) => {
 
   router.get(
     '/me/submissions',
-    authenticator.validateJwt.bind(authenticator),
+    authenticator.verifyJwtOrCookie.bind(authenticator),
     (req: Request, res: Response, next: NextFunction) => {
       // Cast req as RequestWithJWT because our middleware above asserts that there will be an auth property included
-      const reqWithAuth = req as RequestWithJWT;
-      const { id } = reqWithAuth.auth.payload;
+      const applicantID = req.auth?.payload.id || req.session.applicant.id;
       applicantController
-        .getMySubmissions(id)
+        .getMySubmissions(applicantID)
         .then((result) => {
           res.status(200).json(result);
         })

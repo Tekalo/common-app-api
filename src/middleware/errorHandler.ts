@@ -9,6 +9,7 @@ const errorHandler = (
   res: Response,
   next: NextFunction, // eslint-disable-line @typescript-eslint/no-unused-vars
 ) => {
+  console.log(err);
   const problem: Problem = err.problem || {};
   if (err.message === 'Unauthorized') {
     problem.title = 'Unauthorized';

@@ -510,7 +510,7 @@ describe('GET /applicants/me/submissions', () => {
   );
 
   describe('JWT authentication', () => {
-    it('should get current applicants draft submission', async () => {
+    it('should get current applicants draft submission with token', async () => {
       // We create draft submission with cookie, get /me/submissions with JWT
       const agent = request.agent(dummyAuthApp);
       const token = await authHelper.getToken('bboberson@gmail.com');
@@ -534,6 +534,30 @@ describe('GET /applicants/me/submissions', () => {
           .get('/applicants/me/submissions')
           .set('Authorization', `Bearer ${token}`)
           .expect(200);
+      expect(body).toHaveProperty('isFinal', false);
+      expect(body).toHaveProperty('submission');
+      expect(body.submission).toHaveProperty('id');
+    });
+
+    it('should get current applicants draft submission with cookie', async () => {
+      const agent = request.agent(dummyAuthApp);
+      await agent.post('/applicants').send({
+        name: 'Bob Boberson',
+        email: 'bboberson@gmail.com',
+        preferredContact: 'sms',
+        searchStatus: 'active',
+        acceptedTerms: true,
+        acceptedPrivacy: true,
+      });
+      const testBody: ApplicantDraftSubmissionBody = {
+        resumeUrl: 'https://bobcanbuild.com',
+      };
+      await agent
+        .post('/applicants/me/submissions/draft')
+        .send(testBody)
+        .expect(200);
+      const { body }: { body: ApplicantDraftSubmissionResponseBody } =
+        await agent.get('/applicants/me/submissions').expect(200);
       expect(body).toHaveProperty('isFinal', false);
       expect(body).toHaveProperty('submission');
       expect(body.submission).toHaveProperty('id');
