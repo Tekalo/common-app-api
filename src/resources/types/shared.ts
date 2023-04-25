@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import BaseConfigSchema from '../schemas/shared.js';
+import { BaseConfigSchema, AWSConfigSchema } from '../schemas/shared.js';
 
 export type Problem = {
   title?: string; // HTTP error name e.g. "Unauthorized"
@@ -12,6 +12,8 @@ export type Problem = {
 export type SessionCookie = {
   id: number;
 };
+
+export type AWSConfig = z.infer<typeof AWSConfigSchema>;
 
 export type BaseConfig = z.infer<typeof BaseConfigSchema>;
 

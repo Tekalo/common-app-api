@@ -20,11 +20,19 @@ pnpm container-install
 2\. Create a root level `.env` file, and in it put:
 
 ```bash
+# Values for Auth0 client when running tests
 AUTH0_CLIENT_SECRET={Auth0 Tenant Client Secret}
 AUTH0_CLIENT_ID={Auth0 Tenant Client ID}
 AUTH0_DOMAIN={Auth0 Tenant Domain}
 
+# Values will be used to hit the actual Auth0 Service in dev/prod
+AUTH0_AUDIENCE="auth0.capp.com"
+AUTH0_ISSUER="https://sf-capp-dev.us.auth0.com"
+
 WEB_URL={URL of CommonApp frontend}
+
+# Should be an arbitrary non-empty string for dev/testing.
+SENTRY_DSN="dummy-dsn"
 
 AWS_SES_FROM_ADDRESS="xyz@dev.apps.futurestech.cloud"
 AWS_ACCESS_KEY_ID={AWS Access Key}
