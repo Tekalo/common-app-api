@@ -32,7 +32,7 @@ const getMockConfig = (): BaseConfig => ({
   },
   sentryDSN: '',
   isLoadTest: false,
-  webUrL: '',
+  webUrl: '',
 });
 
 export { itif, getRandomString, getMockConfig };

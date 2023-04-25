@@ -17,7 +17,7 @@ function loadConfig(): BaseConfig {
     },
     aws: JSON.parse(String(process.env.AWS_CONFIG)) as AWSConfig,
     sentryDSN: process.env.SENTRY_DSN || '',
-    isLoadTest: Boolean(process.env.LOAD_TEST) || false,
+    isLoadTest: process.env.LOAD_TEST === 'true',
     webUrl: process.env.WEB_URL || '',
   });
   return validatedConfig;
