@@ -9,11 +9,10 @@ class EmailService {
   }
 
   async sendEmail(receipientEmail: string, ticket: string) {
-    const { accessKeyId, secretAccessKey, sessionToken, sesFromAddress } =
-      this.config.aws;
+    const { accessKeyId, secretAccessKey, sesFromAddress } = this.config.aws;
     const sesClient = new SESClient({
       region: 'us-east-1',
-      credentials: { accessKeyId, secretAccessKey, sessionToken },
+      credentials: { accessKeyId, secretAccessKey },
     });
 
     const sendEmailCommand = new SendEmailCommand({

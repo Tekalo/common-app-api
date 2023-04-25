@@ -28,12 +28,11 @@ const getMockConfig = (): BaseConfig => ({
   aws: {
     accessKeyId: '',
     secretAccessKey: '',
-    sessionToken: '',
     sesFromAddress: '',
   },
   sentryDSN: '',
   isLoadTest: false,
-  webUri: '',
+  webUrL: '',
 });
 
 export { itif, getRandomString, getMockConfig };

@@ -27,10 +27,8 @@ AUTH0_DOMAIN={Auth0 Tenant Domain}
 WEB_URL={URL of CommonApp frontend}
 
 AWS_SES_FROM_ADDRESS="xyz@dev.apps.futurestech.cloud"
-
 AWS_ACCESS_KEY_ID={AWS Access Key}
 AWS_SECRET_ACCESS_KEY={AWS Secret Key}
-AWS_SESSION_TOKEN={AWS Session Token}
 
 ```
 
@@ -38,7 +36,7 @@ The `AUTH0_` prefixed values can be found [here](https://manage.auth0.com/dashbo
 
 The `AWS_` prefixed values can be found when logging into the AWS Console under your specific user, under `Command line or programmatic access`
 
-Note: `AWS_SES_FROM_ADDRESS` is used for sending emails from AWS Simple Email Service. The default value is that of our dev service account email. Emails in the dev environment will only send to recipients with [verified emails](https://docs.aws.amazon.com/ses/latest/dg/creating-identities.html)
+Note: `AWS_SES_FROM_ADDRESS` is used for sending emails from AWS Simple Email Service. The default value for local development is our dev service account email. Emails in the dev environment will only send to recipients with [verified emails](https://docs.aws.amazon.com/ses/latest/dg/creating-identities.html)
 
 We use Docker for local development and testing. This ensures consistency in environments amongst all contributors. Our Docker environment consists of 2 containers: API and Postgres DB containers. The local dev dir is volume-mounted at `/api` into the container, so there is no need to rebuild the image for code or package changes.
 

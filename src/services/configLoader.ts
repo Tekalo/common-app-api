@@ -18,12 +18,11 @@ function loadConfig(): BaseConfig {
     aws: {
       accessKeyId: process.env.AWS_ACCESS_KEY_ID,
       secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-      sessionToken: process.env.AWS_SESSION_TOKEN,
       sesFromAddress: process.env.AWS_SES_FROM_ADDRESS,
     },
     sentryDSN: process.env.SENTRY_DSN || '',
     isLoadTest: Boolean(process.env.LOAD_TEST) || false,
-    webUri: process.env.WEB_URI || '',
+    webUrl: process.env.WEB_URL || '',
   });
   return validatedConfig;
 }

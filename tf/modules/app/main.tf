@@ -154,7 +154,7 @@ resource "aws_ecs_task_definition" "api" {
         },
         {
           name      = "AWS_CONFIG"
-          valueFrom = aws_secretsmanager_secret.auth0_api_config.arn
+          valueFrom = aws_secretsmanager_secret.aws_config.arn
       }]
 
       environment = [{
@@ -324,6 +324,12 @@ resource "aws_secretsmanager_secret" "auth0_api_config" {
   kms_key_id  = aws_kms_key.main.key_id
 }
 
+resource "aws_secretsmanager_secret" "aws_config" {
+  name        = "projects/capp/${var.env}/aws_config"
+  description = "CAPP ${var.env} AWS config"
+  kms_key_id  = aws_kms_key.main.key_id
+}
+
 module "rds-secret" {
   source = "../rds-secret-postgres"
 
@@ -372,7 +378,7 @@ resource "aws_iam_role_policy" "execution_role" {
 data "aws_iam_policy_document" "execution_role" {
   statement {
     actions   = ["secretsmanager:GetSecretValue"]
-    resources = [aws_secretsmanager_secret.auth0_api_config.arn, aws_secretsmanager_secret.auth0_express_config.arn, module.rds-secret.secret_arn]
+    resources = [aws_secretsmanager_secret.aws_config.arn, aws_secretsmanager_secret.auth0_api_config.arn, aws_secretsmanager_secret.auth0_express_config.arn, module.rds-secret.secret_arn]
   }
 
   statement {

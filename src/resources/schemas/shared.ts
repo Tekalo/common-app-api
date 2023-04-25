@@ -11,12 +11,11 @@ const BaseConfigSchema = z.object({
   aws: z.object({
     accessKeyId: z.string(),
     secretAccessKey: z.string(),
-    sessionToken: z.string(),
     sesFromAddress: z.string(),
   }),
   sentryDSN: z.string(),
   isLoadTest: z.boolean(),
-  webUri: z.string(),
+  webUrl: z.string(),
 });
 
 export default BaseConfigSchema;
