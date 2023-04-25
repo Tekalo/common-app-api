@@ -25,11 +25,7 @@ const getMockConfig = (): BaseConfig => ({
       secret: '',
     },
   },
-  aws: {
-    accessKeyId: '',
-    secretAccessKey: '',
-    sesFromAddress: '',
-  },
+  sesFromAddress: '',
   sentryDSN: '',
   isLoadTest: false,
   webUrl: '',

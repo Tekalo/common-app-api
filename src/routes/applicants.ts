@@ -22,9 +22,12 @@ import EmailService from '@App/services/EmailService.js';
 import MonitoringService from '@App/services/MonitoringService.js';
 import { BaseConfig } from '@App/resources/types/shared.js';
 
-const applicantRoutes = (authService: AuthService, config: BaseConfig) => {
+const applicantRoutes = (
+  authService: AuthService,
+  emailService: EmailService,
+  config: BaseConfig,
+) => {
   const router = express.Router();
-  const emailService = new EmailService(config);
   const monitoringService = new MonitoringService();
   const applicantController = new ApplicantController(
     authService,

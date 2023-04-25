@@ -9,6 +9,11 @@ class DummyAuthService extends AuthService {
     } as User;
     return mockUser;
   }
+
+  // eslint-disable-next-line
+  async generatePasswordReset(auth0Id: string) {
+    return { ticket: 'fake-ticket' };
+  }
 }
 
 export default DummyAuthService;

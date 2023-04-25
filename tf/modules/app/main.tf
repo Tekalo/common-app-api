@@ -112,7 +112,7 @@ resource "aws_ecs_service" "api" {
     ]
   }
 }
-output service_name {
+output "service_name" {
   description = "ECS service name"
   value       = aws_ecs_service.api.name
 }
@@ -156,10 +156,6 @@ resource "aws_ecs_task_definition" "api" {
         {
           name      = "AUTH0_API_CONFIG"
           valueFrom = aws_secretsmanager_secret.auth0_api_config.arn
-        },
-        {
-          name      = "AWS_CONFIG"
-          valueFrom = aws_secretsmanager_secret.aws_config.arn
       }]
 
       environment = [{
@@ -326,12 +322,6 @@ resource "aws_secretsmanager_secret" "auth0_express_config" {
 resource "aws_secretsmanager_secret" "auth0_api_config" {
   name        = "projects/capp/${var.env}/auth0_api_config"
   description = "CAPP ${var.env} auth0 management api config"
-  kms_key_id  = aws_kms_key.main.key_id
-}
-
-resource "aws_secretsmanager_secret" "aws_config" {
-  name        = "projects/capp/${var.env}/aws_config"
-  description = "CAPP ${var.env} AWS config"
   kms_key_id  = aws_kms_key.main.key_id
 }
 

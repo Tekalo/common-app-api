@@ -37,7 +37,7 @@ SENTRY_DSN="dummy-dsn"
 AWS_SES_FROM_ADDRESS="xyz@dev.apps.futurestech.cloud"
 AWS_ACCESS_KEY_ID={AWS Access Key}
 AWS_SECRET_ACCESS_KEY={AWS Secret Key}
-
+AWS_SESSION_TOKEN={AWS Session Token}
 ```
 
 The `AUTH0_` prefixed values can be found [here](https://manage.auth0.com/dashboard/us/sf-capp-dev/applications/AzRVLnVmcru9u0hR5dl5VW84c21GLNEM/settings).

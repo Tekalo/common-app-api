@@ -4,11 +4,13 @@ import prisma from '@App/resources/client.js';
 import configLoader from '@App/services/configLoader.js';
 import DummyAuthService from '../fixtures/DummyAuthService.js';
 import DummyMonitoringService from '../fixtures/DummyMonitoringService.js';
+import DummyEmailService from '../fixtures/DummyEmailService.js';
 
 const appConfig = configLoader.loadConfig();
 const app = getApp(
   new DummyAuthService(),
   new DummyMonitoringService(),
+  new DummyEmailService(appConfig),
   appConfig,
 );
 

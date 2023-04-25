@@ -1,9 +1,9 @@
-import { BaseConfigSchema } from '@App/resources/schemas/shared.js';
+import BaseConfigSchema from '@App/resources/schemas/shared.js';
 import {
   Auth0ApiConfig,
   Auth0ExpressConfig,
 } from '@App/resources/types/auth0.js';
-import { AWSConfig, BaseConfig } from '@App/resources/types/shared.js';
+import { BaseConfig } from '@App/resources/types/shared.js';
 
 function loadConfig(): BaseConfig {
   const validatedConfig = BaseConfigSchema.parse({
@@ -15,7 +15,7 @@ function loadConfig(): BaseConfig {
         String(process.env.AUTH0_EXPRESS_CONFIG),
       ) as Auth0ExpressConfig,
     },
-    aws: JSON.parse(String(process.env.AWS_CONFIG)) as AWSConfig,
+    sesFromAddress: process.env.AWS_SES_FROM_ADDRESS,
     sentryDSN: process.env.SENTRY_DSN || '',
     isLoadTest: process.env.LOAD_TEST === 'true',
     webUrl: process.env.WEB_URL || '',
