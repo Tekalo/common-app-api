@@ -66,7 +66,7 @@ module "autoscaling" {
   ecs_cluster         = module.envconfig.ecs_cluster
   service_name        = module.app.service_name
 
-  min_capacity        = 1
+  min_capacity        = 2
   max_capacity        = 10
 
   metrics = {

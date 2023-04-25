@@ -78,7 +78,7 @@ resource "aws_ecs_service" "api" {
   name                              = "capp-api"
   cluster                           = var.ecs_cluster
   task_definition                   = aws_ecs_task_definition.api.arn
-  desired_count                     = 1
+  desired_count                     = 2
   health_check_grace_period_seconds = 30
   enable_ecs_managed_tags           = true
   propagate_tags                    = "SERVICE"
@@ -107,7 +107,8 @@ resource "aws_ecs_service" "api" {
   # could explicitly set the strategy to be the default strategy, which would be acceptable.
   lifecycle {
     ignore_changes = [
-      capacity_provider_strategy
+      capacity_provider_strategy,
+      desired_count
     ]
   }
 }
