@@ -263,6 +263,9 @@
           },
           "acceptedPrivacy": {
             "type": "boolean"
+          },
+          "isPaused": {
+            "type": "boolean"
           }
         }
       },

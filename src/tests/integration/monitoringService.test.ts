@@ -2,6 +2,7 @@ import request from 'supertest';
 import getApp from '@App/app.js';
 import sentryTestkit from 'sentry-testkit';
 import { Transport } from '@sentry/types';
+import { getRandomString } from '@App/tests/util/helpers.js';
 import configLoader from '@App/services/configLoader.js';
 import MonitoringService from '../../services/MonitoringService.js';
 import DummyAuthService from '../fixtures/DummyAuthService.js';
@@ -21,63 +22,63 @@ afterAll(async () => {
 afterEach(() => testkit.reset());
 
 describe('Monitoring Service', () => {
-  it('should contain at least one test', () => {
-    expect(true).toBe(true);
+  const dummyAuthService = new DummyAuthService();
+
+  const monitoringService = new MonitoringService(
+    sentryTransport as () => Transport,
+  );
+  const appConfig = configLoader.loadConfig();
+
+  it('should collect performance events', async () => {
+    const dummyAuthApp = getApp(dummyAuthService, monitoringService, appConfig);
+
+    await request(dummyAuthApp)
+      .post('/applicants')
+      .send({
+        name: 'Robert Boberson',
+        pronoun: 'he/his',
+        email: `rboberson${getRandomString()}@gmail.com`,
+        preferredContact: 'email',
+        searchStatus: 'active',
+        acceptedTerms: true,
+        acceptedPrivacy: true,
+      })
+      .expect(200);
+
+    await sleep(100);
+
+    expect(testkit.reports()).toHaveLength(0);
+    expect(testkit.transactions()).toHaveLength(1);
+    const transaction = testkit.transactions()[0];
+    expect(transaction.name).toContain('applicants');
   });
-  //   const dummyAuthService = new DummyAuthService();
 
-  //   const monitoringService = new MonitoringService(
-  //     sentryTransport as () => Transport,
-  //   );
-  //   const appConfig = configLoader.loadConfig();
+  it('should collect error events for 500 error', async () => {
+    const dummyAuthApp = getApp(dummyAuthService, monitoringService, appConfig);
 
-  //   it('should collect performance events', async () => {
-  //     const dummyAuthApp = getApp(dummyAuthService, monitoringService, appConfig);
+    await request(dummyAuthApp).post('/opportunities/batch').expect(400);
 
-  //     await request(dummyAuthApp)
-  //       .post('/applicants')
-  //       .send({
-  //         name: 'Robert Boberson',
-  //         pronoun: 'he/his',
-  //         email: 'rboberson666@gmail.com',
-  //         preferredContact: 'email',
-  //         searchStatus: 'active',
-  //         acceptedTerms: true,
-  //         acceptedPrivacy: true,
-  //       })
-  //       .expect(200);
-  //     await sleep(100);
+    await sleep(100);
 
-  //     expect(testkit.transactions()).toHaveLength(1);
-  //     const transaction = testkit.transactions()[0];
-  //     expect(transaction.name).toContain('applicants');
-  //   });
+    expect(testkit.transactions()).toHaveLength(2);
+    const transaction = testkit.transactions()[1];
+    expect(transaction.name).toContain('opportunities');
+    expect(testkit.reports()).toHaveLength(1);
+    const report = testkit.reports()[0];
+    expect(report).toHaveProperty('error');
+  });
 
-  //   it('should collect error events for 500 error', async () => {
-  //     const dummyAuthApp = getApp(dummyAuthService, monitoringService, appConfig);
+  it('should not collect data for health check events', async () => {
+    const dummyAuthApp = getApp(
+      new DummyAuthService(),
+      monitoringService,
+      appConfig,
+    );
 
-  //     await request(dummyAuthApp).post('/opportunities/batch').expect(400);
-  //     await sleep(100);
+    await request(dummyAuthApp).get('/health').expect(200);
 
-  //     expect(testkit.transactions()).toHaveLength(2);
-  //     const transaction = testkit.transactions()[1];
-  //     expect(transaction.name).toContain('opportunities');
-  //     expect(testkit.reports()).toHaveLength(1);
-  //     const report = testkit.reports()[0];
-  //     expect(report).toHaveProperty('error');
-  //   });
+    await sleep(100);
 
-  //   it('should not collect data for health check events', async () => {
-  //     const dummyAuthApp = getApp(
-  //       new DummyAuthService(),
-  //       monitoringService,
-  //       appConfig,
-  //     );
-
-  //     await request(dummyAuthApp).get('/health').expect(200);
-
-  //     await sleep(100);
-
-  //     expect(testkit.transactions()).toHaveLength(2);
-  //   });
+    expect(testkit.transactions()).toHaveLength(2);
+  });
 });

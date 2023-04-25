@@ -25,7 +25,7 @@ class MonitoringService {
       configLoader.loadConfig();
 
     // set a low sample rate for load test
-    const sampleRate = isLoadTest || env === 'dev' ? 0.1 : 1.0;
+    const sampleRate = isLoadTest ? 0.1 : 1.0;
     const options: Sentry.NodeOptions = {
       dsn: sentryDSN,
       environment: env,
@@ -39,9 +39,10 @@ class MonitoringService {
         // enable Prisma tracing
         new Sentry.Integrations.Prisma({ client: prisma }),
       ],
-      beforeSend(event: ErrorEvent) {
-        if (env === 'dev') {
-          // Don't send the error
+      beforeSend: (event: ErrorEvent) => {
+        // don't send health check errors to Sentry
+        // we are going to monitor this in CloudWatch instead
+        if (event.transaction === 'GET /health') {
           return null;
         }
         return event;
@@ -53,7 +54,7 @@ class MonitoringService {
         }
         return event;
       },
-
+      sampleRate,
       // Set tracesSampleRate to 1.0 to capture 100%
       // of transactions for performance monitoring.
       // We recommend adjusting this value in production
@@ -65,7 +66,7 @@ class MonitoringService {
       ...(this.sentryTransport && { transport: this.sentryTransport }),
     };
 
-    // Sentry.init(options);
+    Sentry.init(options);
 
     // RequestHandler creates a separate execution context using domains, so that every
     // transaction/span/breadcrumb is attached to its own Hub instance

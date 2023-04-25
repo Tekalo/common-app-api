@@ -58,3 +58,42 @@ module "app" {
 module "env_defns" {
   source = "../../modules/env_defns"
 }
+
+module "autoscaling" {
+  source = "../../modules/autoscale"
+
+  env                 = module.envconfig.env
+  ecs_cluster         = module.envconfig.ecs_cluster
+  service_name        = module.app.service_name
+
+  min_capacity        = 2
+  max_capacity        = 10
+
+  metrics = {
+    CPUAverage = {
+      target            = 60
+      predefined_metric = [{
+        type = "ECSServiceAverageCPUUtilization"
+      }]
+    }
+    MemoryAverage = {
+      target            = 60
+      predefined_metric = [{
+        type = "ECSServiceAverageMemoryUtilization"
+      }]
+    }
+    CPUSpike = {
+      target            = 85
+      customized_metric = [{
+        metric_name     = "CPUUtilization"
+        namespace       = "AWS/ECS"
+        statistic       = "Maximum"
+        unit            = "Percent"
+        dimensions   = {
+          "ClusterName" = module.envconfig.ecs_cluster
+          "ServiceName" = module.app.service_name
+        }
+      }]
+    }
+  }
+}
