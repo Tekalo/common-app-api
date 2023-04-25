@@ -23,4 +23,16 @@ describe('Config Loader', () => {
       configLoader.loadConfig();
     }).toThrow(Error);
   });
+  test('should set load test to false if env value is false', () => {
+    process.env.LOAD_TEST = 'false';
+    const { isLoadTest }: { isLoadTest: boolean } = configLoader.loadConfig();
+
+    expect(isLoadTest).toBe(false);
+  });
+  test('should set load test to false by default', () => {
+    delete process.env.LOAD_TEST;
+    const { isLoadTest }: { isLoadTest: boolean } = configLoader.loadConfig();
+
+    expect(isLoadTest).toBe(false);
+  });
 });
