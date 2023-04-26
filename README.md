@@ -29,11 +29,6 @@ AUTH0_DOMAIN={Auth0 Tenant Domain}
 AUTH0_AUDIENCE="auth0.capp.com"
 AUTH0_ISSUER="https://sf-capp-dev.us.auth0.com"
 
-WEB_URL={URL of CommonApp frontend}
-
-# Should be an arbitrary non-empty string for dev/testing.
-SENTRY_DSN="dummy-dsn"
-
 AWS_SES_FROM_ADDRESS="xyz@dev.apps.futurestech.cloud"
 AWS_ACCESS_KEY_ID={AWS Access Key}
 AWS_SECRET_ACCESS_KEY={AWS Secret Key}
