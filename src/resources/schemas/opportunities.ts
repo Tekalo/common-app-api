@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-const OrgType = z.enum(['501c(3)', '501c(4)', 'LLC', 'other']);
+const OrgType = z.enum(['501(c)(3)', '501(c)(4)', 'LLC', 'other']);
 const OrgSize = z.enum([
   '<20',
   '20-50',
