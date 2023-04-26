@@ -180,6 +180,43 @@
           "content": {
             "application/json": {
               "schema": {
+                "$ref": "#/components/schemas/applicantDraftSubmissionRequestBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/applicants/me/submissions/draft": {
+      "post": {
+        "description": "Create a new applicant draft submission",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
                 "$ref": "#/components/schemas/applicantSubmissionRequestBody"
               }
             }
@@ -543,6 +580,107 @@
           "essayResponse",
           "referenceAttribution"
         ]
+      },
+      "applicantDraftSubmissionRequestBody": {
+        "type": "object",
+        "properties": {
+          "originTag": {
+            "type": "string"
+          },
+          "lastRole": {
+            "type": "string"
+          },
+          "lastOrg": {
+            "type": "string"
+          },
+          "yoe": {
+            "type": "string"
+          },
+          "skills": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "otherSkills": {
+            "type": "string"
+          },
+          "linkedInUrl": {
+            "type": "string"
+          },
+          "githubUrl": {
+            "type": "string"
+          },
+          "portfolioUrl": {
+            "type": "string"
+          },
+          "portfolioPassword": {
+            "type": "string"
+          },
+          "resumeUrl": {
+            "type": "string"
+          },
+          "resumePassword": {
+            "type": "string"
+          },
+          "hoursPerWeek": {
+            "type": "string"
+          },
+          "interestEmploymentType": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "interestRoles": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "currentLocation": {
+            "type": "string"
+          },
+          "openToRelocate": {
+            "type": "string"
+          },
+          "openToRemote": {
+            "type": "string"
+          },
+          "desiredSalary": {
+            "type": "string"
+          },
+          "interestCauses": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "otherCauses": {
+            "type": "array"
+          },
+          "workAuthorization": {
+            "type": "string"
+          },
+          "interestGovt": {
+            "type": "boolean"
+          },
+          "interestGovtEmplTypes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "previousImpactExperience": {
+            "type": "boolean"
+          },
+          "essayResponse": {
+            "type": "string"
+          },
+          "referenceAttribution": {
+            "type": "string"
+          }
+        }
       }
     }
   }
