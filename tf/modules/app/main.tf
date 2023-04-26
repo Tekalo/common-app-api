@@ -173,6 +173,10 @@ resource "aws_ecs_task_definition" "api" {
       }]
     }
   ])
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_ecs_task_definition" "cli" {
