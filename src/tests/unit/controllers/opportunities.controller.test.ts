@@ -23,7 +23,7 @@ describe('Opportunity Controller', () => {
     const reqPayload: OpportunityBatchRequestBody = {
       organization: {
         name: 'Bobs Burgers Foundation',
-        type: '501c(3)',
+        type: '501(c)(3)',
         size: '20-50',
         impactAreas: ['Clean Energy'],
         eoe: true,
