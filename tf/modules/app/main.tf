@@ -167,10 +167,10 @@ resource "aws_ecs_task_definition" "api" {
         }, {
         name  = "SENTRY_DSN"
         value = "${var.sentry_dsn}"
-        }, var.load_test != null ? {
+        }, {
         name  = "LOAD_TEST"
-        value = "true"
-      } : {}]
+        value = var.load_test != null ? var.load_test : "false"
+      }]
     }
   ])
 }
