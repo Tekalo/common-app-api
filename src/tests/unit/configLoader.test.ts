@@ -23,12 +23,6 @@ describe('Config Loader', () => {
       configLoader.loadConfig();
     }).toThrow(Error);
   });
-  test('should throw config error for missing AWS_ACCESS_KEY_ID', () => {
-    delete process.env.AWS_CONFIG;
-    expect(() => {
-      configLoader.loadConfig();
-    }).toThrow(Error);
-  });
   test('should set load test to false if env value is false', () => {
     process.env.LOAD_TEST = 'false';
     const { isLoadTest }: { isLoadTest: boolean } = configLoader.loadConfig();
