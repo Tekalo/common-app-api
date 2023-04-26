@@ -21,7 +21,7 @@ describe('POST /opportunities', () => {
   const oppBatchPayload = {
     organization: {
       name: 'Bobs Burgers Foundation',
-      type: '501c(3)',
+      type: '501(c)(3)',
       size: '<20',
       impactAreas: ['Clean Energy'],
       eoe: true,
