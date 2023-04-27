@@ -66,7 +66,7 @@ model ApplicantSubmission {
 
     desiredSalary            String?
     previousImpactExperience Boolean
-    workAuthorization        String // enum
+    workAuthorization        String? // enum
     hoursPerWeek             String? // Only part-time
 
     essayResponse String

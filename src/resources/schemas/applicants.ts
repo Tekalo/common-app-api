@@ -89,7 +89,7 @@ const ApplicantSubmissionRequestBodySchema = z.object({
   desiredSalary: z.string().max(255).nullable().optional(),
   interestCauses: z.array(z.string().max(255)), // order matters
   otherCauses: z.array(z.string().max(255)).nullable(),
-  workAuthorization: WorkAuthorization,
+  workAuthorization: WorkAuthorization.optional(),
   interestGovt: z.boolean(),
   interestGovtEmplTypes: z.array(InterestGovtEmplTypes).optional(),
   previousImpactExperience: z.boolean(),
