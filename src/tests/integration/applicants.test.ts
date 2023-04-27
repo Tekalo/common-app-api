@@ -15,6 +15,8 @@ import applicantSubmissionGenerator from '../fixtures/applicantSubmissionGenerat
 import DummyAuthService from '../fixtures/DummyAuthService.js';
 import DummyMonitoringService from '../fixtures/DummyMonitoringService.js';
 import authHelper from '../util/auth.js';
+import DummyEmailService from '../fixtures/DummyEmailService.js';
+import DummySESService from '../fixtures/DummySesService.js';
 
 let testUserID: string;
 const authService = new AuthService();
@@ -33,6 +35,7 @@ describe('POST /applicants', () => {
     const dummyAuthApp = getApp(
       new DummyAuthService(),
       new DummyMonitoringService(),
+      new DummyEmailService(new DummySESService(), appConfig),
       appConfig,
     );
     it('should create a new applicant only in database', async () => {
@@ -110,7 +113,12 @@ describe('POST /applicants', () => {
   });
 
   describe('Auth0 Integration', () => {
-    const app = getApp(authService, new DummyMonitoringService(), appConfig);
+    const app = getApp(
+      authService,
+      new DummyMonitoringService(),
+      new DummyEmailService(new DummySESService(), appConfig),
+      appConfig,
+    );
     afterEach(async () => {
       if (testUserID) {
         const auth0Service = authService.getClient();
@@ -177,6 +185,7 @@ describe('POST /applicants/me/submissions', () => {
   const dummyAuthApp = getApp(
     new DummyAuthService(),
     new DummyMonitoringService(),
+    new DummyEmailService(new DummySESService(), appConfig),
     appConfig,
   );
 
@@ -292,7 +301,12 @@ describe('DELETE /applicants/:id', () => {
         await auth0Service.deleteUser({ id: testUserID });
       }
     });
-    const app = getApp(authService, new DummyMonitoringService(), appConfig);
+    const app = getApp(
+      authService,
+      new DummyMonitoringService(),
+      new DummyEmailService(new DummySESService(), appConfig),
+      appConfig,
+    );
     itif('CI' in process.env)(
       'should delete an existing applicant from Auth0 and from database',
       async () => {
@@ -324,6 +338,7 @@ describe('DELETE /applicants/:id', () => {
     const appNoAuth = getApp(
       new DummyAuthService(),
       new DummyMonitoringService(),
+      new DummyEmailService(new DummySESService(), appConfig),
       appConfig,
     );
 
@@ -379,6 +394,7 @@ describe('POST /applicants/me/submissions/draft', () => {
   const dummyAuthApp = getApp(
     new DummyAuthService(),
     new DummyMonitoringService(),
+    new DummyEmailService(new DummySESService(), appConfig),
     appConfig,
   );
   it('should not allow applicant to save draft submission without a valid cookie or JWT supplied', async () => {
@@ -506,6 +522,7 @@ describe('GET /applicants/me/submissions', () => {
   const dummyAuthApp = getApp(
     new DummyAuthService(),
     new DummyMonitoringService(),
+    new DummyEmailService(new DummySESService(), appConfig),
     appConfig,
   );
 
@@ -625,6 +642,7 @@ describe('PUT /applicants/me/state', () => {
   const dummyAuthApp = getApp(
     new DummyAuthService(),
     new DummyMonitoringService(),
+    new DummyEmailService(new DummySESService(), appConfig),
     appConfig,
   );
 

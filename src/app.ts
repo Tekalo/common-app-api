@@ -11,11 +11,13 @@ import ConnectPg from 'connect-pg-simple';
 import errorHandler from './middleware/errorHandler.js';
 import AuthService from './services/AuthService.js';
 import MonitoringService from './services/MonitoringService.js';
-import { BaseConfig } from './services/configLoader.js';
+import { BaseConfig } from './resources/types/shared.js';
+import EmailService from './services/EmailService.js';
 
 const getApp = (
   authService: AuthService,
   monitoringService: MonitoringService,
+  emailService: EmailService,
   config: BaseConfig,
 ): Application => {
   const app: Application = express();
@@ -47,7 +49,10 @@ const getApp = (
    */
   app.use(router);
 
-  app.use('/applicants', applicantRoutes(authService, config));
+  app.use(
+    '/applicants',
+    applicantRoutes(authService, emailService, monitoringService, config),
+  );
   app.use('/opportunities', opportunitiesRoutes());
   app.use('/health', healthRoutes());
 

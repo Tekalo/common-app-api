@@ -20,15 +20,29 @@ pnpm container-install
 2\. Create a root level `.env` file, and in it put:
 
 ```bash
+# Values for Auth0 client when running tests
 AUTH0_CLIENT_SECRET={Auth0 Tenant Client Secret}
 AUTH0_CLIENT_ID={Auth0 Tenant Client ID}
 AUTH0_DOMAIN={Auth0 Tenant Domain}
-AUTH0_AUDIENCE={Auth0 Tenant Audience Identifier}
-AUTH0_ISSUER={Auth0 Tenant Issuer (same as Domain)}
-SENTRY_DSN={Sentry DSN}
+
+# Values will be used to hit the actual Auth0 Service in dev/prod
+AUTH0_AUDIENCE="auth0.capp.com"
+AUTH0_ISSUER="https://sf-capp-dev.us.auth0.com"
+
+AWS_SES_FROM_ADDRESS="tekalo@dev.apps.futurestech.cloud"
+AWS_ACCESS_KEY_ID={AWS Access Key}
+AWS_SECRET_ACCESS_KEY={AWS Secret Key}
+AWS_SESSION_TOKEN={AWS Session Token}
+
+# NOTE: Only set if you want to actually send events to Sentry
+SENTRY_DSN="https://c38ab9f98fd0404f9d2bfb95d015da8d@o4504962952724480.ingest.sentry.io/4504963428777984"
 ```
 
-The Auth0 values can be found [here](https://manage.auth0.com/dashboard/us/sf-capp-dev/applications/AzRVLnVmcru9u0hR5dl5VW84c21GLNEM/settings).
+The `AUTH0_` prefixed values can be found [here](https://manage.auth0.com/dashboard/us/sf-capp-dev/applications/AzRVLnVmcru9u0hR5dl5VW84c21GLNEM/settings).
+
+The `AWS_` prefixed values can be found when logging into the AWS Console under your specific user, under `Command line or programmatic access`
+
+Note: `AWS_SES_FROM_ADDRESS` is used for sending emails from AWS Simple Email Service. The default value for local development is our dev service account email. Emails in the dev environment will only send to recipients with [verified emails](https://docs.aws.amazon.com/ses/latest/dg/creating-identities.html)
 
 We use Docker for local development and testing. This ensures consistency in environments amongst all contributors. Our Docker environment consists of 2 containers: API and Postgres DB containers. The local dev dir is volume-mounted at `/api` into the container, so there is no need to rebuild the image for code or package changes.
 

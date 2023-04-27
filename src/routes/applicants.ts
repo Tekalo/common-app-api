@@ -18,11 +18,23 @@ import prisma from '@App/resources/client.js';
 import express, { NextFunction, Request, Response } from 'express';
 import Authenticator from '@App/middleware/authenticator.js';
 import { RequestWithJWT } from '@App/resources/types/auth0.js';
-import { BaseConfig } from '@App/services/configLoader.js';
+import EmailService from '@App/services/EmailService.js';
+import MonitoringService from '@App/services/MonitoringService.js';
+import { BaseConfig } from '@App/resources/types/shared.js';
 
-const applicantRoutes = (authService: AuthService, config: BaseConfig) => {
+const applicantRoutes = (
+  authService: AuthService,
+  emailService: EmailService,
+  monitoringService: MonitoringService,
+  config: BaseConfig,
+) => {
   const router = express.Router();
-  const applicantController = new ApplicantController(authService, prisma);
+  const applicantController = new ApplicantController(
+    authService,
+    prisma,
+    emailService,
+    monitoringService,
+  );
   const authenticator = new Authenticator(prisma, config.auth0.express);
 
   router.post('/', (req: Request, res: Response, next) => {

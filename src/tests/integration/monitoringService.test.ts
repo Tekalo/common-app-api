@@ -6,6 +6,8 @@ import { getRandomString } from '@App/tests/util/helpers.js';
 import configLoader from '@App/services/configLoader.js';
 import MonitoringService from '../../services/MonitoringService.js';
 import DummyAuthService from '../fixtures/DummyAuthService.js';
+import DummyEmailService from '../fixtures/DummyEmailService.js';
+import DummySESService from '../fixtures/DummySesService.js';
 
 const { testkit, sentryTransport } = sentryTestkit();
 
@@ -19,16 +21,28 @@ afterAll(async () => {
   await MonitoringService.exitHandler();
 });
 
+afterEach(() => testkit.reset());
+
 describe('Monitoring Service', () => {
+  const appConfig = configLoader.loadConfig();
+
   const dummyAuthService = new DummyAuthService();
+  const dummyEmailService = new DummyEmailService(
+    new DummySESService(),
+    appConfig,
+  );
 
   const monitoringService = new MonitoringService(
     sentryTransport as () => Transport,
   );
-  const appConfig = configLoader.loadConfig();
 
   it('should collect performance events', async () => {
-    const dummyAuthApp = getApp(dummyAuthService, monitoringService, appConfig);
+    const dummyAuthApp = getApp(
+      dummyAuthService,
+      monitoringService,
+      dummyEmailService,
+      appConfig,
+    );
 
     await request(dummyAuthApp)
       .post('/applicants')
@@ -52,14 +66,19 @@ describe('Monitoring Service', () => {
   });
 
   it('should collect error events for 500 error', async () => {
-    const dummyAuthApp = getApp(dummyAuthService, monitoringService, appConfig);
+    const dummyAuthApp = getApp(
+      dummyAuthService,
+      monitoringService,
+      dummyEmailService,
+      appConfig,
+    );
 
     await request(dummyAuthApp).post('/opportunities/batch').expect(400);
 
     await sleep(100);
 
-    expect(testkit.transactions()).toHaveLength(2);
-    const transaction = testkit.transactions()[1];
+    expect(testkit.transactions()).toHaveLength(1);
+    const transaction = testkit.transactions()[0];
     expect(transaction.name).toContain('opportunities');
     expect(testkit.reports()).toHaveLength(1);
     const report = testkit.reports()[0];
@@ -68,8 +87,9 @@ describe('Monitoring Service', () => {
 
   it('should not collect data for health check events', async () => {
     const dummyAuthApp = getApp(
-      new DummyAuthService(),
+      dummyAuthService,
       monitoringService,
+      dummyEmailService,
       appConfig,
     );
 
@@ -77,6 +97,6 @@ describe('Monitoring Service', () => {
 
     await sleep(100);
 
-    expect(testkit.transactions()).toHaveLength(2);
+    expect(testkit.transactions()).toHaveLength(0);
   });
 });

@@ -13,15 +13,28 @@ import {
 import AuthService from '@App/services/AuthService.js';
 import CAPPError from '@App/resources/shared/CAPPError.js';
 import { Problem } from '@App/resources/types/shared.js';
+import EmailService from '@App/services/EmailService.js';
+import MonitoringService from '@App/services/MonitoringService.js';
 
 class ApplicantController {
   private auth0Service: AuthService;
 
   private prisma: PrismaClient;
 
-  constructor(auth0Service: AuthService, prisma: PrismaClient) {
+  private emailService: EmailService;
+
+  private monitoringService: MonitoringService;
+
+  constructor(
+    auth0Service: AuthService,
+    prisma: PrismaClient,
+    emailService: EmailService,
+    monitoringService: MonitoringService,
+  ) {
     this.auth0Service = auth0Service;
     this.prisma = prisma;
+    this.emailService = emailService;
+    this.monitoringService = monitoringService;
   }
 
   async createApplicant(
@@ -49,6 +62,24 @@ class ApplicantController {
           auth0Id: auth0User.user_id,
         },
       });
+      try {
+        const { ticket } = await this.auth0Service.generatePasswordReset(
+          returnApplicant.auth0Id,
+        );
+        const welcomeEmail = this.emailService.generateWelcomeEmail(
+          returnApplicant.email,
+          ticket,
+        );
+        await this.emailService.sendEmail(welcomeEmail);
+      } catch (e) {
+        // TODO: Add alarm to sentry we need to alert on these but we still return 200
+        MonitoringService.logError(
+          new CAPPError(
+            { title: 'Failed to send post sign-up set password email' },
+            e instanceof Error ? { cause: e } : undefined,
+          ),
+        );
+      }
       return {
         id: returnApplicant.id,
         auth0Id: auth0User.user_id || null,

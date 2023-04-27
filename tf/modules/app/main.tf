@@ -112,7 +112,7 @@ resource "aws_ecs_service" "api" {
     ]
   }
 }
-output service_name {
+output "service_name" {
   description = "ECS service name"
   value       = aws_ecs_service.api.name
 }

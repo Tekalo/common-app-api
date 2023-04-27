@@ -1,7 +1,8 @@
 import * as jose from 'jose';
 import crypto from 'crypto';
-import configLoader, { BaseConfig } from '@App/services/configLoader.js';
+import configLoader from '@App/services/configLoader.js';
 import CAPPError from '@App/resources/shared/CAPPError.js';
+import { BaseConfig } from '@App/resources/types/shared.js';
 
 const getToken = async (userEmail?: string): Promise<string> => {
   const config: BaseConfig = configLoader.loadConfig();
