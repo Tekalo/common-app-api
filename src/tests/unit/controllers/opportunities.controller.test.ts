@@ -99,7 +99,7 @@ describe('Opportunity Controller', () => {
       submissions: [
         {
           fullyRemote: true,
-          roleType: 'A guy',
+          roleType: 'software engineer',
           positionTitle: 'That Dude',
           location: 'Burgerville',
           paid: true,
