@@ -50,3 +50,8 @@ output "sentry_dsn" {
   description = "DSN for Sentry, where we collect performance monitoring data"
   value       = module.app.sentry_dsn
 }
+
+variable "email_from_address" {
+  description = "Address to use in the From field of all emails sent by Tekalo"
+  type        = string
+}
