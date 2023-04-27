@@ -33,6 +33,9 @@ AWS_SES_FROM_ADDRESS="tekalo@dev.apps.futurestech.cloud"
 AWS_ACCESS_KEY_ID={AWS Access Key}
 AWS_SECRET_ACCESS_KEY={AWS Secret Key}
 AWS_SESSION_TOKEN={AWS Session Token}
+
+# NOTE: Only set if you want to actually send events to Sentry
+SENTRY_DSN="https://c38ab9f98fd0404f9d2bfb95d015da8d@o4504962952724480.ingest.sentry.io/4504963428777984"
 ```
 
 The `AUTH0_` prefixed values can be found [here](https://manage.auth0.com/dashboard/us/sf-capp-dev/applications/AzRVLnVmcru9u0hR5dl5VW84c21GLNEM/settings).

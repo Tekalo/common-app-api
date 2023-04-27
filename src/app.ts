@@ -49,7 +49,10 @@ const getApp = (
    */
   app.use(router);
 
-  app.use('/applicants', applicantRoutes(authService, emailService, config));
+  app.use(
+    '/applicants',
+    applicantRoutes(authService, emailService, monitoringService, config),
+  );
   app.use('/opportunities', opportunitiesRoutes());
   app.use('/health', healthRoutes());
 

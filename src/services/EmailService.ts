@@ -20,10 +20,13 @@ class EmailService {
       },
       Message: {
         Body: {
+          Text: {
+            Charset: 'UTF-8',
+            Data: 'TOOD: Style me!!!!',
+          },
           Html: {
             Charset: 'UTF-8',
-            Data: `TOOD: Style me!!!!<br>
-                Thanks for applying to Tekalo! Your assigned Tekalo Talent Connector will 
+            Data: `Thanks for applying to Tekalo! Your assigned Tekalo Talent Connector will 
                 review your application and contact you via your preferred contact method once matches are available.
                 In the meantime, you can sign in to your Tekalo account (<link to sign in page>) by using your Google 
                 or LinkedIn account associated with this email address, or by setting up a <a class="ulink" href="${changePassLink}" 

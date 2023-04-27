@@ -25,10 +25,10 @@ import { BaseConfig } from '@App/resources/types/shared.js';
 const applicantRoutes = (
   authService: AuthService,
   emailService: EmailService,
+  monitoringService: MonitoringService,
   config: BaseConfig,
 ) => {
   const router = express.Router();
-  const monitoringService = new MonitoringService();
   const applicantController = new ApplicantController(
     authService,
     prisma,
