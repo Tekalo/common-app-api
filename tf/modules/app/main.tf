@@ -127,7 +127,7 @@ resource "aws_ecs_task_definition" "api" {
   depends_on = [aws_iam_role_policy.execution_role, aws_iam_role_policy_attachment.default_execution_role]
 
   execution_role_arn = aws_iam_role.ecs_execution_role.arn
-  task_role_arn      = aws_iam_role.task_role.arn
+  task_role_arn      = aws_iam_role.ecs_task_role.arn
 
   container_definitions = jsonencode([
     {
@@ -183,7 +183,7 @@ resource "aws_ecs_task_definition" "api" {
         },
         {
           name  = "AWS_SES_FROM_ADDRESS"
-          value = vars.email_from_address
+          value = var.email_from_address
         }
       ]
     }
@@ -440,7 +440,7 @@ resource "aws_iam_role_policy" "ses_policy" {
   policy = data.aws_iam_policy_document.task_ses_policy.json
 }
 
-data "aws_iam_policy_document" "ses-policy" {
+data "aws_iam_policy_document" "task_ses_policy" {
   statement {
     actions   = ["ses:SendEmail", "ses:SendRawEmail"]
     resources = ["*"]
