@@ -15,8 +15,11 @@ function loadConfig(): BaseConfig {
         String(process.env.AUTH0_EXPRESS_CONFIG),
       ) as Auth0ExpressConfig,
     },
-    sesFromAddress:
-      process.env.AWS_SES_FROM_ADDRESS || 'xyz@dev.apps.futurestech.cloud',
+    aws: {
+      sesFromAddress:
+        process.env.AWS_SES_FROM_ADDRESS || 'tekalo@dev.apps.futurestech.cloud',
+      region: process.env.AWS_REGION || 'us-east-1',
+    },
     sentryDSN: process.env.SENTRY_DSN || '',
     isLoadTest: process.env.LOAD_TEST === 'true',
     webUrl: process.env.WEB_URL || '',

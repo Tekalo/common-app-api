@@ -1,20 +1,20 @@
 import { BaseConfig } from '@App/resources/types/shared.js';
-import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
+import { SendEmailCommandInput } from '@aws-sdk/client-ses';
+import SESService from './SESService.js';
 
 class EmailService {
+  private sesService: SESService;
+
   private config: BaseConfig;
 
-  constructor(config: BaseConfig) {
+  constructor(sesService: SESService, config: BaseConfig) {
+    this.sesService = sesService;
     this.config = config;
   }
 
-  async sendEmail(receipientEmail: string, ticket: string) {
-    const { sesFromAddress } = this.config;
-    const sesClient = new SESClient({
-      region: 'us-east-1',
-    });
-
-    const sendEmailCommand = new SendEmailCommand({
+  generateWelcomeEmail(receipientEmail: string, changePassLink: string) {
+    const { sesFromAddress } = this.config.aws;
+    return {
       Destination: {
         ToAddresses: [receipientEmail],
       },
@@ -23,10 +23,10 @@ class EmailService {
           Html: {
             Charset: 'UTF-8',
             Data: `TOOD: Style me!!!!<br>
-                Thanks for applying to Tekalo! Your assigned Tekalo recruiting liaison will 
+                Thanks for applying to Tekalo! Your assigned Tekalo Talent Connector will 
                 review your application and contact you via your preferred contact method once matches are available.
                 In the meantime, you can sign in to your Tekalo account (<link to sign in page>) by using your Google 
-                or LinkedIn account associated with this email address, or by setting up a <a class="ulink" href="${ticket}" 
+                or LinkedIn account associated with this email address, or by setting up a <a class="ulink" href="${changePassLink}" 
                 target="_blank">new password</a> for your account.
     
                 Thanks,
@@ -39,8 +39,11 @@ class EmailService {
         },
       },
       Source: sesFromAddress,
-    });
-    return sesClient.send(sendEmailCommand);
+    };
+  }
+
+  async sendEmail(emailToSend: SendEmailCommandInput) {
+    return this.sesService.sendEmail(emailToSend);
   }
 }
 

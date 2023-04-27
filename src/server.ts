@@ -3,6 +3,7 @@ import AuthService from './services/AuthService.js';
 import configLoader from './services/configLoader.js';
 import EmailService from './services/EmailService.js';
 import MonitoringService from './services/MonitoringService.js';
+import SESService from './services/SESService.js';
 import DummyAuthService from './tests/fixtures/DummyAuthService.js';
 
 const config = configLoader.loadConfig();
@@ -13,7 +14,7 @@ const authService = config.isLoadTest
 const app = getApp(
   authService,
   new MonitoringService(),
-  new EmailService(config),
+  new EmailService(new SESService(config), config),
   config,
 );
 

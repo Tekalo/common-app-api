@@ -66,7 +66,11 @@ class ApplicantController {
         const { ticket } = await this.auth0Service.generatePasswordReset(
           returnApplicant.auth0Id,
         );
-        await this.emailService.sendEmail(returnApplicant.email, ticket);
+        const welcomeEmail = this.emailService.generateWelcomeEmail(
+          returnApplicant.email,
+          ticket,
+        );
+        await this.emailService.sendEmail(welcomeEmail);
       } catch (e) {
         // TODO: Add alarm to sentry we need to alert on these but we still return 200
         MonitoringService.logError(

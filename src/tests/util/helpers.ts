@@ -8,7 +8,7 @@ const itif = (condition: boolean) => (condition ? it : it.skip);
 
 const getRandomString = () => Math.random().toString(36).slice(2);
 
-const getMockConfig = (): BaseConfig => ({
+const getMockConfig = (overrides: Partial<BaseConfig> = {}): BaseConfig => ({
   env: '',
   port: 1,
   auth0: {
@@ -25,10 +25,14 @@ const getMockConfig = (): BaseConfig => ({
       secret: '',
     },
   },
-  sesFromAddress: '',
+  aws: {
+    sesFromAddress: '',
+    region: '',
+  },
   sentryDSN: '',
   isLoadTest: false,
   webUrl: '',
+  ...overrides,
 });
 
 export { itif, getRandomString, getMockConfig };

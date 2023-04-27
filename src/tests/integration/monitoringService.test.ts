@@ -7,6 +7,7 @@ import configLoader from '@App/services/configLoader.js';
 import MonitoringService from '../../services/MonitoringService.js';
 import DummyAuthService from '../fixtures/DummyAuthService.js';
 import DummyEmailService from '../fixtures/DummyEmailService.js';
+import DummySESService from '../fixtures/DummySesService.js';
 
 const { testkit, sentryTransport } = sentryTestkit();
 
@@ -26,7 +27,10 @@ describe('Monitoring Service', () => {
   const appConfig = configLoader.loadConfig();
 
   const dummyAuthService = new DummyAuthService();
-  const dummyEmailService = new DummyEmailService(appConfig);
+  const dummyEmailService = new DummyEmailService(
+    new DummySESService(appConfig),
+    appConfig,
+  );
 
   const monitoringService = new MonitoringService(
     sentryTransport as () => Transport,

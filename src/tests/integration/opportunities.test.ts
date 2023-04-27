@@ -5,12 +5,13 @@ import configLoader from '@App/services/configLoader.js';
 import DummyAuthService from '../fixtures/DummyAuthService.js';
 import DummyMonitoringService from '../fixtures/DummyMonitoringService.js';
 import DummyEmailService from '../fixtures/DummyEmailService.js';
+import DummySESService from '../fixtures/DummySesService.js';
 
 const appConfig = configLoader.loadConfig();
 const app = getApp(
   new DummyAuthService(),
   new DummyMonitoringService(),
-  new DummyEmailService(appConfig),
+  new DummyEmailService(new DummySESService(appConfig), appConfig),
   appConfig,
 );
 

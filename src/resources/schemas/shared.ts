@@ -8,7 +8,10 @@ const BaseConfigSchema = z.object({
     api: Auth0ApiConfigSchema,
     express: Auth0ExpressConfigSchema,
   }),
-  sesFromAddress: z.string(),
+  aws: z.object({
+    sesFromAddress: z.string(),
+    region: z.string(),
+  }),
   sentryDSN: z.string(),
   isLoadTest: z.boolean(),
   webUrl: z.string(),

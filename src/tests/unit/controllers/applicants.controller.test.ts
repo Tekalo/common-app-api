@@ -12,6 +12,8 @@ import {
 import { getMockConfig } from '@App/tests/util/helpers.js';
 import { Prisma } from '@prisma/client';
 import DummyMonitoringService from '@App/tests/fixtures/DummyMonitoringService.js';
+import SESService from '@App/services/SESService.js';
+import DummySESService from '@App/tests/fixtures/DummySesService.js';
 
 let mockCtx: MockContext;
 let ctx: Context;
@@ -33,7 +35,10 @@ describe('Applicant Controller', () => {
       const applicantController = new ApplicantController(
         new DummyAuthService(),
         ctx.prisma,
-        new DummyEmailService(getMockConfig()),
+        new DummyEmailService(
+          new DummySESService(getMockConfig()),
+          getMockConfig(),
+        ),
         new DummyMonitoringService(),
       );
       await expect(
@@ -60,7 +65,10 @@ describe('Applicant Controller', () => {
       const applicantController = new ApplicantController(
         new DummyAuthService(),
         ctx.prisma,
-        new DummyEmailService(getMockConfig()),
+        new DummyEmailService(
+          new DummySESService(getMockConfig()),
+          getMockConfig(),
+        ),
         new DummyMonitoringService(),
       );
       await expect(
@@ -93,7 +101,10 @@ describe('Applicant Controller', () => {
         isPaused: false,
       });
 
-      const mockEmailService = new EmailService(getMockConfig());
+      const mockEmailService = new EmailService(
+        new SESService(getMockConfig()),
+        getMockConfig(),
+      );
       const mockEmailSpy = jest
         .spyOn(mockEmailService, 'sendEmail')
         .mockImplementation(() => {
@@ -123,6 +134,58 @@ describe('Applicant Controller', () => {
       });
       mockEmailSpy.mockRestore();
     });
+    test('Should send welcome email after applicant registration', async () => {
+      mockCtx.prisma.applicant.create.mockResolvedValue({
+        id: 1,
+        phone: '777-777-7777',
+        name: 'Bob Boberson',
+        email: 'bboberson@schmidtfutures.com',
+        pronoun: 'she/hers',
+        preferredContact: 'email',
+        searchStatus: 'active',
+        acceptedTerms: new Date('2023-02-01'),
+        acceptedPrivacy: new Date('2023-02-01'),
+        auth0Id: 'auth0|1234',
+        isPaused: false,
+      });
+
+      const mockEmailService = new EmailService(
+        new SESService(
+          getMockConfig({
+            aws: {
+              region: 'us-east-1',
+              sesFromAddress: 'admin@futurestech.com',
+            },
+          }),
+        ),
+        getMockConfig(),
+      );
+
+      const mockEmailSpy = jest.spyOn(mockEmailService, 'sendEmail');
+
+      const applicantController = new ApplicantController(
+        new DummyAuthService(),
+        ctx.prisma,
+        mockEmailService,
+        new DummyMonitoringService(),
+      );
+
+      await applicantController.createApplicant({
+        name: 'Bob Boberson',
+        email: 'bboberson@schmidtfutures.com',
+        pronoun: 'he/his',
+        preferredContact: 'email',
+        searchStatus: 'active',
+        acceptedTerms: true,
+        acceptedPrivacy: true,
+      });
+      const expectedEmail = mockEmailService.generateWelcomeEmail(
+        'bboberson@schmidtfutures.com',
+        'fake-ticket',
+      );
+      expect(mockEmailSpy).toHaveBeenCalledWith(expectedEmail);
+      mockEmailSpy.mockRestore();
+    });
   });
 
   describe('Delete Applicant', () => {
@@ -149,7 +212,10 @@ describe('Applicant Controller', () => {
       const applicantController = new ApplicantController(
         new DummyAuthService(),
         ctx.prisma,
-        new DummyEmailService(getMockConfig()),
+        new DummyEmailService(
+          new DummySESService(getMockConfig()),
+          getMockConfig(),
+        ),
         new DummyMonitoringService(),
       );
       await expect(
@@ -184,7 +250,10 @@ describe('Applicant Controller', () => {
       const applicantController = new ApplicantController(
         dummyAuthService,
         ctx.prisma,
-        new DummyEmailService(getMockConfig()),
+        new DummyEmailService(
+          new DummySESService(getMockConfig()),
+          getMockConfig(),
+        ),
         new DummyMonitoringService(),
       );
       await expect(

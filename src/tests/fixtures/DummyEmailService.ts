@@ -1,12 +1,9 @@
+/* eslint-disable class-methods-use-this */
 import EmailService from '@App/services/EmailService.js';
 
 class DummyEmailService extends EmailService {
-  // eslint-disable-next-line
-  async sendEmail(email: string, ticket: string) {
-    return {
-      MessageId: 'abc-123',
-      $metadata: {},
-    };
+  async sendWelcomeEmail() {
+    // noop
   }
 }
 
