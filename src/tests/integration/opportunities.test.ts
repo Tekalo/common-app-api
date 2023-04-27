@@ -37,7 +37,7 @@ describe('POST /opportunities', () => {
     submissions: [
       {
         fullyRemote: false,
-        roleType: 'Flipper',
+        roleType: 'software engineer - backend',
         positionTitle: 'Flipper 1',
         location: 'Burgerville',
         paid: true,
@@ -68,13 +68,13 @@ describe('POST /opportunities', () => {
     const secondOppSubmissionPayload = { ...oppBatchPayload };
     secondOppSubmissionPayload.submissions.push({
       fullyRemote: false,
-      roleType: 'Frencher',
+      roleType: 'ux researcher',
       positionTitle: 'French Guy',
       location: 'Fryville',
       paid: true,
       pitchEssay: 'Come make french fries for Bob',
       source: 'Advertisement',
-      employmentType: 'full-time employee',
+      employmentType: 'a gig to get you through grad school',
       salaryRange: '20-30$/hr',
       desiredHoursPerWeek: '30',
       desiredStartDate: '2023-12-01',

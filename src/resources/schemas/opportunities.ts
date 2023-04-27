@@ -27,15 +27,17 @@ const Skills = z.enum([
   'project management',
 ]);
 
-const EmploymentType = z.enum([
-  'full-time employee',
-  'volunteer',
-  'contractor',
-  'consultant',
-  'advisor',
-  'internship',
+const RoleType = z.enum([
+  'software engineer',
+  'software engineer - backend',
+  'software engineer - frontend',
+  'product manager',
+  'product designer',
+  'ux/ui designer',
+  'ux researcher',
   'other',
 ]);
+
 const YOE = z.enum(['0-2', '2-4', '4-8', '8-12', '12-15', '15+']);
 
 const OpportunityBatchRequestBodySchema = z.object({
@@ -53,14 +55,14 @@ const OpportunityBatchRequestBodySchema = z.object({
   }),
   submissions: z.array(
     z.object({
-      roleType: z.string().max(255),
+      roleType: RoleType,
       positionTitle: z.string().max(255),
       fullyRemote: z.boolean(),
       location: z.string(),
       paid: z.boolean(),
       pitchEssay: z.string().max(5000),
       source: z.string(),
-      employmentType: EmploymentType,
+      employmentType: z.string().max(255), // UI has dropdown, but they have input box for an "other" option
       salaryRange: z.string().max(255),
       desiredHoursPerWeek: z.string().max(255).nullable().optional(),
       desiredStartDate: z.coerce.date().optional(),
