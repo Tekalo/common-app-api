@@ -35,10 +35,7 @@ describe('Applicant Controller', () => {
       const applicantController = new ApplicantController(
         new DummyAuthService(),
         ctx.prisma,
-        new DummyEmailService(
-          new DummySESService(getMockConfig()),
-          getMockConfig(),
-        ),
+        new DummyEmailService(new DummySESService(), getMockConfig()),
         new DummyMonitoringService(),
       );
       await expect(
@@ -65,10 +62,7 @@ describe('Applicant Controller', () => {
       const applicantController = new ApplicantController(
         new DummyAuthService(),
         ctx.prisma,
-        new DummyEmailService(
-          new DummySESService(getMockConfig()),
-          getMockConfig(),
-        ),
+        new DummyEmailService(new DummySESService(), getMockConfig()),
         new DummyMonitoringService(),
       );
       await expect(
@@ -102,7 +96,7 @@ describe('Applicant Controller', () => {
       });
 
       const mockEmailService = new EmailService(
-        new SESService(getMockConfig()),
+        new SESService(),
         getMockConfig(),
       );
       const mockEmailSpy = jest
@@ -150,14 +144,7 @@ describe('Applicant Controller', () => {
       });
 
       const mockEmailService = new EmailService(
-        new SESService(
-          getMockConfig({
-            aws: {
-              region: 'us-east-1',
-              sesFromAddress: 'admin@futurestech.com',
-            },
-          }),
-        ),
+        new SESService(),
         getMockConfig(),
       );
 
@@ -212,10 +199,7 @@ describe('Applicant Controller', () => {
       const applicantController = new ApplicantController(
         new DummyAuthService(),
         ctx.prisma,
-        new DummyEmailService(
-          new DummySESService(getMockConfig()),
-          getMockConfig(),
-        ),
+        new DummyEmailService(new DummySESService(), getMockConfig()),
         new DummyMonitoringService(),
       );
       await expect(
@@ -250,10 +234,7 @@ describe('Applicant Controller', () => {
       const applicantController = new ApplicantController(
         dummyAuthService,
         ctx.prisma,
-        new DummyEmailService(
-          new DummySESService(getMockConfig()),
-          getMockConfig(),
-        ),
+        new DummyEmailService(new DummySESService(), getMockConfig()),
         new DummyMonitoringService(),
       );
       await expect(

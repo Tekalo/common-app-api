@@ -5,7 +5,7 @@ import { getMockConfig } from '../util/helpers.js';
 
 describe('Email Service', () => {
   test('should successfully generate welcome email', () => {
-    const dummySesService = new DummySESService(getMockConfig());
+    const dummySesService = new DummySESService();
     const emailService = new EmailService(
       dummySesService,
       getMockConfig({
@@ -48,7 +48,7 @@ describe('Email Service', () => {
   });
 
   test('should successfully send welcome email', async () => {
-    const dummySesService = new DummySESService(getMockConfig());
+    const dummySesService = new DummySESService();
     const mockSesSendEmailFunc = jest.spyOn(dummySesService, 'sendEmail');
     const emailService = new EmailService(
       dummySesService,

@@ -11,7 +11,7 @@ const appConfig = configLoader.loadConfig();
 const app = getApp(
   new DummyAuthService(),
   new DummyMonitoringService(),
-  new DummyEmailService(new DummySESService(appConfig), appConfig),
+  new DummyEmailService(new DummySESService(), appConfig),
   appConfig,
 );
 

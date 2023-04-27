@@ -35,7 +35,7 @@ describe('POST /applicants', () => {
     const dummyAuthApp = getApp(
       new DummyAuthService(),
       new DummyMonitoringService(),
-      new DummyEmailService(new DummySESService(appConfig), appConfig),
+      new DummyEmailService(new DummySESService(), appConfig),
       appConfig,
     );
     it('should create a new applicant only in database', async () => {
@@ -116,7 +116,7 @@ describe('POST /applicants', () => {
     const app = getApp(
       authService,
       new DummyMonitoringService(),
-      new DummyEmailService(new DummySESService(appConfig), appConfig),
+      new DummyEmailService(new DummySESService(), appConfig),
       appConfig,
     );
     afterEach(async () => {
@@ -185,7 +185,7 @@ describe('POST /applicants/me/submissions', () => {
   const dummyAuthApp = getApp(
     new DummyAuthService(),
     new DummyMonitoringService(),
-    new DummyEmailService(new DummySESService(appConfig), appConfig),
+    new DummyEmailService(new DummySESService(), appConfig),
     appConfig,
   );
 
@@ -304,7 +304,7 @@ describe('DELETE /applicants/:id', () => {
     const app = getApp(
       authService,
       new DummyMonitoringService(),
-      new DummyEmailService(new DummySESService(appConfig), appConfig),
+      new DummyEmailService(new DummySESService(), appConfig),
       appConfig,
     );
     itif('CI' in process.env)(
@@ -338,7 +338,7 @@ describe('DELETE /applicants/:id', () => {
     const appNoAuth = getApp(
       new DummyAuthService(),
       new DummyMonitoringService(),
-      new DummyEmailService(new DummySESService(appConfig), appConfig),
+      new DummyEmailService(new DummySESService(), appConfig),
       appConfig,
     );
 
@@ -394,7 +394,7 @@ describe('POST /applicants/me/submissions/draft', () => {
   const dummyAuthApp = getApp(
     new DummyAuthService(),
     new DummyMonitoringService(),
-    new DummyEmailService(new DummySESService(appConfig), appConfig),
+    new DummyEmailService(new DummySESService(), appConfig),
     appConfig,
   );
   it('should not allow applicant to save draft submission without a valid cookie or JWT supplied', async () => {
@@ -522,7 +522,7 @@ describe('GET /applicants/me/submissions', () => {
   const dummyAuthApp = getApp(
     new DummyAuthService(),
     new DummyMonitoringService(),
-    new DummyEmailService(new DummySESService(appConfig), appConfig),
+    new DummyEmailService(new DummySESService(), appConfig),
     appConfig,
   );
 
@@ -618,7 +618,7 @@ describe('PUT /applicants/me/state', () => {
   const dummyAuthApp = getApp(
     new DummyAuthService(),
     new DummyMonitoringService(),
-    new DummyEmailService(new DummySESService(appConfig), appConfig),
+    new DummyEmailService(new DummySESService(), appConfig),
     appConfig,
   );
 

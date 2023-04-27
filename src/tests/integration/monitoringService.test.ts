@@ -28,7 +28,7 @@ describe('Monitoring Service', () => {
 
   const dummyAuthService = new DummyAuthService();
   const dummyEmailService = new DummyEmailService(
-    new DummySESService(appConfig),
+    new DummySESService(),
     appConfig,
   );
 

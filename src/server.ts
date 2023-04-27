@@ -14,7 +14,7 @@ const authService = config.isLoadTest
 const app = getApp(
   authService,
   new MonitoringService(),
-  new EmailService(new SESService(config), config),
+  new EmailService(new SESService(), config),
   config,
 );
 

@@ -1,4 +1,3 @@
-import { BaseConfig } from '@App/resources/types/shared.js';
 import {
   SendEmailCommand,
   SendEmailCommandInput,
@@ -7,23 +6,15 @@ import {
 } from '@aws-sdk/client-ses';
 
 class SESService {
-  private config: BaseConfig;
-
-  constructor(config: BaseConfig) {
-    this.config = config;
+  static getSESClient() {
+    return new SESClient({});
   }
 
-  getSESClient(): SESClient {
-    const { region } = this.config.aws;
-    return new SESClient({
-      region,
-    });
-  }
-
+  /* eslint-disable class-methods-use-this */
   async sendEmail(
     emailBody: SendEmailCommandInput,
   ): Promise<SendEmailCommandOutput> {
-    const sesClient = this.getSESClient();
+    const sesClient = SESService.getSESClient();
     const sendEmailCommand = new SendEmailCommand(emailBody);
     return sesClient.send(sendEmailCommand);
   }
