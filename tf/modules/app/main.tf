@@ -6,6 +6,8 @@ data "aws_db_subnet_group" "main_subnet_group" {
   name = var.db_subnet_name
 }
 
+data "aws_caller_identity" "current" {}
+
 resource "aws_kms_key" "main" {
   description         = "Key for all CAPP ${var.env} data"
   enable_key_rotation = var.env == "prod"
@@ -125,6 +127,7 @@ resource "aws_ecs_task_definition" "api" {
   depends_on = [aws_iam_role_policy.execution_role, aws_iam_role_policy_attachment.default_execution_role]
 
   execution_role_arn = aws_iam_role.ecs_execution_role.arn
+  task_role_arn      = aws_iam_role.ecs_task_role.arn
 
   container_definitions = jsonencode([
     {
@@ -145,9 +148,10 @@ resource "aws_ecs_task_definition" "api" {
           "awslogs-stream-prefix" = "api"
         }
       }
-      secrets = [{
-        name      = "DATABASE_SECRET"
-        valueFrom = module.rds-secret.secret_arn
+      secrets = [
+        {
+          name      = "DATABASE_SECRET"
+          valueFrom = module.rds-secret.secret_arn
         },
         {
           name      = "AUTH0_EXPRESS_CONFIG"
@@ -156,21 +160,32 @@ resource "aws_ecs_task_definition" "api" {
         {
           name      = "AUTH0_API_CONFIG"
           valueFrom = aws_secretsmanager_secret.auth0_api_config.arn
-      }]
+        },
 
-      environment = [{
-        name  = "APP_ENV"
-        value = "${var.env}"
-        }, {
-        name  = "PORT"
-        value = tostring(var.api_port)
-        }, {
-        name  = "SENTRY_DSN"
-        value = "${var.sentry_dsn}"
-        }, {
-        name  = "LOAD_TEST"
-        value = var.load_test != null ? var.load_test : "false"
-      }]
+      ]
+
+      environment = [
+        {
+          name  = "APP_ENV"
+          value = "${var.env}"
+        },
+        {
+          name  = "PORT"
+          value = tostring(var.api_port)
+        },
+        {
+          name  = "SENTRY_DSN"
+          value = "${var.sentry_dsn}"
+        },
+        {
+          name  = "LOAD_TEST"
+          value = var.load_test != null ? var.load_test : "false"
+        },
+        {
+          name  = "AWS_SES_FROM_ADDRESS"
+          value = var.email_from_address
+        }
+      ]
     }
   ])
 
@@ -392,4 +407,47 @@ data "aws_iam_policy_document" "execution_role" {
 resource "aws_iam_role_policy_attachment" "default_execution_role" {
   role       = aws_iam_role.ecs_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+}
+
+
+resource "aws_iam_role" "ecs_task_role" {
+  name = "capp-${var.env}-api-task-role"
+  path = "/projects/capp/${var.env}/"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Sid    = ""
+        Principal = {
+          Service = "ecs-tasks.amazonaws.com"
+        }
+        Condition = {
+          ArnLike = {
+            "aws:SourceArn" = "arn:aws:ecs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:*"
+          }
+        }
+      },
+    ]
+  })
+}
+
+resource "aws_iam_role_policy" "ses_policy" {
+  name   = "ses-policy"
+  role   = aws_iam_role.ecs_task_role.id
+  policy = data.aws_iam_policy_document.task_ses_policy.json
+}
+
+data "aws_iam_policy_document" "task_ses_policy" {
+  statement {
+    actions   = ["ses:SendEmail", "ses:SendRawEmail"]
+    resources = ["*"]
+    condition {
+      test     = "StringEquals"
+      variable = "ses:FromAddress"
+      values   = [var.email_from_address]
+    }
+  }
 }

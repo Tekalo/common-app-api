@@ -61,3 +61,8 @@ output "load_test" {
   description = "When true, indicates that we are running a load test against the env"
   value       = var.load_test
 }
+
+variable "email_from_address" {
+  description = "Address to use in the From field of all emails sent by Tekalo"
+  type        = string
+}

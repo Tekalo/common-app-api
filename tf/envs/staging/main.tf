@@ -51,6 +51,7 @@ module "app" {
   auth0_domain         = var.auth0_domain
   sentry_dsn           = var.sentry_dsn
   load_test            = var.load_test
+  email_from_address   = var.email_from_address
 
   rotation_vpc_security_group_id = module.envconfig.database_ingress_security_group_id
   rotation_vpc_subnet_ids        = module.envconfig.private_subnet_ids
@@ -63,34 +64,34 @@ module "env_defns" {
 module "autoscaling" {
   source = "../../modules/autoscale"
 
-  env                 = module.envconfig.env
-  ecs_cluster         = module.envconfig.ecs_cluster
-  service_name        = module.app.service_name
+  env          = module.envconfig.env
+  ecs_cluster  = module.envconfig.ecs_cluster
+  service_name = module.app.service_name
 
-  min_capacity        = 2
-  max_capacity        = 10
+  min_capacity = 2
+  max_capacity = 10
 
   metrics = {
     CPUAverage = {
-      target            = 60
+      target = 60
       predefined_metric = [{
         type = "ECSServiceAverageCPUUtilization"
       }]
     }
     MemoryAverage = {
-      target            = 60
+      target = 60
       predefined_metric = [{
         type = "ECSServiceAverageMemoryUtilization"
       }]
     }
     CPUSpike = {
-      target            = 85
+      target = 85
       customized_metric = [{
-        metric_name     = "CPUUtilization"
-        namespace       = "AWS/ECS"
-        statistic       = "Maximum"
-        unit            = "Percent"
-        dimensions   = {
+        metric_name = "CPUUtilization"
+        namespace   = "AWS/ECS"
+        statistic   = "Maximum"
+        unit        = "Percent"
+        dimensions = {
           "ClusterName" = module.envconfig.ecs_cluster
           "ServiceName" = module.app.service_name
         }
