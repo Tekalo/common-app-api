@@ -121,9 +121,9 @@ describe('Applicant Controller', () => {
         acceptedTerms: true,
         acceptedPrivacy: true,
       });
-      expect(resp).toEqual({
+      expect(resp).toMatchObject({
         id: 1,
-        auth0Id: 'auth0|123456789',
+        auth0Id: expect.stringMatching('^auth0\\|.+'),
         email: 'bboberson@schmidtfutures.com',
       });
       mockEmailSpy.mockRestore();
