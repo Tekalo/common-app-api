@@ -114,10 +114,16 @@ describe('POST /applicants', () => {
       expect(body).toHaveProperty('title', 'Validation Error');
     });
     test('Should update applicantID in cookie with 2 subsequent requests for 2 different users', async () => {
+      type RespHeaders = {
+        'set-cookie': string;
+      };
       const { clientSecret } = configLoader.loadConfig().auth0.api;
       const agent = request.agent(dummyAuthApp);
 
-      const { body: bobBody } = await agent
+      const {
+        headers: bobHeaders,
+        body: bobBody,
+      }: { headers: RespHeaders; body: ApplicantResponseBody } = await agent
         .post('/applicants')
         .send({
           name: 'Bob Boberson',
@@ -129,9 +135,9 @@ describe('POST /applicants', () => {
         })
         .expect(200);
 
-      const bobCookies = agent.get('set-cookie').cookies;
+      const bobCookies = bobHeaders['set-cookie'];
       expect(bobCookies).toBeTruthy();
-      const bobParsedCookie = cookie.parse(bobCookies);
+      const bobParsedCookie = cookie.parse(bobCookies[0]);
       const bobSessionId = cookieParser.signedCookie(
         bobParsedCookie['connect.sid'],
         clientSecret,
@@ -147,17 +153,24 @@ describe('POST /applicants', () => {
         { id: bobBody.id },
       );
 
-      const { body: timBody } = await agent.post('/applicants').send({
-        name: 'Tim Timerson',
-        email: `ttimerson${getRandomString()}@gmail.com`,
-        preferredContact: 'whatsapp',
-        searchStatus: 'active',
-        acceptedTerms: true,
-        acceptedPrivacy: true,
-      });
-      const timCookies = agent.get('set-cookie').cookies;
-      expect(bobCookies).toBeTruthy();
-      const timParsedCookie = cookie.parse(timCookies);
+      const {
+        headers: timHeaders,
+        body: timBody,
+      }: { headers: RespHeaders; body: ApplicantResponseBody } = await agent
+        .post('/applicants')
+        .send({
+          name: 'Tim Timerson',
+          email: `ttimerson${getRandomString()}@gmail.com`,
+          preferredContact: 'sms',
+          searchStatus: 'active',
+          acceptedTerms: true,
+          acceptedPrivacy: true,
+        })
+        .expect(200);
+
+      const timCookies = timHeaders['set-cookie'];
+      expect(timCookies).toBeTruthy();
+      const timParsedCookie = cookie.parse(timCookies[0]);
       const timSessionId = cookieParser.signedCookie(
         timParsedCookie['connect.sid'],
         clientSecret,
@@ -166,11 +179,38 @@ describe('POST /applicants', () => {
         await prisma.applicantSession.findFirstOrThrow({
           where: { sid: timSessionId as string },
         });
+
       expect(timSavedSession.sess as Prisma.JsonObject).toHaveProperty(
         'applicant',
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         { id: timBody.id },
       );
+
+      // const { headers: timHeaders, body: timBody }: { headers: RespHeaders, body: ApplicantResponseBody } = await agent.
+      // .post('/applicants')
+      //   name: 'Tim Timerson',
+      //   email: `ttimerson${getRandomString()}@gmail.com`,
+      //   preferredContact: 'whatsapp',
+      //   searchStatus: 'active',
+      //   acceptedTerms: true,
+      //   acceptedPrivacy: true,
+      // });
+      // const timCookies = agent.get('set-cookie').cookies;
+      // expect(bobCookies).toBeTruthy();
+      // const timParsedCookie = cookie.parse(timCookies);
+      // const timSessionId = cookieParser.signedCookie(
+      //   timParsedCookie['connect.sid'],
+      //   clientSecret,
+      // );
+      // const timSavedSession: ApplicantSession =
+      //   await prisma.applicantSession.findFirstOrThrow({
+      //     where: { sid: timSessionId as string },
+      //   });
+      // expect(timSavedSession.sess as Prisma.JsonObject).toHaveProperty(
+      //   'applicant',
+      //   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      //   { id: timBody.id },
+      // );
     });
   });
 
