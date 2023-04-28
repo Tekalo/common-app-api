@@ -11,6 +11,9 @@ import prisma from '@App/resources/client.js';
 import AuthService from '@App/services/AuthService.js';
 import configLoader from '@App/services/configLoader.js';
 
+import cookie from 'cookie';
+import cookieParser from 'cookie-parser';
+import { ApplicantSession, Prisma } from '@prisma/client';
 import applicantSubmissionGenerator from '../fixtures/applicantSubmissionGenerator.js';
 import DummyAuthService from '../fixtures/DummyAuthService.js';
 import DummyMonitoringService from '../fixtures/DummyMonitoringService.js';
@@ -109,6 +112,65 @@ describe('POST /applicants', () => {
         })
         .expect(400);
       expect(body).toHaveProperty('title', 'Validation Error');
+    });
+    test('Should update applicantID in cookie with 2 subsequent requests for 2 different users', async () => {
+      const { clientSecret } = configLoader.loadConfig().auth0.api;
+      const agent = request.agent(dummyAuthApp);
+
+      const { body: bobBody } = await agent
+        .post('/applicants')
+        .send({
+          name: 'Bob Boberson',
+          email: `bboberson${getRandomString()}@gmail.com`,
+          preferredContact: 'sms',
+          searchStatus: 'active',
+          acceptedTerms: true,
+          acceptedPrivacy: true,
+        })
+        .expect(200);
+
+      const bobCookies = agent.get('set-cookie').cookies;
+      expect(bobCookies).toBeTruthy();
+      const bobParsedCookie = cookie.parse(bobCookies);
+      const bobSessionId = cookieParser.signedCookie(
+        bobParsedCookie['connect.sid'],
+        clientSecret,
+      );
+      const bobSavedSession: ApplicantSession =
+        await prisma.applicantSession.findFirstOrThrow({
+          where: { sid: bobSessionId as string },
+        });
+
+      expect(bobSavedSession.sess as Prisma.JsonObject).toHaveProperty(
+        'applicant',
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        { id: bobBody.id },
+      );
+
+      const { body: timBody } = await agent.post('/applicants').send({
+        name: 'Tim Timerson',
+        email: `ttimerson${getRandomString()}@gmail.com`,
+        preferredContact: 'whatsapp',
+        searchStatus: 'active',
+        acceptedTerms: true,
+        acceptedPrivacy: true,
+      });
+      const timCookies = agent.get('set-cookie').cookies;
+      expect(bobCookies).toBeTruthy();
+      const timParsedCookie = cookie.parse(timCookies);
+      const timSessionId = cookieParser.signedCookie(
+        timParsedCookie['connect.sid'],
+        clientSecret,
+      );
+      const timSavedSession: ApplicantSession =
+        await prisma.applicantSession.findFirstOrThrow({
+          where: { sid: timSessionId as string },
+        });
+      expect(timSavedSession.sess as Prisma.JsonObject).toHaveProperty(
+        'applicant',
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        { id: timBody.id },
+      );
     });
   });
 
