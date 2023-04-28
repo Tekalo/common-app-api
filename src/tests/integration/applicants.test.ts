@@ -185,32 +185,6 @@ describe('POST /applicants', () => {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         { id: timBody.id },
       );
-
-      // const { headers: timHeaders, body: timBody }: { headers: RespHeaders, body: ApplicantResponseBody } = await agent.
-      // .post('/applicants')
-      //   name: 'Tim Timerson',
-      //   email: `ttimerson${getRandomString()}@gmail.com`,
-      //   preferredContact: 'whatsapp',
-      //   searchStatus: 'active',
-      //   acceptedTerms: true,
-      //   acceptedPrivacy: true,
-      // });
-      // const timCookies = agent.get('set-cookie').cookies;
-      // expect(bobCookies).toBeTruthy();
-      // const timParsedCookie = cookie.parse(timCookies);
-      // const timSessionId = cookieParser.signedCookie(
-      //   timParsedCookie['connect.sid'],
-      //   clientSecret,
-      // );
-      // const timSavedSession: ApplicantSession =
-      //   await prisma.applicantSession.findFirstOrThrow({
-      //     where: { sid: timSessionId as string },
-      //   });
-      // expect(timSavedSession.sess as Prisma.JsonObject).toHaveProperty(
-      //   'applicant',
-      //   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      //   { id: timBody.id },
-      // );
     });
   });
 
