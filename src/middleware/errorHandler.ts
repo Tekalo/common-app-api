@@ -18,7 +18,7 @@ const errorHandler = (
     const { issues } = err;
     problem.title = 'Validation Error';
     problem.status = 400;
-    problem.detail = issues[0].code;
+    problem.detail = `${issues[0].code} ~ ${issues[0].path[0]} ~ ${issues[0].message}`;
   }
   res
     .status(problem.status || 500)
