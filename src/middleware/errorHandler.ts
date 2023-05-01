@@ -16,9 +16,10 @@ const errorHandler = (
   }
   if (err instanceof ZodError) {
     const { issues } = err;
+    const [detail] = issues;
     problem.title = 'Validation Error';
     problem.status = 400;
-    problem.detail = issues[0].code;
+    problem.detail = detail;
   }
   res
     .status(problem.status || 500)
