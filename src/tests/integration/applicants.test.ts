@@ -763,3 +763,49 @@ describe('PUT /applicants/me/state', () => {
       .expect(404);
   });
 });
+
+describe('GET /applicants/me', () => {
+  const dummyAuthApp = getApp(
+    new DummyAuthService(),
+    new DummyMonitoringService(),
+    new DummyEmailService(new DummySESService(), appConfig),
+    appConfig,
+  );
+
+  it('should return applicant-level information with a JWT', async () => {
+    const randomString = getRandomString();
+    const token = await authHelper.getToken(
+      `bboberson${randomString}@gmail.com`,
+    );
+    await request(dummyAuthApp)
+      .post('/applicants')
+      .send({
+        name: 'Bob Boberson',
+        email: `bboberson${randomString}@gmail.com`,
+        preferredContact: 'sms',
+        searchStatus: 'active',
+        acceptedTerms: true,
+        acceptedPrivacy: true,
+      });
+    const { body } = await request(dummyAuthApp)
+      .get('/applicants/me')
+      .set('Authorization', `Bearer ${token}`);
+    expect(body).toHaveProperty('id');
+    expect(body).toHaveProperty('name');
+    expect(body).toHaveProperty('isPaused');
+  });
+
+  it('should return 401 with a cookie but without a JWT', async () => {
+    const agent = request.agent(dummyAuthApp);
+    await agent.post('/applicants').send({
+      name: 'Bob Boberson',
+      auth0Id: 'auth0|123456',
+      email: 'bboberson@gmail.com',
+      preferredContact: 'email',
+      searchStatus: 'active',
+      acceptedTerms: true,
+      acceptedPrivacy: true,
+    });
+    await agent.get('/applicants/me').expect(401);
+  });
+});
