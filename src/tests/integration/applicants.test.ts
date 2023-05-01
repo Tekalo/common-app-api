@@ -458,10 +458,11 @@ describe('DELETE /applicants/:id', () => {
           acceptedTerms: true,
           acceptedPrivacy: true,
         });
-      await request(appNoAuth)
+      const { body } = await request(appNoAuth)
         .delete('/applicants/me')
         .set('Authorization', `Bearer ${token}`)
         .expect(200);
+      expect(body).toEqual({ id: expect.any(Number) });
     });
   });
 });

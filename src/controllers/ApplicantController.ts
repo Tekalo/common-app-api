@@ -214,6 +214,7 @@ class ApplicantController {
       );
     }
     await this.auth0Service.deleteUser(applicantToDelete.auth0Id);
+    return { id: applicantId };
   }
 
   async createOrUpdateDraftSubmission(
