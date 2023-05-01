@@ -292,6 +292,34 @@ class ApplicantController {
       );
     }
   }
+
+  async getApplicant(id: number) {
+    try {
+      const { name, email, isPaused } =
+        await this.prisma.applicant.findFirstOrThrow({
+          where: { id },
+        });
+      return { id, name, email, isPaused };
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        throw new CAPPError(
+          {
+            title: 'Applicant Retrieval Error',
+            detail: 'Could not find applicant',
+            status: 404,
+          },
+          e instanceof Error ? { cause: e } : undefined,
+        );
+      }
+      throw new CAPPError(
+        {
+          title: 'Applicant Retrieval Error',
+          detail: 'Error retrieving applicant info',
+        },
+        e instanceof Error ? { cause: e } : undefined,
+      );
+    }
+  }
 }
 
 export default ApplicantController;
