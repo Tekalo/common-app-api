@@ -329,6 +329,9 @@
           "acceptedPrivacy": {
             "type": "boolean"
           },
+          "followUpOptIn": {
+            "type": "boolean"
+          },
           "isPaused": {
             "type": "boolean"
           }

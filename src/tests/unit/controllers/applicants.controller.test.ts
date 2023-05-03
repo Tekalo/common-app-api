@@ -93,6 +93,7 @@ describe('Applicant Controller', () => {
         acceptedPrivacy: new Date('2023-02-01'),
         auth0Id: 'auth0|1234',
         isPaused: false,
+        followUpOptIn: false,
       });
 
       const mockEmailService = new EmailService(
@@ -141,6 +142,7 @@ describe('Applicant Controller', () => {
         acceptedPrivacy: new Date('2023-02-01'),
         auth0Id: 'auth0|1234',
         isPaused: false,
+        followUpOptIn: false,
       });
 
       const mockEmailService = new EmailService(
@@ -189,6 +191,7 @@ describe('Applicant Controller', () => {
         acceptedPrivacy: new Date('2023-02-01'),
         auth0Id: 'auth0|1234',
         isPaused: false,
+        followUpOptIn: false,
       });
       mockCtx.prisma.$transaction.mockRejectedValue(
         new Prisma.PrismaClientKnownRequestError('ERROR', {
@@ -222,6 +225,7 @@ describe('Applicant Controller', () => {
         acceptedPrivacy: new Date('2023-02-01'),
         auth0Id: 'auth0|1234',
         isPaused: false,
+        followUpOptIn: false,
       });
       mockCtx.prisma.$transaction.mockResolvedValue(true);
       const dummyAuthService = new DummyAuthService();
