@@ -141,6 +141,7 @@ model ApplicantDeletionRequests {
     email           String
     acceptedTerms   DateTime
     acceptedPrivacy DateTime
+    followUpOptIn   Boolean
 }
 
 model OpportunitySubmission {
