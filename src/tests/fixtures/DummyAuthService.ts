@@ -15,6 +15,11 @@ class DummyAuthService extends AuthService {
   async generatePasswordReset(auth0Id: string) {
     return { ticket: 'fake-ticket' };
   }
+
+  // eslint-disable-next-line
+  async deleteUser(id: string) {
+    return { statusCode: 204, message: 'User successfully deleted.' };
+  }
 }
 
 export default DummyAuthService;
