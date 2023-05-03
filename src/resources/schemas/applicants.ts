@@ -54,6 +54,7 @@ const ApplicantRequestBodySchema = z.object({
   searchStatus: SearchStatus,
   acceptedTerms: z.literal(true),
   acceptedPrivacy: z.literal(true),
+  followUpOptIn: z.boolean().optional(),
 });
 
 const ApplicantStateRequestBodySchema = z.object({
@@ -95,7 +96,6 @@ const ApplicantSubmissionRequestBodySchema = z.object({
   previousImpactExperience: z.boolean(),
   essayResponse: z.string().max(5000),
   referenceAttribution: ReferenceAttribution.nullable().optional(),
-  followUpOptIn: z.boolean().optional(),
 });
 // TOOD: Figure out typesript error on refining interestGovtTypes to ensure it is filled if interestGovt is true
 
