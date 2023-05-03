@@ -26,6 +26,7 @@ model Applicant {
     draftApplications ApplicantDraftSubmission[]
     acceptedTerms     DateTime                   @default(now())
     acceptedPrivacy   DateTime                   @default(now())
+    followUpOptIn     Boolean                    @default(false)
     isPaused          Boolean                    @default(false)
 }
 
@@ -140,6 +141,7 @@ model ApplicantDeletionRequests {
     email           String
     acceptedTerms   DateTime
     acceptedPrivacy DateTime
+    followUpOptIn   Boolean
 }
 
 model OpportunitySubmission {

@@ -189,6 +189,7 @@ class ApplicantController {
             applicantId: applicantToDelete.id,
             acceptedTerms: applicantToDelete.acceptedTerms,
             acceptedPrivacy: applicantToDelete.acceptedPrivacy,
+            followUpOptIn: applicantToDelete.followUpOptIn,
           },
         }),
         // Delete from applicant table
