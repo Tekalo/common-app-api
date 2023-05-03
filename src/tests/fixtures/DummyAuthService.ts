@@ -17,9 +17,7 @@ class DummyAuthService extends AuthService {
   }
 
   // eslint-disable-next-line
-  async deleteUser(id: string) {
-    return { statusCode: 204, message: 'User successfully deleted.' };
-  }
+  async deleteUser(id: string) {}
 }
 
 export default DummyAuthService;
