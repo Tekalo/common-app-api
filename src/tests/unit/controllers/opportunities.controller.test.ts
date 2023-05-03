@@ -36,7 +36,7 @@ describe('Opportunity Controller', () => {
       submissions: [
         {
           fullyRemote: false,
-          roleType: 'Flipper',
+          roleType: 'product designer',
           positionTitle: 'Line Cook 1',
           location: 'Burgerville',
           paid: true,
@@ -99,7 +99,7 @@ describe('Opportunity Controller', () => {
       submissions: [
         {
           fullyRemote: true,
-          roleType: 'A guy',
+          roleType: 'software engineer',
           positionTitle: 'That Dude',
           location: 'Burgerville',
           paid: true,
