@@ -15,6 +15,8 @@ import CAPPError from '@App/resources/shared/CAPPError.js';
 import { Problem } from '@App/resources/types/shared.js';
 import EmailService from '@App/services/EmailService.js';
 import MonitoringService from '@App/services/MonitoringService.js';
+import { AuthResult } from 'express-oauth2-jwt-bearer';
+import { Claims } from '@App/resources/types/auth0.js';
 
 class ApplicantController {
   private auth0Service: AuthService;
@@ -39,7 +41,20 @@ class ApplicantController {
 
   async createApplicant(
     data: ApplicantRequestBody,
+    auth?: AuthResult,
   ): Promise<ApplicantResponseBody> {
+    // If our request already has a JWT, user must have signed up with social/password before registering.
+    // Ensure registration email matches auth0 email
+    if (auth) {
+      const auth0RegisteredEmail = auth.payload[Claims.email];
+      if (!auth0RegisteredEmail || auth0RegisteredEmail !== data.email) {
+        throw new CAPPError({
+          title: 'Auth0 User Creation Error',
+          detail: 'Invalid email provided',
+          status: 400,
+        });
+      }
+    }
     let returnApplicant;
     const auth0User = await this.auth0Service.createUser({
       name: data.name,

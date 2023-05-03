@@ -113,6 +113,24 @@ describe('POST /applicants', () => {
         .expect(400);
       expect(body).toHaveProperty('title', 'Validation Error');
     });
+    // Use case: A user has registered with Auth0 via a social provider (and therefore has an Auth0 JWT) but
+    // provides a different email when they register for Tekalo.
+    test('Should throw error if email in JWT is different than that of request payload', async () => {
+      const token = await authHelper.getToken('bobisthebest@gmail.com');
+      const { body } = await request(dummyAuthApp)
+        .post('/applicants')
+        .send({
+          name: 'Bob Boberson',
+          email: 'bboberson@gmail.com',
+          preferredContact: 'whatsapp',
+          searchStatus: 'active',
+          acceptedTerms: true,
+          acceptedPrivacy: true,
+        })
+        .set('Authorization', `Bearer ${token}`)
+        .expect(400);
+      expect(body).toHaveProperty('detail', 'Invalid email provided');
+    });
     test('Should update applicantID in cookie with 2 subsequent requests for 2 different users', async () => {
       type RespHeaders = {
         'set-cookie': string;
