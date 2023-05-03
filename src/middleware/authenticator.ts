@@ -36,6 +36,11 @@ class Authenticator {
     }) as NextFunction);
   }
 
+  // Attach auth to request if it exists. If not, do not throw.
+  attachJwt(req: Request, res: Response, next: NextFunction) {
+    auth({ ...this.authConfig, authRequired: false })(req, res, next);
+  }
+
   // Attach to requests that can only authenticate with a cookie
   static validateCookie(req: Request, res: Response, next: NextFunction) {
     verifyCookie(req, res, next);

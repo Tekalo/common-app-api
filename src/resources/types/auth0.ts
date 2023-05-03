@@ -20,8 +20,8 @@ export const Claims = {
 // Declaration merging for our custom added JWT claim
 declare module 'express-oauth2-jwt-bearer' {
   export interface JWTPayload {
-    'auth0.capp.com/email': string; // comes from Auth0
-    id: number; // comes from Auth0
+    'auth0.capp.com/email': string; // added in Auth0 postLoginAddEmail action
+    id: number; // added in Auth0 postLoginAddEmail action
   }
   export interface AuthResult {
     payload: JWTPayload;

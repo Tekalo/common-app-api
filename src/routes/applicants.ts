@@ -37,17 +37,21 @@ const applicantRoutes = (
   );
   const authenticator = new Authenticator(prisma, config.auth0.express);
 
-  router.post('/', (req: Request, res: Response, next) => {
-    const appBody = req.body as ApplicantRequestBody;
-    const validatedBody = ApplicantRequestBodySchema.parse(appBody);
-    applicantController
-      .createApplicant(validatedBody)
-      .then((result) => {
-        req.session.applicant = setCookie(result);
-        res.status(200).json(result);
-      })
-      .catch((err) => next(err));
-  });
+  router.post(
+    '/',
+    authenticator.attachJwt.bind(authenticator),
+    (req: Request, res: Response, next) => {
+      const appBody = req.body as ApplicantRequestBody;
+      const validatedBody = ApplicantRequestBodySchema.parse(appBody);
+      applicantController
+        .createApplicant(validatedBody, req.auth)
+        .then((result) => {
+          req.session.applicant = setCookie(result);
+          res.status(200).json(result);
+        })
+        .catch((err) => next(err));
+    },
+  );
 
   router.post(
     '/me/submissions',
