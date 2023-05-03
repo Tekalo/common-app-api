@@ -95,6 +95,7 @@ const ApplicantSubmissionRequestBodySchema = z.object({
   previousImpactExperience: z.boolean(),
   essayResponse: z.string().max(5000),
   referenceAttribution: ReferenceAttribution.nullable().optional(),
+  followUpOptIn: z.boolean().optional(),
 });
 // TOOD: Figure out typesript error on refining interestGovtTypes to ensure it is filled if interestGovt is true
 
