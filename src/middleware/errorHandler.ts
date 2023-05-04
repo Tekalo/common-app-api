@@ -9,6 +9,10 @@ const errorHandler = (
   res: Response,
   next: NextFunction, // eslint-disable-line @typescript-eslint/no-unused-vars
 ) => {
+  if (res.headersSent) {
+    return next(err);
+  }
+
   const problem: Problem = err.problem || {};
   if (err.message === 'Unauthorized') {
     problem.title = 'Unauthorized';
@@ -21,7 +25,7 @@ const errorHandler = (
     problem.status = 400;
     problem.detail = detail;
   }
-  res
+  return res
     .status(problem.status || 500)
     .setHeader('Content-Type', 'application/problem+json')
     .json(problem);
