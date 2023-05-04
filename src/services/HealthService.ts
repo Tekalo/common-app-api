@@ -1,4 +1,4 @@
-import prisma from '@App/resources/client.js';
+import { PrismaClient } from '@prisma/client';
 
 export enum ResourceHealth {
   Healthy = 'HEALTHY',
@@ -6,13 +6,24 @@ export enum ResourceHealth {
 }
 
 export default class HealthService {
+  private prisma: PrismaClient;
+
   public overallHealth: ResourceHealth = ResourceHealth.Healthy;
 
-  async getHealth(): Promise<HealthCheckResult> {
-    const result: number[] = await prisma.$queryRaw<number[]>`SELECT 1`;
+  constructor(prisma: PrismaClient) {
+    this.prisma = prisma;
+  }
 
-    this.overallHealth =
-      result.length === 1 ? ResourceHealth.Healthy : ResourceHealth.Unhealthy;
+  async getHealth(): Promise<HealthCheckResult> {
+    try {
+      const result: number[] = await this.prisma.$queryRaw<number[]>`SELECT 1`;
+      this.overallHealth =
+        result?.length === 1
+          ? ResourceHealth.Healthy
+          : ResourceHealth.Unhealthy;
+    } catch (err) {
+      this.overallHealth = ResourceHealth.Unhealthy;
+    }
 
     return {
       status: this.overallHealth,

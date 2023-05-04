@@ -1,10 +1,11 @@
 import express, { Request, Response } from 'express';
 import HealthService, { ResourceHealth } from '@App/services/HealthService.js';
+import prisma from '@App/resources/client.js';
 
 const healthRoutes = () => {
   const router = express.Router();
   router.get('/', (req: Request, res: Response, next) => {
-    const healthService = new HealthService();
+    const healthService = new HealthService(prisma);
     healthService
       .getHealth()
       .then((result) => {
