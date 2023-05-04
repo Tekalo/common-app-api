@@ -22,10 +22,6 @@ class EmailService {
       },
       Message: {
         Body: {
-          Text: {
-            Charset: 'UTF-8',
-            Data: 'TOOD: Style me!!!!',
-          },
           Html: {
             Charset: 'UTF-8',
             Data: email,

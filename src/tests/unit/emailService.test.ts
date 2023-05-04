@@ -1,3 +1,4 @@
+import getWelcomeEmail from '@App/resources/emails/welcomeEmail.js';
 import EmailService from '@App/services/EmailService.js';
 import { jest } from '@jest/globals';
 import DummySESService from '../fixtures/DummySesService.js';
@@ -16,34 +17,16 @@ describe('Email Service', () => {
       'foo@bar.com',
       'fake-ticket',
     );
-    expect(resp).toEqual({
-      Destination: {
-        ToAddresses: ['foo@bar.com'],
+    const expectedEmail = getWelcomeEmail('fake-ticket');
+    expect(resp).toHaveProperty('Destination', {
+      ToAddresses: ['foo@bar.com'],
+    });
+    expect(resp).toHaveProperty('Source', 'baz@futurestech.com');
+    expect(resp).toHaveProperty('Message', {
+      Subject: { Charset: 'UTF-8', Data: 'Hallo from Tekalo!' },
+      Body: {
+        Html: { Charset: 'UTF-8', Data: expect.stringMatching(expectedEmail) },
       },
-      Message: {
-        Body: {
-          Text: {
-            Charset: 'UTF-8',
-            Data: 'TOOD: Style me!!!!',
-          },
-          Html: {
-            Charset: 'UTF-8',
-            Data: `Thanks for applying to Tekalo! Your assigned Tekalo Talent Connector will 
-                review your application and contact you via your preferred contact method once matches are available.
-                In the meantime, you can sign in to your Tekalo account (<link to sign in page>) by using your Google 
-                or LinkedIn account associated with this email address, or by setting up a <a class="ulink" href="fake-ticket" 
-                target="_blank">new password</a> for your account.
-    
-                Thanks,
-                The Tekalo team`,
-          },
-        },
-        Subject: {
-          Charset: 'UTF-8',
-          Data: 'Hallo from Tekalo!',
-        },
-      },
-      Source: 'baz@futurestech.com',
     });
   });
 
