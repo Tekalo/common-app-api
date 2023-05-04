@@ -1,5 +1,6 @@
 import { BaseConfig } from '@App/resources/types/shared.js';
 import { SendEmailCommandInput } from '@aws-sdk/client-ses';
+import getWelcomeEmail from '@App/resources/emails/welcomeEmail.js';
 import SESService from './SESService.js';
 
 class EmailService {
@@ -13,6 +14,7 @@ class EmailService {
   }
 
   generateWelcomeEmail(receipientEmail: string, changePassLink: string) {
+    const email = getWelcomeEmail(changePassLink);
     const { sesFromAddress } = this.config.aws;
     return {
       Destination: {
@@ -26,14 +28,7 @@ class EmailService {
           },
           Html: {
             Charset: 'UTF-8',
-            Data: `Thanks for applying to Tekalo! Your assigned Tekalo Talent Connector will 
-                review your application and contact you via your preferred contact method once matches are available.
-                In the meantime, you can sign in to your Tekalo account (<link to sign in page>) by using your Google 
-                or LinkedIn account associated with this email address, or by setting up a <a class="ulink" href="${changePassLink}" 
-                target="_blank">new password</a> for your account.
-    
-                Thanks,
-                The Tekalo team`,
+            Data: email,
           },
         },
         Subject: {
@@ -46,7 +41,8 @@ class EmailService {
   }
 
   async sendEmail(emailToSend: SendEmailCommandInput) {
-    return this.sesService.sendEmail(emailToSend);
+    const emailOutput = await this.sesService.sendEmail(emailToSend);
+    return emailOutput;
   }
 }
 
