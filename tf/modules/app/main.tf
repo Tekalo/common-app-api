@@ -140,6 +140,13 @@ resource "aws_ecs_task_definition" "api" {
           containerPort = var.api_port
         }
       ]
+      healthCheck = {
+        retries = 10
+        command = [ "CMD-SHELL", "curl -f http://localhost:3000/health || exit 1" ]
+        timeout = 5
+        interval = 10
+        startPeriod = var.health_check_grace_period_seconds
+      }
       logConfiguration = {
         logDriver = "awslogs"
         options = {
