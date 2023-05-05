@@ -49,7 +49,7 @@ describe('POST /opportunities', () => {
         desiredStartDate: '2023-01-01',
         desiredYoe: ['0-2', '2-4'],
         desiredSkills: ['react', 'sketch'],
-        desiredOtherSkills: 'really good at flipping burgers',
+        desiredOtherSkills: ['flipping burgers', 'flipping houses'],
         visaSponsorship: 'no',
         similarStaffed: true,
         desiredImpactExp:
@@ -80,8 +80,10 @@ describe('POST /opportunities', () => {
       desiredStartDate: '2023-12-01',
       desiredYoe: ['15+'],
       desiredSkills: ['figma', 'project management'],
-      desiredOtherSkills:
-        'really good at frying fries, specifically of the waffle persuasion',
+      desiredOtherSkills: [
+        'really good at frying fries',
+        'waffle fry manufacturing',
+      ],
       visaSponsorship: 'no',
       similarStaffed: false,
       desiredImpactExp:

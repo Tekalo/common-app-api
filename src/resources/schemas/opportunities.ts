@@ -70,7 +70,7 @@ const OpportunityBatchRequestBodySchema = z.object({
       jdUrl: z.string().max(500).optional(),
       desiredYoe: z.array(YOE),
       desiredSkills: z.array(Skills),
-      desiredOtherSkills: z.string().max(255).optional(),
+      desiredOtherSkills: z.array(z.string()),
       visaSponsorship: VisaSponsorship,
       similarStaffed: z.boolean(),
       desiredImpactExp: z.string().max(5000).optional(),
