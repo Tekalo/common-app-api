@@ -36,7 +36,7 @@ resource "aws_rds_cluster" "main" {
 
   db_subnet_group_name = data.aws_db_subnet_group.main_subnet_group.name
   serverlessv2_scaling_configuration {
-    max_capacity = 1.0
+    max_capacity = 2.0
     min_capacity = 0.5
   }
 
