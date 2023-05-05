@@ -106,6 +106,15 @@ describe('POST /opportunities', () => {
       .expect(400);
     expect(body).toHaveProperty('title', 'Validation Error');
   });
+  it('should throw 400 error if acceptedPrivacy is false', async () => {
+    const falseAcceptedPrivacy = { ...oppBatchPayload };
+    falseAcceptedPrivacy.acceptedPrivacy = false;
+    const { body } = await request(app)
+      .post('/opportunities/batch')
+      .send([falseAcceptedPrivacy])
+      .expect(400);
+    expect(body).toHaveProperty('title', 'Validation Error');
+  });
   test('Should throw error if request body has invalid org size', async () => {
     const invalidOrgSize = {
       ...oppBatchPayload,
