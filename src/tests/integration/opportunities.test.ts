@@ -22,6 +22,7 @@ afterEach(async () => {
 
 describe('POST /opportunities', () => {
   const oppBatchPayload = {
+    acceptedPrivacy: true,
     organization: {
       name: 'Bobs Burgers Foundation',
       type: '501(c)(3)',

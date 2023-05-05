@@ -377,6 +377,9 @@
         "additionalProperties": false,
         "type": "object",
         "properties": {
+          "acceptedPrivacy": {
+            "type": "boolean"
+          },
           "contact": {
             "type": "object",
             "properties": {

@@ -132,6 +132,7 @@ model OpportunityBatch {
     contactEmail             String
     contactPhone             String?
     equalOpportunityEmployer Boolean
+    acceptedPrivacy          DateTime                  @default(now())
 }
 
 model ApplicantDeletionRequests {

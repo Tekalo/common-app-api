@@ -21,6 +21,7 @@ describe('Opportunity Controller', () => {
   test('Should create a new batch of opportunities', async () => {
     const opportunityController = new OpportunityController(ctx.prisma);
     const reqPayload: OpportunityBatchRequestBody = {
+      acceptedPrivacy: true,
       organization: {
         name: 'Bobs Burgers Foundation',
         type: '501(c)(3)',
@@ -60,6 +61,7 @@ describe('Opportunity Controller', () => {
     const { organization, contact } = reqPayload;
     const mockResolved = {
       id: 1,
+      acceptedPrivacy: new Date('2023-01-01'),
       orgName: organization.name,
       orgType: organization.type,
       orgSize: organization.size,
@@ -84,6 +86,7 @@ describe('Opportunity Controller', () => {
     );
     const opportunityController = new OpportunityController(ctx.prisma);
     const reqPayload: OpportunityBatchRequestBody = {
+      acceptedPrivacy: true,
       organization: {
         name: 'Bobs Burgers Foundation',
         type: 'other',
