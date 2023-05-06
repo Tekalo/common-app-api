@@ -23,8 +23,8 @@ dependencies:
     specifier: ^0.5.1
     version: 0.5.1
   auth0:
-    specifier: 3.3.0
-    version: 3.3.0
+    specifier: 3.4.0
+    version: 3.4.0
   connect-pg-simple:
     specifier: 8.0.0
     version: 8.0.0
@@ -2302,8 +2302,8 @@ packages:
     engines: {node: '>=8.0.0'}
     dev: true
 
-  /auth0@3.3.0:
-    resolution: {integrity: sha512-9QZlktuIpYcnp5Y43xtTrPRFi0qUDVLGtJNOeG3W6JkDfUx4Qu80mB8nI4lMuhWUGx21ls7lZMG7DXHJI1C4Ug==}
+  /auth0@3.4.0:
+    resolution: {integrity: sha512-qaRVZfykFhROZlKa6i/G7Tlo4Df6GXdtMdvO41XuJ2XlJ/AMUAxL0u/FJJyII/HWwosVtypD92nHB2gqRwIbYg==}
     engines: {node: '>=14'}
     dependencies:
       axios: 0.27.2
