@@ -17,6 +17,7 @@ SELECT
     WHEN 'future' THEN 'Want to stay in touch for future opportunities'
     ELSE apl."searchStatus"
   END "searchStatus",
+  apl."followUpOptIn",
   appsub.id,
   appsub."applicantId",
   appsub."createdAt",
