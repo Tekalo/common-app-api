@@ -1,3 +1,4 @@
+import getApplicantDeletionEmail from '@App/resources/emails/applicantDeletion.js';
 import getWelcomeEmail from '@App/resources/emails/welcomeEmail.js';
 import EmailService from '@App/services/EmailService.js';
 import { jest } from '@jest/globals';
@@ -23,6 +24,34 @@ describe('Email Service', () => {
     });
     expect(resp).toHaveProperty('Source', 'baz@futurestech.com');
     expect(resp).toHaveProperty('Message', {
+      Subject: { Charset: 'UTF-8', Data: 'Hallo from Tekalo!' },
+      Body: {
+        Html: { Charset: 'UTF-8', Data: expect.stringMatching(expectedEmail) },
+      },
+    });
+  });
+
+  test('should successfully generate applicant deletion email', () => {
+    const dummySesService = new DummySESService();
+    const emailService = new EmailService(
+      dummySesService,
+      getMockConfig({
+        aws: { sesFromAddress: 'baz@futurestech.com', region: 'us-east-1' },
+      }),
+    );
+    const result = emailService.generateApplicantDeletionEmail(
+      'foo@bar.com',
+      'Robin Williams',
+    );
+    const expectedEmail = getApplicantDeletionEmail(
+      'fake-ticket',
+      'Robin Williams',
+    );
+    expect(result).toHaveProperty('Destination', {
+      ToAddresses: ['foo@bar.com'],
+    });
+    expect(result).toHaveProperty('Source', 'baz@futurestech.com');
+    expect(result).toHaveProperty('Message', {
       Subject: { Charset: 'UTF-8', Data: 'Hallo from Tekalo!' },
       Body: {
         Html: { Charset: 'UTF-8', Data: expect.stringMatching(expectedEmail) },
