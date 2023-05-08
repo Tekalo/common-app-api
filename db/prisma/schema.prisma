@@ -161,7 +161,7 @@ model OpportunitySubmission {
     positionTitle String
 
     fullyRemote     Boolean
-    location        String
+    location        String?
     visaSponsorship String?
 
     desiredHoursPerWeek String?
