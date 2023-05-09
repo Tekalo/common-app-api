@@ -1,0 +1,26 @@
+{
+  "AUTH0_DOMAIN": "sf-capp-dev.us.auth0.com",
+  "AUTH0_CLIENT_ID": "MrFswkY2d9eCdfA9YMcmYkXuuQqTqUeb",
+  "AUTH0_CLIENT_SECRET": "Aa1sHviMgbqhIBnalbvNu0hM2M0heAh3Cb86eVIirl3ZRiKRe1NK8cYt0euEl7Ev",
+  "AUTH0_ALLOW_DELETE": true,
+  "AUTH0_KEYWORD_REPLACE_MAPPINGS": {
+    "ENV": "dev",
+    "ALLOWED_WEB_ORIGINS": [
+      "http://localhost:3000",
+      "http://localhost:3001",
+      "https://*.common-app-frontend.pages.dev"
+    ],
+    "CALLBACKS": [
+      "http://localhost:3000",
+      "http://localhost:3001",
+      "https://*.common-app-frontend.pages.dev"
+    ],
+    "ALLOWED_LOGOUT_URLS": [
+      "http://localhost:3000",
+      "http://localhost:3001",
+      "https://*.common-app-frontend.pages.dev"
+    ],
+    "CUSTOM_DOMAIN": "capp-auth.dev.apps.futurestech.cloud",
+    "DEFAULT_FROM_ADDRESS": " tekalo@dev.apps.futurestech.cloud"
+  }
+}
