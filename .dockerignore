@@ -17,4 +17,5 @@
 **/secrets.dev.yaml
 **/values.dev.yaml
 **/.pnpm-store
+**/auth0
 README.md

@@ -38,7 +38,7 @@ AWS_SESSION_TOKEN={AWS Session Token}
 SENTRY_DSN="https://c38ab9f98fd0404f9d2bfb95d015da8d@o4504962952724480.ingest.sentry.io/4504963428777984"
 ```
 
-The `AUTH0_` prefixed values can be found [here](https://manage.auth0.com/dashboard/us/sf-capp-dev/applications/AzRVLnVmcru9u0hR5dl5VW84c21GLNEM/settings).
+The `AUTH0_` prefixed values should be from our dev Auth0 tenant and can be found [here](https://manage.auth0.com/dashboard/us/sf-capp-dev/applications/AzRVLnVmcru9u0hR5dl5VW84c21GLNEM/settings).
 
 The `AWS_` prefixed values can be found when logging into the AWS Console under your specific user, under `Command line or programmatic access`
 
@@ -110,6 +110,32 @@ Run only tests in the unit folder: `pnpm run test --files=unit`
 Run only tests in the unit/controllers folder: `pnpm run test --files=unit/controllers`
 Run only tests that start with 'grants' in the unit/controllers folder: `pnpm run test --files=unit/controllers/applicants`
 Run only a specific test: `pnpm run test --files=unit/controllers/applicants.controller.test.ts`
+
+## Auth0 Configuration Management
+
+Changes to Auth0 tenants should **NOT** be made in the Auth0 UI, but instead modified in the configuration in the `/auth0` directory.
+The `/local` directory maintains the working version of our Auth0 Dev and Prod tenants setup. `local/tenant.yaml` holds general configuration, and the rest of the `/local` directory holds supplemental templates/settings.
+`auth0/config-dev.json` contains variables for our dev tenant, and `auth0/config-prod.json` contains variables for our prod tenant.
+
+To deploy changes to dev:
+
+```bash
+export AUTH0_CLIENT_SECRET={auth0 secret for dev tenant}
+```
+
+```bash
+a0deploy export --format=yaml -c=auth0/config-dev.json --output_folder=auth0/local
+```
+
+To promote changes to prod:
+
+```bash
+export AUTH0_CLIENT_SECRET={auth0 secret for prod tenant}
+```
+
+```bash
+a0deploy import -c=auth0/config-prod.json --input_file=auth0/local/tenant.yaml`
+```
 
 ## Environment Variables
 

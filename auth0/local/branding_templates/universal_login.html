@@ -30,8 +30,8 @@
         font-weight: 500;
         margin-bottom: 10px;
       }
-      @media (max-width: 600px) {
-        #tekalo-heading {
+      @media (max-width: 600px) { 
+        #tekalo-heading  {
           margin-top: 50px;
         }
         main > section > div > div > header:first-of-type {
@@ -47,7 +47,7 @@
         text-align: center;
       }
 
-      .sub-title {
+      .sub-title{
         margin-bottom: 17px;
       }
     </style>
@@ -61,23 +61,18 @@
         <div id="tekalo-heading">
           <h1 class="main-title">Sign in to Tekalo</h1>
           <h5 class="sub-title">via Futures Engine</h5>
-          <div class="sign-up-link">
-            Don't have an account? Sign up
-            <a
-              href="https://head.common-app-frontend.pages.dev/sign-up/applicants"
-              >here</a
-            >
-          </div>
+          <div class="sign-up-link">Don't have an account? Sign up
+            <a href="https://head.common-app-frontend.pages.dev/sign-up/applicants">here</a></div>
         </div>
         {%- auth0:widget -%}
       </div>
     </div>
     {% else %} {%- auth0:widget -%} {% endif %}
     <script type="text/javascript">
-      const titleNode = document.getElementById('tekalo-heading');
-      const titleChildNode = document.querySelector('main > section > div');
-      const titleParentNode = titleChildNode.parentNode;
-      titleParentNode.insertBefore(titleNode, titleChildNode);
+      const titleNode = document.getElementById('tekalo-heading'); 
+      const titleChildNode = document.querySelector('main > section > div'); 
+      const titleParentNode = titleChildNode.parentNode; 
+      titleParentNode.insertBefore(titleNode,titleChildNode);
     </script>
   </body>
 </html>

@@ -38,6 +38,7 @@ class Authenticator {
 
   // Attach auth to request if it exists. If not, do not throw.
   attachJwt(req: Request, res: Response, next: NextFunction) {
+    console.log(this.authConfig);
     auth({ ...this.authConfig, authRequired: false })(req, res, next);
   }
 
