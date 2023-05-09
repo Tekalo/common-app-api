@@ -6,7 +6,6 @@ import {
 import { BaseConfig } from '@App/resources/types/shared.js';
 
 function loadConfig(): BaseConfig {
-  console.log(process.env.AUTH0_EXPRESS_CONFIG);
   const validatedConfig = BaseConfigSchema.parse({
     env: process.env.APP_ENV || 'dev',
     port: Number(process.env.PORT) || 3000,
