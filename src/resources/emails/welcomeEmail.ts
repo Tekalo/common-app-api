@@ -58,7 +58,7 @@ const getWelcomeEmail = (changePassLink: string) => `<html lang="en">
             </p>
             <br />
             <p>
-              In the meantime, you can sign in to your Tekalo account by using
+              In the meantime, you can sign in to your Futures Engine account by using
               your Google or LinkedIn account associated with this email address,
               or by setting up a new password for your account with the link
               below: 
