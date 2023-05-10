@@ -1,7 +1,6 @@
 {
   "AUTH0_DOMAIN": "sf-capp-dev.us.auth0.com",
   "AUTH0_CLIENT_ID": "MrFswkY2d9eCdfA9YMcmYkXuuQqTqUeb",
-  "AUTH0_CLIENT_SECRET": "Aa1sHviMgbqhIBnalbvNu0hM2M0heAh3Cb86eVIirl3ZRiKRe1NK8cYt0euEl7Ev",
   "AUTH0_ALLOW_DELETE": true,
   "AUTH0_EXCLUDED": ["customDomains"],
   "AUTH0_PRESERVE_KEYWORDS": true,
