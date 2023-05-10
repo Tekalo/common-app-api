@@ -51,7 +51,7 @@ clients:
       rotation_type: non-rotating
     sso_disabled: false
     token_endpoint_auth_method: client_secret_post
-  - name: Deploy-CLI
+  - name: Deploy CLI
     allowed_clients: []
     app_type: non_interactive
     callbacks: []
@@ -159,7 +159,7 @@ databases:
     strategy: auth0
     enabled_clients:
       - API Explorer Application
-      - Deploy-CLI
+      - Deploy CLI
       - Tekalo
       - Tekalo Management
     is_domain_connection: false
@@ -196,7 +196,7 @@ connections:
   - name: email
     strategy: email
     enabled_clients:
-      - Deploy-CLI
+      - Deploy CLI
       - Tekalo Management
     is_domain_connection: false
     options:
@@ -215,7 +215,7 @@ connections:
     strategy: google-oauth2
     enabled_clients:
       - API Explorer Application
-      - Deploy-CLI
+      - Deploy CLI
       - Tekalo
       - Tekalo Management
     is_domain_connection: false
@@ -276,7 +276,7 @@ emailTemplates:
     urlLifetimeInSeconds: 432000
 clientGrants:
   - client_id: API Explorer Application
-    audience: https://sf-capp-dev.us.auth0.com/api/v2/
+    audience: https://##AUTH0_DOMAIN##/api/v2/
     scope:
       - read:client_grants
       - create:client_grants
@@ -423,7 +423,7 @@ clientGrants:
       - read:user_idp_tokens
       - read:connections
   - client_id: Tekalo Management
-    audience: https://sf-capp-dev.us.auth0.com/api/v2/
+    audience: https://##AUTH0_DOMAIN##/api/v2/
     scope:
       - read:client_grants
       - create:client_grants

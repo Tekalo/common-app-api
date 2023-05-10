@@ -6,6 +6,7 @@
   "AUTH0_PRESERVE_KEYWORDS": true,
   "AUTH0_KEYWORD_REPLACE_MAPPINGS": {
     "ENV": "dev",
+    "AUTH0_DOMAIN": "sf-capp-dev.us.auth0.com",
     "ALLOWED_WEB_ORIGINS": [
       "http://localhost:3000",
       "http://localhost:3001",

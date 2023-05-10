@@ -1,11 +1,12 @@
 {
   "AUTH0_DOMAIN": "sf-futuresengine-prod.us.auth0.com",
-  "AUTH0_CLIENT_ID": "6JifU095pRCWJx6GmxOYHe4a7pysBDRJ",
+  "AUTH0_CLIENT_ID": "RWu0rO01uFKzQD5cWpMARTBwZOROqboL",
   "AUTH0_ALLOW_DELETE": false,
   "AUTH0_EXCLUDED": ["customDomains"],
   "AUTH0_PRESERVE_KEYWORDS": true,
   "AUTH0_KEYWORD_REPLACE_MAPPINGS": {
     "ENV": "prod",
+    "AUTH0_DOMAIN": "sf-futuresengine-prod.us.auth0.com",
     "ALLOWED_WEB_ORIGINS": ["https://www.tekalo.org"],
     "TEKALO_CLIENT_CALLBACKS": ["https://www.tekalo.org"],
     "ALLOWED_LOGOUT_URLS": ["https://www.tekalo.org"],
