@@ -98,11 +98,6 @@
       "type": "standard"
     },
     {
-      "to": "Interested In - Opportunities",
-      "from": "interestEmploymentType",
-      "type": "standard"
-    },
-    {
       "to": "Interested In - Roles",
       "from": "interestRoles",
       "type": "standard"
@@ -160,6 +155,16 @@
     {
       "to": "Interested in USDR Role Types",
       "from": "interestGovtEmplTypes",
+      "type": "standard"
+    },
+    {
+      "to": "Interested In - Opportunities",
+      "from": "interestEmploymentType",
+      "type": "standard"
+    },
+    {
+      "from": "followUpOptIn",
+      "to": "Follow Up Opt In",
       "type": "standard"
     }
   ],

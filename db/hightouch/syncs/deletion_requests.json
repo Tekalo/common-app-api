@@ -1,18 +1,27 @@
 {
-  "mode": "update",
+  "mode": "upsert",
   "baseId": "appDb5NGE2tTr6IYh",
   "mappings": [
     {
-      "to": "Deletion Requested",
-      "type": "static",
-      "value": true,
-      "valueType": "BOOLEAN"
+      "to": "Internal Candidate ID",
+      "from": "applicantId",
+      "type": "standard"
+    },
+    {
+      "to": "Email",
+      "from": "email",
+      "type": "standard"
+    },
+    {
+      "to": "Created At",
+      "from": "createdAt",
+      "type": "standard"
     }
   ],
-  "tableName": "Candidates",
+  "tableName": "Candidate Deletion Requests",
   "configVersion": 0,
   "externalIdMapping": {
-    "to": "Internal ID",
-    "from": "applicantId"
+    "to": "Internal Deletion Request ID",
+    "from": "id"
   }
 }
