@@ -235,6 +235,11 @@ class ApplicantController {
       );
     }
     await this.auth0Service.deleteUser(applicantToDelete.auth0Id);
+    const deletionEmail = this.emailService.generateApplicantDeletionEmail(
+      applicantToDelete.email,
+      applicantToDelete.name,
+    );
+    await this.emailService.sendEmail(deletionEmail);
     return { id: applicantId };
   }
 
