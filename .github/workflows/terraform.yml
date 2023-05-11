@@ -68,6 +68,7 @@ jobs:
     needs: [changes, deploy-staging]
     if: |
       always() &&
+      (needs.deploy-dev.result == 'success' || needs.deploy-dev.result == 'skipped') &&
       (needs.deploy-staging.result == 'success' || needs.deploy-staging.result == 'skipped) &&
       (needs.changes.outputs.prod == 'true')
     uses: ./.github/workflows/terraform-apply.yml
