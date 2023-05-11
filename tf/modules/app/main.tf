@@ -458,3 +458,14 @@ data "aws_iam_policy_document" "task_ses_policy" {
     }
   }
 }
+
+resource "aws_cloudwatch_dashboard" "main" {
+  dashboard_name = "${aws_ecs_service.api.name}-${var.env}"
+  dashboard_body = jsonencode({
+    widgets = templatefile("${path.module}/cloudwatch_dashboard.tftpl", {
+      ecs_cluster = var.ecs_cluster,
+      service_name = aws_ecs_service.api.name,
+      aws_region = data.aws_region.current.name
+    })
+  })
+}
