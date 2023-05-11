@@ -104,12 +104,13 @@ variable "notify_webhook" {
 variable "slack_channel" {
   description = "Slack channel to route alerts to"
   type        = string
+  default     = "commonapp-dev-notifications"
 }
 
 variable "slack_username" {
-  default     = "aws-notifier"
   description = "Slack username to post alerts as (will use aws account id if not specified)"
   type        = string
+  default     = "aws-notifier"
 }
 
 variable "auth0_domain" {
