@@ -171,7 +171,7 @@ resource "aws_cloudwatch_metric_alarm" "api_targetgroup_4XX_errors" {
   namespace                 = "AWS/ApplicationELB"
   
   actions_enabled           = var.alarms_enabled
-  alarm_actions             = [aws_sns_topic.capp_api_nofifications.arn]
+  alarm_actions             = [aws_sns_topic.capp_api_notifications.arn]
   ok_actions                = [aws_sns_topic.capp_api_notifications.arn]
   treat_missing_data        = "notBreaching"
   
@@ -206,10 +206,10 @@ resource "aws_sns_topic" "capp_api_alerts" {
 # Send lower urgency alarms here
 resource "aws_sns_topic" "capp_api_notifications" {
   name        = "capp-${var.env}-api-notifications"
-  policy      = data.aws_iam_policy_document.alerts_topic_policy.json
   tags        = {
     Name = "capp-${var.env}-api-notifications"
   }
+  policy      = data.aws_iam_policy_document.alerts_topic_policy.json
 }
 
 resource "aws_sns_topic_subscription" "pagerduty" {
