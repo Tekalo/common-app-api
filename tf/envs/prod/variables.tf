@@ -74,23 +74,19 @@ output "auth0_email_secret_access_key" {
 
 variable "pagerduty_integration_url" {
   description = "Integration url for pagerduty alarms"
-  value       = module.app.pagerduty_integration_url
 }
 
 variable "notify_webhook" {
   description = "Slack webhook url for non-urgent notifications"
   type        = string
-  default     = "http://example.com/"
 }
 
 variable "slack_channel" {
   description = "Slack channel to route alerts to"
   type        = string
-  default     = "commonapp-dev-notifications"
 }
 
 variable "slack_username" {
   description = "Slack username to post alerts as (will use aws account id if not specified)"
   type        = string
-  default     = "aws-notifier"
 }
