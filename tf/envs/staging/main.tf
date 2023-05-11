@@ -45,6 +45,7 @@ module "app" {
   db_subnet_name       = module.envconfig.db_subnet_name
   db_security_group_id = module.envconfig.db_security_group_id
   ecs_cluster          = module.envconfig.ecs_cluster
+  ecs_cluster_name     = module.envconfig.ecs_cluster_name
   cert_arn             = module.envconfig.cert_arn
   image                = var.image
   cli_image            = var.cli_image
