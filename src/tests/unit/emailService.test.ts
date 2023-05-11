@@ -23,7 +23,7 @@ describe('Email Service', () => {
     });
     expect(resp).toHaveProperty('Source', 'baz@futurestech.com');
     expect(resp).toHaveProperty('Message', {
-      Subject: { Charset: 'UTF-8', Data: 'Hallo from Tekalo!' },
+      Subject: { Charset: 'UTF-8', Data: 'Thanks for applying to Tekalo!' },
       Body: {
         Html: { Charset: 'UTF-8', Data: expect.stringMatching(expectedEmail) },
       },
