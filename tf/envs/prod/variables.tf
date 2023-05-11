@@ -93,6 +93,7 @@ output "notify_webhook" {
 variable "slack_channel" {
   description = "Slack channel to route alerts to"
   type        = string
+  default     = "commonapp-dev-notifications"
 }
 
 output "slack_channel" {
@@ -103,6 +104,7 @@ output "slack_channel" {
 variable "slack_username" {
   description = "Slack username to post alerts as (will use aws account id if not specified)"
   type        = string
+  default     = "aws-notifier"
 }
 output "slack_username" {
   description = "Slack username to post alerts as (will use aws account id if not specified)"
