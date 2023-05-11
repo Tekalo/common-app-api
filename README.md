@@ -113,7 +113,8 @@ Run only a specific test: `pnpm run test --files=unit/controllers/applicants.con
 
 ## Auth0 Configuration Management
 
-Changes to Auth0 tenants should **NOT** be made in the Auth0 console, but rather modified in the configuration in the `/auth0` directory.
+Changes to Auth0 tenants should ideally **NOT** be made in the Auth0 UI, but rather modified in the configuration in the `/auth0` directory.
+
 The `/local` directory maintains the working version of our Auth0 Dev and Prod tenants setup. `local/tenant.yaml` holds general configuration, and the rest of the `/local` directory holds supplemental templates/settings.
 `auth0/config-dev.json` contains variables for our dev tenant, and `auth0/config-prod.json` contains variables for our prod tenant.
 To push up changes:
@@ -127,6 +128,26 @@ To push up changes:
    ```
 
 3. Promote your changes to Auth0 prod tenant:
+
+   ```bash
+   export AUTH0_CLIENT_SECRET={auth0-secret-for-prod-tenant}
+   a0deploy import -c=auth0/config-prod.json --input_file=auth0/local/tenant.yaml
+   ```
+
+If it is necessary to make changes in the Auth0 UI first (due to experimentation or if you are unsure what values to change):
+
+> **_NOTE:_** Auth0 has a [known bug](https://auth0.com/docs/deploy-monitor/deploy-cli-tool/keyword-replacement#unidirectional-limitation) where keyword replacements are reverted to literal strings after an `export`. Make sure to **NOT** commit these changes
+
+1. Make changes in Auth0 UI dev tenant
+2. Export changes from dev tenant
+
+   ```bash
+   export AUTH0_CLIENT_SECRET={auth0-secret-for-dev-tenant}
+   a0deploy export -c=auth0/config-dev.json --input_file=auth0/local/tenant.yaml
+   ```
+
+3. Merge changes into `main`
+4. Promote your changes to Auth0 prod tenant:
 
    ```bash
    export AUTH0_CLIENT_SECRET={auth0-secret-for-prod-tenant}
