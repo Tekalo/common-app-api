@@ -29,7 +29,7 @@ resource "aws_cloudwatch_metric_alarm" "rds_read_latency" {
   statistic                 = "Average"
   alarm_description         = "Average RDS Read Latency"
   dimensions = {
-    DBInstanceIdentifier    = aws_rds_cluster_instance.rds_serverless_cluster_instances[0].id
+    DBInstanceIdentifier    = aws_rds_cluster_instance.instance0.identifier
   }
   actions_enabled           = var.alarms_enabled
   alarm_actions             = [aws_sns_topic.capp_api_alerts.arn]
@@ -51,7 +51,7 @@ resource "aws_cloudwatch_metric_alarm" "rds_write_latency" {
   alarm_description         = "Average RDS Write Latency"
   
   dimensions = {
-    DBInstanceIdentifier    = aws_rds_cluster_instance.rds_serverless_cluster_instances[0].id
+    DBInstanceIdentifier    = aws_rds_cluster_instance.instance0.identifier
   }
 
   actions_enabled           = var.alarms_enabled
