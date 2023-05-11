@@ -200,7 +200,7 @@ data "aws_iam_policy_document" "alerts_topic_policy" {
        identifiers = ["cloudwatch.amazonaws.com"]
     }
     actions = [ "sns:Publish" ]
-    resources = [ aws_sns_topic.capp_api_alerts.arn ]
+    resources = [ aws_sns_topic.capp_api_alerts.arn, aws_sns_topic.capp_api_notifications.arn ]
   }
 }
 
