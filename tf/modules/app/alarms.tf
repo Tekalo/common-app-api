@@ -182,17 +182,7 @@ resource "aws_cloudwatch_metric_alarm" "api_targetgroup_4XX_errors" {
 }
 
 # SNS Topics
-resource "aws_sns_topic" "capp_api_alerts" {
-  name        = "capp-${var.env}-api-alerts"
-  tags        = {
-    Name      = "capp-${var.env}-api-alerts"
-  }
-}
-resource "aws_sns_topic_policy" "default" {
-  arn        = aws_sns_topic.capp_api_alerts.arn
-  policy     = data.aws_iam_policy_document.alerts_topic_policy.json
-}
-data "aws_iam_policy_document" "alerts_topic_policy" {
+data "aws_iam_policy" "alerts_topic_policy" {
   statement {
     sid = "1"
     principals {
@@ -200,10 +190,19 @@ data "aws_iam_policy_document" "alerts_topic_policy" {
        identifiers = ["cloudwatch.amazonaws.com"]
     }
     actions = [ "sns:Publish" ]
-    resources = [ aws_sns_topic.capp_api_alerts.arn, aws_sns_topic.capp_api_notifications.arn ]
+    resources = [
+      "arn:aws:sns:us-east-1:${data.aws_caller_identity.current.account_id}:${var.env}-api-alerts",
+      "arn:aws:sns:us-east-1:${data.aws_caller_identity.current.account_id}:${var.env}-api-notifications"
+    ]
   }
 }
-
+resource "aws_sns_topic" "capp_api_alerts" {
+  name        = "capp-${var.env}-api-alerts"
+  tags        = {
+    Name      = "capp-${var.env}-api-alerts"
+  }
+  policy     = data.aws_iam_policy_document.alerts_topic_policy.json
+}
 # Send lower urgency alarms here
 resource "aws_sns_topic" "capp_api_notifications" {
   name        = "capp-${var.env}-api-notifications"
