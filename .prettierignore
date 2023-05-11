@@ -1,3 +1,4 @@
 build/
 .pnpm-store/
 pnpm-lock.yaml
+local
