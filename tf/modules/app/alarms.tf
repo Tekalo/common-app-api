@@ -130,9 +130,9 @@ resource "aws_cloudwatch_metric_alarm" "api_targetgroup_requests_anomaly" {
     }
   }
 
-  insufficient_data_actions = [aws_sns_topic.riseapp_notifications.arn]
-  alarm_actions             = [aws_sns_topic.riseapp_notifications.arn]
-  ok_actions                = [aws_sns_topic.riseapp_notifications.arn]
+  insufficient_data_actions = [aws_sns_topic.capp_api_notifications.arn]
+  alarm_actions             = [aws_sns_topic.capp_api_notifications.arn]
+  ok_actions                = [aws_sns_topic.capp_api_notifications.arn]
   treat_missing_data        = "notBreaching"
   actions_enabled           = var.alarms_enabled
 }
@@ -190,7 +190,7 @@ data "aws_iam_policy_document" "alerts_topic_policy" {
        identifiers = ["cloudwatch.amazonaws.com"]
     }
     actions = [ "sns:Publish" ]
-    resources = [ "arn:aws:sns:us-east-1:${data.aws_caller_identity.caller_identity.account_id}:capp-${var.env}-api-alerts" ]
+    resources = [ aws_sns_topic.capp_api_alerts.arn ]
   }
 }
 
