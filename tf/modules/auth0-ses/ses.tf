@@ -4,7 +4,7 @@ resource "aws_iam_user" "auth0" {
 }
 
 resource "aws_iam_access_key" "auth0" {
-  user = aws_iam_user.auth0_email_provider.name
+  user = aws_iam_user.auth0.name
 }
 
 resource "aws_iam_user_policy" "auth0_ses" {
