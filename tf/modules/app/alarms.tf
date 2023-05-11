@@ -182,6 +182,16 @@ resource "aws_cloudwatch_metric_alarm" "api_targetgroup_4XX_errors" {
 }
 
 # SNS Topics
+resource "aws_sns_topic" "capp_api_alerts" {
+  name        = "capp-${var.env}-api-alerts"
+  tags        = {
+    Name      = "capp-${var.env}-api-alerts"
+  }
+}
+resource "aws_sns_topic_policy" "default" {
+  arn        = aws_sns_topic.capp_api_alerts.arn
+  policy     = data.aws_iam_policy_document.alerts_topic_policy.json
+}
 data "aws_iam_policy_document" "alerts_topic_policy" {
   statement {
     sid = "1"
@@ -191,14 +201,6 @@ data "aws_iam_policy_document" "alerts_topic_policy" {
     }
     actions = [ "sns:Publish" ]
     resources = [ aws_sns_topic.capp_api_alerts.arn ]
-  }
-}
-
-resource "aws_sns_topic" "capp_api_alerts" {
-  name        = "capp-${var.env}-api-alerts"
-  policy      = data.aws_iam_policy_document.alerts_topic_policy.json
-  tags        = {
-    Name = "capp-${var.env}-api-alerts"
   }
 }
 
