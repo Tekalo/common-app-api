@@ -265,7 +265,7 @@ emailProvider:
     secretAccessKey: '##SES_ACCESS_SECRET_KEY##'
     region: us-east-1
   default_from_address: '@@DEFAULT_FROM_ADDRESS@@'
-  enabled: false
+  enabled: true
 emailTemplates:
   - template: verify_email
     body: ./emailTemplates/verify_email.html
@@ -638,7 +638,9 @@ actions:
     dependencies: []
     deployed: true
     runtime: node16
-    secrets: []
+    secrets:
+      - name: clientSecret
+      - name: clientId
     status: built
     supported_triggers:
       - id: post-login
@@ -681,6 +683,16 @@ attackProtection:
         max_attempts: 50
         rate: 1200
 logStreams: []
+customDomains:
+  - domain: ##CUSTOM_DOMAIN##
+    primary: true
+    status: ready
+    tls_policy: recommended
+    type: auth0_managed_certs
+    verification:
+      methods:
+        - name: cname
+          record: ##CUSTOM_DOMAIN_CNAME##
 themes:
   - borders:
       button_border_weight: 1

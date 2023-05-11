@@ -6,6 +6,8 @@
   "AUTH0_PRESERVE_KEYWORDS": true,
   "AUTH0_KEYWORD_REPLACE_MAPPINGS": {
     "ENV": "prod",
+    "CUSTOM_DOMAIN": "login.futuresengine.com",
+    "CUSTOM_DOMAIN_CNAME": "sf-futuresengine-prod-cd-qcv5xfnoybi5wajv.edge.tenants.us.auth0.com",
     "AUTH0_DOMAIN": "sf-futuresengine-prod.us.auth0.com",
     "ALLOWED_WEB_ORIGINS": ["https://www.tekalo.org"],
     "TEKALO_CLIENT_CALLBACKS": ["https://www.tekalo.org"],
