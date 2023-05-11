@@ -182,7 +182,7 @@ resource "aws_cloudwatch_metric_alarm" "api_targetgroup_4XX_errors" {
 }
 
 # SNS Topics
-data "aws_iam_policy" "alerts_topic_policy" {
+data "aws_iam_policy_document" "alerts_topic_policy" {
   statement {
     sid = "1"
     principals {
