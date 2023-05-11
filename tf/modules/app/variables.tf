@@ -131,4 +131,5 @@ output "load_test" {
 variable "email_from_address" {
   description = "Address to use in the From field of all emails sent by Tekalo"
   type        = string
+  nullable    = false
 }

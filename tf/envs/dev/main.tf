@@ -59,3 +59,9 @@ module "app" {
 module "env_defns" {
   source = "../../modules/env_defns"
 }
+
+module "auth0_ses" {
+  source                   = "../../modules/auth0-ses"
+  auth0_email_from_address = var.auth0_from_email_address
+  env                      = module.envconfig.env
+}
