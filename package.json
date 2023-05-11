@@ -35,7 +35,7 @@
   "homepage": "https://github.com/schmidtfutures/common-app-api#readme",
   "dependencies": {
     "@aws-sdk/client-ses": "3.329.0",
-    "@prisma/client": "4.13.0",
+    "@prisma/client": "4.14.0",
     "@sentry/node": "7.51.2",
     "@sentry/types": "7.51.2",
     "@tsconfig/node18": "2.0.0",
@@ -81,7 +81,7 @@
     "nodemon": "2.0.22",
     "pino-pretty": "10.0.0",
     "prettier": "2.8.8",
-    "prisma": "4.13.0",
+    "prisma": "4.14.0",
     "sentry-testkit": "5.0.5",
     "supertest": "6.3.3",
     "ts-node": "10.9.1",
