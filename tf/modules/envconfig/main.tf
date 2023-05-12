@@ -32,7 +32,7 @@ output "ecs_cluster" {
 }
 
 output "ecs_cluster_name" {
-  value = data.aws.ecs_cluster.ecs.name
+  value = data.aws.ecs_cluster.ecs.cluster_name
 }
 
 output "private_subnet_ids" {
