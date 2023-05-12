@@ -21,6 +21,10 @@ variable "ecs_cluster" {
   type = string
 }
 
+variable "ecs_cluster_name" {
+  type = string
+}
+
 variable "env" {
   description = "slug for environment (dev, staging, prod)"
   type        = string
