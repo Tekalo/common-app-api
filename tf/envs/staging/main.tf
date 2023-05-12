@@ -66,7 +66,7 @@ module "autoscaling" {
   source = "../../modules/autoscale"
 
   env          = module.envconfig.env
-  ecs_cluster  = module.envconfig.ecs_cluster
+  ecs_cluster  = module.envconfig.ecs_cluster_name
   service_name = module.app.service_name
 
   min_capacity = 2
@@ -93,7 +93,7 @@ module "autoscaling" {
         statistic   = "Maximum"
         unit        = "Percent"
         dimensions = {
-          "ClusterName" = module.envconfig.ecs_cluster
+          "ClusterName" = module.envconfig.ecs_cluster_name
           "ServiceName" = module.app.service_name
         }
       }]
