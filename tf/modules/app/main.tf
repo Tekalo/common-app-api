@@ -466,6 +466,7 @@ resource "aws_cloudwatch_dashboard" "main" {
     service_name = aws_ecs_service.api.name,
     aws_region = data.aws_region.current.name,
     lb_arn_suffix = data.aws_lb.main.arn_suffix,
-    tg_arn_suffix = aws_lb_target_group.api.arn_suffix
+    tg_arn_suffix = aws_lb_target_group.api.arn_suffix,
+    db_cluster_id = aws_rds_cluster.main.id
   })
 }

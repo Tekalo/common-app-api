@@ -2,22 +2,22 @@
   "widgets": [
   {
     "type": "metric",
-    "x": 0,
-    "y": 0,
-    "width": 12,
-    "height": 4,
-    "properties": {
-      "view": "timeSeries",
-      "stacked": false,
-      "metrics": [
-        ["AWS/ECS", "CPUUtilization", "ServiceName", "${service_name}", "ClusterName", "${ecs_cluster}", { "color": "#d62728", "stat": "Maximum" }],
-        [".", "MemoryUtilization", ".", ".", ".", ".", { "yAxis": "right", "color": "#1f77b4", "stat": "Maximum" }]
-      ],
-      "region": "${aws_region}",
-      "title": "${ecs_cluster} / ${service_name} - CPU / Mem Max",
-      "liveData": false,
-      "period": 300
-    }
+      "x": 0,
+      "y": 0,
+      "width": 12,
+      "height": 4,
+      "properties": {
+        "view": "timeSeries",
+        "stacked": false,
+        "metrics": [
+          ["AWS/ECS", "CPUUtilization", "ServiceName", "${service_name}", "ClusterName", "${ecs_cluster}", { "color": "#d62728", "stat": "Maximum" }],
+          [".", "MemoryUtilization", ".", ".", ".", ".", { "yAxis": "right", "color": "#1f77b4", "stat": "Maximum" }]
+        ],
+        "region": "${aws_region}",
+        "title": "${ecs_cluster} / ${service_name} - CPU / Mem Max",
+        "liveData": false,
+        "period": 300
+      }
   },
   {
     "type": "metric",
@@ -58,24 +58,28 @@
     }
   },
   {
-    "type": "metric",
-    "x": 12,
-    "y": 4,
-    "width": 12,
     "height": 4,
+    "width": 12,
+    "y": 4,
+    "x": 12,
+    "type": "metric",
     "properties": {
       "metrics": [
-        [ "AWS/ApplicationELB", "HTTPCode_Target_2xx_Count", "TargetGroup", "${tg_arn_suffix}", "LoadBalancer", "${lb_arn_suffix}", {"period": 300, "stat": "Sum"}],
-        [".", "HTTPCode_Target_3xx_Count", ".", "." ],
-        [".", "HTTPCode_Target_4xx_Count", ".", "." ],
-        [".", "HTTPCode_Target_5xx_Count", ".", "." ]
+        [ "AWS/ApplicationELB", "HTTPCode_Target_2XX_Count", "TargetGroup", "${tg_arn_suffix}", "LoadBalancer", "${lb_arn_suffix}", { "region": "${aws_region}" } ],
+        [ ".", "HTTPCode_Target_3XX_Count", ".", ".", ".", ".", { "region": "${aws_region}" } ],
+        [ ".", "HTTPCode_Target_5XX_Count", ".", ".", ".", ".", { "region": "${aws_region}" } ],
+        [ ".", "HTTPCode_Target_4XX_Count", ".", ".", ".", ".", { "region": "${aws_region}" } ]
       ],
       "legend": {
         "position": "bottom"
       },
-      "title": "ALB Requests by Status: Sum",
+      "title": "ALB Requests Count by Status",
       "region": "${aws_region}",
-      "liveData": false
+      "liveData": false,
+      "period": 300,
+      "view": "timeSeries",
+      "stacked": false,
+      "stat": "Sum"
     }
   },
   {
@@ -115,6 +119,129 @@
       "title": "ALB Healthy/Unhealthy Count: Max",
       "region": "${aws_region}",
       "liveData": false
+    }
+  },
+  {
+    "type": "metric",
+    "x": 0,
+    "y": 12,
+    "width": 12,
+    "height": 4,
+    "properties": {
+      "metrics": [
+        [ "AWS/RDS", "CPUUtilization", "DBClusterIdentifier", "${db_cluster_id}", { "period": 300, "stat": "Average" } ],
+        [ "...", { "period": 300, "stat": "p95" } ],
+        [ "...", { "period": 300, "stat": "Maximum" } ]
+      ],
+      "legend": {
+        "position": "bottom"
+      },
+      "region": "${aws_region}",
+      "liveData": false,
+      "timezone": "UTC",
+      "title": "RDS CPU: Avg/P95/Max"
+    }
+  },
+  {
+    "type": "metric",
+    "x": 12,
+    "y": 12,
+    "width": 12,
+    "height": 4,
+    "properties": {
+      "metrics": [
+        [ "AWS/RDS", "DatabaseConnections", "DBClusterIdentifier", "${db_cluster_id}", { "period": 60, "stat": "Sum" } ]
+      ],
+      "legend": {
+        "position": "bottom"
+      },
+      "region": "${aws_region}",
+      "liveData": false,
+      "timezone": "UTC",
+      "title": "RDS DB Connections"
+    }
+  },
+  {
+    "type": "metric",
+    "x": 0,
+    "y": 16,
+    "width": 12,
+    "height": 4,
+    "properties": {
+      "metrics": [
+        [ "AWS/RDS", "VolumeBytesUsed", "DBClusterIdentifier", "${db_cluster_id}", { "period": 300, "stat": "Average" } ]
+      ],
+      "legend": {
+        "position": "bottom"
+      },
+      "region": "${aws_region}",
+      "liveData": false,
+      "timezone": "UTC",
+      "title": "RDS Disk Usage: Avg"
+    }
+  },
+  {
+    "type": "metric",
+    "x": 12,
+    "y": 16,
+    "width": 12,
+    "height": 4,
+    "properties": {
+      "metrics": [
+        [ "AWS/RDS", "FreeableMemory", "DBClusterIdentifier", "${db_cluster_id}", { "period": 300, "stat": "Average" } ],
+        [ "...", { "period": 300, "stat": "Minimum" } ]
+      ],
+      "legend": {
+        "position": "bottom"
+      },
+      "region": "${aws_region}",
+      "liveData": false,
+      "timezone": "UTC",
+      "title": "RDS FreeableMemory: Avg / Min"
+    }
+  },
+  {
+    "type": "metric",
+    "x": 0,
+    "y": 20,
+    "width": 12,
+    "height": 4,
+    "properties": {
+      "metrics": [
+        [ "AWS/RDS", "ReadLatency", "DBClusterIdentifier", "${db_cluster_id}", { "period": 300, "stat": "Average" } ],
+        [ "...", { "period": 300, "stat": "Maximum" } ],
+        [ ".", "WriteLatency", "DBClusterIdentifier", "${db_cluster_id}", { "period": 300, "stat": "Average" } ],
+        [ "...", { "period": 300, "stat": "Maximum" } ]
+      ],
+      "legend": {
+        "position": "bottom"
+      },
+      "region": "${aws_region}",
+      "liveData": false,
+      "timezone": "UTC",
+      "title": "RDS Read / Write Latency: Avg / Max"
+    }
+  },
+  {
+    "type": "metric",
+    "x": 12,
+    "y": 20,
+    "width": 12,
+    "height": 4,
+    "properties": {
+      "metrics": [
+        [ "AWS/RDS", "ReadThroughput", "DBClusterIdentifier", "${db_cluster_id}", { "period": 300, "stat": "Average" } ],
+        [ "...", { "period": 300, "stat": "Maximum" } ],
+        [ ".", "WriteThroughput", "DBClusterIdentifier", "${db_cluster_id}", { "period": 300, "stat": "Average" } ],
+        [ "...", { "period": 300, "stat": "Maximum" } ]
+      ],
+      "legend": {
+        "position": "bottom"
+      },
+      "region": "${aws_region}",
+      "liveData": false,
+      "timezone": "UTC",
+      "title": "RDS Read / Write Throughput: Avg / Max"
     }
   }
   ]
