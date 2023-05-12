@@ -51,6 +51,7 @@ module "app" {
   auth0_domain         = var.auth0_domain
   sentry_dsn           = var.sentry_dsn
   load_test            = var.load_test
+  web_url              = var.web_url
   email_from_address   = var.email_from_address
 
   rotation_vpc_security_group_id = module.envconfig.database_ingress_security_group_id
