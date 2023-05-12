@@ -70,9 +70,9 @@ module "auth0_ses" {
 module "autoscaling" {
   source = "../../modules/autoscale"
 
-  env          = module.envconfig.env
-  ecs_cluster  = module.envconfig.ecs_cluster
-  service_name = module.app.service_name
+  env               = module.envconfig.env
+  ecs_cluster_name  = module.envconfig.ecs_cluster_name
+  service_name      = module.app.service_name
 
   min_capacity = 2
   max_capacity = 10
