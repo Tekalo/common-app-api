@@ -21,6 +21,11 @@ output "image" {
   value       = module.app.image
 }
 
+variable "web_url" {
+  description = "Tekalo web URL, where user will be redirected to after Auth0 password reset"
+  type        = string
+}
+
 variable "cli_image" {
   description = "Docker repository and tag for cli image"
   type        = string
