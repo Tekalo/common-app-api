@@ -14,7 +14,7 @@
         [".", "MemoryUtilization", ".", ".", ".", ".", { "yAxis": "right", "color": "#1f77b4", "stat": "Maximum" }]
       ],
       "region": "${aws_region}",
-      "title": "${ecs_cluster} / ${service_name}",
+      "title": "${ecs_cluster} / ${service_name} - CPU / Mem Max",
       "liveData": false,
       "period": 300
     }
@@ -35,7 +35,7 @@
       },
       "region": "${aws_region}",
       "liveData": false,
-      "title": "Cluster CPU: Avg + Max"
+      "title": "ECS Cluster CPU: Avg + Max"
     }
   },
   {
@@ -54,33 +54,33 @@
       },
       "region": "${aws_region}",
       "liveData": false,
-      "title": "Cluster MemoryReservation: Avg + Max"
+      "title": "ECS Cluster MemoryReservation: Avg + Max"
     }
   },
   {
     "type": "metric",
-    "x": 0,
-    "y": 8,
+    "x": 12,
+    "y": 4,
     "width": 12,
     "height": 4,
     "properties": {
       "metrics": [
         [ "AWS/ApplicationELB", "HTTPCode_Target_2xx_Count", "TargetGroup", "${tg_arn_suffix}", "LoadBalancer", "${lb_arn_suffix}", {"period": 300, "stat": "Sum"}],
-        [".", "HTTPCode_Target_3xx_Count", ".", ".", ".", ".", "." ],
-        [".", "HTTPCode_Target_4xx_Count", ".", ".", ".", ".", "." ],
-        [".", "HTTPCode_Target_5xx_Count", ".", ".", ".", ".", "." ]
+        [".", "HTTPCode_Target_3xx_Count", ".", "." ],
+        [".", "HTTPCode_Target_4xx_Count", ".", "." ],
+        [".", "HTTPCode_Target_5xx_Count", ".", "." ]
       ],
       "legend": {
         "position": "bottom"
       },
-      "title": "Requests by Status: Sum",
+      "title": "ALB Requests by Status: Sum",
       "region": "${aws_region}",
       "liveData": false
     }
   },
   {
     "type": "metric",
-    "x": 12,
+    "x": 0,
     "y": 8,
     "width": 12,
     "height": 4,
@@ -93,21 +93,21 @@
       "legend": {
         "position": "bottom"
       },
-      "title": "Backend ResponseTime: Avg/P95/P99",
+      "title": "ALB Backend ResponseTime: Avg/P95/P99",
       "region": "${aws_region}",
       "liveData": false
     }
   },
   {
     "type": "metric",
-    "x": 0,
-    "y": 12,
+    "x": 12,
+    "y": 8,
     "width": 12,
     "height": 4,
     "properties": {
       "metrics": [
         [ "AWS/ApplicationELB", "HealthyHostCount", "TargetGroup", "${tg_arn_suffix}", "LoadBalancer", "${lb_arn_suffix}", {"period": 300, "stat": "Maximum"}],
-        [".", "UnHealthyHostCount", ".", ".", ".", ".", "."]
+        [".", "UnHealthyHostCount", ".", "."]
       ],
       "legend": {
         "position": "bottom"
