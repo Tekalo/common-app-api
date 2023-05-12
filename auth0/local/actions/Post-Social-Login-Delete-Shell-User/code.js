@@ -46,7 +46,7 @@ exports.onExecutePostLogin = async (event, api) => {
         }
       }
     } catch (e) {
-        throw new Error(`Something went wrong when determining whether to delete shell user ${userEmail}`);
+      throw new Error(`Something went wrong when determining whether to delete shell user ${userEmail}`);
     }
   }
 };
