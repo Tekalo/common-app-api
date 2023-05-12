@@ -14,17 +14,13 @@ on:
         description: 'Environment to deploy to'
         type: string
         required: true
-      cluster-name:
-        description: 'ECS cluster name'
-        type: string
-        required: true
     secrets:
       TF_API_TOKEN:
         required: true
 
 env:
   AWS_REGION: us-east-1
-  ECS_CLUSTER: ${{ inputs.cluster-name }}
+  ECS_CLUSTER: ${{ inputs.env }}
   ECS_CLI_TASK: capp-${{ inputs.env }}-cli
   ECS_API_TASK: capp-${{ inputs.env }}-api
 
