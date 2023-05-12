@@ -54,7 +54,10 @@ jobs:
   deploy-staging:
     name: 'Deploy to Staging'
     needs: [changes, deploy-dev]
-    if: needs.changes.outputs.staging == 'true'
+    if: |
+      (success() || ! failure()) &&
+      (needs.deploy-dev.result == 'success' || needs.deploy-dev.result == 'skipped') &&
+      (needs.changes.outputs.staging == 'true')
     uses: ./.github/workflows/terraform-apply.yml
     with:
       env: staging
@@ -63,7 +66,11 @@ jobs:
   deploy-prod:
     name: 'Deploy to Prod'
     needs: [changes, deploy-staging]
-    if: needs.changes.outputs.prod == 'true'
+    if: |
+      (success() || ! failure()) &&
+      (needs.deploy-dev.result == 'success' || needs.deploy-dev.result == 'skipped') &&
+      (needs.deploy-staging.result == 'success' || needs.deploy-staging.result == 'skipped') &&
+      (needs.changes.outputs.prod == 'true')
     uses: ./.github/workflows/terraform-apply.yml
     with:
       env: prod

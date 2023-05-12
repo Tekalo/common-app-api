@@ -51,6 +51,11 @@ output "sentry_dsn" {
   value       = module.app.sentry_dsn
 }
 
+variable "web_url" {
+  description = "Tekalo web URL, where user will be redirected to after Auth0 password reset"
+  type        = string
+}
+
 variable "email_from_address" {
   description = "Address to use in the From field of all emails sent by Tekalo"
   type        = string

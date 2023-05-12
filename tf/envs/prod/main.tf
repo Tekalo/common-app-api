@@ -50,6 +50,7 @@ module "app" {
   cli_image            = var.cli_image
   auth0_domain         = var.auth0_domain
   sentry_dsn           = var.sentry_dsn
+  web_url              = var.web_url
   email_from_address   = var.email_from_address
   pagerduty_integration_url = var.pagerduty_integration_url
   notify_webhook       = var.notify_webhook

@@ -250,7 +250,7 @@ tenant:
   friendly_name: Tekalo
   picture_url: https://auth0-assets-axb.pages.dev/tekalogo-logo-small.png
   sandbox_version: '16'
-  support_email: ''
+  support_email: ##SUPPORT_EMAIL##
   support_url: ''
   universal_login:
     colors:

@@ -169,3 +169,9 @@ variable "email_from_address" {
   type        = string
   nullable    = false
 }
+
+variable "web_url" {
+  description = "Tekalo web URL, where user will be redirected to after Auth0 password reset"
+  type        = string
+  nullable    = false
+}

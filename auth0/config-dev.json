@@ -8,6 +8,7 @@
     "AUTH0_DOMAIN": "sf-capp-dev.us.auth0.com",
     "CUSTOM_DOMAIN": "capp-auth.dev.apps.futurestech.cloud",
     "CUSTOM_DOMAIN_CNAME": "sf-capp-dev-cd-z4fmyjkpgfzjll0v.edge.tenants.us.auth0.com",
+    "SUPPORT_EMAIL": "futuresengine-auth0@dev.apps.futurestech.cloud",
     "ALLOWED_WEB_ORIGINS": [
       "http://localhost:3000",
       "http://localhost:3001",
