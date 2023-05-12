@@ -98,7 +98,7 @@ module "autoscaling" {
         statistic   = "Maximum"
         unit        = "Percent"
         dimensions = {
-          "ClusterName" = module.envconfig.ecs_cluster
+          "ClusterName" = module.envconfig.ecs_cluster_name
           "ServiceName" = module.app.service_name
         }
       }]

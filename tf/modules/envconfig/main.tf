@@ -31,6 +31,10 @@ output "ecs_cluster" {
   value = data.aws_ecs_cluster.ecs.arn
 }
 
+output "ecs_cluster_name" {
+  value = data.aws.ecs_cluster.ecs.name
+}
+
 output "private_subnet_ids" {
   description = "Subnet IDs for main private subnet"
   value       = split(",", data.aws_cloudformation_stack.vpc.outputs["PrivateSubnets"])
