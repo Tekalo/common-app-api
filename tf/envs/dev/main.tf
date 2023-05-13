@@ -52,7 +52,6 @@ module "app" {
   sentry_dsn           = var.sentry_dsn
   web_url              = var.web_url
   email_from_address   = var.email_from_address
-  aws_region           = data.aws_region.current.name
 
   rotation_vpc_security_group_id = module.envconfig.database_ingress_security_group_id
   rotation_vpc_subnet_ids        = module.envconfig.private_subnet_ids
