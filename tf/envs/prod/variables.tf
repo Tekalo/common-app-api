@@ -56,11 +56,6 @@ variable "web_url" {
   type        = string
 }
 
-variable "aws_region" {
-  description = "AWS Region"
-  type        = string
-}
-
 variable "email_from_address" {
   description = "Address to use in the From field of all emails sent by Tekalo"
   type        = string

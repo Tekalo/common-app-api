@@ -26,11 +26,6 @@ variable "web_url" {
   type        = string
 }
 
-variable "aws_region" {
-  description = "AWS Region"
-  type        = string
-}
-
 variable "cli_image" {
   description = "Docker repository and tag for cli image"
   type        = string

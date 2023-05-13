@@ -139,9 +139,3 @@ variable "web_url" {
   type        = string
   nullable    = false
 }
-
-variable "aws_region" {
-  description = "AWS region"
-  type        = string
-  nullable    = false
-}

@@ -53,7 +53,7 @@ module "app" {
   load_test            = var.load_test
   web_url              = var.web_url
   email_from_address   = var.email_from_address
-  aws_region           = var.aws_region
+  aws_region           = data.aws_region.current.name
 
   rotation_vpc_security_group_id = module.envconfig.database_ingress_security_group_id
   rotation_vpc_subnet_ids        = module.envconfig.private_subnet_ids
