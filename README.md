@@ -146,8 +146,8 @@ If it is necessary to make changes in the Auth0 UI first (due to experimentation
    a0deploy export -c=auth0/config-dev.json --input_file=auth0/local/tenant.yaml
    ```
 
-3. Merge changes into `main`
-4. Promote your changes to Auth0 prod tenant:
+3. Open a PR with changes
+4. When changes merged into `main`, promote your changes to Auth0 prod tenant:
 
    ```bash
    export AUTH0_CLIENT_SECRET={auth0-secret-for-prod-tenant}
