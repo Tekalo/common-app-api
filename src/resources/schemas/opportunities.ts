@@ -64,7 +64,7 @@ const OpportunityBatchRequestBodySchema = z.object({
       pitchEssay: z.string().max(5000),
       source: z.string(),
       employmentType: z.string().max(255), // UI has dropdown, but they have input box for an "other" option
-      salaryRange: z.string().max(255),
+      salaryRange: z.string().max(255).optional(),
       desiredHoursPerWeek: z.string().max(255).nullable().optional(),
       desiredStartDate: z.coerce.date().optional(),
       desiredEndDate: z.coerce.date().optional(),
