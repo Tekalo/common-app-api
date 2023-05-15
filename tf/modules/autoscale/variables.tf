@@ -3,7 +3,7 @@ variable env {
   description = "Environment name"
 }
 
-variable ecs_cluster {
+variable ecs_cluster_name {
   type = string
 }
 
