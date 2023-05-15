@@ -97,7 +97,7 @@ variable "alarms_enabled" {
 
 variable "pagerduty_integration_url" {
   type        = string
-  default     = "http://example.com"
+  default     = "https://example.com"
 }
 
 output "pagerduty_integration_url" {
