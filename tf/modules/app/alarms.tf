@@ -190,10 +190,7 @@ data "aws_iam_policy_document" "alerts_topic_policy" {
        identifiers = ["cloudwatch.amazonaws.com"]
     }
     actions = [ "sns:Publish" ]
-    resources = [
-      "arn:aws:sns:us-east-1:${data.aws_caller_identity.current.account_id}:${var.env}-api-alerts",
-      "arn:aws:sns:us-east-1:${data.aws_caller_identity.current.account_id}:${var.env}-api-notifications"
-    ]
+    resources = [ "arn:aws:sns:us-east-1:${data.aws_caller_identity.current.account_id}:${var.env}-api-alerts" ]
   }
 }
 resource "aws_sns_topic" "capp_api_alerts" {
@@ -204,12 +201,24 @@ resource "aws_sns_topic" "capp_api_alerts" {
   policy     = data.aws_iam_policy_document.alerts_topic_policy.json
 }
 # Send lower urgency alarms here
+data "aws_iam_policy_document" "notifications_topic_policy" {
+  statement {
+    sid = "1"
+    principals {
+       type = "Service"
+       identifiers = ["cloudwatch.amazonaws.com"]
+    }
+    actions = [ "sns:Publish" ]
+    resources = [ "arn:aws:sns:us-east-1:${data.aws_caller_identity.current.account_id}:${var.env}-api-notifications" ]
+  }
+}
+
 resource "aws_sns_topic" "capp_api_notifications" {
   name        = "capp-${var.env}-api-notifications"
   tags        = {
     Name = "capp-${var.env}-api-notifications"
   }
-  policy      = data.aws_iam_policy_document.alerts_topic_policy.json
+  policy      = data.aws_iam_policy_document.notifications_topic_policy.json
 }
 
 resource "aws_sns_topic_subscription" "pagerduty" {
