@@ -170,6 +170,10 @@ resource "aws_ecs_task_definition" "api" {
           value = var.load_test != null ? var.load_test : "false"
         },
         {
+          name  = "WEB_URL"
+          value = "${var.web_url}"
+        },
+        {
           name  = "AWS_SES_FROM_ADDRESS"
           value = var.email_from_address
         },
