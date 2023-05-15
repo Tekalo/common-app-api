@@ -95,10 +95,46 @@ variable "alarms_enabled" {
   default     = false
 }
 
-variable "alarm_sns_arns" {
-  type        = list(string)
-  description = "ARN of the SNS topic to use for alarms"
-  default     = []
+variable "pagerduty_integration_url" {
+  type        = string
+  default     = "http://example.com"
+}
+
+output "pagerduty_integration_url" {
+  description = "Pagerduty url for alerts"
+  value       = var.pagerduty_integration_url
+}
+
+variable "notify_webhook" {
+  type        = string
+  default     = "http://example.com/"
+}
+
+output "notify_webhook" {
+  description = "Slack webhook for less urgent alerts"
+  value       = var.notify_webhook
+}
+
+variable "slack_channel" {
+  description = "Slack channel to route alerts to"
+  type        = string
+  default     = "commonapp-dev-notifications"
+}
+
+output "slack_channel" {
+  description = "Slack channel to route alerts to"
+  value       = var.slack_channel
+}
+
+variable "slack_username" {
+  description = "Slack username to post alerts as (will use aws account id if not specified)"
+  type        = string
+  default     = "aws-notifier"
+}
+
+output "slack_username" {
+  description = "Slack username to post alerts as (will use aws account id if not specified)"
+  value       = var.slack_username
 }
 
 variable "auth0_domain" {
