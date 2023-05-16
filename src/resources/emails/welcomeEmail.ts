@@ -1,4 +1,6 @@
-const getWelcomeEmail = (changePassLink: string) => `<html lang="en">
+const getWelcomeEmail = (changePassLink: string) => ({
+  subject: 'Thanks for applying to Tekalo!',
+  htmlBody: `<html lang="en">
     <head>
       <style>
         .email-contents {
@@ -61,9 +63,9 @@ const getWelcomeEmail = (changePassLink: string) => `<html lang="en">
               In the meantime, you can sign in to your Futures Engine account by using
               your Google or LinkedIn account associated with this email address,
               or by setting up a new password for your account with the link
-              below: 
+              below:
             </p>
-            <p>Set a <a class="ulink" href="${changePassLink}" 
+            <p>Set a <a class="ulink" href="${changePassLink}"
             target="_blank">new password</a> </p>
             <div class="signoff-text">
               <p>Thanks,</p>
@@ -80,6 +82,7 @@ const getWelcomeEmail = (changePassLink: string) => `<html lang="en">
         </div>
       </div>
     </body>
-  </html>`;
+  </html>`,
+});
 
 export default getWelcomeEmail;
