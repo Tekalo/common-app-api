@@ -53,10 +53,12 @@ module "app" {
   sentry_dsn           = var.sentry_dsn
   web_url              = var.web_url
   email_from_address   = var.email_from_address
+  reply_to_address     = var.reply_to_address
+
   pagerduty_integration_url = var.pagerduty_integration_url
-  notify_webhook       = var.notify_webhook
-  slack_channel        = var.slack_channel
-  slack_username       = var.slack_username
+  notify_webhook            = var.notify_webhook
+  slack_channel             = var.slack_channel
+  slack_username            = var.slack_username
 
   rotation_vpc_security_group_id = module.envconfig.database_ingress_security_group_id
   rotation_vpc_subnet_ids        = module.envconfig.private_subnet_ids
@@ -75,9 +77,9 @@ module "auth0_ses" {
 module "autoscaling" {
   source = "../../modules/autoscale"
 
-  env               = module.envconfig.env
-  ecs_cluster_name  = module.envconfig.ecs_cluster_name
-  service_name      = module.app.service_name
+  env              = module.envconfig.env
+  ecs_cluster_name = module.envconfig.ecs_cluster_name
+  service_name     = module.app.service_name
 
   min_capacity = 2
   max_capacity = 10
