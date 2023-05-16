@@ -32,7 +32,7 @@ class EmailService {
         },
         Subject: {
           Charset: 'UTF-8',
-          Data: 'Hallo from Tekalo!',
+          Data: 'Thanks for applying to Tekalo!',
         },
       },
       Source: sesFromAddress,

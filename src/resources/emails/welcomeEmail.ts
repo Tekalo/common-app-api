@@ -72,7 +72,7 @@ const getWelcomeEmail = (changePassLink: string) => `<html lang="en">
               <div class="footer-msg">
                 <p>
                   If you're having issues with your account, please don't hesitate
-                  to contact us by replying to his email.
+                  to contact us by replying to this email.
                 </p>
               </div>
             </div>
