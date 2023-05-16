@@ -11,7 +11,11 @@ describe('Email Service', () => {
     const emailService = new EmailService(
       dummySesService,
       getMockConfig({
-        aws: { sesFromAddress: 'baz@futurestech.com', region: 'us-east-1' },
+        aws: {
+          sesFromAddress: 'baz@futurestech.com',
+          sesReplyToAddress: 'replies@futurestech.com',
+          region: 'us-east-1',
+        },
       }),
     );
     const resp = emailService.generateWelcomeEmail(
@@ -23,6 +27,9 @@ describe('Email Service', () => {
       ToAddresses: ['foo@bar.com'],
     });
     expect(resp).toHaveProperty('Source', 'baz@futurestech.com');
+    expect(resp).toHaveProperty('ReplyToAddresses', [
+      'replies@futurestech.com',
+    ]);
     expect(resp).toHaveProperty('Message', {
       Subject: {
         Charset: 'UTF-8',
@@ -42,7 +49,11 @@ describe('Email Service', () => {
     const emailService = new EmailService(
       dummySesService,
       getMockConfig({
-        aws: { sesFromAddress: 'baz@futurestech.com', region: 'us-east-1' },
+        aws: {
+          sesFromAddress: 'baz@futurestech.com',
+          sesReplyToAddress: 'replies@futurestech.com',
+          region: 'us-east-1',
+        },
       }),
     );
     const result = emailService.generateApplicantDeletionEmail(
@@ -77,7 +88,11 @@ describe('Email Service', () => {
     const emailService = new EmailService(
       dummySesService,
       getMockConfig({
-        aws: { sesFromAddress: 'baz@futurestech.com', region: 'us-east-1' },
+        aws: {
+          sesFromAddress: 'baz@futurestech.com',
+          sesReplyToAddress: 'replies@futurestech.com',
+          region: 'us-east-1',
+        },
       }),
     );
     const welcomeEmailBody = emailService.generateWelcomeEmail(

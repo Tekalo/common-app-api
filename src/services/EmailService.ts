@@ -27,11 +27,13 @@ class EmailService {
     htmlBody: string;
     textBody?: string;
   }): SendEmailCommandInput {
-    const { sesFromAddress } = this.config.aws;
+    const { sesFromAddress, sesReplyToAddress } = this.config.aws;
     return {
       Destination: {
         ToAddresses: [recipientEmail],
       },
+      ReplyToAddresses:
+        sesFromAddress === sesReplyToAddress ? undefined : [sesReplyToAddress],
       Message: {
         Body: {
           Html: {

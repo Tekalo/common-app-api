@@ -122,10 +122,10 @@ resource "aws_ecs_task_definition" "api" {
         }
       ]
       healthCheck = {
-        retries = 10
-        command = [ "CMD-SHELL", "curl -f http://localhost:3000/health || exit 1" ]
-        timeout = 5
-        interval = 10
+        retries     = 10
+        command     = ["CMD-SHELL", "curl -f http://localhost:3000/health || exit 1"]
+        timeout     = 5
+        interval    = 10
         startPeriod = 30
       }
       logConfiguration = {
@@ -176,6 +176,10 @@ resource "aws_ecs_task_definition" "api" {
         {
           name  = "AWS_SES_FROM_ADDRESS"
           value = var.email_from_address
+        },
+        {
+          name  = "AWS_SES_REPLYTO_ADDRESS"
+          value = var.reply_to_address
         },
         {
           name  = "AWS_REGION"
@@ -411,9 +415,9 @@ data "aws_iam_policy_document" "task_ses_policy" {
 resource "aws_cloudwatch_dashboard" "main" {
   dashboard_name = "${aws_ecs_service.api.name}-${var.env}"
   dashboard_body = templatefile("${path.module}/cloudwatch_dashboard.tftpl", {
-    ecs_cluster = var.ecs_cluster_name,
-    service_name = aws_ecs_service.api.name,
-    aws_region = data.aws_region.current.name,
+    ecs_cluster   = var.ecs_cluster_name,
+    service_name  = aws_ecs_service.api.name,
+    aws_region    = data.aws_region.current.name,
     lb_arn_suffix = data.aws_lb.main.arn_suffix,
     tg_arn_suffix = aws_lb_target_group.api.arn_suffix,
     db_cluster_id = aws_rds_cluster.main.id
