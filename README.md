@@ -88,13 +88,19 @@ We make use of Prisma as an ORM over our Postgres database
 To make experimental database schema changes during local development (that will not use or effect existing migrations) execute:
 
 ```bash
-npm run prisma:update
+pnpm run prisma:update
 ```
 
 To seed your local instance with test data, execute:
 
 ```bash
-npm run prisma:seed
+pnpm run prisma:seed
+```
+
+If you want to merge changes to `prisma.schema` into main, you must create a new databae migration by executing:
+
+```bash
+pnpm run prisma:migrate
 ```
 
 ### Testing

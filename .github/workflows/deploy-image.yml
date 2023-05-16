@@ -72,7 +72,7 @@ jobs:
             -var 'cli_image=${{ inputs.image }}' \
             -var 'image=${{ steps.prev-image.outputs.prev-image }}'
 
-      - name: Initialize Prisma schema
+      - name: Apply Prisma migration
         id: prisma-init
         run: |
           set -euo pipefail
