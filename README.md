@@ -97,7 +97,7 @@ To seed your local instance with test data, execute:
 pnpm run prisma:seed
 ```
 
-If you want to merge changes to `prisma.schema` into main, you must create a new databae migration by executing:
+If you want to merge changes to `schema.prisma` into main, you must create a new database migration by executing:
 
 ```bash
 pnpm run prisma:migrate
