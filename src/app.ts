@@ -73,7 +73,7 @@ const getApp = (
   MonitoringService.addSentryErrorHandler(app);
 
   app.use(errorHandler);
-  app.set('port', process.env.PORT);
+  app.set('port', config.port);
   return app;
 };
 
