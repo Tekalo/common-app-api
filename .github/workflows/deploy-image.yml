@@ -72,14 +72,14 @@ jobs:
             -var 'cli_image=${{ inputs.image }}' \
             -var 'image=${{ steps.prev-image.outputs.prev-image }}'
 
-      - name: Initialize Prisma schema
+      - name: Apply Prisma migration
         id: prisma-init
         run: |
           set -euo pipefail
           run_result=$(aws ecs run-task \
             --cluster "$ECS_CLUSTER" \
             --task-definition "$ECS_CLI_TASK" \
-            --overrides '{"containerOverrides": [{"name": "capp-cli", "command": ["pnpm", "prisma", "db", "push", "--force-reset", "--accept-data-loss"]}]}')
+            --overrides '{"containerOverrides": [{"name": "capp-cli", "command": ["pnpm", "prisma", "migrate", "deploy"]}]}')
           echo ${run_result}
           container_arn=$(echo $run_result | jq -r '.tasks[0].taskArn')
           aws ecs wait tasks-stopped \

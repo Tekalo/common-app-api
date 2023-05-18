@@ -77,11 +77,11 @@ jobs:
       - name: Run linters
         run: ./scripts/lint-command.sh
 
+      - name: Apply prisma migrations
+        run: pnpx prisma migrate deploy
+
       - name: Run type checks
         run: pnpm check
-
-      - name: Push Prisma schema
-        run: pnpx prisma db push --accept-data-loss
 
       - name: Run tests
         run: ./scripts/test-command.sh

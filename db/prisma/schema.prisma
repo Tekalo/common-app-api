@@ -1,3 +1,5 @@
+// When making any changes to this file you intend to merge into main, make sure to run "pnpm prisma:migrate"
+
 generator client {
     provider = "prisma-client-js"
 }
