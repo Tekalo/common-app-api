@@ -178,3 +178,4 @@ ALTER TABLE "ApplicantDraftSubmission" ADD CONSTRAINT "ApplicantDraftSubmission_
 
 -- AddForeignKey
 ALTER TABLE "OpportunitySubmission" ADD CONSTRAINT "OpportunitySubmission_opportunityBatchId_fkey" FOREIGN KEY ("opportunityBatchId") REFERENCES "OpportunityBatch"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
