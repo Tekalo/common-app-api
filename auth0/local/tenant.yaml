@@ -537,9 +537,6 @@ clientGrants:
       - read:client_credentials
       - create:client_credentials
       - update:client_credentials
-  - client_id: Deploy CLI
-    audience: auth0.capp.com
-    scope: []
 guardianFactors:
   - name: duo
     enabled: false
