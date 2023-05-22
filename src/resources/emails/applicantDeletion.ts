@@ -1,7 +1,9 @@
 const getApplicantDeletionEmail = (
-  receipientEmail: string,
-  receipientName: string,
-) => `<html lang="en">
+  recipientEmail: string,
+  recipientName: string,
+) => ({
+  subject: 'Confirming your data deletion request',
+  htmlBody: `<html lang="en">
     <head>
       <style>
         .email-contents {
@@ -54,11 +56,11 @@ const getApplicantDeletionEmail = (
         <div class="email-body">
           <h1 class="heading-box">Tekalo Deletion Request</h1>
           <div class="content-box">
-            <p> Hi ${receipientName},
+            <p> Hi ${recipientName},
             <br>
             <p> Thank you for contacting Tekalo.</p>
-            <p>We hereby confirm that we have received your data deletion request. 
-            We are currently processing your request and will be updating you as soon as possible. 
+            <p>We hereby confirm that we have received your data deletion request.
+            We are currently processing your request and will be updating you as soon as possible.
             Note that by deleting your data you will no longer receive new matches via the Tekalo platform.
             </p>
             <div class="signoff-text">
@@ -76,6 +78,7 @@ const getApplicantDeletionEmail = (
         </div>
       </div>
     </body>
-  </html>`;
+  </html>`,
+});
 
 export default getApplicantDeletionEmail;
