@@ -35,6 +35,7 @@ const RoleType = z.enum([
   'product designer',
   'ux/ui designer',
   'ux researcher',
+  'data analyst',
   'other',
 ]);
 
