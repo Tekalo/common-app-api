@@ -23,7 +23,7 @@ resource "aws_rds_cluster" "main" {
 
   engine                 = "aurora-postgresql"
   engine_mode            = "provisioned"
-  engine_version         = "15"
+  engine_version         = "14"
   database_name          = "capp"
   master_username        = var.db_username
   master_password        = var.db_password
