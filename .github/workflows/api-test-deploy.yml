@@ -42,8 +42,6 @@ jobs:
 
     services:
       postgres:
-        # NOTE: This version must remain in sync with our AWS RDS version.
-        # Do not update if the same version is not available in AWS.
         image: postgres:15.3
         env:
           POSTGRES_PASSWORD: password
