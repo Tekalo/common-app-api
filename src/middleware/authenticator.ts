@@ -21,7 +21,8 @@ class Authenticator {
 
   // Attach to requests that can only authenticate with a JWT
   validateJwt(req: Request, res: Response, next: NextFunction) {
-    auth(this.authConfig)(req, res, (async () => {
+    auth(this.authConfig)(req, res, (async (err) => {
+      console.log(err);
       if (!req.auth) {
         next(
           new CAPPError({
