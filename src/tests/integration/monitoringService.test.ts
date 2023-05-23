@@ -34,6 +34,7 @@ describe('Monitoring Service', () => {
 
   const monitoringService = new MonitoringService(
     sentryTransport as () => Transport,
+    1.0,
   );
 
   it('should collect performance events', async () => {
