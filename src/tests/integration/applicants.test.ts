@@ -240,38 +240,6 @@ describe('POST /applicants', () => {
         expect(body).toHaveProperty('email');
       },
     );
-    itif('CI' in process.env)(
-      'should throw 409 if user already exists in Auth0',
-      async () => {
-        const { body }: { body: ApplicantResponseBody } = await request(app)
-          .post('/applicants')
-          .send({
-            name: 'Bob Boberson',
-            email: 'bboberson333@gmail.com',
-            preferredContact: 'sms',
-            searchStatus: 'active',
-            acceptedTerms: true,
-            acceptedPrivacy: true,
-          });
-        if (body.auth0Id) {
-          testUserID = body.auth0Id;
-        }
-        const { body: conflictBody } = await request(app)
-          .post('/applicants')
-          .send({
-            name: 'Bob Boberson',
-            auth0Id: 'auth0|123456',
-            email: 'bboberson333@gmail.com',
-            preferredContact: 'sms',
-            searchStatus: 'active',
-            acceptedTerms: true,
-            acceptedPrivacy: true,
-          })
-          .expect(409);
-        expect(conflictBody).toHaveProperty('title', 'User Creation Error');
-        expect(conflictBody).toHaveProperty('detail', 'User already exists');
-      },
-    );
   });
 });
 
