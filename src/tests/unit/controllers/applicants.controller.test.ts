@@ -9,11 +9,12 @@ import {
   Context,
   createMockContext,
 } from '@App/tests/util/context.js';
-import { getMockConfig } from '@App/tests/util/helpers.js';
+import { getMockConfig, getRandomString } from '@App/tests/util/helpers.js';
 import { Prisma } from '@prisma/client';
 import DummyMonitoringService from '@App/tests/fixtures/DummyMonitoringService.js';
 import SESService from '@App/services/SESService.js';
 import DummySESService from '@App/tests/fixtures/DummySesService.js';
+import { User } from 'auth0';
 
 let mockCtx: MockContext;
 let ctx: Context;
@@ -51,6 +52,64 @@ describe('Applicant Controller', () => {
         'problem.detail',
         'Unknown error in creating applicant',
       );
+    });
+    test('Should return successfully if user with email already exists in Auth0 but not in database', async () => {
+      const dummyAuthService = new DummyAuthService();
+      const mockAuth0UserId = `auth0|${getRandomString()}`;
+      dummyAuthService.createUser = () => {
+        throw new CAPPError({
+          title: 'User Creation Error',
+          detail: 'User already exists',
+          status: 409,
+        });
+      };
+
+      dummyAuthService.getExistingUser = () =>
+        Promise.resolve({
+          user_id: mockAuth0UserId,
+        } as User);
+
+      const mockEmailService = new EmailService(
+        new SESService(),
+        getMockConfig(),
+      );
+
+      const applicantController = new ApplicantController(
+        dummyAuthService,
+        ctx.prisma,
+        mockEmailService,
+        new DummyMonitoringService(),
+      );
+
+      mockCtx.prisma.applicant.create.mockResolvedValue({
+        id: 1,
+        phone: '777-777-7777',
+        name: 'Bob Boberson',
+        email: 'bboberson@schmidtfutures.com',
+        pronoun: 'she/hers',
+        preferredContact: 'email',
+        searchStatus: 'active',
+        acceptedTerms: new Date('2023-02-01'),
+        acceptedPrivacy: new Date('2023-02-01'),
+        auth0Id: 'auth0|1234',
+        isPaused: false,
+        followUpOptIn: false,
+      });
+
+      const resp = await applicantController.createApplicant({
+        name: 'Bob Boberson',
+        email: 'bboberson@schmidtfutures.com',
+        pronoun: 'he/his',
+        preferredContact: 'email',
+        searchStatus: 'active',
+        acceptedTerms: true,
+        acceptedPrivacy: true,
+      });
+      expect(resp).toMatchObject({
+        id: 1,
+        auth0Id: mockAuth0UserId,
+        email: 'bboberson@schmidtfutures.com',
+      });
     });
     test('Should return error if Prisma fails to create applicant', async () => {
       mockCtx.prisma.applicant.create.mockRejectedValue(

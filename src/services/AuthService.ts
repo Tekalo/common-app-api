@@ -65,6 +65,28 @@ class AuthService {
     }
   }
 
+  /**
+   * Returns all users with given email and connection type or undefined if user does not exist
+   * @param email
+   * @returns
+   */
+  async getExistingUser(
+    email: string,
+  ): Promise<User<AppMetadata, UserMetadata> | undefined> {
+    const auth0Client: ManagementClient = this.getClient();
+    // Auth0 stores all emails as lower case
+    const users = await auth0Client.getUsersByEmail(email.toLowerCase());
+    // In case we have multiple users, return the most recently logged in user
+    if (users.length > 1) {
+      return users.reduce((prevUser, currUser) => {
+        const prevLogin = prevUser.last_login || '';
+        const currLogin = currUser.last_login || '';
+        return prevLogin > currLogin ? prevUser : currUser;
+      });
+    }
+    return users[0];
+  }
+
   async deleteUser(id: string) {
     const auth0Client: ManagementClient = this.getClient();
     let responseBody;

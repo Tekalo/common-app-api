@@ -18,6 +18,7 @@ import EmailService from '@App/services/EmailService.js';
 import MonitoringService from '@App/services/MonitoringService.js';
 import { AuthResult } from 'express-oauth2-jwt-bearer';
 import { Claims } from '@App/resources/types/auth0.js';
+import { AppMetadata, User, UserMetadata } from 'auth0';
 
 class ApplicantController {
   private auth0Service: AuthService;
@@ -59,11 +60,27 @@ class ApplicantController {
       }
       auth0UserId = auth.payload.sub;
     } else {
-      const auth0User = await this.auth0Service.createUser({
-        name: data.name,
-        email: data.email,
-      });
-      auth0UserId = auth0User.user_id;
+      let auth0User: User<AppMetadata, UserMetadata> | undefined;
+      try {
+        auth0User = await this.auth0Service.createUser({
+          name: data.name,
+          email: data.email,
+        });
+      } catch (e) {
+        if (e instanceof CAPPError && e.problem.status === 409) {
+          auth0User = await this.auth0Service.getExistingUser(data.email);
+          if (!auth0User) {
+            throw new CAPPError({
+              title: 'Auth0 User Creation Error',
+              detail: 'Failed to get existing user',
+              status: 404,
+            });
+          }
+        } else {
+          throw e;
+        }
+      }
+      auth0UserId = auth0User?.user_id;
     }
     if (!auth0UserId) {
       throw new CAPPError({
