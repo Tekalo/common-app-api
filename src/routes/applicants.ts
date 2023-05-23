@@ -148,6 +148,16 @@ const applicantRoutes = (
     },
   );
 
+  router.get('/:id', (req: Request, res: Response, next: NextFunction) => {
+    const { id } = req.params;
+    applicantController
+      .getApplicant(Number(id))
+      .then((result) => {
+        res.status(200).json(result);
+      })
+      .catch((err) => next(err));
+  });
+
   return router;
 };
 
