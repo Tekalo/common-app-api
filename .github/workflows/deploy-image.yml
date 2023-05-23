@@ -51,7 +51,7 @@ jobs:
           SENTRY_PROJECT: ${{ vars.SENTRY_PROJECT }}
           # SENTRY_URL: https://sentry.io/
         with:
-          environment: prod
+          environment: ${{ inputs.env }}
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
