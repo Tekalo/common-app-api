@@ -150,12 +150,16 @@ const applicantRoutes = (
 
   router.get('/:id', (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
-    applicantController
-      .getApplicant(Number(id))
-      .then((result) => {
-        res.status(200).json(result);
-      })
-      .catch((err) => next(err));
+    if (config.env === 'dev') {
+      applicantController
+        .getApplicant(Number(id))
+        .then((result) => {
+          res.status(200).json(result);
+        })
+        .catch((err) => next(err));
+    } else {
+      next();
+    }
   });
 
   return router;
