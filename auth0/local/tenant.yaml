@@ -313,7 +313,7 @@ tenant:
   sandbox_version: "16"
   sessions:
     oidc_logout_prompt_enabled: false
-  support_email: ##SUPPORT_EMAIL##
+  support_email: "##SUPPORT_EMAIL##"
   support_url: ""
   universal_login:
     colors:
