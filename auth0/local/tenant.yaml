@@ -60,7 +60,7 @@ clients:
     custom_login_page_on: true
     description: >-
       This M2M Application is for interacting with the Auth0 CLI tool to do
-      deploys of our Auth0 Tenant data. 
+      deploys of our Auth0 Tenant data.
     grant_types:
       - client_credentials
     is_first_party: true
@@ -261,7 +261,7 @@ connections:
         time_step: 180
       email:
         body: ./email.html
-        from: '{{ application.name }} <root@auth0.com>'
+        from: "{{ application.name }} <root@auth0.com>"
         syntax: liquid
         subject: Welcome to {{ application.name }}
       disable_signup: false
@@ -295,7 +295,7 @@ connections:
       scope:
         - r_liteprofile
       profile: true
-      client_id: ''
+      client_id: ""
       basic_profile: false
       strategy_version: 2
 tenant:
@@ -310,38 +310,38 @@ tenant:
     disable_clickjack_protection_headers: false
   friendly_name: Tekalo
   picture_url: https://auth0-assets-axb.pages.dev/tekalogo-logo-small.png
-  sandbox_version: '16'
+  sandbox_version: "16"
   sessions:
     oidc_logout_prompt_enabled: false
-  support_email: futuresengine-auth0@dev.apps.futurestech.cloud
-  support_url: ''
+  support_email: ##SUPPORT_EMAIL##
+  support_url: ""
   universal_login:
     colors:
-      page_background: '#000000'
-      primary: '#635dff'
+      page_background: "#000000"
+      primary: "#635dff"
     passwordless:
       allow_magiclink_verify_without_session: true
 emailProvider:
   name: ses
   credentials:
-    accessKeyId: '##SES_ACCESS_KEY_ID##'
-    secretAccessKey: '##SES_ACCESS_SECRET_KEY##'
+    accessKeyId: "##SES_ACCESS_KEY_ID##"
+    secretAccessKey: "##SES_ACCESS_SECRET_KEY##"
     region: us-east-1
-  default_from_address: '@@DEFAULT_FROM_ADDRESS@@'
+  default_from_address: "@@DEFAULT_FROM_ADDRESS@@"
   enabled: true
 emailTemplates:
   - template: reset_email
     body: ./emailTemplates/reset_email.html
     enabled: true
-    from: ''
-    subject: ''
+    from: ""
+    subject: ""
     syntax: liquid
     urlLifetimeInSeconds: 432000
   - template: verify_email
     body: ./emailTemplates/verify_email.html
     enabled: false
-    from: ''
-    subject: ''
+    from: ""
+    subject: ""
     syntax: liquid
     urlLifetimeInSeconds: 432000
 clientGrants:
@@ -624,8 +624,8 @@ guardianPhoneFactorMessageTypes:
 roles: []
 branding:
   colors:
-    page_background: '#000000'
-    primary: '#635dff'
+    page_background: "#000000"
+    primary: "#635dff"
   logo_url: https://auth0-assets-axb.pages.dev/tekalogo-logo-small.png
   templates:
     - template: universal_login
@@ -636,8 +636,8 @@ prompts:
       login:
         login:
           forgotPasswordText: I need a new password
-          description: ' '
-          title: 'Choose a way to sign in  '
+          description: " "
+          title: "Choose a way to sign in  "
           logoAltText: ${companyName} logo
       login-password:
         login-password:
@@ -740,24 +740,24 @@ themes:
       widget_border_weight: 0
       show_widget_shadow: true
     colors:
-      primary_button: '#317BB5'
-      primary_button_label: '#ffffff'
-      secondary_button_border: '#c9cace'
-      secondary_button_label: '#1e212a'
-      base_focus_color: '#317BB5'
-      base_hover_color: '#000000'
-      links_focused_components: '#317BB5'
-      header: '#1e212a'
-      body_text: '#1e212a'
-      widget_background: '#ffffff'
-      widget_border: '#c9cace'
-      input_labels_placeholders: '#65676e'
-      input_filled_text: '#000000'
-      input_border: '#c9cace'
-      input_background: '#ffffff'
-      icons: '#65676e'
-      error: '#d03c38'
-      success: '#13a688'
+      primary_button: "#317BB5"
+      primary_button_label: "#ffffff"
+      secondary_button_border: "#c9cace"
+      secondary_button_label: "#1e212a"
+      base_focus_color: "#317BB5"
+      base_hover_color: "#000000"
+      links_focused_components: "#317BB5"
+      header: "#1e212a"
+      body_text: "#1e212a"
+      widget_background: "#ffffff"
+      widget_border: "#c9cace"
+      input_labels_placeholders: "#65676e"
+      input_filled_text: "#000000"
+      input_border: "#c9cace"
+      input_background: "#ffffff"
+      icons: "#65676e"
+      error: "#d03c38"
+      success: "#13a688"
     displayName: Unnamed Theme
     fonts:
       font_url: https://auth0-assets-axb.pages.dev/Figtree-VariableFont_wght.woff2
@@ -783,8 +783,8 @@ themes:
       links_style: normal
     page_background:
       page_layout: center
-      background_color: '#ffffff'
-      background_image_url: ''
+      background_color: "#ffffff"
+      background_image_url: ""
     widget:
       logo_position: center
       logo_url: https://auth0-assets-axb.pages.dev/tekalo-logo.png
