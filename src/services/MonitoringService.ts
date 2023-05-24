@@ -7,10 +7,18 @@ import configLoader from './configLoader.js';
 class MonitoringService {
   private sentryTransport?: () => Transport;
 
-  constructor(sentryTransport?: () => Transport) {
+  private sampleRate;
+
+  private tracesSampleRate;
+
+  constructor(sentryTransport?: () => Transport, tracesSampleRate?: number) {
     if (sentryTransport) {
       this.sentryTransport = sentryTransport;
     }
+    // error sample rate: set a low error sample rate for load test
+    this.sampleRate = 1.0;
+    // performance sample rate
+    this.tracesSampleRate = tracesSampleRate || 0.25;
   }
 
   sentryInit(app: Application) {
@@ -24,8 +32,6 @@ class MonitoringService {
     }: { env: string; sentryDSN: string; isLoadTest: boolean } =
       configLoader.loadConfig();
 
-    // set a low sample rate for load test
-    const sampleRate = isLoadTest ? 0.1 : 1.0;
     const options: Sentry.NodeOptions = {
       dsn: sentryDSN,
       environment: env,
@@ -54,11 +60,11 @@ class MonitoringService {
         }
         return event;
       },
-      sampleRate,
+      sampleRate: isLoadTest ? 0.1 : this.sampleRate,
       // Set tracesSampleRate to 1.0 to capture 100%
       // of transactions for performance monitoring.
       // We recommend adjusting this value in production
-      tracesSampleRate: sampleRate,
+      tracesSampleRate: isLoadTest ? 0.1 : this.tracesSampleRate,
       // turning this off because it causes the RequestHandler to hang when tests are run.
       autoSessionTracking: false,
 
