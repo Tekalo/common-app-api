@@ -119,6 +119,8 @@ Run only a specific test: `pnpm run test --files=unit/controllers/applicants.con
 
 ## Auth0 Configuration Management
 
+Prequisite: install auth0deploy `npm install -g auth0-deploy-cli`
+
 Changes to Auth0 tenants should ideally **NOT** be made in the Auth0 UI, but rather modified in the configuration in the `/auth0` directory.
 
 The `/local` directory maintains the working version of our Auth0 Dev and Prod tenants setup. `local/tenant.yaml` holds general configuration, and the rest of the `/local` directory holds supplemental templates/settings.

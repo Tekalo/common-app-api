@@ -85,19 +85,27 @@ clients:
       rotation_type: non-rotating
     sso_disabled: false
     token_endpoint_auth_method: client_secret_post
-  - name: Tekalo
+  - name: Tekalo Dev
     allowed_clients: []
-    allowed_logout_urls: '@@ALLOWED_LOGOUT_URLS@@'
+    allowed_logout_urls:
+      - http://localhost:3000
+      - http://localhost:3001
+      - https://*.common-app-frontend.pages.dev
     app_type: spa
-    callbacks: '@@TEKALO_CLIENT_CALLBACKS@@'
+    callbacks:
+      - http://localhost:3000
+      - http://localhost:3001
+      - https://*.common-app-frontend.pages.dev
     client_aliases: []
+    client_metadata: {}
     cross_origin_auth: false
     custom_login_page_on: true
-    description: The front-end React web application for Tekalo
+    description: The development (dev) front-end React web application for Tekalo
     grant_types:
       - authorization_code
       - implicit
       - refresh_token
+    initiate_login_uri: https://develop.common-app-frontend.pages.dev/sign-in
     is_first_party: true
     is_token_endpoint_ip_header_trusted: false
     jwt_configuration:
@@ -121,7 +129,10 @@ clients:
       rotation_type: non-rotating
     sso_disabled: false
     token_endpoint_auth_method: none
-    web_origins: '@@ALLOWED_WEB_ORIGINS@@'
+    web_origins:
+      - http://localhost:3000
+      - http://localhost:3001
+      - https://*.common-app-frontend.pages.dev
   - name: Tekalo Management
     allowed_clients: []
     app_type: non_interactive
@@ -154,14 +165,57 @@ clients:
       rotation_type: non-rotating
     sso_disabled: false
     token_endpoint_auth_method: client_secret_post
+  - name: Tekalo Staging
+    allowed_clients: []
+    allowed_logout_urls:
+      - https://*.common-app-frontend.pages.dev
+    app_type: spa
+    callbacks:
+      - https://*.common-app-frontend.pages.dev
+    client_aliases: []
+    client_metadata: {}
+    cross_origin_auth: false
+    custom_login_page_on: true
+    description: The staging environment front-end React web application for Tekalo
+    grant_types:
+      - authorization_code
+      - implicit
+      - refresh_token
+    initiate_login_uri: https://staging.common-app-frontend.pages.dev/sign-in
+    is_first_party: true
+    is_token_endpoint_ip_header_trusted: false
+    jwt_configuration:
+      alg: RS256
+      lifetime_in_seconds: 36000
+      secret_encoded: false
+    logo_uri: https://auth0-assets-axb.pages.dev/tekalogo-logo-small.png
+    native_social_login:
+      apple:
+        enabled: false
+      facebook:
+        enabled: false
+    oidc_conformant: true
+    refresh_token:
+      expiration_type: non-expiring
+      leeway: 0
+      infinite_token_lifetime: true
+      infinite_idle_token_lifetime: true
+      token_lifetime: 2592000
+      idle_token_lifetime: 1296000
+      rotation_type: non-rotating
+    sso_disabled: false
+    token_endpoint_auth_method: none
+    web_origins:
+      - https://*.common-app-frontend.pages.dev
 databases:
   - name: Username-Password-Authentication
     strategy: auth0
     enabled_clients:
       - API Explorer Application
       - Deploy CLI
-      - Tekalo
+      - Tekalo Dev
       - Tekalo Management
+      - Tekalo Staging
     is_domain_connection: false
     options:
       mfa:
@@ -198,6 +252,7 @@ connections:
     enabled_clients:
       - Deploy CLI
       - Tekalo Management
+      - Tekalo Staging
     is_domain_connection: false
     options:
       name: email
@@ -216,8 +271,9 @@ connections:
     enabled_clients:
       - API Explorer Application
       - Deploy CLI
-      - Tekalo
+      - Tekalo Dev
       - Tekalo Management
+      - Tekalo Staging
     is_domain_connection: false
     options:
       email: true
@@ -231,7 +287,8 @@ connections:
   - name: linkedin
     strategy: linkedin
     enabled_clients:
-      - Tekalo
+      - Tekalo Dev
+      - Tekalo Staging
     is_domain_connection: false
     options:
       email: false
@@ -242,6 +299,7 @@ connections:
       basic_profile: false
       strategy_version: 2
 tenant:
+  allowed_logout_urls: []
   enabled_locales:
     - en
   flags:
@@ -253,7 +311,9 @@ tenant:
   friendly_name: Tekalo
   picture_url: https://auth0-assets-axb.pages.dev/tekalogo-logo-small.png
   sandbox_version: '16'
-  support_email: ##SUPPORT_EMAIL##
+  sessions:
+    oidc_logout_prompt_enabled: false
+  support_email: futuresengine-auth0@dev.apps.futurestech.cloud
   support_url: ''
   universal_login:
     colors:
@@ -485,7 +545,6 @@ clientGrants:
       - read:guardian_factors
       - update:guardian_factors
       - read:guardian_enrollments
-      - delete:guardian_enrollments
       - create:guardian_enrollment_tickets
       - read:user_idp_tokens
       - create:passwords_checking_job
@@ -660,7 +719,7 @@ attackProtection:
         rate: 1200
 logStreams: []
 customDomains:
-  - domain: ##CUSTOM_DOMAIN##
+  - domain: capp-auth.dev.apps.futurestech.cloud
     primary: true
     status: ready
     tls_policy: recommended
@@ -668,7 +727,7 @@ customDomains:
     verification:
       methods:
         - name: cname
-          record: ##CUSTOM_DOMAIN_CNAME##
+          record: sf-capp-dev-cd-z4fmyjkpgfzjll0v.edge.tenants.us.auth0.com
 themes:
   - borders:
       button_border_weight: 1

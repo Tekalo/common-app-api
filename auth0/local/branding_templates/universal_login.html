@@ -113,10 +113,11 @@
           </h5>
           <div class="sign-up-link">
             Don't have an account? Sign up
-            <a
-              href="https://head.common-app-frontend.pages.dev/sign-up/applicants"
-              >here</a
-            >
+            {% if application.name == "Tekalo Dev" %}
+            <a href="https://develop.common-app-frontend.pages.dev/sign-up/applicants">here</a>
+            {% else %}
+            <a href="https://staging.common-app-frontend.pages.dev/sign-up/applicants">here</a>
+            {% endif %}
           </div>
         </div>
         {%- auth0:widget -%}
