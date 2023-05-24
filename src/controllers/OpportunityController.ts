@@ -4,12 +4,17 @@ import {
   OpportunityBatchRequestBody,
   OpportunityBatchResponseBody,
 } from '@App/resources/types/opportunities.js';
+import EmailService from '@App/services/EmailService.js';
+import MonitoringService from '@App/services/MonitoringService.js';
 
 class OpportunityController {
   private prisma: PrismaClient;
 
-  constructor(prisma: PrismaClient) {
+  private emailService: EmailService;
+
+  constructor(prisma: PrismaClient, emailService: EmailService) {
     this.prisma = prisma;
+    this.emailService = emailService;
   }
 
   async createOpportunityBatch(
@@ -38,22 +43,37 @@ class OpportunityController {
         desiredImpactExp: submission.desiredImpactExp,
       }));
       const { organization, contact } = data;
-      return await this.prisma.opportunityBatch.create({
-        data: {
-          orgName: organization.name,
-          orgType: organization.type,
-          orgSize: organization.size,
-          contactName: contact.name,
-          contactPhone: contact.phone,
-          contactEmail: contact.email,
-          equalOpportunityEmployer: organization.eoe,
-          opportunitySubmissions: {
-            createMany: {
-              data: opportunitySubmissions,
+      const returnBatch: OpportunityBatchResponseBody =
+        await this.prisma.opportunityBatch.create({
+          data: {
+            orgName: organization.name,
+            orgType: organization.type,
+            orgSize: organization.size,
+            contactName: contact.name,
+            contactPhone: contact.phone,
+            contactEmail: contact.email,
+            equalOpportunityEmployer: organization.eoe,
+            opportunitySubmissions: {
+              createMany: {
+                data: opportunitySubmissions,
+              },
             },
           },
-        },
-      });
+        });
+      try {
+        const welcomeEmail = this.emailService.generateOrgWelcomeEmail(
+          returnBatch.contactEmail,
+        );
+        await this.emailService.sendEmail(welcomeEmail);
+      } catch (e) {
+        MonitoringService.logError(
+          new CAPPError(
+            { title: 'Failed to send post sign-up org welcome email' },
+            e instanceof Error ? { cause: e } : undefined,
+          ),
+        );
+      }
+      return returnBatch;
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         throw new CAPPError(

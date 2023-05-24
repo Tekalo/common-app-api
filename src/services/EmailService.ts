@@ -3,6 +3,7 @@ import { SendEmailCommandInput } from '@aws-sdk/client-ses';
 import {
   getWelcomeEmail,
   getApplicantDeletionEmail,
+  getOrgWelcomeEmail,
 } from '@App/resources/emails/index.js';
 import SESService from './SESService.js';
 
@@ -70,6 +71,13 @@ class EmailService {
   ): SendEmailCommandInput {
     return this.generateEmailTemplate({
       ...getApplicantDeletionEmail(recipientEmail, recipientName),
+      recipientEmail,
+    });
+  }
+
+  generateOrgWelcomeEmail(recipientEmail: string): SendEmailCommandInput {
+    return this.generateEmailTemplate({
+      ...getOrgWelcomeEmail(),
       recipientEmail,
     });
   }
