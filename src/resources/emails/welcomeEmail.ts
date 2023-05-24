@@ -65,8 +65,8 @@ const getWelcomeEmail = (changePassLink: string) => ({
               or by setting up a new password for your account with the link
               below:
             </p>
-            <p>Set a <a class="ulink" href="${changePassLink}"
-            target="_blank">new password</a> </p>
+            <p><a class="ulink" href="${changePassLink}"
+            target="_blank">Set a new password</a> </p>
             <div class="signoff-text">
               <p>Thanks,</p>
               <p>Tekalo Team</p>
