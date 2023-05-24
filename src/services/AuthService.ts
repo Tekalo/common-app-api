@@ -66,7 +66,8 @@ class AuthService {
   }
 
   /**
-   * Returns all users with given email and connection type or undefined if user does not exist
+   * Returns all users with given email or undefined if user does not exist
+   * Multiple users with same email but different 'connection' types may exist
    * @param email
    * @returns
    */

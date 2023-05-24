@@ -34,7 +34,8 @@ describe('Auth Service', () => {
       > => Promise.resolve([mockAuth0User]);
       return dummyAuth0ManagementClient;
     });
-    expect(await authService.getExistingUser(email)).toEqual(mockAuth0User);
+    const user = await authService.getExistingUser(email);
+    expect(user).toEqual(mockAuth0User);
   });
   test('should return auth0 user with most recent login if more than one exists for a given email', async () => {
     const authService = new AuthService();
@@ -85,9 +86,10 @@ describe('Auth Service', () => {
       > => Promise.resolve(mockAuth0Users);
       return dummyAuth0ManagementClient;
     });
-    expect(await authService.getExistingUser(email)).toEqual(mockAuth0Users[1]);
+    const user = await authService.getExistingUser(email);
+    expect(user).toEqual(mockAuth0Users[1]);
   });
-  test('should return auth0 user none have last login set', async () => {
+  test('should return any auth0 user if none have last login set', async () => {
     const authService = new AuthService();
     const email = `bboberson${getRandomString()}@gmail.com`;
     const mockAuth0Users = [
@@ -121,8 +123,6 @@ describe('Auth Service', () => {
         ],
         name: 'Bob Boberson',
         user_id: 'google-oauth2|zzz7890',
-        last_login: '2023-05-22T16:16:35.239Z',
-        logins_count: 1,
       },
     ];
     const dummyAuth0ManagementClient = new DummyAuth0ManagementClient({
@@ -136,6 +136,7 @@ describe('Auth Service', () => {
       > => Promise.resolve(mockAuth0Users);
       return dummyAuth0ManagementClient;
     });
-    expect(await authService.getExistingUser(email)).toEqual(mockAuth0Users[1]);
+    const user = await authService.getExistingUser(email);
+    expect(user).toHaveProperty('user_id');
   });
 });

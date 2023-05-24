@@ -72,7 +72,7 @@ class ApplicantController {
           if (!auth0User) {
             throw new CAPPError({
               title: 'Auth0 User Creation Error',
-              detail: 'Failed to get existing user',
+              detail: 'Could not find existing user',
               status: 404,
             });
           }
