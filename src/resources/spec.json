@@ -66,8 +66,28 @@
               }
             }
           },
-          "409": {
+          "400": {
             "description": "Bad Input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Resource Exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error",
             "content": {
               "application/json": {
                 "schema": {
