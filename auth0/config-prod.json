@@ -10,9 +10,9 @@
     "CUSTOM_DOMAIN_CNAME": "sf-futuresengine-prod-cd-qcv5xfnoybi5wajv.edge.tenants.us.auth0.com",
     "SUPPORT_EMAIL": "support@futuresengine.com",
     "AUTH0_DOMAIN": "sf-futuresengine-prod.us.auth0.com",
-    "ALLOWED_WEB_ORIGINS": ["https://www.tekalo.org"],
-    "TEKALO_CLIENT_CALLBACKS": ["https://www.tekalo.org"],
-    "ALLOWED_LOGOUT_URLS": ["https://www.tekalo.org"],
-    "DEFAULT_FROM_ADDRESS": "tekalo@dev.apps.futurestech.cloud"
+    "ALLOWED_WEB_ORIGINS": ["https://www.tekalo.org", "https://*.common-app-frontend.pages.dev"],
+    "TEKALO_CLIENT_CALLBACKS": ["https://www.tekalo.org", "https://*.common-app-frontend.pages.dev"],
+    "ALLOWED_LOGOUT_URLS": ["https://www.tekalo.org", "https://*.common-app-frontend.pages.dev"],
+    "DEFAULT_FROM_ADDRESS": "support@futuresengine.com"
   }
 }
