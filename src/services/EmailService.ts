@@ -29,6 +29,7 @@ class EmailService {
     textBody?: string;
   }): SendEmailCommandInput {
     const { sesFromAddress, sesReplyToAddress } = this.config.aws;
+    const friendlyFromAddress = `Tekalo <${sesFromAddress}>`;
     return {
       Destination: {
         ToAddresses: [recipientEmail],
@@ -51,7 +52,7 @@ class EmailService {
           Data: subject,
         },
       },
-      Source: sesFromAddress,
+      Source: friendlyFromAddress,
     };
   }
 
