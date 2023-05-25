@@ -77,7 +77,7 @@ describe('POST /applicants', () => {
         .expect(400);
       expect(body).toHaveProperty('title', 'Validation Error');
     });
-    it('should throw 400 error when creating a duplicate applicant in database', async () => {
+    it('should throw 409 error when creating a duplicate applicant in database', async () => {
       await request(dummyAuthApp).post('/applicants').send({
         name: 'Bob Boberson',
         email: 'bboberson123@gmail.com',
@@ -96,8 +96,8 @@ describe('POST /applicants', () => {
           acceptedTerms: true,
           acceptedPrivacy: true,
         })
-        .expect(400);
-      expect(body).toHaveProperty('title', 'User Creation Error');
+        .expect(409);
+      expect(body).toHaveProperty('detail', 'User already exists');
     });
     test('Should throw error if request body has invalid preferred contact', async () => {
       const { body } = await request(dummyAuthApp)

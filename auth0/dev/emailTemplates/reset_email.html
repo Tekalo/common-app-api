@@ -1,9 +1,4 @@
-const getApplicantDeletionEmail = (
-  recipientEmail: string,
-  recipientName: string,
-) => ({
-  subject: 'Confirming your data deletion request',
-  htmlBody: `<html lang="en">
+<html lang="en">
     <head>
       <style>
         .email-contents {
@@ -18,11 +13,31 @@ const getApplicantDeletionEmail = (
           margin-left: 40px;
           margin-right: 40px;
         }
+
+        @media (max-width: 600px) {
+          .heading-box {
+            padding: 30px;
+            font-size: 20px;
+            font-weight: 500;
+            margin-bottom: 10px;
+          }
+        }
+
         .footer-msg {
           margin-top: 60px;
         }
         .signoff-text{
           font-weight: 400;
+          font-size: 14px;
+        }
+        .thank-you-text > p {
+          margin: 0;
+          left: 0px;
+          top: 144px;
+        }
+        .thank-you-text {
+          margin-bottom: 8px;
+          padding: 14px;
         }
         .logo {
           width: 105px;
@@ -38,11 +53,24 @@ const getApplicantDeletionEmail = (
           min-width: 340px;
           max-width: 70%;
         }
+        .confirm-btn {
+          display: inline-block;
+          background: #317BB5;
+          padding: 14px 46px; 
+          border-radius: 4px;
+          text-decoration: none;
+          margin-bottom: 20px;
+        }
+        .confirm-btn > span {
+          color: white;
+        }
+        .ulink {
+          color: #317BB5 !important;
+        }
       </style>
       <meta charset="UTF-8" />
       <meta http-equiv="X-UA-Compatible" content="IE=edge" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>Document</title>
     </head>
     <body>
       <div class="email-contents">
@@ -54,23 +82,30 @@ const getApplicantDeletionEmail = (
           />
         </div>
         <div class="email-body">
-          <h1 class="heading-box">Tekalo Deletion Request</h1>
+          <h1 class="heading-box">You requested a new password</h1>
           <div class="content-box">
-            <p> Hi ${recipientName},
-            <br>
-            <p> Thank you for contacting Tekalo.</p>
-            <p>We hereby confirm that we have received your data deletion request.
-            We are currently processing your request and will be updating you as soon as possible.
-            Note that by deleting your data you will no longer receive new matches via the Tekalo platform.
+            <p>
+              If this was you, confirm the password change
+            </p>
+
+            <a rel="noopener" class="confirm-btn" target="_blank" href="{{url}}">
+                <span>Confirm</span>
+            </a>
+
+            <p class="explicit-url">
+              Or follow this URL <a class="ulink" href="{{url}}"
+            target="_blank">{{url}}</a>
             </p>
             <div class="signoff-text">
-              <p>Thanks,</p>
-              <p>Tekalo Team</p>
+              <div class="thank-you-text">
+                 <p>Thanks,</p>
+                <p>Tekalo Team</p>
+              </div>
               <hr />
               <div class="footer-msg">
                 <p>
                   If you're having issues with your account, please don't hesitate
-                  to contact us by replying to his email.
+                  to contact us by replying to this email.
                 </p>
               </div>
             </div>
@@ -78,7 +113,4 @@ const getApplicantDeletionEmail = (
         </div>
       </div>
     </body>
-  </html>`,
-});
-
-export default getApplicantDeletionEmail;
+  </html>

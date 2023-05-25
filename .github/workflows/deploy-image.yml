@@ -72,6 +72,7 @@ jobs:
             -var 'cli_image=${{ inputs.image }}' \
             -var 'image=${{ steps.prev-image.outputs.prev-image }}'
 
+      ## REMOVE prisma migrate resolve after this runs once in dev/prod!
       - name: Apply Prisma migration
         id: prisma-init
         run: |

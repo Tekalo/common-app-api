@@ -100,6 +100,29 @@
         "workAuthorization": "authorized",
         "essayResponse": "Good ideas are always crazy until they're not."
       }
+    },
+    {
+      "name": "Test User",
+      "auth0Id": "auth0|646e229228a6a8d001632860",
+      "email": "testuser-develop@schmidtfutures.com",
+      "preferredContact": "email",
+      "pronoun": "he/his",
+      "searchStatus": "future",
+      "application": {
+        "originTag": "SF",
+        "resumeUrl": null,
+        "lastOrg": "",
+        "lastRole": "Just some guy",
+        "yoe": ">11",
+        "currentLocation": "The Moon",
+        "interestGovt": true,
+        "interestGovtEmplTypes": ["paid"],
+        "openToRelocate": "not sure",
+        "openToRemote": "no remote",
+        "previousImpactExperience": true,
+        "workAuthorization": "authorized",
+        "essayResponse": "Flubber was the greatest movie of all time"
+      }
     }
   ]
 }

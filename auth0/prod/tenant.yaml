@@ -98,6 +98,7 @@ clients:
       - authorization_code
       - implicit
       - refresh_token
+    initiate_login_uri: https://www.tekalo.org/sign-in
     is_first_party: true
     is_token_endpoint_ip_header_trusted: false
     jwt_configuration:
@@ -124,8 +125,9 @@ clients:
     web_origins: '@@ALLOWED_WEB_ORIGINS@@'
   - name: Tekalo Management
     allowed_clients: []
+    allowed_logout_urls: '@@ALLOWED_LOGOUT_URLS@@'
     app_type: non_interactive
-    callbacks: []
+    callbacks: '@@TEKALO_CLIENT_CALLBACKS@@'
     client_aliases: []
     cross_origin_auth: false
     custom_login_page_on: true
@@ -154,6 +156,7 @@ clients:
       rotation_type: non-rotating
     sso_disabled: false
     token_endpoint_auth_method: client_secret_post
+    web_origins: '@@ALLOWED_WEB_ORIGINS@@'
 databases:
   - name: Username-Password-Authentication
     strategy: auth0
@@ -221,10 +224,41 @@ connections:
     is_domain_connection: false
     options:
       email: true
+      gmail: false
+      orkut: false
       scope:
         - email
         - profile
+      sites: false
+      tasks: false
+      blogger: false
       profile: true
+      youtube: false
+      calendar: false
+      contacts: false
+      analytics: false
+      client_id: '##GOOGLE_CLIENT_ID##'
+      moderator: false
+      coordinate: false
+      picasa_web: false
+      google_plus: false
+      google_books: false
+      google_drive: false
+      spreadsheets: false
+      client_secret: '##GOOGLE_CLIENT_SECRET##'
+      document_list: false
+      latitude_best: false
+      latitude_city: false
+      url_shortener: false
+      webmaster_tools: false
+      chrome_web_store: false
+      allowed_audiences: ''
+      adsense_management: false
+      google_drive_files: false
+      coordinate_readonly: false
+      google_cloud_storage: false
+      content_api_for_shopping: false
+      google_affiliate_network: false
   - name: linkedin
     strategy: linkedin
     enabled_clients:
@@ -245,6 +279,7 @@ tenant:
     new_universal_login_experience_enabled: true
     universal_login: true
     revoke_refresh_token_grant: false
+    require_signed_request_object: false
     dashboard_new_onboarding: false
     disable_clickjack_protection_headers: false
   friendly_name: Tekalo
@@ -267,6 +302,13 @@ emailProvider:
   default_from_address: '@@DEFAULT_FROM_ADDRESS@@'
   enabled: true
 emailTemplates:
+  - template: reset_email
+    body: ./emailTemplates/reset_email.html
+    enabled: true
+    from: ''
+    subject: ''
+    syntax: liquid
+    urlLifetimeInSeconds: 432000
   - template: verify_email
     body: ./emailTemplates/verify_email.html
     enabled: false
@@ -639,8 +681,8 @@ actions:
     deployed: true
     runtime: node16
     secrets:
-      - name: clientSecret
       - name: clientId
+      - name: clientSecret
     status: built
     supported_triggers:
       - id: post-login
@@ -683,16 +725,6 @@ attackProtection:
         max_attempts: 50
         rate: 1200
 logStreams: []
-customDomains:
-  - domain: ##CUSTOM_DOMAIN##
-    primary: true
-    status: ready
-    tls_policy: recommended
-    type: auth0_managed_certs
-    verification:
-      methods:
-        - name: cname
-          record: ##CUSTOM_DOMAIN_CNAME##
 themes:
   - borders:
       button_border_weight: 1

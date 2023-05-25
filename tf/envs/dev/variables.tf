@@ -61,6 +61,11 @@ variable "email_from_address" {
   type        = string
 }
 
+variable "reply_to_address" {
+  description = "Address to use in the Reply-To field of all emails sent by Tekalo"
+  type        = string
+}
+
 variable "auth0_from_email_address" {
   description = "Email address to use in From field of all emails sent by auth0"
   type        = string

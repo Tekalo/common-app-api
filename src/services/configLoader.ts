@@ -18,6 +18,9 @@ function loadConfig(): BaseConfig {
     aws: {
       sesFromAddress:
         process.env.AWS_SES_FROM_ADDRESS || 'tekalo@dev.apps.futurestech.cloud',
+      sesReplyToAddress:
+        process.env.AWS_SES_REPLYTO_ADDRESS ||
+        'tekalo@dev.apps.futurestech.cloud',
       region: process.env.AWS_REGION || 'us-east-1',
     },
     sentryDSN: process.env.SENTRY_DSN || '',

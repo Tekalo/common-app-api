@@ -92,7 +92,6 @@ class ApplicantController {
         );
         await this.emailService.sendEmail(welcomeEmail);
       } catch (e) {
-        // TODO: Add alarm to sentry we need to alert on these but we still return 200
         MonitoringService.logError(
           new CAPPError(
             { title: 'Failed to send post sign-up set password email' },
@@ -107,6 +106,17 @@ class ApplicantController {
       };
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        // P2002 indicates unique constraint failed (in our case, either email or auth0id)
+        if (e.code === 'P2002') {
+          throw new CAPPError(
+            {
+              title: 'User Creation Error',
+              detail: 'User already exists',
+              status: 409,
+            },
+            e instanceof Error ? { cause: e } : undefined,
+          );
+        }
         throw new CAPPError(
           {
             title: 'User Creation Error',

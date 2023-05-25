@@ -96,8 +96,8 @@ variable "alarms_enabled" {
 }
 
 variable "pagerduty_integration_url" {
-  type        = string
-  default     = "https://example.com"
+  type    = string
+  default = "https://example.com"
 }
 
 output "pagerduty_integration_url" {
@@ -106,8 +106,8 @@ output "pagerduty_integration_url" {
 }
 
 variable "notify_webhook" {
-  type        = string
-  default     = "http://example.com/"
+  type    = string
+  default = "http://example.com/"
 }
 
 output "notify_webhook" {
@@ -172,6 +172,12 @@ variable "email_from_address" {
   description = "Address to use in the From field of all emails sent by Tekalo"
   type        = string
   nullable    = false
+}
+
+variable "reply_to_address" {
+  description = "Address to use in the Reply-To field of all emails sent by Tekalo"
+  type        = string
+  nullable    = true
 }
 
 variable "web_url" {

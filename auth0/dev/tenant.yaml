@@ -1,0 +1,734 @@
+rules: []
+rulesConfigs: []
+hooks: []
+pages:
+  - name: login
+    enabled: false
+    html: ./pages/login.html
+  - name: password_reset
+    enabled: false
+    html: ./pages/password_reset.html
+resourceServers:
+  - name: Common-App-API
+    identifier: auth0.capp.com
+    allow_offline_access: false
+    scopes:
+      - value: create:users
+        description: create a user
+      - value: read:branding
+        description: get branding
+      - value: read:users
+        description: get users
+      - value: read:user_idp_tokens
+        description: get user idp tokens
+      - value: read:connections
+        description: get connections
+    signing_alg: RS256
+    skip_consent_for_verifiable_first_party_clients: true
+    token_lifetime: 86400
+    token_lifetime_for_web: 7200
+clients:
+  - name: API Explorer Application
+    app_type: non_interactive
+    cross_origin_auth: false
+    custom_login_page_on: true
+    grant_types:
+      - client_credentials
+    is_first_party: true
+    is_token_endpoint_ip_header_trusted: false
+    jwt_configuration:
+      alg: RS256
+      lifetime_in_seconds: 36000
+      secret_encoded: false
+    oidc_conformant: true
+    refresh_token:
+      expiration_type: non-expiring
+      leeway: 0
+      infinite_token_lifetime: true
+      infinite_idle_token_lifetime: true
+      token_lifetime: 31557600
+      idle_token_lifetime: 2592000
+      rotation_type: non-rotating
+    sso_disabled: false
+    token_endpoint_auth_method: client_secret_post
+  - name: Deploy CLI
+    allowed_clients: []
+    app_type: non_interactive
+    callbacks: []
+    client_aliases: []
+    cross_origin_auth: false
+    custom_login_page_on: true
+    description: >-
+      This M2M Application is for interacting with the Auth0 CLI tool to do
+      deploys of our Auth0 Tenant data. 
+    grant_types:
+      - client_credentials
+    is_first_party: true
+    is_token_endpoint_ip_header_trusted: false
+    jwt_configuration:
+      alg: RS256
+      lifetime_in_seconds: 36000
+      secret_encoded: false
+    native_social_login:
+      apple:
+        enabled: false
+      facebook:
+        enabled: false
+    oidc_conformant: true
+    refresh_token:
+      expiration_type: non-expiring
+      leeway: 0
+      infinite_token_lifetime: true
+      infinite_idle_token_lifetime: true
+      token_lifetime: 31557600
+      idle_token_lifetime: 2592000
+      rotation_type: non-rotating
+    sso_disabled: false
+    token_endpoint_auth_method: client_secret_post
+  - name: Tekalo
+    allowed_clients: []
+    allowed_logout_urls: '@@ALLOWED_LOGOUT_URLS@@'
+    app_type: spa
+    callbacks: '@@TEKALO_CLIENT_CALLBACKS@@'
+    client_aliases: []
+    cross_origin_auth: false
+    custom_login_page_on: true
+    description: The front-end React web application for Tekalo
+    grant_types:
+      - authorization_code
+      - implicit
+      - refresh_token
+    is_first_party: true
+    is_token_endpoint_ip_header_trusted: false
+    jwt_configuration:
+      alg: RS256
+      lifetime_in_seconds: 36000
+      secret_encoded: false
+    logo_uri: https://auth0-assets-axb.pages.dev/tekalogo-logo-small.png
+    native_social_login:
+      apple:
+        enabled: false
+      facebook:
+        enabled: false
+    oidc_conformant: true
+    refresh_token:
+      expiration_type: non-expiring
+      leeway: 0
+      infinite_token_lifetime: true
+      infinite_idle_token_lifetime: true
+      token_lifetime: 2592000
+      idle_token_lifetime: 1296000
+      rotation_type: non-rotating
+    sso_disabled: false
+    token_endpoint_auth_method: none
+    web_origins: '@@ALLOWED_WEB_ORIGINS@@'
+  - name: Tekalo Management
+    allowed_clients: []
+    app_type: non_interactive
+    callbacks: []
+    client_aliases: []
+    cross_origin_auth: false
+    custom_login_page_on: true
+    description: The M2M Application used to communicate with the Auth0 Management API
+    grant_types:
+      - client_credentials
+    is_first_party: true
+    is_token_endpoint_ip_header_trusted: false
+    jwt_configuration:
+      alg: RS256
+      lifetime_in_seconds: 36000
+      secret_encoded: false
+    native_social_login:
+      apple:
+        enabled: false
+      facebook:
+        enabled: false
+    oidc_conformant: true
+    refresh_token:
+      expiration_type: non-expiring
+      leeway: 0
+      infinite_token_lifetime: true
+      infinite_idle_token_lifetime: true
+      token_lifetime: 31557600
+      idle_token_lifetime: 2592000
+      rotation_type: non-rotating
+    sso_disabled: false
+    token_endpoint_auth_method: client_secret_post
+databases:
+  - name: Username-Password-Authentication
+    strategy: auth0
+    enabled_clients:
+      - API Explorer Application
+      - Deploy CLI
+      - Tekalo
+      - Tekalo Management
+    is_domain_connection: false
+    options:
+      mfa:
+        active: true
+        return_enroll_settings: true
+      import_mode: false
+      customScripts:
+        change_password: ./databases/Username-Password-Authentication/change_password.js
+        create: ./databases/Username-Password-Authentication/create.js
+        delete: ./databases/Username-Password-Authentication/delete.js
+        get_user: ./databases/Username-Password-Authentication/get_user.js
+        login: ./databases/Username-Password-Authentication/login.js
+        verify: ./databases/Username-Password-Authentication/verify.js
+      disable_signup: true
+      passwordPolicy: good
+      password_history:
+        size: 5
+        enable: false
+      strategy_version: 2
+      password_dictionary:
+        enable: false
+        dictionary: []
+      brute_force_protection: true
+      password_no_personal_info:
+        enable: false
+      password_complexity_options:
+        min_length: 8
+      enabledDatabaseCustomization: false
+    realms:
+      - Username-Password-Authentication
+connections:
+  - name: email
+    strategy: email
+    enabled_clients:
+      - Deploy CLI
+      - Tekalo Management
+    is_domain_connection: false
+    options:
+      name: email
+      totp:
+        length: 6
+        time_step: 180
+      email:
+        body: ./email.html
+        from: '{{ application.name }} <root@auth0.com>'
+        syntax: liquid
+        subject: Welcome to {{ application.name }}
+      disable_signup: false
+      brute_force_protection: true
+  - name: google-oauth2
+    strategy: google-oauth2
+    enabled_clients:
+      - API Explorer Application
+      - Deploy CLI
+      - Tekalo
+      - Tekalo Management
+    is_domain_connection: false
+    options:
+      email: true
+      scope:
+        - email
+        - profile
+      profile: true
+      upstream_params:
+        prompt:
+          value: select_account
+  - name: linkedin
+    strategy: linkedin
+    enabled_clients:
+      - Tekalo
+    is_domain_connection: false
+    options:
+      email: false
+      scope:
+        - r_liteprofile
+      profile: true
+      client_id: ''
+      basic_profile: false
+      strategy_version: 2
+tenant:
+  enabled_locales:
+    - en
+  flags:
+    new_universal_login_experience_enabled: true
+    universal_login: true
+    revoke_refresh_token_grant: false
+    dashboard_new_onboarding: false
+    disable_clickjack_protection_headers: false
+  friendly_name: Tekalo
+  picture_url: https://auth0-assets-axb.pages.dev/tekalogo-logo-small.png
+  sandbox_version: '16'
+  support_email: ##SUPPORT_EMAIL##
+  support_url: ''
+  universal_login:
+    colors:
+      page_background: '#000000'
+      primary: '#635dff'
+    passwordless:
+      allow_magiclink_verify_without_session: true
+emailProvider:
+  name: ses
+  credentials:
+    accessKeyId: '##SES_ACCESS_KEY_ID##'
+    secretAccessKey: '##SES_ACCESS_SECRET_KEY##'
+    region: us-east-1
+  default_from_address: '@@DEFAULT_FROM_ADDRESS@@'
+  enabled: true
+emailTemplates:
+  - template: reset_email
+    body: ./emailTemplates/reset_email.html
+    enabled: true
+    from: ''
+    subject: ''
+    syntax: liquid
+    urlLifetimeInSeconds: 432000
+  - template: verify_email
+    body: ./emailTemplates/verify_email.html
+    enabled: false
+    from: ''
+    subject: ''
+    syntax: liquid
+    urlLifetimeInSeconds: 432000
+clientGrants:
+  - client_id: API Explorer Application
+    audience: https://##AUTH0_DOMAIN##/api/v2/
+    scope:
+      - read:client_grants
+      - create:client_grants
+      - delete:client_grants
+      - update:client_grants
+      - read:users
+      - update:users
+      - delete:users
+      - create:users
+      - read:users_app_metadata
+      - update:users_app_metadata
+      - delete:users_app_metadata
+      - create:users_app_metadata
+      - read:user_custom_blocks
+      - create:user_custom_blocks
+      - delete:user_custom_blocks
+      - create:user_tickets
+      - read:clients
+      - update:clients
+      - delete:clients
+      - create:clients
+      - read:client_keys
+      - update:client_keys
+      - delete:client_keys
+      - create:client_keys
+      - read:connections
+      - update:connections
+      - delete:connections
+      - create:connections
+      - read:resource_servers
+      - update:resource_servers
+      - delete:resource_servers
+      - create:resource_servers
+      - read:device_credentials
+      - update:device_credentials
+      - delete:device_credentials
+      - create:device_credentials
+      - read:rules
+      - update:rules
+      - delete:rules
+      - create:rules
+      - read:rules_configs
+      - update:rules_configs
+      - delete:rules_configs
+      - read:hooks
+      - update:hooks
+      - delete:hooks
+      - create:hooks
+      - read:actions
+      - update:actions
+      - delete:actions
+      - create:actions
+      - read:email_provider
+      - update:email_provider
+      - delete:email_provider
+      - create:email_provider
+      - blacklist:tokens
+      - read:stats
+      - read:insights
+      - read:tenant_settings
+      - update:tenant_settings
+      - read:logs
+      - read:logs_users
+      - read:shields
+      - create:shields
+      - update:shields
+      - delete:shields
+      - read:anomaly_blocks
+      - delete:anomaly_blocks
+      - update:triggers
+      - read:triggers
+      - read:grants
+      - delete:grants
+      - read:guardian_factors
+      - update:guardian_factors
+      - read:guardian_enrollments
+      - delete:guardian_enrollments
+      - create:guardian_enrollment_tickets
+      - read:user_idp_tokens
+      - create:passwords_checking_job
+      - delete:passwords_checking_job
+      - read:custom_domains
+      - delete:custom_domains
+      - create:custom_domains
+      - update:custom_domains
+      - read:email_templates
+      - create:email_templates
+      - update:email_templates
+      - read:mfa_policies
+      - update:mfa_policies
+      - read:roles
+      - create:roles
+      - delete:roles
+      - update:roles
+      - read:prompts
+      - update:prompts
+      - read:branding
+      - update:branding
+      - delete:branding
+      - read:log_streams
+      - create:log_streams
+      - delete:log_streams
+      - update:log_streams
+      - create:signing_keys
+      - read:signing_keys
+      - update:signing_keys
+      - read:limits
+      - update:limits
+      - create:role_members
+      - read:role_members
+      - delete:role_members
+      - read:entitlements
+      - read:attack_protection
+      - update:attack_protection
+      - read:organizations
+      - update:organizations
+      - create:organizations
+      - delete:organizations
+      - create:organization_members
+      - read:organization_members
+      - delete:organization_members
+      - create:organization_connections
+      - read:organization_connections
+      - update:organization_connections
+      - delete:organization_connections
+      - create:organization_member_roles
+      - read:organization_member_roles
+      - delete:organization_member_roles
+      - create:organization_invitations
+      - read:organization_invitations
+      - delete:organization_invitations
+      - read:organizations_summary
+      - create:actions_log_sessions
+      - create:authentication_methods
+      - read:authentication_methods
+      - update:authentication_methods
+      - delete:authentication_methods
+  - client_id: Deploy CLI
+    audience: https://##AUTH0_DOMAIN##/api/v2/
+    scope:
+      - read:client_grants
+      - create:client_grants
+      - update:client_grants
+      - read:users
+      - update:users
+      - create:users
+      - read:users_app_metadata
+      - update:users_app_metadata
+      - create:users_app_metadata
+      - read:user_custom_blocks
+      - create:user_custom_blocks
+      - create:user_tickets
+      - read:clients
+      - update:clients
+      - create:clients
+      - read:client_keys
+      - update:client_keys
+      - create:client_keys
+      - read:connections
+      - update:connections
+      - create:connections
+      - read:resource_servers
+      - update:resource_servers
+      - create:resource_servers
+      - read:device_credentials
+      - update:device_credentials
+      - create:device_credentials
+      - read:rules
+      - update:rules
+      - create:rules
+      - read:rules_configs
+      - update:rules_configs
+      - read:hooks
+      - update:hooks
+      - create:hooks
+      - read:actions
+      - update:actions
+      - create:actions
+      - read:email_provider
+      - update:email_provider
+      - create:email_provider
+      - blacklist:tokens
+      - read:stats
+      - read:insights
+      - read:tenant_settings
+      - update:tenant_settings
+      - read:logs
+      - read:logs_users
+      - read:shields
+      - create:shields
+      - update:shields
+      - read:anomaly_blocks
+      - update:triggers
+      - read:triggers
+      - read:grants
+      - read:guardian_factors
+      - update:guardian_factors
+      - read:guardian_enrollments
+      - delete:guardian_enrollments
+      - create:guardian_enrollment_tickets
+      - read:user_idp_tokens
+      - create:passwords_checking_job
+      - read:custom_domains
+      - create:custom_domains
+      - update:custom_domains
+      - read:email_templates
+      - create:email_templates
+      - update:email_templates
+      - read:mfa_policies
+      - update:mfa_policies
+      - read:roles
+      - create:roles
+      - update:roles
+      - read:prompts
+      - update:prompts
+      - read:branding
+      - update:branding
+      - read:log_streams
+      - create:log_streams
+      - update:log_streams
+      - create:signing_keys
+      - read:signing_keys
+      - update:signing_keys
+      - read:limits
+      - update:limits
+      - create:role_members
+      - read:role_members
+      - read:entitlements
+      - read:attack_protection
+      - update:attack_protection
+      - read:organizations
+      - update:organizations
+      - create:organizations
+      - create:organization_members
+      - read:organization_members
+      - create:organization_connections
+      - read:organization_connections
+      - update:organization_connections
+      - create:organization_member_roles
+      - read:organization_member_roles
+      - create:organization_invitations
+      - read:organization_invitations
+      - read:organizations_summary
+      - create:actions_log_sessions
+      - create:authentication_methods
+      - read:authentication_methods
+      - update:authentication_methods
+      - read:client_credentials
+      - create:client_credentials
+      - update:client_credentials
+guardianFactors:
+  - name: duo
+    enabled: false
+  - name: email
+    enabled: false
+  - name: otp
+    enabled: false
+  - name: push-notification
+    enabled: false
+  - name: recovery-code
+    enabled: false
+  - name: sms
+    enabled: false
+  - name: webauthn-platform
+    enabled: false
+  - name: webauthn-roaming
+    enabled: false
+guardianFactorProviders: []
+guardianFactorTemplates: []
+guardianPolicies:
+  policies: []
+guardianPhoneFactorSelectedProvider:
+  provider: auth0
+guardianPhoneFactorMessageTypes:
+  message_types: []
+roles: []
+branding:
+  colors:
+    page_background: '#000000'
+    primary: '#635dff'
+  logo_url: https://auth0-assets-axb.pages.dev/tekalogo-logo-small.png
+  templates:
+    - template: universal_login
+      body: ./branding_templates/universal_login.html
+prompts:
+  customText:
+    en:
+      login:
+        login:
+          forgotPasswordText: I need a new password
+          description: ' '
+          title: 'Choose a way to sign in  '
+          logoAltText: ${companyName} logo
+      login-password:
+        login-password:
+          forgotPasswordText: Don't know your password?
+      reset-password:
+        reset-password-email:
+          emailDescription: >-
+            If we have an email associated with your account, you will receive
+            an email.
+        reset-password-error:
+          descriptionExpired: >-
+            To reset your password, return to the login page and select "I need
+            a new password" to send a new email.
+          descriptionGeneric: >-
+            To reset your password, return to the login page and select "I need
+            a new password" to send a new email.
+  identifier_first: false
+  universal_login_experience: new
+migrations: {}
+actions:
+  - name: Add-Email-To-Access-Token
+    code: ./actions/Add-Email-To-Access-Token/code.js
+    dependencies: []
+    deployed: true
+    runtime: node16
+    secrets: []
+    status: built
+    supported_triggers:
+      - id: post-login
+        version: v3
+  - name: Post-Social-Login-Delete-Shell-User
+    code: ./actions/Post-Social-Login-Delete-Shell-User/code.js
+    dependencies: []
+    deployed: true
+    runtime: node16
+    secrets:
+      - name: clientSecret
+      - name: clientId
+    status: built
+    supported_triggers:
+      - id: post-login
+        version: v3
+triggers:
+  post-login:
+    - action_name: Add-Email-To-Access-Token
+      display_name: Add-Email-To-Access-Token
+    - action_name: Post-Social-Login-Delete-Shell-User
+      display_name: Post-Social-Login-Delete-Shell-User
+organizations: []
+attackProtection:
+  breachedPasswordDetection:
+    enabled: false
+    shields: []
+    admin_notification_frequency: []
+    method: standard
+    stage:
+      pre-user-registration:
+        shields: []
+  bruteForceProtection:
+    enabled: true
+    shields:
+      - block
+      - user_notification
+    mode: count_per_identifier_and_ip
+    allowlist: []
+    max_attempts: 10
+  suspiciousIpThrottling:
+    enabled: true
+    shields:
+      - admin_notification
+      - block
+    allowlist: []
+    stage:
+      pre-login:
+        max_attempts: 100
+        rate: 864000
+      pre-user-registration:
+        max_attempts: 50
+        rate: 1200
+logStreams: []
+customDomains:
+  - domain: ##CUSTOM_DOMAIN##
+    primary: true
+    status: ready
+    tls_policy: recommended
+    type: auth0_managed_certs
+    verification:
+      methods:
+        - name: cname
+          record: ##CUSTOM_DOMAIN_CNAME##
+themes:
+  - borders:
+      button_border_weight: 1
+      buttons_style: rounded
+      button_border_radius: 3
+      input_border_weight: 1
+      inputs_style: rounded
+      input_border_radius: 3
+      widget_corner_radius: 5
+      widget_border_weight: 0
+      show_widget_shadow: true
+    colors:
+      primary_button: '#317BB5'
+      primary_button_label: '#ffffff'
+      secondary_button_border: '#c9cace'
+      secondary_button_label: '#1e212a'
+      base_focus_color: '#317BB5'
+      base_hover_color: '#000000'
+      links_focused_components: '#317BB5'
+      header: '#1e212a'
+      body_text: '#1e212a'
+      widget_background: '#ffffff'
+      widget_border: '#c9cace'
+      input_labels_placeholders: '#65676e'
+      input_filled_text: '#000000'
+      input_border: '#c9cace'
+      input_background: '#ffffff'
+      icons: '#65676e'
+      error: '#d03c38'
+      success: '#13a688'
+    displayName: Unnamed Theme
+    fonts:
+      font_url: https://auth0-assets-axb.pages.dev/Figtree-VariableFont_wght.woff2
+      reference_text_size: 16
+      title:
+        bold: false
+        size: 150
+      subtitle:
+        bold: false
+        size: 87.5
+      body_text:
+        bold: false
+        size: 87.5
+      buttons_text:
+        bold: false
+        size: 100
+      input_labels:
+        bold: false
+        size: 100
+      links:
+        bold: true
+        size: 87.5
+      links_style: normal
+    page_background:
+      page_layout: center
+      background_color: '#ffffff'
+      background_image_url: ''
+    widget:
+      logo_position: center
+      logo_url: https://auth0-assets-axb.pages.dev/tekalo-logo.png
+      logo_height: 30
+      header_text_alignment: center
+      social_buttons_layout: bottom

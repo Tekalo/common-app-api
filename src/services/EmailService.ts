@@ -16,53 +16,62 @@ class EmailService {
     this.config = config;
   }
 
-  generateWelcomeEmail(receipientEmail: string, changePassLink: string) {
-    const email = getWelcomeEmail(changePassLink);
-    const { sesFromAddress } = this.config.aws;
+  generateEmailTemplate({
+    recipientEmail,
+    subject,
+    htmlBody,
+    textBody,
+  }: {
+    recipientEmail: string;
+    subject: string;
+    htmlBody: string;
+    textBody?: string;
+  }): SendEmailCommandInput {
+    const { sesFromAddress, sesReplyToAddress } = this.config.aws;
     return {
       Destination: {
-        ToAddresses: [receipientEmail],
+        ToAddresses: [recipientEmail],
       },
+      ReplyToAddresses:
+        sesFromAddress === sesReplyToAddress ? undefined : [sesReplyToAddress],
       Message: {
         Body: {
           Html: {
             Charset: 'UTF-8',
-            Data: email,
+            Data: htmlBody,
           },
+          Text:
+            textBody === undefined
+              ? undefined
+              : { Charset: 'UTF-8', Data: textBody },
         },
         Subject: {
           Charset: 'UTF-8',
-          Data: 'Thanks for applying to Tekalo!',
+          Data: subject,
         },
       },
       Source: sesFromAddress,
     };
   }
 
+  generateWelcomeEmail(
+    recipientEmail: string,
+    changePassLink: string,
+  ): SendEmailCommandInput {
+    return this.generateEmailTemplate({
+      ...getWelcomeEmail(changePassLink),
+      recipientEmail,
+    });
+  }
+
   generateApplicantDeletionEmail(
-    receipientEmail: string,
+    recipientEmail: string,
     recipientName: string,
-  ) {
-    const email = getApplicantDeletionEmail(receipientEmail, recipientName);
-    const { sesFromAddress } = this.config.aws;
-    return {
-      Destination: {
-        ToAddresses: [receipientEmail],
-      },
-      Message: {
-        Body: {
-          Html: {
-            Charset: 'UTF-8',
-            Data: email,
-          },
-        },
-        Subject: {
-          Charset: 'UTF-8',
-          Data: 'Hallo from Tekalo!',
-        },
-      },
-      Source: sesFromAddress,
-    };
+  ): SendEmailCommandInput {
+    return this.generateEmailTemplate({
+      ...getApplicantDeletionEmail(recipientEmail, recipientName),
+      recipientEmail,
+    });
   }
 
   async sendEmail(emailToSend: SendEmailCommandInput) {
