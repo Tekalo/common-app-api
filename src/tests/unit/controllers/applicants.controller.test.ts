@@ -9,12 +9,11 @@ import {
   Context,
   createMockContext,
 } from '@App/tests/util/context.js';
-import { getMockConfig, getRandomString } from '@App/tests/util/helpers.js';
+import { getMockConfig } from '@App/tests/util/helpers.js';
 import { Prisma } from '@prisma/client';
 import DummyMonitoringService from '@App/tests/fixtures/DummyMonitoringService.js';
 import SESService from '@App/services/SESService.js';
 import DummySESService from '@App/tests/fixtures/DummySesService.js';
-import { User } from 'auth0';
 
 let mockCtx: MockContext;
 let ctx: Context;
@@ -53,9 +52,8 @@ describe('Applicant Controller', () => {
         'Unknown error in creating applicant',
       );
     });
-    test('Should return successfully if user with email already exists in Auth0 but not in database', async () => {
+    test('Should return 401 if user with email already exists in Auth0 but not in database', async () => {
       const dummyAuthService = new DummyAuthService();
-      const mockAuth0UserId = `auth0|${getRandomString()}`;
       dummyAuthService.createUser = () => {
         throw new CAPPError({
           title: 'User Creation Error',
@@ -64,10 +62,7 @@ describe('Applicant Controller', () => {
         });
       };
 
-      dummyAuthService.getExistingUser = () =>
-        Promise.resolve({
-          user_id: mockAuth0UserId,
-        } as User);
+      dummyAuthService.userExists = () => Promise.resolve(true);
 
       const mockEmailService = new EmailService(
         new SESService(),
@@ -95,21 +90,17 @@ describe('Applicant Controller', () => {
         isPaused: false,
         followUpOptIn: false,
       });
-
-      const resp = await applicantController.createApplicant({
-        name: 'Bob Boberson',
-        email: 'bboberson@schmidtfutures.com',
-        pronoun: 'he/his',
-        preferredContact: 'email',
-        searchStatus: 'active',
-        acceptedTerms: true,
-        acceptedPrivacy: true,
-      });
-      expect(resp).toMatchObject({
-        id: 1,
-        auth0Id: mockAuth0UserId,
-        email: 'bboberson@schmidtfutures.com',
-      });
+      await expect(
+        applicantController.createApplicant({
+          name: 'Bob Boberson',
+          email: 'bboberson@schmidtfutures.com',
+          pronoun: 'he/his',
+          preferredContact: 'email',
+          searchStatus: 'active',
+          acceptedTerms: true,
+          acceptedPrivacy: true,
+        }),
+      ).rejects.toHaveProperty('problem.detail', 'User must login');
     });
     test('Should return error if Prisma fails to create applicant', async () => {
       mockCtx.prisma.applicant.create.mockRejectedValue(

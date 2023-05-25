@@ -68,13 +68,25 @@ class ApplicantController {
         });
       } catch (e) {
         if (e instanceof CAPPError && e.problem.status === 409) {
-          auth0User = await this.auth0Service.getExistingUser(data.email);
-          if (!auth0User) {
-            throw new CAPPError({
-              title: 'Auth0 User Creation Error',
-              detail: 'Could not find existing user',
-              status: 404,
-            });
+          const userExists = await this.auth0Service.userExists(data.email);
+          if (userExists) {
+            throw new CAPPError(
+              {
+                title: 'Auth0 User Exists',
+                detail: 'User must login',
+                status: 401,
+              },
+              e instanceof Error ? { cause: e } : undefined,
+            );
+          } else {
+            throw new CAPPError(
+              {
+                title: 'Auth0 User Exists',
+                detail: 'Failed to find existing user',
+                status: 404,
+              },
+              e instanceof Error ? { cause: e } : undefined,
+            );
           }
         } else {
           throw e;
