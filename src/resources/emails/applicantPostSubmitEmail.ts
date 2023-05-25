@@ -1,6 +1,6 @@
 import applyEmailHTMLTemplate from './emailHTMLTemplate.js';
 
-const getApplicantPostSubmitEmail = (changePassLink: string) => {
+const getApplicantPostSubmitEmail = () => {
   const subject = 'Thanks for applying to Tekalo!';
   const content = `
     <p>
