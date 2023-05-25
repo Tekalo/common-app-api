@@ -4,8 +4,11 @@ import {
   Context,
   createMockContext,
 } from '@App/tests/util/context.js';
+import { getMockConfig } from '@App/tests/util/helpers.js';
 import { Prisma } from '@prisma/client';
 import OpportunityController from '@App/controllers/OpportunityController.js';
+import DummyEmailService from '@App/tests/fixtures/DummyEmailService.js';
+import DummySESService from '@App/tests/fixtures/DummySesService.js';
 
 let mockCtx: MockContext;
 let ctx: Context;
@@ -19,7 +22,10 @@ export type PrismaCreateInputType = Prisma.ApplicantSelect;
 
 describe('Opportunity Controller', () => {
   test('Should create a new batch of opportunities', async () => {
-    const opportunityController = new OpportunityController(ctx.prisma);
+    const opportunityController = new OpportunityController(
+      ctx.prisma,
+      new DummyEmailService(new DummySESService(), getMockConfig()),
+    );
     const reqPayload: OpportunityBatchRequestBody = {
       acceptedPrivacy: true,
       organization: {
@@ -84,7 +90,10 @@ describe('Opportunity Controller', () => {
         clientVersion: '1.0',
       }),
     );
-    const opportunityController = new OpportunityController(ctx.prisma);
+    const opportunityController = new OpportunityController(
+      ctx.prisma,
+      new DummyEmailService(new DummySESService(), getMockConfig()),
+    );
     const reqPayload: OpportunityBatchRequestBody = {
       acceptedPrivacy: true,
       organization: {
