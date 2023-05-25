@@ -229,7 +229,7 @@ resource "aws_sns_topic_subscription" "pagerduty" {
 
 module "notify_slack" {
   source  = "terraform-aws-modules/notify-slack/aws"
-  version = "~> 5.6"
+  version = "~> 6.0"
 
   create_sns_topic     = false
   lambda_function_name = "capp-${var.env}-api-notify-slack"
