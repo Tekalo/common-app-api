@@ -67,6 +67,7 @@ class ApplicantController {
           email: data.email,
         });
       } catch (e) {
+        // If our user is not coming in with a JWT, but they already exist in Auth0, they need to make this request with their JWT
         if (e instanceof CAPPError && e.problem.status === 409) {
           const userExists = await this.auth0Service.userExists(data.email);
           if (userExists) {
@@ -79,6 +80,7 @@ class ApplicantController {
               e instanceof Error ? { cause: e } : undefined,
             );
           } else {
+            // User exists in Auth0, but something unknown went wrong in fetching them
             throw new CAPPError(
               {
                 title: 'Auth0 User Exists',
