@@ -53,7 +53,7 @@ const getApp = (
     '/applicants',
     applicantRoutes(authService, emailService, monitoringService, config),
   );
-  app.use('/opportunities', opportunitiesRoutes());
+  app.use('/opportunities', opportunitiesRoutes(emailService));
   app.use('/health', healthRoutes());
 
   /**

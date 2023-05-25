@@ -68,7 +68,7 @@ class OpportunityController {
       } catch (e) {
         MonitoringService.logError(
           new CAPPError(
-            { title: 'Failed to send post sign-up org welcome email' },
+            { title: 'Failed to send org intake form welcome email' },
             e instanceof Error ? { cause: e } : undefined,
           ),
         );

@@ -61,10 +61,7 @@ describe('Email Service', () => {
       'foo@bar.com',
       'Robin Williams',
     );
-    const expectedEmail = getApplicantDeletionEmail(
-      'fake-ticket',
-      'Robin Williams',
-    );
+    const expectedEmail = getApplicantDeletionEmail('Robin Williams');
     expect(result).toHaveProperty('Destination', {
       ToAddresses: ['foo@bar.com'],
     });

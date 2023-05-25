@@ -70,7 +70,7 @@ class EmailService {
     recipientName: string,
   ): SendEmailCommandInput {
     return this.generateEmailTemplate({
-      ...getApplicantDeletionEmail(recipientEmail, recipientName),
+      ...getApplicantDeletionEmail(recipientName),
       recipientEmail,
     });
   }
