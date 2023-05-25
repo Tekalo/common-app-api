@@ -124,25 +124,7 @@ Prequisite: install auth0deploy `npm install -g auth0-deploy-cli`
 The `/dev` and `/prod` directories maintain the working version of our Auth0 Dev and Prod tenants setup. `dev/tenant.yaml` holds general dev configuration, and the rest of the `/dev` directory holds supplemental templates/settings, and the same thing applies for the `/prod` directory.
 `auth0/config-dev.json` contains variables for our dev tenant, and `auth0/config-prod.json` contains variables for our prod tenant. The `dev` and `prod` configurations are slightly convergent (the dev tenant also contains an application for staging, for example) so we can't directly apply the dev configuration to production.
 
-To push up changes:
-
-1. Make your changes to `/auth0/dev` directory
-2. Once merged, push your changes to the Auth0 dev tenant:
-
-   ```bash
-   export AUTH0_CLIENT_SECRET={auth0-secret-for-dev-tenant}
-   a0deploy import -c=auth0/config-dev.json --input_file=auth0/dev/tenant.yaml
-   ```
-
-3. When you're ready to make the changes to the prod configuration, make the same changes in the `auth0/prod` directory.
-4. Once merged, push your changes to Auth0 prod tenant:
-
-   ```bash
-   export AUTH0_CLIENT_SECRET={auth0-secret-for-prod-tenant}
-   a0deploy import -c=auth0/config-prod.json --input_file=auth0/prod/tenant.yaml
-   ```
-
-If it is necessary to make changes in the Auth0 UI first (due to experimentation or if you are unsure what values to change):
+It is recommended to make changes in the Auth0 UI first. The configuration in the `auth0` directory is primarily a record of what is in Auth0. Updating the configuration in Auth0 using the `export` functionality of the auth0 CLI has been problematic.
 
 > **_NOTE:_** Auth0 has a [known bug](https://auth0.com/docs/deploy-monitor/deploy-cli-tool/keyword-replacement#unidirectional-limitation) where keyword replacements are reverted to literal strings after an `export`. Make sure to **NOT** commit these changes
 
@@ -157,14 +139,33 @@ If it is necessary to make changes in the Auth0 UI first (due to experimentation
    a0deploy export -c=auth0/config-dev.json --output_folder=auth0/dev --format=yaml
    ```
 
-3. Open a PR with changes
-4. When changes merged into `main`, make the same changes to Auth0 prod tenant.
-5. Open a PR with changes.
-6. Once merged, promote your changes to Auth0 prod tenant:
+3. Open a PR with changes pulled down to the `/auth0/dev` directory.
+4. When changes merged into `main` and tested, make the same changes to Auth0 prod tenant.
+5. Export changes from Auth0 prod tenant:
 
    ```bash
    export AUTH0_CLIENT_ID={auth0-client-id-for-prod-tenant}
    export AUTH0_DOMAIN={auth0-domain-for-prod-tenant}
+   export AUTH0_CLIENT_SECRET={auth0-secret-for-prod-tenant}
+   a0deploy export -c=auth0/config-prod.json --output_folder=auth0/prod -- format=yaml
+   ```
+
+6. Open a PR with changes pulled down to the `/auth0/prod`.
+
+**Pushing changes to Auth0 is not recommended** unless you're configuring a new tenant. To push up changes:
+
+1. Make your changes to `/auth0/dev` directory
+2. Once merged, push your changes to the Auth0 dev tenant:
+
+   ```bash
+   export AUTH0_CLIENT_SECRET={auth0-secret-for-dev-tenant}
+   a0deploy import -c=auth0/config-dev.json --input_file=auth0/dev/tenant.yaml
+   ```
+
+3. When you're ready to make the changes to the prod configuration, make the same changes in the `auth0/prod` directory.
+4. Once merged, push your changes to Auth0 prod tenant:
+
+   ```bash
    export AUTH0_CLIENT_SECRET={auth0-secret-for-prod-tenant}
    a0deploy import -c=auth0/config-prod.json --input_file=auth0/prod/tenant.yaml
    ```
