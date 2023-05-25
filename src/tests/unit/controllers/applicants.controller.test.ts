@@ -108,7 +108,7 @@ describe('Applicant Controller', () => {
         }),
       );
     });
-    test('Should return error if Prisma fails to create applicant', async () => {
+    test('Should return 500 error if Prisma fails with unknown error', async () => {
       mockCtx.prisma.applicant.create.mockRejectedValue(
         new Prisma.PrismaClientKnownRequestError('ERROR', {
           code: '101',
@@ -135,6 +135,31 @@ describe('Applicant Controller', () => {
         'problem.detail',
         'Database error encountered when creating new user',
       );
+    });
+    test('Should return 409 error if Prisma fails because applicant with email already exists', async () => {
+      mockCtx.prisma.applicant.create.mockRejectedValue(
+        new Prisma.PrismaClientKnownRequestError('ERROR', {
+          code: 'P2002',
+          clientVersion: '1.0',
+        }),
+      );
+      const applicantController = new ApplicantController(
+        new DummyAuthService(),
+        ctx.prisma,
+        new DummyEmailService(new DummySESService(), getMockConfig()),
+        new DummyMonitoringService(),
+      );
+      await expect(
+        applicantController.createApplicant({
+          name: 'Bob Boberson',
+          email: 'bboberson@schmidtfutures.com',
+          pronoun: 'he/his',
+          preferredContact: 'email',
+          searchStatus: 'active',
+          acceptedTerms: true,
+          acceptedPrivacy: true,
+        }),
+      ).rejects.toHaveProperty('problem.status', 409);
     });
     test('Should successfully return if applicant saved but post-submission email fails to send', async () => {
       mockCtx.prisma.applicant.create.mockResolvedValue({

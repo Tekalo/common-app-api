@@ -148,14 +148,19 @@ If it is necessary to make changes in the Auth0 UI first (due to experimentation
 2. Export changes from dev tenant
 
    ```bash
+   # values are the same as those set in .env
+   export AUTH0_CLIENT_ID={auth0-client-id-for-dev-tenant}
+   export AUTH0_DOMAIN={auth0-domain-for-dev-tenant}
    export AUTH0_CLIENT_SECRET={auth0-secret-for-dev-tenant}
-   a0deploy export -c=auth0/config-dev.json --input_file=auth0/local/tenant.yaml
+   a0deploy export -c=auth0/config-dev.json --output_folder=auth0/local --format=yaml
    ```
 
 3. Open a PR with changes
 4. When changes merged into `main`, promote your changes to Auth0 prod tenant:
 
    ```bash
+   export AUTH0_CLIENT_ID={auth0-client-id-for-prod-tenant}
+   export AUTH0_DOMAIN={auth0-domain-for-prod-tenant}
    export AUTH0_CLIENT_SECRET={auth0-secret-for-prod-tenant}
    a0deploy import -c=auth0/config-prod.json --input_file=auth0/local/tenant.yaml
    ```

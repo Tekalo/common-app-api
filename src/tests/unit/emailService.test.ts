@@ -11,7 +11,11 @@ describe('Email Service', () => {
     const emailService = new EmailService(
       dummySesService,
       getMockConfig({
-        aws: { sesFromAddress: 'baz@futurestech.com', region: 'us-east-1' },
+        aws: {
+          sesFromAddress: 'baz@futurestech.com',
+          sesReplyToAddress: 'replies@futurestech.com',
+          region: 'us-east-1',
+        },
       }),
     );
     const resp = emailService.generateWelcomeEmail(
@@ -23,10 +27,19 @@ describe('Email Service', () => {
       ToAddresses: ['foo@bar.com'],
     });
     expect(resp).toHaveProperty('Source', 'baz@futurestech.com');
+    expect(resp).toHaveProperty('ReplyToAddresses', [
+      'replies@futurestech.com',
+    ]);
     expect(resp).toHaveProperty('Message', {
-      Subject: { Charset: 'UTF-8', Data: 'Thanks for applying to Tekalo!' },
+      Subject: {
+        Charset: 'UTF-8',
+        Data: expect.stringMatching(expectedEmail.subject),
+      },
       Body: {
-        Html: { Charset: 'UTF-8', Data: expect.stringMatching(expectedEmail) },
+        Html: {
+          Charset: 'UTF-8',
+          Data: expect.stringMatching(expectedEmail.htmlBody),
+        },
       },
     });
   });
@@ -36,7 +49,11 @@ describe('Email Service', () => {
     const emailService = new EmailService(
       dummySesService,
       getMockConfig({
-        aws: { sesFromAddress: 'baz@futurestech.com', region: 'us-east-1' },
+        aws: {
+          sesFromAddress: 'baz@futurestech.com',
+          sesReplyToAddress: 'replies@futurestech.com',
+          region: 'us-east-1',
+        },
       }),
     );
     const result = emailService.generateApplicantDeletionEmail(
@@ -52,9 +69,15 @@ describe('Email Service', () => {
     });
     expect(result).toHaveProperty('Source', 'baz@futurestech.com');
     expect(result).toHaveProperty('Message', {
-      Subject: { Charset: 'UTF-8', Data: 'Hallo from Tekalo!' },
+      Subject: {
+        Charset: 'UTF-8',
+        Data: expect.stringMatching(expectedEmail.subject),
+      },
       Body: {
-        Html: { Charset: 'UTF-8', Data: expect.stringMatching(expectedEmail) },
+        Html: {
+          Charset: 'UTF-8',
+          Data: expect.stringMatching(expectedEmail.htmlBody),
+        },
       },
     });
   });
@@ -65,7 +88,11 @@ describe('Email Service', () => {
     const emailService = new EmailService(
       dummySesService,
       getMockConfig({
-        aws: { sesFromAddress: 'baz@futurestech.com', region: 'us-east-1' },
+        aws: {
+          sesFromAddress: 'baz@futurestech.com',
+          sesReplyToAddress: 'replies@futurestech.com',
+          region: 'us-east-1',
+        },
       }),
     );
     const welcomeEmailBody = emailService.generateWelcomeEmail(

@@ -10,6 +10,7 @@ const BaseConfigSchema = z.object({
   }),
   aws: z.object({
     sesFromAddress: z.string(),
+    sesReplyToAddress: z.string(),
     region: z.string(),
   }),
   sentryDSN: z.string(),
