@@ -1,38 +1,53 @@
 const applyEmailHTMLTemplate = (subject: string, content: string) =>
   `<html lang="en">
     <head>
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500&display=swap" rel="stylesheet">
       <style>
         .email-contents {
           text-align: center;
-          font-family: Helvetica, Arial, sans-serif;
+          font-family: Figtree, Helvetica, Arial, sans-serif;
+          max-width: 600px;
+          margin-left: auto;
+          margin-right: auto;
+        }
+        .logo-box {
+          padding: 40px 0;
+        }
+        .logo {
+          height: 25px;
         }
         .heading-box {
           background: #f3f9ff;
-          font-weight: 500;
-          padding: 50px;
+          padding: 40px;
           text-align: center;
-          margin-left: 40px;
-          margin-right: 40px;
         }
-        .footer-msg {
-          margin-top: 60px;
-        }
-        .signoff-text{
-          font-weight: 400;
-        }
-        .logo {
-          width: 105px;
-          height: 25px;
-        }
-        .logo-box {
-          padding: 16px 64px 16px 64px;
+        h1 {
+          font-size: 24px;
+          line-height: 36px
+          font-weight: 500;
+          margin: 0;
         }
         .content-box {
-          width: 100%;
+          width: 76%;
           margin-left: auto;
           margin-right: auto;
+          margin-top: 40px;
           min-width: 340px;
-          max-width: 70%;
+          font-size: 18px;
+          line-height: 26px;
+        }
+        .signoff-text {
+          font-size: 14px;
+          line-height: 18px;
+        }
+        hr {
+          background-color: #dbdde2;
+          margin-top: 40px;
+        }
+        .footer-msg {
+          margin-top: 40px;
         }
       </style>
       <meta charset="UTF-8" />
@@ -47,6 +62,7 @@ const applyEmailHTMLTemplate = (subject: string, content: string) =>
             class="logo"
             src="https://auth0-assets-axb.pages.dev/tekalo-logo.png"
             alt="Tekalo logo"
+            height="25"
           />
         </div>
         <div class="email-body">
@@ -54,8 +70,8 @@ const applyEmailHTMLTemplate = (subject: string, content: string) =>
           <div class="content-box">
             ${content}
             <div class="signoff-text">
-              <p>Thanks,</p>
-              <p>The Tekalo Team</p>
+              <p>Thanks,<br/>
+              The Tekalo Team</p>
               <hr />
               <div class="footer-msg">
                 <p>
