@@ -100,7 +100,13 @@ describe('Applicant Controller', () => {
           acceptedTerms: true,
           acceptedPrivacy: true,
         }),
-      ).rejects.toHaveProperty('problem.detail', 'User must login');
+      ).rejects.toEqual(
+        new CAPPError({
+          title: 'Auth0 User Exists',
+          detail: 'User must login',
+          status: 401,
+        }),
+      );
     });
     test('Should return error if Prisma fails to create applicant', async () => {
       mockCtx.prisma.applicant.create.mockRejectedValue(
