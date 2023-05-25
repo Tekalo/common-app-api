@@ -1,4 +1,4 @@
-const applyEmailTemplate = (subject: string, content: string) =>
+const applyEmailHTMLTemplate = (subject: string, content: string) =>
   `<html lang="en">
     <head>
       <style>
@@ -46,7 +46,7 @@ const applyEmailTemplate = (subject: string, content: string) =>
           <img
             class="logo"
             src="https://auth0-assets-axb.pages.dev/tekalo-logo.png"
-            alt=""
+            alt="Tekalo logo"
           />
         </div>
         <div class="email-body">
@@ -70,4 +70,4 @@ const applyEmailTemplate = (subject: string, content: string) =>
     </body>
   </html>`;
 
-export default applyEmailTemplate;
+export default applyEmailHTMLTemplate;
