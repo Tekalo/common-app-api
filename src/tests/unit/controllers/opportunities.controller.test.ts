@@ -4,8 +4,13 @@ import {
   Context,
   createMockContext,
 } from '@App/tests/util/context.js';
+import { getMockConfig } from '@App/tests/util/helpers.js';
 import { Prisma } from '@prisma/client';
 import OpportunityController from '@App/controllers/OpportunityController.js';
+import EmailService from '@App/services/EmailService.js';
+import DummyEmailService from '@App/tests/fixtures/DummyEmailService.js';
+import DummySESService from '@App/tests/fixtures/DummySesService.js';
+import { jest } from '@jest/globals';
 
 let mockCtx: MockContext;
 let ctx: Context;
@@ -19,7 +24,10 @@ export type PrismaCreateInputType = Prisma.ApplicantSelect;
 
 describe('Opportunity Controller', () => {
   test('Should create a new batch of opportunities', async () => {
-    const opportunityController = new OpportunityController(ctx.prisma);
+    const opportunityController = new OpportunityController(
+      ctx.prisma,
+      new DummyEmailService(new DummySESService(), getMockConfig()),
+    );
     const reqPayload: OpportunityBatchRequestBody = {
       acceptedPrivacy: true,
       organization: {
@@ -84,7 +92,10 @@ describe('Opportunity Controller', () => {
         clientVersion: '1.0',
       }),
     );
-    const opportunityController = new OpportunityController(ctx.prisma);
+    const opportunityController = new OpportunityController(
+      ctx.prisma,
+      new DummyEmailService(new DummySESService(), getMockConfig()),
+    );
     const reqPayload: OpportunityBatchRequestBody = {
       acceptedPrivacy: true,
       organization: {
@@ -130,5 +141,80 @@ describe('Opportunity Controller', () => {
       'problem.detail',
       'Database error encountered when creating new opportunity batch',
     );
+  });
+
+  test('Should send org welcome email after organization submits a batch of opportunities', async () => {
+    const emailService = new EmailService(
+      new DummySESService(),
+      getMockConfig(),
+    );
+
+    const mockEmailSpy = jest.spyOn(emailService, 'sendEmail');
+
+    const orgEmail = 'bboberson@gmail.com';
+    const reqPayload: OpportunityBatchRequestBody = {
+      acceptedPrivacy: true,
+      organization: {
+        name: 'Bobs Burgers Foundation',
+        type: '501(c)(3)',
+        size: '20-50',
+        impactAreas: ['Clean Energy'],
+        eoe: true,
+      },
+      contact: {
+        name: 'Bob Boberson',
+        email: orgEmail,
+        phone: '4258287733',
+      },
+      submissions: [
+        {
+          fullyRemote: false,
+          roleType: 'product designer',
+          positionTitle: 'Line Cook 1',
+          location: 'Burgerville',
+          paid: true,
+          pitchEssay: 'Come flip burgers for Bob',
+          source: 'Commercial',
+          employmentType: 'volunteer',
+          salaryRange: '20-30$/hr',
+          desiredHoursPerWeek: '40',
+          desiredStartDate: new Date('2023-01-01'),
+          desiredYoe: ['0-2', '2-4'],
+          desiredSkills: ['react', 'sketch'],
+          jdUrl: 'comeflipforbob.com/apply',
+          desiredOtherSkills: ['flipping burgers', 'flipping houses'],
+          visaSponsorship: 'no',
+          similarStaffed: true,
+          desiredImpactExp:
+            'We would love to find someone who has non-profit fast food experience.',
+        },
+      ],
+    };
+    const { organization, contact } = reqPayload;
+    const mockResolved = {
+      id: 1,
+      acceptedPrivacy: new Date('2023-01-01'),
+      orgName: organization.name,
+      orgType: organization.type,
+      orgSize: organization.size,
+      impactAreas: organization.impactAreas,
+      contactName: contact.name,
+      contactPhone: contact.phone || null,
+      contactEmail: contact.email,
+      equalOpportunityEmployer: organization.eoe,
+    };
+    mockCtx.prisma.opportunityBatch.create.mockResolvedValue(mockResolved);
+
+    const opportunityController = new OpportunityController(
+      ctx.prisma,
+      emailService,
+    );
+
+    const expectedEmail = emailService.generateOrgWelcomeEmail(orgEmail);
+
+    await opportunityController.createOpportunityBatch(reqPayload);
+
+    expect(mockEmailSpy).toHaveBeenCalledWith(expectedEmail);
+    mockEmailSpy.mockRestore();
   });
 });
