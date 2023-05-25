@@ -58,9 +58,10 @@ class EmailService {
   generateWelcomeEmail(
     recipientEmail: string,
     changePassLink: string,
+    signInLink: string,
   ): SendEmailCommandInput {
     return this.generateEmailTemplate({
-      ...getWelcomeEmail(changePassLink),
+      ...getWelcomeEmail(changePassLink, signInLink),
       recipientEmail,
     });
   }

@@ -181,9 +181,11 @@ describe('Applicant Controller', () => {
         new DummyMonitoringService(),
       );
 
+      const bobEmail = 'bboberson@schmidtfutures.com';
+
       await applicantController.createApplicant({
         name: 'Bob Boberson',
-        email: 'bboberson@schmidtfutures.com',
+        email: bobEmail,
         pronoun: 'he/his',
         preferredContact: 'email',
         searchStatus: 'active',
@@ -191,8 +193,9 @@ describe('Applicant Controller', () => {
         acceptedPrivacy: true,
       });
       const expectedEmail = emailService.generateWelcomeEmail(
-        'bboberson@schmidtfutures.com',
+        bobEmail,
         'fake-ticket',
+        'https://login_link',
       );
       expect(mockEmailSpy).toHaveBeenCalledWith(expectedEmail);
       mockEmailSpy.mockRestore();

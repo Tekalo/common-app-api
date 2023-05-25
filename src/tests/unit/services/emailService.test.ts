@@ -19,11 +19,15 @@ describe('Email Service', () => {
         },
       }),
     );
+    const email = 'foo@bar.com';
+    const passwordTicket = 'fake-ticket';
+    const signInLink = 'https://login_link';
     const resp = emailService.generateWelcomeEmail(
-      'foo@bar.com',
-      'fake-ticket',
+      email,
+      passwordTicket,
+      signInLink,
     );
-    const expectedEmail = getWelcomeEmail('fake-ticket');
+    const expectedEmail = getWelcomeEmail(passwordTicket, signInLink);
     expect(resp).toHaveProperty('Destination', {
       ToAddresses: ['foo@bar.com'],
     });
@@ -131,6 +135,7 @@ describe('Email Service', () => {
     const welcomeEmailBody = emailService.generateWelcomeEmail(
       'foo@bar.com',
       'fake-ticket',
+      'https://login_link',
     );
     await emailService.sendEmail(welcomeEmailBody);
     expect(mockSesSendEmailFunc).toBeCalledWith(welcomeEmailBody);

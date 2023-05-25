@@ -86,9 +86,12 @@ class ApplicantController {
         const { ticket } = await this.auth0Service.generatePasswordReset(
           returnApplicant.auth0Id,
         );
+        const signInLink: string = AuthService.getSignInLink();
+
         const welcomeEmail = this.emailService.generateWelcomeEmail(
           returnApplicant.email,
           ticket,
+          signInLink,
         );
         await this.emailService.sendEmail(welcomeEmail);
       } catch (e) {
