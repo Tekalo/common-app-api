@@ -1,6 +1,6 @@
 import getApplicantDeletionEmail from '@App/resources/emails/applicantDeletion.js';
 import getOrgWelcomeEmail from '@App/resources/emails/orgWelcomeEmail.js';
-import getWelcomeEmail from '@App/resources/emails/welcomeEmail.js';
+import getApplicantWelcomeEmail from '@App/resources/emails/applicantWelcomeEmail.js';
 import EmailService from '@App/services/EmailService.js';
 import { jest } from '@jest/globals';
 import DummySESService from '../../fixtures/DummySesService.js';
@@ -22,12 +22,12 @@ describe('Email Service', () => {
     const email = 'foo@bar.com';
     const passwordTicket = 'fake-ticket';
     const signInLink = 'https://login_link';
-    const resp = emailService.generateWelcomeEmail(
+    const resp = emailService.generateApplicantWelcomeEmail(
       email,
       passwordTicket,
       signInLink,
     );
-    const expectedEmail = getWelcomeEmail(passwordTicket, signInLink);
+    const expectedEmail = getApplicantWelcomeEmail(passwordTicket, signInLink);
     expect(resp).toHaveProperty('Destination', {
       ToAddresses: ['foo@bar.com'],
     });
@@ -132,7 +132,7 @@ describe('Email Service', () => {
         },
       }),
     );
-    const welcomeEmailBody = emailService.generateWelcomeEmail(
+    const welcomeEmailBody = emailService.generateApplicantWelcomeEmail(
       'foo@bar.com',
       'fake-ticket',
       'https://login_link',

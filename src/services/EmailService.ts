@@ -1,7 +1,7 @@
 import { BaseConfig } from '@App/resources/types/shared.js';
 import { SendEmailCommandInput } from '@aws-sdk/client-ses';
 import {
-  getWelcomeEmail,
+  getApplicantWelcomeEmail,
   getApplicantDeletionEmail,
   getOrgWelcomeEmail,
 } from '@App/resources/emails/index.js';
@@ -55,13 +55,13 @@ class EmailService {
     };
   }
 
-  generateWelcomeEmail(
+  generateApplicantWelcomeEmail(
     recipientEmail: string,
     changePassLink: string,
     signInLink: string,
   ): SendEmailCommandInput {
     return this.generateEmailTemplate({
-      ...getWelcomeEmail(changePassLink, signInLink),
+      ...getApplicantWelcomeEmail(changePassLink, signInLink),
       recipientEmail,
     });
   }

@@ -88,7 +88,7 @@ class ApplicantController {
         );
         const signInLink: string = AuthService.getSignInLink();
 
-        const welcomeEmail = this.emailService.generateWelcomeEmail(
+        const welcomeEmail = this.emailService.generateApplicantWelcomeEmail(
           returnApplicant.email,
           ticket,
           signInLink,

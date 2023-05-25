@@ -170,7 +170,11 @@ describe('Applicant Controller', () => {
         followUpOptIn: false,
       });
 
-      const emailService = new EmailService(new SESService(), getMockConfig());
+      const webUrl = process.env.WEB_URL || '';
+      const emailService = new EmailService(
+        new SESService(),
+        getMockConfig({ webUrl }),
+      );
 
       const mockEmailSpy = jest.spyOn(emailService, 'sendEmail');
 
@@ -192,10 +196,10 @@ describe('Applicant Controller', () => {
         acceptedTerms: true,
         acceptedPrivacy: true,
       });
-      const expectedEmail = emailService.generateWelcomeEmail(
+      const expectedEmail = emailService.generateApplicantWelcomeEmail(
         bobEmail,
         'fake-ticket',
-        'https://login_link',
+        `${webUrl}/sign-in`,
       );
       expect(mockEmailSpy).toHaveBeenCalledWith(expectedEmail);
       mockEmailSpy.mockRestore();

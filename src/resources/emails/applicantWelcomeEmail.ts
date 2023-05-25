@@ -1,6 +1,9 @@
 import applyEmailHTMLTemplate from './emailHTMLTemplate.js';
 
-const getWelcomeEmail = (changePassLink: string, signInLink: string) => {
+const getApplicantWelcomeEmail = (
+  changePassLink: string,
+  signInLink: string,
+) => {
   const subject = 'Thanks for creating your Futures Engine account!';
   const content = `
     <p>You can <a class="ulink" href="${signInLink}" target="_blank">sign in to your account</a> by using your Google or LinkedIn account 
@@ -17,4 +20,4 @@ const getWelcomeEmail = (changePassLink: string, signInLink: string) => {
   };
 };
 
-export default getWelcomeEmail;
+export default getApplicantWelcomeEmail;
