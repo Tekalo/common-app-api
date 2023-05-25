@@ -9,6 +9,7 @@ const applyEmailHTMLTemplate = (subject: string, content: string) =>
           text-align: center;
           font-family: Figtree, Helvetica, Arial, sans-serif;
           max-width: 600px;
+          min-width: 340px;
           margin-left: auto;
           margin-right: auto;
         }
@@ -34,7 +35,6 @@ const applyEmailHTMLTemplate = (subject: string, content: string) =>
           margin-left: auto;
           margin-right: auto;
           margin-top: 40px;
-          min-width: 340px;
           font-size: 18px;
           line-height: 26px;
         }
