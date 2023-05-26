@@ -35,6 +35,7 @@ describe('Email Service', () => {
     expect(resp).toHaveProperty('ReplyToAddresses', [
       'replies@futurestech.com',
     ]);
+
     expect(resp).toHaveProperty('Message', {
       Subject: {
         Charset: 'UTF-8',
@@ -43,7 +44,7 @@ describe('Email Service', () => {
       Body: {
         Html: {
           Charset: 'UTF-8',
-          Data: expect.stringMatching(expectedEmail.htmlBody),
+          Data: expect.stringContaining(expectedEmail.htmlBody),
         },
       },
     });
@@ -100,7 +101,7 @@ describe('Email Service', () => {
       Body: {
         Html: {
           Charset: 'UTF-8',
-          Data: expect.stringMatching(expectedEmail.htmlBody),
+          Data: expect.stringContaining(expectedEmail.htmlBody),
         },
       },
     });
@@ -194,7 +195,7 @@ describe('Email Service', () => {
       Body: {
         Html: {
           Charset: 'UTF-8',
-          Data: expect.stringMatching(expectedEmail.htmlBody),
+          Data: expect.stringContaining(expectedEmail.htmlBody),
         },
       },
     });
