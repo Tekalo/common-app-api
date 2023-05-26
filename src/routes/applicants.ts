@@ -78,7 +78,8 @@ const applicantRoutes = (
       const applicantID = reqWithAuth.auth.payload.id;
       const { pause } = ApplicantStateRequestBodySchema.parse(appBody);
       applicantController
-        .pauseApplicant(applicantID, pause)
+        // applicantID type assertion because our middlware setApplicantId() guarantees an applicant ID is set
+        .pauseApplicant(applicantID as number, pause)
         .then((result) => {
           res.status(200).json(result);
         })
@@ -88,16 +89,29 @@ const applicantRoutes = (
 
   router.delete(
     '/me',
-    authenticator.validateJwt.bind(authenticator),
+    authenticator.validateJwtOfUnregisteredUser.bind(authenticator),
     (req: Request, res: Response, next) => {
       const reqWithAuth = req as RequestWithJWT;
-      const { id } = reqWithAuth.auth.payload;
-      applicantController
-        .deleteApplicant(id)
-        .then((result) => {
-          res.status(200).json(result);
-        })
-        .catch((err) => next(err));
+      const { id } = reqWithAuth.auth.payload; // Applicant exists in the database
+      if (id) {
+        // Delete from DB too
+        applicantController
+          .deleteApplicant(id)
+          .then((result) => {
+            res.status(200).json(result);
+          })
+          .catch((err) => next(err));
+      } else {
+        // Applicant does not exist in the database but still has a JWT
+        // TODO: make sure we can cast this
+        const auth0Id = reqWithAuth.auth.payload.sub as string;
+        authService
+          .deleteUser(auth0Id)
+          .then((result) => {
+            res.status(200).json(result);
+          })
+          .catch((err) => next(err));
+      }
     },
   );
 
@@ -106,7 +120,7 @@ const applicantRoutes = (
     authenticator.verifyJwtOrCookie.bind(authenticator),
     (req: Request, res: Response, next) => {
       const appBody = req.body as ApplicantDraftSubmissionBody;
-      const applicantID = req.auth?.payload.id || req.session.applicant.id;
+      const applicantID = req.auth?.payload.id || req.session.applicant.id; // token applicant ID
       const validatedBody =
         ApplicantDraftSubmissionRequestBodySchema.parse(appBody);
       applicantController
@@ -140,7 +154,8 @@ const applicantRoutes = (
       const reqWithAuth = req as RequestWithJWT;
       const { id } = reqWithAuth.auth.payload;
       applicantController
-        .getApplicant(id)
+        // id type assertion because our middlware setApplicantId() guarantees an applicant ID is set
+        .getApplicant(id as number)
         .then((result) => {
           res.status(200).json(result);
         })
