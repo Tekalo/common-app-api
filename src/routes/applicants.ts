@@ -152,7 +152,7 @@ const applicantRoutes = (
 
   router.get(
     '/:id',
-    authenticator.validateJwt.bind(authenticator),
+    authenticator.validateJwtNoID.bind(authenticator),
     (req: Request, res: Response, next: NextFunction) => {
       const reqWithAuth = req as RequestWithJWT;
       const { id } = reqWithAuth.params;

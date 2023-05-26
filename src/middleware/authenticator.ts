@@ -37,6 +37,24 @@ class Authenticator {
     }) as NextFunction);
   }
 
+  // Attach to requests that can only authenticate with a JWT, doesn't set ID
+  validateJwtNoID(req: Request, res: Response, next: NextFunction) {
+    auth(this.authConfig)(req, res, (err) => {
+      console.log(err);
+      if (!req.auth) {
+        next(
+          new CAPPError({
+            title: 'Cannot authenticate request',
+            detail: 'Applicant cannot be authenticated',
+            status: 401,
+          }),
+        );
+        return;
+      }
+      next();
+    });
+  }
+
   // Attach auth to request if it exists. If not, do not throw.
   attachJwt(req: Request, res: Response, next: NextFunction) {
     auth({ ...this.authConfig, authRequired: false })(req, res, next);
