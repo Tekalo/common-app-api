@@ -22,8 +22,6 @@ import EmailService from '@App/services/EmailService.js';
 import MonitoringService from '@App/services/MonitoringService.js';
 import { BaseConfig } from '@App/resources/types/shared.js';
 
-const testEmail = 'testuser-develop@schmidtfutures.com';
-
 const applicantRoutes = (
   authService: AuthService,
   emailService: EmailService,
@@ -152,20 +150,16 @@ const applicantRoutes = (
 
   router.get(
     '/:id',
-    authenticator.validateJwtNoID.bind(authenticator),
+    authenticator.validateJwtAdmin.bind(authenticator),
     (req: Request, res: Response, next: NextFunction) => {
       const reqWithAuth = req as RequestWithJWT;
       const { id } = reqWithAuth.params;
-      if (reqWithAuth.auth.payload['auth0.capp.com/email'] === testEmail) {
-        applicantController
-          .getApplicant(Number(id))
-          .then((result) => {
-            res.status(200).json(result);
-          })
-          .catch((err) => next(err));
-      } else {
-        next();
-      }
+      applicantController
+        .getApplicant(Number(id))
+        .then((result) => {
+          res.status(200).json(result);
+        })
+        .catch((err) => next(err));
     },
   );
 

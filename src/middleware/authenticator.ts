@@ -9,6 +9,8 @@ import {
 } from '@App/resources/types/auth0.js';
 import CAPPError from '@App/resources/shared/CAPPError.js';
 
+const testEmail = 'testuser-develop@schmidtfutures.com';
+
 class Authenticator {
   private prisma: PrismaClient;
 
@@ -37,11 +39,11 @@ class Authenticator {
     }) as NextFunction);
   }
 
-  // Attach to requests that can only authenticate with a JWT, doesn't set ID
-  validateJwtNoID(req: Request, res: Response, next: NextFunction) {
+  // Attach to requests that can only authenticate with a JWT and are verified as test/admin accounts
+  validateJwtAdmin(req: Request, res: Response, next: NextFunction) {
     auth(this.authConfig)(req, res, (err) => {
       console.log(err);
-      if (!req.auth) {
+      if (!req.auth || req.auth.payload['auth0.capp.com/email'] !== testEmail) {
         next(
           new CAPPError({
             title: 'Cannot authenticate request',
