@@ -9,6 +9,7 @@ const contentBox =
 const signoffText = 'font-size: 14px; line-height: 18px;';
 const hr = 'background-color: #dbdde2; margin-top: 40px;';
 const footerMsg = 'margin-top: 40px;';
+export const ulink = 'color: #317BB5';
 
 const applyEmailHTMLTemplate = (subject: string, content: string) =>
   `<html lang="en">
@@ -22,7 +23,7 @@ const applyEmailHTMLTemplate = (subject: string, content: string) =>
       <title>Document</title>
     </head>
     <body>
-      <div style="${emailContents}>
+      <div style="${emailContents}">
         <div style="${logoBox}">
           <img
             style="${logo}"

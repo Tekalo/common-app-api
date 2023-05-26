@@ -1,4 +1,4 @@
-import applyEmailHTMLTemplate from './emailHTMLTemplate.js';
+import applyEmailHTMLTemplate, { ulink } from './emailHTMLTemplate.js';
 
 const getApplicantWelcomeEmail = (
   changePassLink: string,
@@ -6,10 +6,10 @@ const getApplicantWelcomeEmail = (
 ) => {
   const subject = 'Thanks for creating your Futures Engine account!';
   const content = `
-    <p>You can <a class="ulink" href="${signInLink}" target="_blank">sign in to your account</a> by using your Google or LinkedIn account 
+    <p>You can <a style="${ulink}" href="${signInLink}" target="_blank">sign in to your account</a> by using your Google or LinkedIn account 
     associated with this email address, or by setting up a new password with the link below:</p>
 
-    <p><a class="ulink" href="${changePassLink}"
+    <p><a style="${ulink}" href="${changePassLink}"
     target="_blank">Set a new password</a>.</p>
 
     <p>Once you are signed in, you can head over to “My account” and click “Continue my application” 
