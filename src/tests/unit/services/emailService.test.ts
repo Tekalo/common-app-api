@@ -1,13 +1,13 @@
 import getApplicantDeletionEmail from '@App/resources/emails/applicantDeletion.js';
 import getOrgWelcomeEmail from '@App/resources/emails/orgWelcomeEmail.js';
-import getWelcomeEmail from '@App/resources/emails/welcomeEmail.js';
+import getApplicantWelcomeEmail from '@App/resources/emails/applicantWelcomeEmail.js';
 import EmailService from '@App/services/EmailService.js';
 import { jest } from '@jest/globals';
 import DummySESService from '../../fixtures/DummySesService.js';
 import { getMockConfig } from '../../util/helpers.js';
 
 describe('Email Service', () => {
-  test('should successfully generate welcome email', () => {
+  test('should successfully generate applicant welcome email', () => {
     const dummySesService = new DummySESService();
     const emailService = new EmailService(
       dummySesService,
@@ -19,11 +19,15 @@ describe('Email Service', () => {
         },
       }),
     );
-    const resp = emailService.generateWelcomeEmail(
-      'foo@bar.com',
-      'fake-ticket',
+    const email = 'foo@bar.com';
+    const passwordTicket = 'fake-ticket';
+    const signInLink = 'https://login_link';
+    const resp = emailService.generateApplicantWelcomeEmail(
+      email,
+      passwordTicket,
+      signInLink,
     );
-    const expectedEmail = getWelcomeEmail('fake-ticket');
+    const expectedEmail = getApplicantWelcomeEmail(passwordTicket, signInLink);
     expect(resp).toHaveProperty('Destination', {
       ToAddresses: ['foo@bar.com'],
     });
@@ -43,6 +47,28 @@ describe('Email Service', () => {
         },
       },
     });
+  });
+
+  test('should successfully send welcome email', async () => {
+    const dummySesService = new DummySESService();
+    const mockSesSendEmailFunc = jest.spyOn(dummySesService, 'sendEmail');
+    const emailService = new EmailService(
+      dummySesService,
+      getMockConfig({
+        aws: {
+          sesFromAddress: 'baz@futurestech.com',
+          sesReplyToAddress: 'replies@futurestech.com',
+          region: 'us-east-1',
+        },
+      }),
+    );
+    const welcomeEmailBody = emailService.generateApplicantWelcomeEmail(
+      'foo@bar.com',
+      'fake-ticket',
+      'https://login_link',
+    );
+    await emailService.sendEmail(welcomeEmailBody);
+    expect(mockSesSendEmailFunc).toBeCalledWith(welcomeEmailBody);
   });
 
   test('should successfully generate applicant deletion email', () => {
@@ -80,6 +106,65 @@ describe('Email Service', () => {
     });
   });
 
+  test('should successfully send applicant deletion email', async () => {
+    const dummySesService = new DummySESService();
+    const mockSesSendEmailFunc = jest.spyOn(dummySesService, 'sendEmail');
+    const emailService = new EmailService(
+      dummySesService,
+      getMockConfig({
+        aws: {
+          sesFromAddress: 'baz@futurestech.com',
+          sesReplyToAddress: 'replies@futurestech.com',
+          region: 'us-east-1',
+        },
+      }),
+    );
+    const deletionEmailBody = emailService.generateApplicantDeletionEmail(
+      'foo@bar.com',
+      'Testy McTesterson',
+    );
+    await emailService.sendEmail(deletionEmailBody);
+    expect(mockSesSendEmailFunc).toBeCalledWith(deletionEmailBody);
+  });
+
+  test('should successfully generate application submit email', async () => {
+    const dummySesService = new DummySESService();
+    const mockSesSendEmailFunc = jest.spyOn(dummySesService, 'sendEmail');
+    const emailService = new EmailService(
+      dummySesService,
+      getMockConfig({
+        aws: {
+          sesFromAddress: 'baz@futurestech.com',
+          sesReplyToAddress: 'replies@futurestech.com',
+          region: 'us-east-1',
+        },
+      }),
+    );
+    const postSubmitEmailBody =
+      emailService.generateApplicantPostSubmitEmail('foo@bar.com');
+    await emailService.sendEmail(postSubmitEmailBody);
+    expect(mockSesSendEmailFunc).toBeCalledWith(postSubmitEmailBody);
+  });
+
+  test('should successfully send application submit email', async () => {
+    const dummySesService = new DummySESService();
+    const mockSesSendEmailFunc = jest.spyOn(dummySesService, 'sendEmail');
+    const emailService = new EmailService(
+      dummySesService,
+      getMockConfig({
+        aws: {
+          sesFromAddress: 'baz@futurestech.com',
+          sesReplyToAddress: 'replies@futurestech.com',
+          region: 'us-east-1',
+        },
+      }),
+    );
+    const submitEmailBody =
+      emailService.generateApplicantPostSubmitEmail('foo@bar.com');
+    await emailService.sendEmail(submitEmailBody);
+    expect(mockSesSendEmailFunc).toBeCalledWith(submitEmailBody);
+  });
+
   test('should successfully generate org welcome email', () => {
     const dummySesService = new DummySESService();
     const emailService = new EmailService(
@@ -115,7 +200,7 @@ describe('Email Service', () => {
     });
   });
 
-  test('should successfully send welcome email', async () => {
+  test('should successfully send org welcome email', async () => {
     const dummySesService = new DummySESService();
     const mockSesSendEmailFunc = jest.spyOn(dummySesService, 'sendEmail');
     const emailService = new EmailService(
@@ -128,10 +213,8 @@ describe('Email Service', () => {
         },
       }),
     );
-    const welcomeEmailBody = emailService.generateWelcomeEmail(
-      'foo@bar.com',
-      'fake-ticket',
-    );
+    const welcomeEmailBody =
+      emailService.generateOrgWelcomeEmail('foo@bar.com');
     await emailService.sendEmail(welcomeEmailBody);
     expect(mockSesSendEmailFunc).toBeCalledWith(welcomeEmailBody);
   });
