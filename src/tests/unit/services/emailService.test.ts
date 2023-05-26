@@ -31,7 +31,7 @@ describe('Email Service', () => {
     expect(resp).toHaveProperty('Destination', {
       ToAddresses: ['foo@bar.com'],
     });
-    expect(resp).toHaveProperty('Source', 'baz@futurestech.com');
+    expect(resp).toHaveProperty('Source', 'Tekalo <baz@futurestech.com>');
     expect(resp).toHaveProperty('ReplyToAddresses', [
       'replies@futurestech.com',
     ]);
@@ -91,7 +91,7 @@ describe('Email Service', () => {
     expect(result).toHaveProperty('Destination', {
       ToAddresses: ['foo@bar.com'],
     });
-    expect(result).toHaveProperty('Source', 'baz@futurestech.com');
+    expect(result).toHaveProperty('Source', 'Tekalo <baz@futurestech.com>');
     expect(result).toHaveProperty('Message', {
       Subject: {
         Charset: 'UTF-8',
@@ -182,7 +182,7 @@ describe('Email Service', () => {
     expect(resp).toHaveProperty('Destination', {
       ToAddresses: ['foo@bar.com'],
     });
-    expect(resp).toHaveProperty('Source', 'baz@futurestech.com');
+    expect(resp).toHaveProperty('Source', 'Tekalo <baz@futurestech.com>');
     expect(resp).toHaveProperty('ReplyToAddresses', [
       'replies@futurestech.com',
     ]);
