@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { auth } from 'express-oauth2-jwt-bearer';
+import logger from '@App/services/logger.js';
 import { verifyCookie } from '@App/services/cookieService.js';
 import { PrismaClient } from '@prisma/client';
 import {
@@ -22,7 +23,7 @@ class Authenticator {
   // Attach to requests that can only authenticate with a JWT
   validateJwt(req: Request, res: Response, next: NextFunction) {
     auth(this.authConfig)(req, res, (async (err) => {
-      console.log(err);
+      logger.error(err);
       if (!req.auth) {
         next(
           new CAPPError({
