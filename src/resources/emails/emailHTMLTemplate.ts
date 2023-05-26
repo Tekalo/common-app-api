@@ -21,7 +21,6 @@ const applyEmailHTMLTemplate = (subject: string, content: string) =>
           font-weight: 400;
         }
         .logo {
-          width: 105px;
           height: 25px;
         }
         .logo-box {
@@ -47,6 +46,7 @@ const applyEmailHTMLTemplate = (subject: string, content: string) =>
             class="logo"
             src="https://auth0-assets-axb.pages.dev/tekalo-logo.png"
             alt="Tekalo logo"
+            height="25"
           />
         </div>
         <div class="email-body">
