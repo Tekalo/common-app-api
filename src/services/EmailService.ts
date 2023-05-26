@@ -1,8 +1,9 @@
 import { BaseConfig } from '@App/resources/types/shared.js';
 import { SendEmailCommandInput } from '@aws-sdk/client-ses';
 import {
-  getWelcomeEmail,
+  getApplicantWelcomeEmail,
   getApplicantDeletionEmail,
+  getApplicantPostSubmitEmail,
   getOrgWelcomeEmail,
 } from '@App/resources/emails/index.js';
 import SESService from './SESService.js';
@@ -29,6 +30,7 @@ class EmailService {
     textBody?: string;
   }): SendEmailCommandInput {
     const { sesFromAddress, sesReplyToAddress } = this.config.aws;
+    const friendlyFromAddress = `Tekalo <${sesFromAddress}>`;
     return {
       Destination: {
         ToAddresses: [recipientEmail],
@@ -51,16 +53,17 @@ class EmailService {
           Data: subject,
         },
       },
-      Source: sesFromAddress,
+      Source: friendlyFromAddress,
     };
   }
 
-  generateWelcomeEmail(
+  generateApplicantWelcomeEmail(
     recipientEmail: string,
     changePassLink: string,
+    signInLink: string,
   ): SendEmailCommandInput {
     return this.generateEmailTemplate({
-      ...getWelcomeEmail(changePassLink),
+      ...getApplicantWelcomeEmail(changePassLink, signInLink),
       recipientEmail,
     });
   }
@@ -71,6 +74,15 @@ class EmailService {
   ): SendEmailCommandInput {
     return this.generateEmailTemplate({
       ...getApplicantDeletionEmail(recipientName),
+      recipientEmail,
+    });
+  }
+
+  generateApplicantPostSubmitEmail(
+    recipientEmail: string,
+  ): SendEmailCommandInput {
+    return this.generateEmailTemplate({
+      ...getApplicantPostSubmitEmail(),
       recipientEmail,
     });
   }
