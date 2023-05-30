@@ -46,7 +46,7 @@ class Authenticator {
   ) {
     this.validateJwt(req, res, (err) => {
       if (err) {
-        // If our user doens't exist in the DB aka has not registered yet. But thats OK.
+        // If our user doesn't exist in the DB aka has not registered yet. But thats OK.
         if (err instanceof CAPPError && err.problem.status === 404) {
           next();
           return;
