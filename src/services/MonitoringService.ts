@@ -1,6 +1,7 @@
 import { Application } from 'express';
 import * as Sentry from '@sentry/node';
 import { ErrorEvent, TransactionEvent, Transport } from '@sentry/types';
+import logger from '@App/services/logger.js';
 import prisma from '@App/resources/client.js';
 import configLoader from './configLoader.js';
 
@@ -87,7 +88,7 @@ class MonitoringService {
 
   static async exitHandler() {
     // eslint-disable-next-line no-console
-    console.log('Shutting down Sentry');
+    logger.info('Shutting down Sentry');
     await Sentry.close(500);
   }
 
