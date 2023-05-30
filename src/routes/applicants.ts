@@ -169,14 +169,12 @@ const applicantRoutes = (
     (req: Request, res: Response, next: NextFunction) => {
       const reqWithAuth = req as RequestWithJWT;
       const { id } = reqWithAuth.auth.payload;
-      /*
       applicantController
-        .deleteApplicant(id)
+        .deleteApplicantNoRequest(id)
         .then((result) => {
           res.status(200).json(result);
         })
         .catch((err) => next(err));
-        */
     },
   );
 

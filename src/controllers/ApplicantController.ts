@@ -273,6 +273,39 @@ class ApplicantController {
     return { id: applicantId };
   }
 
+  async deleteApplicantNoRequest(applicantId: number) {
+    let applicantToDelete;
+    try {
+      applicantToDelete = await this.prisma.applicant.findUniqueOrThrow({
+        where: { id: applicantId },
+      });
+      await this.prisma.$transaction([
+        // Delete from applicant table
+        this.prisma.applicant.delete({ where: { id: applicantId } }),
+      ]);
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        throw new CAPPError(
+          {
+            title: 'Applicant Deletion Error',
+            detail: 'Database error encountered when deleting applicant',
+            status: 400,
+          },
+          e instanceof Error ? { cause: e } : undefined,
+        );
+      }
+      throw new CAPPError(
+        {
+          title: 'Applicant Deletion Error',
+          detail: 'Error when deleting applicant',
+        },
+        e instanceof Error ? { cause: e } : undefined,
+      );
+    }
+    await this.auth0Service.deleteUser(applicantToDelete.auth0Id);
+    return { id: applicantId };
+  }
+
   async createOrUpdateDraftSubmission(
     applicantId: number,
     data: ApplicantDraftSubmissionBody,
