@@ -21,7 +21,7 @@ services:
       - 'AUTH0_EXPRESS_CONFIG={"audience":"${AUTH0_AUDIENCE}", "issuerBaseURL": "${AUTH0_ISSUER}"}'
       - PORT=3000
       - SENTRY_DSN
-      - WEB_URL="https://head.common-app-frontend.pages.dev"
+      - WEB_URL=https://head.common-app-frontend.pages.dev
       - AWS_REGION=us-east-1
     ports:
       - "3000:3000"
