@@ -39,7 +39,7 @@ const applyEmailHTMLTemplate = (subject: string, content: string) =>
             <div style="${signoffText}">
               <p>Thanks,<br/>
               The Tekalo Team</p>
-              <hr style="${hr}/>
+              <hr style="${hr}"/>
               <div style="${footerMsg}">
                 <p>
                   If you're having issues with your account, please don't hesitate

@@ -117,6 +117,10 @@ Run only tests in the unit/controllers folder: `pnpm run test --files=unit/contr
 Run only tests that start with 'grants' in the unit/controllers folder: `pnpm run test --files=unit/controllers/applicants`
 Run only a specific test: `pnpm run test --files=unit/controllers/applicants.controller.test.ts`
 
+### Testing emails locally
+
+Add `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and `AWS_SESSION_TOKEN` to your `.env` file. The values for these can be found in the AWS `start` page for the Future Action Networks. Click on `Command line or programmatic access` under the Future-Actions-Network-Apps account and copy the environment values.
+
 ## Auth0 Configuration Management
 
 Prequisite: install auth0deploy `npm install -g auth0-deploy-cli`
