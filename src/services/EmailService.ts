@@ -62,7 +62,6 @@ class EmailService {
     changePassLink: string,
     signInLink: string,
   ): SendEmailCommandInput {
-    console.log(`SIGN IN LINK ${signInLink}`);
     return this.generateEmailTemplate({
       ...getApplicantWelcomeEmail(changePassLink, signInLink),
       recipientEmail,
