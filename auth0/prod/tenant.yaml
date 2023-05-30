@@ -87,9 +87,13 @@ clients:
     token_endpoint_auth_method: client_secret_post
   - name: Tekalo
     allowed_clients: []
-    allowed_logout_urls: '@@ALLOWED_LOGOUT_URLS@@'
+    allowed_logout_urls:
+      - https://www.tekalo.org
+      - https://*.common-app-frontend.pages.dev
     app_type: spa
-    callbacks: '@@TEKALO_CLIENT_CALLBACKS@@'
+    callbacks:
+      - https://www.tekalo.org
+      - https://*.common-app-frontend.pages.dev
     client_aliases: []
     cross_origin_auth: false
     custom_login_page_on: true
@@ -122,12 +126,18 @@ clients:
       rotation_type: non-rotating
     sso_disabled: false
     token_endpoint_auth_method: none
-    web_origins: '@@ALLOWED_WEB_ORIGINS@@'
+    web_origins:
+      - https://www.tekalo.org
+      - https://*.common-app-frontend.pages.dev
   - name: Tekalo Management
     allowed_clients: []
-    allowed_logout_urls: '@@ALLOWED_LOGOUT_URLS@@'
+    allowed_logout_urls:
+      - https://www.tekalo.org
+      - https://*.common-app-frontend.pages.dev
     app_type: non_interactive
-    callbacks: '@@TEKALO_CLIENT_CALLBACKS@@'
+    callbacks:
+      - https://www.tekalo.org
+      - https://*.common-app-frontend.pages.dev
     client_aliases: []
     cross_origin_auth: false
     custom_login_page_on: true
@@ -156,7 +166,9 @@ clients:
       rotation_type: non-rotating
     sso_disabled: false
     token_endpoint_auth_method: client_secret_post
-    web_origins: '@@ALLOWED_WEB_ORIGINS@@'
+    web_origins:
+      - https://www.tekalo.org
+      - https://*.common-app-frontend.pages.dev
 databases:
   - name: Username-Password-Authentication
     strategy: auth0
@@ -276,7 +288,6 @@ tenant:
   enabled_locales:
     - en
   flags:
-    new_universal_login_experience_enabled: true
     universal_login: true
     revoke_refresh_token_grant: false
     require_signed_request_object: false
@@ -285,7 +296,7 @@ tenant:
   friendly_name: Tekalo
   picture_url: https://auth0-assets-axb.pages.dev/tekalogo-logo-small.png
   sandbox_version: '16'
-  support_email: ##SUPPORT_EMAIL##
+  support_email: support@futuresengine.com
   support_url: ''
   universal_login:
     colors:
@@ -299,7 +310,7 @@ emailProvider:
     accessKeyId: '##SES_ACCESS_KEY_ID##'
     secretAccessKey: '##SES_ACCESS_SECRET_KEY##'
     region: us-east-1
-  default_from_address: '@@DEFAULT_FROM_ADDRESS@@'
+  default_from_address: support@futuresengine.com
   enabled: true
 emailTemplates:
   - template: reset_email
@@ -318,7 +329,7 @@ emailTemplates:
     urlLifetimeInSeconds: 432000
 clientGrants:
   - client_id: API Explorer Application
-    audience: https://##AUTH0_DOMAIN##/api/v2/
+    audience: https://sf-futuresengine-prod.us.auth0.com/api/v2/
     scope:
       - read:client_grants
       - create:client_grants
@@ -465,7 +476,7 @@ clientGrants:
       - read:user_idp_tokens
       - read:connections
   - client_id: Tekalo Management
-    audience: https://##AUTH0_DOMAIN##/api/v2/
+    audience: https://sf-futuresengine-prod.us.auth0.com/api/v2/
     scope:
       - read:client_grants
       - create:client_grants
@@ -725,6 +736,16 @@ attackProtection:
         max_attempts: 50
         rate: 1200
 logStreams: []
+customDomains:
+  - domain: login.futuresengine.com
+    primary: true
+    status: ready
+    tls_policy: recommended
+    type: auth0_managed_certs
+    verification:
+      methods:
+        - name: cname
+          record: sf-futuresengine-prod-cd-qcv5xfnoybi5wajv.edge.tenants.us.auth0.com
 themes:
   - borders:
       button_border_weight: 1
