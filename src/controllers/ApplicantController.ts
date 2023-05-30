@@ -18,6 +18,7 @@ import EmailService from '@App/services/EmailService.js';
 import MonitoringService from '@App/services/MonitoringService.js';
 import { AuthResult } from 'express-oauth2-jwt-bearer';
 import { Claims } from '@App/resources/types/auth0.js';
+import { AppMetadata, User, UserMetadata } from 'auth0';
 
 class ApplicantController {
   private auth0Service: AuthService;
@@ -59,11 +60,41 @@ class ApplicantController {
       }
       auth0UserId = auth.payload.sub;
     } else {
-      const auth0User = await this.auth0Service.createUser({
-        name: data.name,
-        email: data.email,
-      });
-      auth0UserId = auth0User.user_id;
+      let auth0User: User<AppMetadata, UserMetadata> | undefined;
+      try {
+        auth0User = await this.auth0Service.createUser({
+          name: data.name,
+          email: data.email,
+        });
+      } catch (e) {
+        // If our user is not coming in with a JWT, but they already exist in Auth0, they need to make this request with their JWT
+        if (e instanceof CAPPError && e.problem.status === 409) {
+          const userExists = await this.auth0Service.userExists(data.email);
+          if (userExists) {
+            throw new CAPPError(
+              {
+                title: 'Auth0 User Exists',
+                detail: 'User must login',
+                status: 401,
+              },
+              e instanceof Error ? { cause: e } : undefined,
+            );
+          } else {
+            // User exists in Auth0, but something unknown went wrong in fetching them
+            throw new CAPPError(
+              {
+                title: 'Auth0 User Exists',
+                detail: 'Failed to find existing user',
+                status: 404,
+              },
+              e instanceof Error ? { cause: e } : undefined,
+            );
+          }
+        } else {
+          throw e;
+        }
+      }
+      auth0UserId = auth0User?.user_id;
     }
     if (!auth0UserId) {
       throw new CAPPError({

@@ -28,11 +28,14 @@ class Authenticator {
       logger.error(err);
       if (!req.auth) {
         next(
-          new CAPPError({
-            title: 'Cannot authenticate request',
-            detail: 'Applicant cannot be authenticated',
-            status: 401,
-          }),
+          new CAPPError(
+            {
+              title: 'Cannot authenticate request',
+              detail: 'Applicant cannot be authenticated',
+              status: 401,
+            },
+            err instanceof Error ? { cause: err } : undefined,
+          ),
         );
         return;
       }

@@ -65,6 +65,19 @@ class AuthService {
     }
   }
 
+  /**
+   * Returns all users with given email or undefined if user does not exist
+   * Multiple users with same email but different 'connection' types may exist
+   * @param email
+   * @returns
+   */
+  async userExists(email: string): Promise<boolean> {
+    const auth0Client: ManagementClient = this.getClient();
+    // Auth0 stores all emails as lower case
+    const users = await auth0Client.getUsersByEmail(email.toLowerCase());
+    return users.length > 0;
+  }
+
   static getSignInLink(): string {
     return `${configLoader.loadConfig().webUrl}/sign-in`;
   }
