@@ -1,4 +1,5 @@
 import getApp from '@App/app.js';
+import logger from './services/logger.js';
 import AuthService from './services/AuthService.js';
 import configLoader from './services/configLoader.js';
 import EmailService from './services/EmailService.js';
@@ -22,5 +23,5 @@ const port = +app.get('port');
 
 app.listen(port, () => {
   // eslint-disable-next-line no-console
-  console.log(`server running at http://localhost:${port}`);
+  logger.info(`server running at http://localhost:${port}`);
 });
