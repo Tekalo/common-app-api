@@ -10,10 +10,11 @@ import {
   createMockContext,
 } from '@App/tests/util/context.js';
 import { getMockConfig } from '@App/tests/util/helpers.js';
-import { Prisma } from '@prisma/client';
+import { ApplicantSubmission, Prisma } from '@prisma/client';
 import DummyMonitoringService from '@App/tests/fixtures/DummyMonitoringService.js';
 import SESService from '@App/services/SESService.js';
 import DummySESService from '@App/tests/fixtures/DummySesService.js';
+import applicantSubmissionGenerator from '@App/tests/fixtures/applicantSubmissionGenerator.js';
 
 let mockCtx: MockContext;
 let ctx: Context;
@@ -161,7 +162,7 @@ describe('Applicant Controller', () => {
         }),
       ).rejects.toHaveProperty('problem.status', 409);
     });
-    test('Should successfully return if applicant saved but post-submission email fails to send', async () => {
+    test('Should successfully return if applicant saved but post-registration email fails to send', async () => {
       mockCtx.prisma.applicant.create.mockResolvedValue({
         id: 1,
         phone: '777-777-7777',
@@ -226,7 +227,11 @@ describe('Applicant Controller', () => {
         followUpOptIn: false,
       });
 
-      const emailService = new EmailService(new SESService(), getMockConfig());
+      const webUrl = process.env.WEB_URL || '';
+      const emailService = new EmailService(
+        new SESService(),
+        getMockConfig({ webUrl }),
+      );
 
       const mockEmailSpy = jest.spyOn(emailService, 'sendEmail');
 
@@ -237,18 +242,21 @@ describe('Applicant Controller', () => {
         new DummyMonitoringService(),
       );
 
+      const bobEmail = 'bboberson@schmidtfutures.com';
+
       await applicantController.createApplicant({
         name: 'Bob Boberson',
-        email: 'bboberson@schmidtfutures.com',
+        email: bobEmail,
         pronoun: 'he/his',
         preferredContact: 'email',
         searchStatus: 'active',
         acceptedTerms: true,
         acceptedPrivacy: true,
       });
-      const expectedEmail = emailService.generateWelcomeEmail(
-        'bboberson@schmidtfutures.com',
+      const expectedEmail = emailService.generateApplicantWelcomeEmail(
+        bobEmail,
         'fake-ticket',
+        `${webUrl}/sign-in`,
       );
       expect(mockEmailSpy).toHaveBeenCalledWith(expectedEmail);
       mockEmailSpy.mockRestore();
@@ -358,6 +366,89 @@ describe('Applicant Controller', () => {
         'bboberson@schmidtfutures.com',
         'Bob Boberson',
       );
+      expect(mockEmailSpy).toHaveBeenCalledWith(expectedEmail);
+      mockEmailSpy.mockRestore();
+    });
+  });
+
+  describe('Applicant Create Submission', () => {
+    test('Should send post-submission email after applicant submits application', async () => {
+      const applicantId = 666;
+      const resolvedValue: ApplicantSubmission = {
+        id: 445566,
+        createdAt: new Date(),
+        applicantId,
+        originTag: '',
+        lastRole: 'senior software engineer',
+        lastOrg: 'mozilla',
+        yoe: '>11',
+        skills: ['react', 'python'], // enum
+        otherSkills: ['juggling', 'curling'],
+        linkedInUrl: 'https://www.linkedin.com/in/bob-bobberson',
+        githubUrl: 'https://github.com/bboberson',
+        portfolioUrl: null,
+        portfolioPassword: '',
+        resumeUrl: 'myportfolio.com',
+        resumePassword: null,
+        hoursPerWeek: null,
+        interestEmploymentType: ['full'], // enum
+        interestRoles: [
+          'software engineer - frontend',
+          'software engineer - backend',
+        ],
+        currentLocation: 'Boston, MA',
+        openToRelocate: 'not sure',
+        openToRemote: 'both',
+        desiredSalary: '100,000',
+        interestCauses: ['climate change', 'responsible AI'],
+        otherCauses: ['animal rights'],
+        workAuthorization: 'sponsorship',
+        interestGovt: true,
+        interestGovtEmplTypes: ['paid'],
+        previousImpactExperience: false,
+        essayResponse:
+          'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non iaculis erat.',
+        referenceAttribution: 'social media', // enum
+      };
+
+      mockCtx.prisma.applicantSubmission.create.mockResolvedValue(
+        resolvedValue,
+      );
+
+      const bobEmail = 'bboberson@schmidtfutures.com';
+      mockCtx.prisma.applicant.findUniqueOrThrow.mockResolvedValue({
+        id: 666,
+        phone: '777-777-7777',
+        name: 'Bob Boberson',
+        email: bobEmail,
+        pronoun: 'she/hers',
+        preferredContact: 'email',
+        searchStatus: 'active',
+        acceptedTerms: new Date('2023-02-01'),
+        acceptedPrivacy: new Date('2023-02-01'),
+        auth0Id: 'auth0|1234',
+        isPaused: false,
+        followUpOptIn: false,
+      });
+
+      const emailService = new EmailService(new SESService(), getMockConfig());
+
+      const mockEmailSpy = jest.spyOn(emailService, 'sendEmail');
+
+      const applicantController = new ApplicantController(
+        new DummyAuthService(),
+        ctx.prisma,
+        emailService,
+        new DummyMonitoringService(),
+      );
+
+      await applicantController.createSubmission(
+        applicantId,
+        applicantSubmissionGenerator.getAPIRequestBody(),
+      );
+
+      const expectedEmail =
+        emailService.generateApplicantPostSubmitEmail(bobEmail);
       expect(mockEmailSpy).toHaveBeenCalledWith(expectedEmail);
       mockEmailSpy.mockRestore();
     });

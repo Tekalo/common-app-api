@@ -117,9 +117,12 @@ class ApplicantController {
         const { ticket } = await this.auth0Service.generatePasswordReset(
           returnApplicant.auth0Id,
         );
-        const welcomeEmail = this.emailService.generateWelcomeEmail(
+        const signInLink: string = AuthService.getSignInLink();
+
+        const welcomeEmail = this.emailService.generateApplicantWelcomeEmail(
           returnApplicant.email,
           ticket,
+          signInLink,
         );
         await this.emailService.sendEmail(welcomeEmail);
       } catch (e) {
@@ -173,13 +176,30 @@ class ApplicantController {
     data: ApplicantSubmissionBody,
   ): Promise<ApplicantSubmission> {
     try {
-      return await this.prisma.applicantSubmission.create({
+      const applicantSubmission = await this.prisma.applicantSubmission.create({
         data: {
           ...data,
           otherCauses: data.otherCauses ? data.otherCauses : [],
           applicantId,
         },
       });
+
+      try {
+        const applicant = await this.prisma.applicant.findUniqueOrThrow({
+          where: { id: applicantId },
+        });
+        const submissionEmail =
+          this.emailService.generateApplicantPostSubmitEmail(applicant.email);
+        await this.emailService.sendEmail(submissionEmail);
+      } catch (e) {
+        MonitoringService.logError(
+          new CAPPError(
+            { title: 'Failed to send applicant post-submission email' },
+            e instanceof Error ? { cause: e } : undefined,
+          ),
+        );
+      }
+      return applicantSubmission;
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         throw new CAPPError(

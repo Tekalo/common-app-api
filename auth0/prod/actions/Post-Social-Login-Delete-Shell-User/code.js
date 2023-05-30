@@ -9,13 +9,13 @@ exports.onExecutePostLogin = async (event, api) => {
   const ManagementClient = require('auth0').ManagementClient;
 
    const management = new ManagementClient({
-      domain: 'sf-capp-dev.us.auth0.com',
+      domain: 'sf-futuresengine-prod.us.auth0.com',
       clientId: event.secrets.clientId,
       clientSecret: event.secrets.clientSecret
   });
 
   // Social login, first time for user who has never had their shell account cleaned
-  if (event.connection.name === 'google-oauth2' &&
+  if ((event.connection.name === 'google-oauth2' || event.connection.name === 'linkedin') &&
       (!event.user.app_metadata || !event.user.app_metadata.has_cleaned_shell_accounts)
   ) {
     let shellUserId;
@@ -40,13 +40,13 @@ exports.onExecutePostLogin = async (event, api) => {
           await management.deleteUser({id:shellUserId})
           // Set flag on our social user that we have already deleted their shell account
           api.user.setAppMetadata("has_cleaned_shell_accounts", true);
-          api.idToken.setCustomClaim('auth0.capp.com/exists_in_db', true)
+          api.idToken.setCustomClaim('exists_in_db', true)
         } catch(e) {
           throw new Error(`Could not delete user with ID ${shellUserId}`);
         }
       }
     } catch (e) {
-      throw new Error(`Something went wrong when determining whether to delete shell user ${userEmail}`);
+        throw new Error(`Something went wrong when determining whether to delete shell user ${userEmail}`);
     }
   }
 };

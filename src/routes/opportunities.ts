@@ -2,10 +2,11 @@ import OpportunityController from '@App/controllers/OpportunityController.js';
 import prisma from '@App/resources/client.js';
 import { OpportunityBatchRequestBodySchema } from '@App/resources/schemas/opportunities.js';
 import { OpportunityBatchRequestBody } from '@App/resources/types/opportunities.js';
+import EmailService from '@App/services/EmailService.js';
 import express, { Request, Response } from 'express';
 
-const opportunitiesRoutes = () => {
-  const opportunityController = new OpportunityController(prisma);
+const opportunitiesRoutes = (emailService: EmailService) => {
+  const opportunityController = new OpportunityController(prisma, emailService);
   const router = express.Router();
 
   router.post('/batch', (req: Request, res: Response, next) => {

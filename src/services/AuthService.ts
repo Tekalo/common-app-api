@@ -78,6 +78,10 @@ class AuthService {
     return users.length > 0;
   }
 
+  static getSignInLink(): string {
+    return `${configLoader.loadConfig().webUrl}/sign-in`;
+  }
+
   async deleteUser(id: string) {
     const auth0Client: ManagementClient = this.getClient();
     let responseBody;
