@@ -163,6 +163,21 @@ const applicantRoutes = (
     },
   );
 
+  router.delete(
+    '/:id',
+    authenticator.validateJwtAdmin.bind(authenticator),
+    (req: Request, res: Response, next: NextFunction) => {
+      const reqWithAuth = req as RequestWithJWT;
+      const { id } = reqWithAuth.params;
+      applicantController
+        .deleteApplicantForce(Number(id))
+        .then((result) => {
+          res.status(200).json(result);
+        })
+        .catch((err) => next(err));
+    },
+  );
+
   return router;
 };
 
