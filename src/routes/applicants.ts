@@ -170,7 +170,7 @@ const applicantRoutes = (
       const reqWithAuth = req as RequestWithJWT;
       const { id } = reqWithAuth.auth.payload;
       applicantController
-        .deleteApplicantNoRequest(id)
+        .deleteApplicantForce(id)
         .then((result) => {
           res.status(200).json(result);
         })

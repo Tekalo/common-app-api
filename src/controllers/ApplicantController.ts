@@ -273,16 +273,16 @@ class ApplicantController {
     return { id: applicantId };
   }
 
-  async deleteApplicantNoRequest(applicantId: number) {
+  async deleteApplicantForce(applicantId: number) {
+    // Deletes specified applicant without making deletion request entry or sending emails
+    // Meant to be used by E2E tests and admins
     let applicantToDelete;
     try {
       applicantToDelete = await this.prisma.applicant.findUniqueOrThrow({
         where: { id: applicantId },
       });
-      await this.prisma.$transaction([
-        // Delete from applicant table
-        this.prisma.applicant.delete({ where: { id: applicantId } }),
-      ]);
+      // Delete from applicant table
+      await this.prisma.applicant.delete({ where: { id: applicantId } });
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         throw new CAPPError(
