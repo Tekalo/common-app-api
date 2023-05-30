@@ -1,5 +1,8 @@
 import express, { Application } from 'express';
 import * as swaggerUi from 'swagger-ui-express';
+import { pinoHttp } from 'pino-http';
+import { randomUUID } from 'crypto';
+import logger from '@App/services/logger.js';
 import spec from '@App/resources/spec.json' assert { type: 'json' };
 import {
   applicantRoutes,
@@ -25,6 +28,20 @@ const getApp = (
   monitoringService.sentryInit(app);
 
   const router = express.Router();
+
+  app.use(
+    pinoHttp({
+      logger,
+      // Define a custom request id function
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      genReqId: (req, _res) => {
+        if (req.id) return req.id;
+        const id = randomUUID();
+        return id;
+      },
+    }),
+  );
+
   app.use(express.json());
 
   /**

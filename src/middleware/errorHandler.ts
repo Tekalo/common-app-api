@@ -18,6 +18,7 @@ const errorHandler = (
     problem.title = 'Unauthorized';
     problem.status = 401;
   }
+  req.log.error(err);
   if (err instanceof ZodError) {
     const { issues } = err;
     const [detail] = issues;
