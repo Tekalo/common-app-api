@@ -273,9 +273,9 @@ class ApplicantController {
     return { id: applicantId };
   }
 
+  // Deletes specified applicant without making deletion request entry or sending emails
+  // Meant to be used by E2E tests and admins
   async deleteApplicantForce(applicantId: number) {
-    // Deletes specified applicant without making deletion request entry or sending emails
-    // Meant to be used by E2E tests and admins
     let applicantToDelete;
     try {
       applicantToDelete = await this.prisma.applicant.findUniqueOrThrow({
