@@ -10,7 +10,7 @@ import {
 } from '@App/resources/types/auth0.js';
 import CAPPError from '@App/resources/shared/CAPPError.js';
 
-const adminRole = 'AdminUser';
+const adminRole = 'admin';
 
 class Authenticator {
   private prisma: PrismaClient;
