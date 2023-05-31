@@ -408,25 +408,14 @@ describe('DELETE /applicants/:id', () => {
       await request(appNoAuth).delete('/applicants/me').expect(401);
     });
 
-    it('should return 404 when authenticating with token of non-existent applicant', async () => {
+    it('should return 200 when authenticating with valid token, but applicant does not exist in the database', async () => {
       const token = await authHelper.getToken(
         `bboberson${getRandomString()}@gmail.com`,
       );
       await request(appNoAuth)
-        .post('/applicants')
-        .send({
-          name: 'Bob Boberson',
-          email: `bboberson${getRandomString()}@gmail.com`,
-          preferredContact: 'email',
-          searchStatus: 'active',
-          acceptedTerms: true,
-          acceptedPrivacy: true,
-        });
-      const { body: deleteBody } = await request(appNoAuth)
         .delete('/applicants/me')
         .set('Authorization', `Bearer ${token}`)
-        .expect(404);
-      expect(deleteBody).toHaveProperty('title', 'Not Found');
+        .expect(200);
     });
 
     it('should delete applicant from database', async () => {

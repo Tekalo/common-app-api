@@ -15,7 +15,12 @@ import { setCookie } from '@App/services/cookieService.js';
 
 import AuthService from '@App/services/AuthService.js';
 import prisma from '@App/resources/client.js';
-import express, { NextFunction, Request, Response } from 'express';
+import express, {
+  NextFunction,
+  Request,
+  RequestHandler,
+  Response,
+} from 'express';
 import Authenticator from '@App/middleware/authenticator.js';
 import { RequestWithJWT } from '@App/resources/types/auth0.js';
 import EmailService from '@App/services/EmailService.js';
@@ -55,7 +60,7 @@ const applicantRoutes = (
 
   router.post(
     '/me/submissions',
-    authenticator.verifyJwtOrCookie.bind(authenticator),
+    authenticator.verifyJwtOrCookie.bind(authenticator) as RequestHandler,
     (req: Request, res: Response, next) => {
       const appBody = req.body as ApplicantSubmissionBody;
       const validatedBody = ApplicantSubmissionRequestBodySchema.parse(appBody);
@@ -71,14 +76,15 @@ const applicantRoutes = (
 
   router.put(
     '/me/state',
-    authenticator.validateJwt.bind(authenticator),
+    authenticator.validateJwt.bind(authenticator) as RequestHandler,
     (req: Request, res: Response, next) => {
       const appBody = req.body as ApplicantStateBody;
       const reqWithAuth = req as RequestWithJWT;
       const applicantID = reqWithAuth.auth.payload.id;
       const { pause } = ApplicantStateRequestBodySchema.parse(appBody);
       applicantController
-        .pauseApplicant(applicantID, pause)
+        // applicantID type assertion because our middlware setApplicantId() guarantees an applicant ID is set
+        .pauseApplicant(applicantID as number, pause)
         .then((result) => {
           res.status(200).json(result);
         })
@@ -88,25 +94,40 @@ const applicantRoutes = (
 
   router.delete(
     '/me',
-    authenticator.validateJwt.bind(authenticator),
+    authenticator.validateJwtOfUnregisteredUser.bind(
+      authenticator,
+    ) as RequestHandler,
     (req: Request, res: Response, next) => {
       const reqWithAuth = req as RequestWithJWT;
-      const { id } = reqWithAuth.auth.payload;
-      applicantController
-        .deleteApplicant(id)
-        .then((result) => {
-          res.status(200).json(result);
-        })
-        .catch((err) => next(err));
+      const { id } = reqWithAuth.auth.payload; // Applicant exists in the database
+      if (id) {
+        // Delete from DB too
+        applicantController
+          .deleteApplicant(id)
+          .then((result) => {
+            res.status(200).json(result);
+          })
+          .catch((err) => next(err));
+      } else {
+        // Applicant does not exist in the database but still has a JWT
+        // TODO: make sure we can cast this
+        const auth0Id = reqWithAuth.auth.payload.sub as string;
+        authService
+          .deleteUser(auth0Id)
+          .then((result) => {
+            res.status(200).json(result);
+          })
+          .catch((err) => next(err));
+      }
     },
   );
 
   router.post(
     '/me/submissions/draft',
-    authenticator.verifyJwtOrCookie.bind(authenticator),
+    authenticator.verifyJwtOrCookie.bind(authenticator) as RequestHandler,
     (req: Request, res: Response, next) => {
       const appBody = req.body as ApplicantDraftSubmissionBody;
-      const applicantID = req.auth?.payload.id || req.session.applicant.id;
+      const applicantID = req.auth?.payload.id || req.session.applicant.id; // token applicant ID
       const validatedBody =
         ApplicantDraftSubmissionRequestBodySchema.parse(appBody);
       applicantController
@@ -120,7 +141,7 @@ const applicantRoutes = (
 
   router.get(
     '/me/submissions',
-    authenticator.verifyJwtOrCookie.bind(authenticator),
+    authenticator.verifyJwtOrCookie.bind(authenticator) as RequestHandler,
     (req: Request, res: Response, next: NextFunction) => {
       // Cast req as RequestWithJWT because our middleware above asserts that there will be an auth property included
       const applicantID = req.auth?.payload.id || req.session.applicant.id;
@@ -135,12 +156,13 @@ const applicantRoutes = (
 
   router.get(
     '/me',
-    authenticator.validateJwt.bind(authenticator),
+    authenticator.validateJwt.bind(authenticator) as RequestHandler,
     (req: Request, res: Response, next: NextFunction) => {
       const reqWithAuth = req as RequestWithJWT;
       const { id } = reqWithAuth.auth.payload;
       applicantController
-        .getApplicant(id)
+        // id type assertion because our middlware setApplicantId() guarantees an applicant ID is set
+        .getApplicant(id as number)
         .then((result) => {
           res.status(200).json(result);
         })

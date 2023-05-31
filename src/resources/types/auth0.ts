@@ -22,8 +22,8 @@ export const Claims = {
 declare module 'express-oauth2-jwt-bearer' {
   export interface JWTPayload {
     'auth0.capp.com/email': string; // added in Auth0 postLoginAddEmail action
-    'auth0.capp.com/roles': string[]; // added in Autho0 postLoginAddRoles action
-    id: number; // added in Authenticator.setApplicantID()
+    'auth0.capp.com/roles': string[]; // added in Auth0 postLoginAddRoles action
+    id?: number; // Applicant ID in db. Added in Authenticator.setApplicantID()
   }
   export interface AuthResult {
     payload: JWTPayload;

@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
 import { auth } from 'express-oauth2-jwt-bearer';
-import logger from '@App/services/logger.js';
 import { verifyCookie } from '@App/services/cookieService.js';
 import { PrismaClient } from '@prisma/client';
 import {
@@ -22,11 +21,60 @@ class Authenticator {
     this.authConfig = authConfig;
   }
 
-  // Attach to requests that can only authenticate with a JWT
-  validateJwt(req: Request, res: Response, next: NextFunction) {
-    auth(this.authConfig)(req, res, (async (err) => {
-      logger.error(err);
-      if (!req.auth) {
+  // An alternative to validateJwt().
+  // Use on routes that need a JWT, but the user may not exist yet in the database
+  async validateJwtOfUnregisteredUser(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    await this.validateJwt(req, res, (err) => {
+      if (err) {
+        // If our user doesn't exist in the DB aka has not registered yet. But thats OK.
+        if (err instanceof CAPPError && err.problem.status === 404) {
+          next();
+          return;
+        }
+        next(err);
+      } else {
+        next();
+      }
+    });
+  }
+
+  // Use on routes that can only authenticate with a JWT and where applicant must exist in the database
+  // eslint-disable-next-line @typescript-eslint/require-await
+  async validateJwt(req: Request, res: Response, next: NextFunction) {
+    try {
+      auth(this.authConfig)(req, res, (async (err) => {
+        if (!req.auth) {
+          next(
+            new CAPPError(
+              {
+                title: 'Cannot authenticate request',
+                detail: 'Applicant cannot be authenticated',
+                status: 401,
+              },
+              err instanceof Error ? { cause: err } : undefined,
+            ),
+          );
+          return;
+        }
+        await this.setApplicantID(req as RequestWithJWT, res, next);
+      }) as NextFunction);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  // Attach to requests that can only authenticate with a JWT and are verified as test/admin accounts
+  validateJwtAdmin(req: Request, res: Response, next: NextFunction) {
+    auth(this.authConfig)(req, res, (err) => {
+      if (
+        !req.auth ||
+        !req.auth.payload['auth0.capp.com/roles'] ||
+        !req.auth.payload['auth0.capp.com/roles'].includes(adminRole)
+      ) {
         next(
           new CAPPError(
             {
@@ -36,28 +84,6 @@ class Authenticator {
             },
             err instanceof Error ? { cause: err } : undefined,
           ),
-        );
-        return;
-      }
-      await this.setApplicantID(req as RequestWithJWT, res, next);
-    }) as NextFunction);
-  }
-
-  // Attach to requests that can only authenticate with a JWT and are verified as test/admin accounts
-  validateJwtAdmin(req: Request, res: Response, next: NextFunction) {
-    auth(this.authConfig)(req, res, (err) => {
-      console.log(err);
-      if (
-        !req.auth ||
-        !req.auth.payload['auth0.capp.com/roles'] ||
-        !req.auth.payload['auth0.capp.com/roles'].includes(adminRole)
-      ) {
-        next(
-          new CAPPError({
-            title: 'Cannot authenticate request',
-            detail: 'Applicant cannot be authenticated',
-            status: 401,
-          }),
         );
         return;
       }
@@ -76,7 +102,8 @@ class Authenticator {
   }
 
   // Attach to requests that can authenticate with either JWT or cookie
-  verifyJwtOrCookie(req: Request, res: Response, next: NextFunction) {
+  // eslint-disable-next-line @typescript-eslint/require-await
+  async verifyJwtOrCookie(req: Request, res: Response, next: NextFunction) {
     auth(this.authConfig)(req, res, (async () => {
       if (!req.auth) {
         verifyCookie(req, res, next);
