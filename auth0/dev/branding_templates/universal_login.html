@@ -100,23 +100,32 @@
               via <span class="f_e_trigger">Futures Engine</span>
               <div class="f_e_tooltip-wrapper">
                 <div class="f_e_tooltip">
-                  Futures Engine is the main port of entry for
+                  With the goal of matching talent to opportunities for public
+                  benefit at scale, Futures Engine provides a central hub for
                   <a href="https://www.schmidtfutures.com/" target="_blank"
                     >Schmidt Futures</a
                   >
-                  programs with the goal of matching talent to opportunities at
-                  scale. In the future, your Futures Engine account will allow
-                  you to access additional types of opportunities.
+                  community members to connect with one another and others who
+                  can help. Soon, your Futures Engine account will allow you to
+                  get connected to additional opportunities to help build a
+                  better world.
                 </div>
               </div>
             </div>
           </h5>
           <div class="sign-up-link">
-            Don't have an account? Sign up
+            Don't have an account? Sign up {% if application.name == "Tekalo
+            Dev" %}
             <a
-              href="https://head.common-app-frontend.pages.dev/sign-up/applicants"
+              href="https://develop.common-app-frontend.pages.dev/sign-up/applicants"
               >here</a
             >
+            {% else %}
+            <a
+              href="https://staging.common-app-frontend.pages.dev/sign-up/applicants"
+              >here</a
+            >
+            {% endif %}
           </div>
         </div>
         {%- auth0:widget -%}
