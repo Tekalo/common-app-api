@@ -75,16 +75,14 @@ const getApp = (
 
   /**
    * Swagger UI documentation endpoint
+   * Turned off in production
    */
-  router.use('/docs', swaggerUi.serve);
-  router.get('/docs', swaggerUi.setup(spec));
+  if (config.env !== 'prod') {
+    router.use('/docs', swaggerUi.serve);
+    router.get('/docs', swaggerUi.setup(spec));
+  }
 
   router.get('/health', healthRoutes());
-
-  // for testing error capturing in Sentry
-  router.get('/debug-sentry', () => {
-    throw new Error('Debug Sentry error!');
-  });
 
   // The error handler must be before any other error middleware and after all controllers
   MonitoringService.addSentryErrorHandler(app);
