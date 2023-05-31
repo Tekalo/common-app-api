@@ -21,6 +21,26 @@ class Authenticator {
     this.authConfig = authConfig;
   }
 
+  // An alternative to validateJwt().
+  // Use on routes that need a JWT, but the user may not exist yet in the database
+  async validateJwtOfUnregisteredUser(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    await this.validateJwt(req, res, (err) => {
+      if (err) {
+        // If our user doesn't exist in the DB aka has not registered yet. But thats OK.
+        if (err instanceof CAPPError && err.problem.status === 404) {
+          next();
+          return;
+        }
+        next(err);
+      }
+      next();
+    });
+  }
+
   // Use on routes that can only authenticate with a JWT and where applicant must exist in the database
   // eslint-disable-next-line @typescript-eslint/require-await
   async validateJwt(req: Request, res: Response, next: NextFunction) {
@@ -44,26 +64,6 @@ class Authenticator {
     } catch (err) {
       next(err);
     }
-  }
-
-  // An alternative to validateJwt().
-  // Use on routes that need a JWT, but the user may not exist yet in the database
-  async validateJwtOfUnregisteredUser(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ) {
-    await this.validateJwt(req, res, (err) => {
-      if (err) {
-        // If our user doesn't exist in the DB aka has not registered yet. But thats OK.
-        if (err instanceof CAPPError && err.problem.status === 404) {
-          next();
-          return;
-        }
-        next(err);
-      }
-      next();
-    });
   }
 
   // Attach to requests that can only authenticate with a JWT and are verified as test/admin accounts
