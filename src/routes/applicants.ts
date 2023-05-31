@@ -15,7 +15,12 @@ import { setCookie } from '@App/services/cookieService.js';
 
 import AuthService from '@App/services/AuthService.js';
 import prisma from '@App/resources/client.js';
-import express, { NextFunction, Request, Response } from 'express';
+import express, {
+  NextFunction,
+  Request,
+  RequestHandler,
+  Response,
+} from 'express';
 import Authenticator from '@App/middleware/authenticator.js';
 import { RequestWithJWT } from '@App/resources/types/auth0.js';
 import EmailService from '@App/services/EmailService.js';
@@ -55,7 +60,7 @@ const applicantRoutes = (
 
   router.post(
     '/me/submissions',
-    authenticator.verifyJwtOrCookie.bind(authenticator),
+    authenticator.verifyJwtOrCookie.bind(authenticator) as RequestHandler,
     (req: Request, res: Response, next) => {
       const appBody = req.body as ApplicantSubmissionBody;
       const validatedBody = ApplicantSubmissionRequestBodySchema.parse(appBody);
@@ -71,7 +76,7 @@ const applicantRoutes = (
 
   router.put(
     '/me/state',
-    authenticator.validateJwt.bind(authenticator),
+    authenticator.validateJwt.bind(authenticator) as RequestHandler,
     (req: Request, res: Response, next) => {
       const appBody = req.body as ApplicantStateBody;
       const reqWithAuth = req as RequestWithJWT;
@@ -89,7 +94,9 @@ const applicantRoutes = (
 
   router.delete(
     '/me',
-    authenticator.validateJwtOfUnregisteredUser.bind(authenticator),
+    authenticator.validateJwtOfUnregisteredUser.bind(
+      authenticator,
+    ) as RequestHandler,
     (req: Request, res: Response, next) => {
       const reqWithAuth = req as RequestWithJWT;
       const { id } = reqWithAuth.auth.payload; // Applicant exists in the database
@@ -117,7 +124,7 @@ const applicantRoutes = (
 
   router.post(
     '/me/submissions/draft',
-    authenticator.verifyJwtOrCookie.bind(authenticator),
+    authenticator.verifyJwtOrCookie.bind(authenticator) as RequestHandler,
     (req: Request, res: Response, next) => {
       const appBody = req.body as ApplicantDraftSubmissionBody;
       const applicantID = req.auth?.payload.id || req.session.applicant.id; // token applicant ID
@@ -134,7 +141,7 @@ const applicantRoutes = (
 
   router.get(
     '/me/submissions',
-    authenticator.verifyJwtOrCookie.bind(authenticator),
+    authenticator.verifyJwtOrCookie.bind(authenticator) as RequestHandler,
     (req: Request, res: Response, next: NextFunction) => {
       // Cast req as RequestWithJWT because our middleware above asserts that there will be an auth property included
       const applicantID = req.auth?.payload.id || req.session.applicant.id;
@@ -149,7 +156,7 @@ const applicantRoutes = (
 
   router.get(
     '/me',
-    authenticator.validateJwt.bind(authenticator),
+    authenticator.validateJwt.bind(authenticator) as RequestHandler,
     (req: Request, res: Response, next: NextFunction) => {
       const reqWithAuth = req as RequestWithJWT;
       const { id } = reqWithAuth.auth.payload;

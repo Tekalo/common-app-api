@@ -20,31 +20,36 @@ class Authenticator {
   }
 
   // Use on routes that can only authenticate with a JWT and where applicant must exist in the database
+  // eslint-disable-next-line @typescript-eslint/require-await
   async validateJwt(req: Request, res: Response, next: NextFunction) {
-    auth(this.authConfig)(req, res, (async (err) => {
-      console.log(err);
-      if (!req.auth) {
-        next(
-          new CAPPError({
-            title: 'Cannot authenticate request',
-            detail: 'Applicant cannot be authenticated',
-            status: 401,
-          }),
-        );
-        return;
-      }
-      await this.setApplicantID(req as RequestWithJWT, res, next);
-    }) as NextFunction);
+    try {
+      auth(this.authConfig)(req, res, (async (err) => {
+        console.log(err);
+        if (!req.auth) {
+          next(
+            new CAPPError({
+              title: 'Cannot authenticate request',
+              detail: 'Applicant cannot be authenticated',
+              status: 401,
+            }),
+          );
+          return;
+        }
+        await this.setApplicantID(req as RequestWithJWT, res, next);
+      }) as NextFunction);
+    } catch (err) {
+      next(err);
+    }
   }
 
   // An alternative to validateJwt().
   // Use on routes that need a JWT, but the user may not exist yet in the database
-  validateJwtOfUnregisteredUser(
+  async validateJwtOfUnregisteredUser(
     req: Request,
     res: Response,
     next: NextFunction,
   ) {
-    this.validateJwt(req, res, (err) => {
+    await this.validateJwt(req, res, (err) => {
       if (err) {
         // If our user doesn't exist in the DB aka has not registered yet. But thats OK.
         if (err instanceof CAPPError && err.problem.status === 404) {
@@ -68,7 +73,8 @@ class Authenticator {
   }
 
   // Attach to requests that can authenticate with either JWT or cookie
-  verifyJwtOrCookie(req: Request, res: Response, next: NextFunction) {
+  // eslint-disable-next-line @typescript-eslint/require-await
+  async verifyJwtOrCookie(req: Request, res: Response, next: NextFunction) {
     auth(this.authConfig)(req, res, (async () => {
       if (!req.auth) {
         verifyCookie(req, res, next);

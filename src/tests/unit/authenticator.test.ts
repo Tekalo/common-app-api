@@ -34,12 +34,12 @@ describe('Authenticator', () => {
   });
 });
 
-test('should throw error with no cookie or JWT', () => {
+test('should throw error with no cookie or JWT', async () => {
   const mockRequest = {
     session: {},
   } as Request;
   const mockNext: NextFunction = jest.fn();
-  authenticator.verifyJwtOrCookie(mockRequest, {} as Response, mockNext);
+  await authenticator.verifyJwtOrCookie(mockRequest, {} as Response, mockNext);
   expect(mockNext).toBeCalledWith(
     new CAPPError({
       title: 'Cannot authenticate request',
@@ -49,19 +49,20 @@ test('should throw error with no cookie or JWT', () => {
   );
 });
 
-test('should not throw error with valid cookie and no valid JWT', () => {
+test('should not throw error with valid cookie and no valid JWT', async () => {
   const mockRequest = {
     body: {},
     session: { applicant: { id: 1 } },
   } as MockRequestWithParams;
   const mockNext: NextFunction = jest.fn();
-  authenticator.verifyJwtOrCookie(mockRequest, {} as Response, mockNext);
+  await authenticator.verifyJwtOrCookie(mockRequest, {} as Response, mockNext);
   // we expect the request to go through to next() without passing an error
   expect(mockNext).toBeCalledWith();
 });
 
 test('should throw error if we cannot find an applicant with a given email in the database', async () => {
   const mockRequest = {
+    // is: (header) => true,
     body: {},
     auth: {
       header: {},
