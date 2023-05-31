@@ -95,6 +95,11 @@ variable "alarms_enabled" {
   default     = false
 }
 
+output "alarms_enabled" {
+  description = "Enable cloudwatch alarms to alert PagerDuty"
+  value       = var.alarms_enabled
+}
+
 variable "pagerduty_integration_url" {
   type    = string
   default = "https://example.com"
