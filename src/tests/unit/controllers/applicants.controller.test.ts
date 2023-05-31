@@ -53,6 +53,62 @@ describe('Applicant Controller', () => {
         'Unknown error in creating applicant',
       );
     });
+    test('Should return 401 if user with email already exists in Auth0 but not in database', async () => {
+      const dummyAuthService = new DummyAuthService();
+      dummyAuthService.createUser = () => {
+        throw new CAPPError({
+          title: 'User Creation Error',
+          detail: 'User already exists',
+          status: 409,
+        });
+      };
+
+      dummyAuthService.userExists = () => Promise.resolve(true);
+
+      const mockEmailService = new EmailService(
+        new SESService(),
+        getMockConfig(),
+      );
+
+      const applicantController = new ApplicantController(
+        dummyAuthService,
+        ctx.prisma,
+        mockEmailService,
+        new DummyMonitoringService(),
+      );
+
+      mockCtx.prisma.applicant.create.mockResolvedValue({
+        id: 1,
+        phone: '777-777-7777',
+        name: 'Bob Boberson',
+        email: 'bboberson@schmidtfutures.com',
+        pronoun: 'she/hers',
+        preferredContact: 'email',
+        searchStatus: 'active',
+        acceptedTerms: new Date('2023-02-01'),
+        acceptedPrivacy: new Date('2023-02-01'),
+        auth0Id: 'auth0|1234',
+        isPaused: false,
+        followUpOptIn: false,
+      });
+      await expect(
+        applicantController.createApplicant({
+          name: 'Bob Boberson',
+          email: 'bboberson@schmidtfutures.com',
+          pronoun: 'he/his',
+          preferredContact: 'email',
+          searchStatus: 'active',
+          acceptedTerms: true,
+          acceptedPrivacy: true,
+        }),
+      ).rejects.toEqual(
+        new CAPPError({
+          title: 'Auth0 User Exists',
+          detail: 'User must login',
+          status: 401,
+        }),
+      );
+    });
     test('Should return 500 error if Prisma fails with unknown error', async () => {
       mockCtx.prisma.applicant.create.mockRejectedValue(
         new Prisma.PrismaClientKnownRequestError('ERROR', {
