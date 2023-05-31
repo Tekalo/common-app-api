@@ -10,7 +10,7 @@ import {
 } from '@App/resources/types/auth0.js';
 import CAPPError from '@App/resources/shared/CAPPError.js';
 
-const testEmail = 'testuser-develop@schmidtfutures.com';
+const adminRole = 'admin';
 
 class Authenticator {
   private prisma: PrismaClient;
@@ -47,7 +47,11 @@ class Authenticator {
   validateJwtAdmin(req: Request, res: Response, next: NextFunction) {
     auth(this.authConfig)(req, res, (err) => {
       console.log(err);
-      if (!req.auth || req.auth.payload['auth0.capp.com/email'] !== testEmail) {
+      if (
+        !req.auth ||
+        !req.auth.payload['auth0.capp.com/roles'] ||
+        !req.auth.payload['auth0.capp.com/roles'].includes(adminRole)
+      ) {
         next(
           new CAPPError({
             title: 'Cannot authenticate request',

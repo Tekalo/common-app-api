@@ -148,6 +148,7 @@ const applicantRoutes = (
     },
   );
 
+  // Admin endpoints
   router.get(
     '/:id',
     authenticator.validateJwtAdmin.bind(authenticator),
