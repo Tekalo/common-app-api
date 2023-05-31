@@ -6,7 +6,6 @@ import prisma from '@App/resources/client.js';
 import configLoader from '@App/services/configLoader.js';
 import { Prisma } from '@prisma/client';
 import { createMockContext } from '../util/context.js';
-// import { getMockConfig } from '../util/helpers.js'; // use mock?
 
 type MockRequestWithParams = Request & {
   params: { id: string };
