@@ -69,14 +69,16 @@ class Authenticator {
   // Attach to requests that can only authenticate with a JWT and are verified as test/admin accounts
   validateJwtAdmin(req: Request, res: Response, next: NextFunction) {
     auth(this.authConfig)(req, res, (err) => {
-      console.log(err);
       if (!req.auth || req.auth.payload['auth0.capp.com/email'] !== testEmail) {
         next(
-          new CAPPError({
-            title: 'Cannot authenticate request',
-            detail: 'Applicant cannot be authenticated',
-            status: 401,
-          }),
+          new CAPPError(
+            {
+              title: 'Cannot authenticate request',
+              detail: 'Applicant cannot be authenticated',
+              status: 401,
+            },
+            err instanceof Error ? { cause: err } : undefined,
+          ),
         );
         return;
       }
