@@ -46,26 +46,6 @@ class Authenticator {
     }
   }
 
-  // An alternative to validateJwt().
-  // Use on routes that need a JWT, but the user may not exist yet in the database
-  async validateJwtOfUnregisteredUser(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ) {
-    await this.validateJwt(req, res, (err) => {
-      if (err) {
-        // If our user doesn't exist in the DB aka has not registered yet. But thats OK.
-        if (err instanceof CAPPError && err.problem.status === 404) {
-          next();
-          return;
-        }
-        next(err);
-      }
-      next();
-    });
-  }
-
   // Attach to requests that can only authenticate with a JWT and are verified as test/admin accounts
   validateJwtAdmin(req: Request, res: Response, next: NextFunction) {
     auth(this.authConfig)(req, res, (err) => {
@@ -81,6 +61,26 @@ class Authenticator {
           ),
         );
         return;
+      }
+      next();
+    });
+  }
+
+  // An alternative to validateJwt().
+  // Use on routes that need a JWT, but the user may not exist yet in the database
+  async validateJwtOfUnregisteredUser(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    await this.validateJwt(req, res, (err) => {
+      if (err) {
+        // If our user doesn't exist in the DB aka has not registered yet. But thats OK.
+        if (err instanceof CAPPError && err.problem.status === 404) {
+          next();
+          return;
+        }
+        next(err);
       }
       next();
     });
