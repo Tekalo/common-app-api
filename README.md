@@ -137,8 +137,6 @@ It is recommended to make changes in the Auth0 UI first. The configuration in th
 
    ```bash
    # values are the same as those set in .env
-   export AUTH0_CLIENT_ID={auth0-client-id-for-dev-tenant}
-   export AUTH0_DOMAIN={auth0-domain-for-dev-tenant}
    export AUTH0_CLIENT_SECRET={auth0-secret-for-dev-tenant}
    a0deploy export -c=auth0/config-dev.json --output_folder=auth0/dev --format=yaml
    ```
@@ -148,10 +146,8 @@ It is recommended to make changes in the Auth0 UI first. The configuration in th
 5. Export changes from Auth0 prod tenant:
 
    ```bash
-   export AUTH0_CLIENT_ID={auth0-client-id-for-prod-tenant}
-   export AUTH0_DOMAIN={auth0-domain-for-prod-tenant}
    export AUTH0_CLIENT_SECRET={auth0-secret-for-prod-tenant}
-   a0deploy export -c=auth0/config-prod.json --output_folder=auth0/prod -- format=yaml
+   a0deploy export -c=auth0/config-prod.json --output_folder=auth0/prod --format=yaml
    ```
 
 6. Open a PR with changes pulled down to the `/auth0/prod`.
