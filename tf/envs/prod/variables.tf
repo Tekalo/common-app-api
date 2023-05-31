@@ -82,6 +82,16 @@ output "auth0_email_secret_access_key" {
   sensitive   = true
 }
 
+variable "alarms_enabled" {
+  type        = bool
+  description = "Allow cloudwatch alarms to take actions"
+}
+
+output "alarms_enabled" {
+  description = "Enable cloudwatch alarms to alert PagerDuty"
+  value       = module.app.alarms_enabled
+}
+
 variable "pagerduty_integration_url" {
   description = "Integration url for pagerduty alarms"
 }
