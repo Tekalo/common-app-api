@@ -37,7 +37,9 @@ class Authenticator {
         }
         next(err);
       }
-      next();
+      else {
+        next();
+      }
     });
   }
 
