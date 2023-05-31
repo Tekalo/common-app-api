@@ -49,6 +49,7 @@ class Authenticator {
       console.log(err);
       if (
         !req.auth ||
+        !req.auth.payload['auth0.capp.com/roles'] ||
         !req.auth.payload['auth0.capp.com/roles'].includes(adminRole)
       ) {
         next(
