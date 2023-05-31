@@ -18,7 +18,7 @@ const authenticator = new Authenticator(
 );
 
 describe('Authenticator', () => {
-  test('should throw error for no valid cookie', () => {
+  test('validateCookie should throw error for no valid cookie', () => {
     const mockRequest = {
       session: {},
     } as Request;
@@ -49,7 +49,7 @@ test('should throw error with no cookie or JWT', async () => {
   );
 });
 
-test('should not throw error with valid cookie and no valid JWT', async () => {
+test('verifyJwtOrCookie should not throw error with valid cookie and no valid JWT', async () => {
   const mockRequest = {
     body: {},
     session: { applicant: { id: 1 } },
@@ -60,9 +60,8 @@ test('should not throw error with valid cookie and no valid JWT', async () => {
   expect(mockNext).toBeCalledWith();
 });
 
-test('should throw error if we cannot find an applicant with a given email in the database', async () => {
+test('validateJwt should throw error if we cannot find an applicant with a given email in the database', async () => {
   const mockRequest = {
-    // is: (header) => true,
     body: {},
     auth: {
       header: {},
@@ -72,8 +71,6 @@ test('should throw error if we cannot find an applicant with a given email in th
   } as Request;
 
   const mockCtx = createMockContext();
-  // const ctx: Context = mockCtx as unknown as Context;
-
   mockCtx.prisma.applicant.findFirstOrThrow.mockRejectedValue(
     new Prisma.PrismaClientKnownRequestError('ERROR', {
       code: 'P2025',
@@ -85,6 +82,7 @@ test('should throw error if we cannot find an applicant with a given email in th
     configLoader.loadConfig().auth0.express,
   );
   const mockNext: NextFunction = jest.fn();
+
   await authenticatorWithMockPrisma.validateJwt(
     mockRequest,
     {} as Response,
@@ -97,4 +95,34 @@ test('should throw error if we cannot find an applicant with a given email in th
       status: 404,
     }),
   );
+});
+
+test('validateJwtOfUnregisteredUser should not throw error if we cannot find an applicant with a given email in the database', async () => {
+  const mockRequest = {
+    body: {},
+    auth: {
+      header: {},
+      token: '',
+      payload: { 'auth0.capp.com/email': 'fredsburgers@gmail.com' },
+    },
+  } as Request;
+  const mockCtx = createMockContext();
+  mockCtx.prisma.applicant.findFirstOrThrow.mockRejectedValue(
+    new Prisma.PrismaClientKnownRequestError('ERROR', {
+      code: 'P2025',
+      clientVersion: '1.0',
+    }),
+  );
+  const authenticatorWithMockPrisma = new Authenticator(
+    mockCtx.prisma,
+    configLoader.loadConfig().auth0.express,
+  );
+  const mockNext: NextFunction = jest.fn();
+
+  await authenticatorWithMockPrisma.validateJwtOfUnregisteredUser(
+    mockRequest,
+    {} as Response,
+    mockNext,
+  );
+  expect(mockNext).toBeCalledWith();
 });

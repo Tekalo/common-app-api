@@ -24,14 +24,16 @@ class Authenticator {
   async validateJwt(req: Request, res: Response, next: NextFunction) {
     try {
       auth(this.authConfig)(req, res, (async (err) => {
-        console.log(err);
         if (!req.auth) {
           next(
-            new CAPPError({
-              title: 'Cannot authenticate request',
-              detail: 'Applicant cannot be authenticated',
-              status: 401,
-            }),
+            new CAPPError(
+              {
+                title: 'Cannot authenticate request',
+                detail: 'Applicant cannot be authenticated',
+                status: 401,
+              },
+              err instanceof Error ? { cause: err } : undefined,
+            ),
           );
           return;
         }
