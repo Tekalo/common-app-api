@@ -61,38 +61,29 @@ class ApplicantController {
       auth0UserId = auth.payload.sub;
     } else {
       let auth0User: User<AppMetadata, UserMetadata> | undefined;
+      const userExists = await this.auth0Service.userExists(data.email);
+      // If our user is not coming in with a JWT, but they already exist in Auth0, they need to make this request with their JWT aka "login"
+      if (userExists) {
+        throw new CAPPError({
+          title: 'Auth0 User Exists',
+          detail: 'User must login',
+          status: 409,
+        });
+      }
       try {
         auth0User = await this.auth0Service.createUser({
           name: data.name,
           email: data.email,
         });
       } catch (e) {
-        // If our user is not coming in with a JWT, but they already exist in Auth0, they need to make this request with their JWT
-        if (e instanceof CAPPError && e.problem.status === 409) {
-          const userExists = await this.auth0Service.userExists(data.email);
-          if (userExists) {
-            throw new CAPPError(
-              {
-                title: 'Auth0 User Exists',
-                detail: 'User must login',
-                status: 409,
-              },
-              e instanceof Error ? { cause: e } : undefined,
-            );
-          } else {
-            // User exists in Auth0, but something unknown went wrong in fetching them
-            throw new CAPPError(
-              {
-                title: 'Auth0 User Exists',
-                detail: 'Something went wrong in fetching existing user',
-                status: 404,
-              },
-              e instanceof Error ? { cause: e } : undefined,
-            );
-          }
-        } else {
-          throw e;
-        }
+        throw new CAPPError(
+          {
+            title: 'Auth0 User Exists',
+            detail: 'Something went wrong in creating user',
+            status: 500,
+          },
+          e instanceof Error ? { cause: e } : undefined,
+        );
       }
       auth0UserId = auth0User?.user_id;
     }
