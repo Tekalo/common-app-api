@@ -75,7 +75,7 @@ class ApplicantController {
               {
                 title: 'Auth0 User Exists',
                 detail: 'User must login',
-                status: 401,
+                status: 409,
               },
               e instanceof Error ? { cause: e } : undefined,
             );
@@ -84,7 +84,7 @@ class ApplicantController {
             throw new CAPPError(
               {
                 title: 'Auth0 User Exists',
-                detail: 'Failed to find existing user',
+                detail: 'Something went wrong in fetching existing user',
                 status: 404,
               },
               e instanceof Error ? { cause: e } : undefined,
