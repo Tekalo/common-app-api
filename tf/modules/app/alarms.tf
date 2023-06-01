@@ -190,7 +190,7 @@ data "aws_iam_policy_document" "alerts_topic_policy" {
        identifiers = ["cloudwatch.amazonaws.com"]
     }
     actions = [ "sns:Publish" ]
-    resources = [ "arn:aws:sns:us-east-1:${data.aws_caller_identity.current.account_id}:${var.env}-api-alerts" ]
+    resources = [ "arn:aws:sns:us-east-1:${data.aws_caller_identity.current.account_id}:capp-${var.env}-api-alerts" ]
   }
 }
 resource "aws_sns_topic" "capp_api_alerts" {
@@ -209,7 +209,7 @@ data "aws_iam_policy_document" "notifications_topic_policy" {
        identifiers = ["cloudwatch.amazonaws.com"]
     }
     actions = [ "sns:Publish" ]
-    resources = [ "arn:aws:sns:us-east-1:${data.aws_caller_identity.current.account_id}:${var.env}-api-notifications" ]
+    resources = [ "arn:aws:sns:us-east-1:${data.aws_caller_identity.current.account_id}:capp-${var.env}-api-notifications" ]
   }
 }
 
