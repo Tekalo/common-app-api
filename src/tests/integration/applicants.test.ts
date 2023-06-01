@@ -31,6 +31,18 @@ afterEach(async () => {
   await prisma.applicantDeletionRequests.deleteMany();
 });
 
+const deleteAuth0Users = async () => {
+  if (testUserIDs.length) {
+    const deletionRequests = Array<Promise<void>>();
+    const auth0Service = authService.getClient();
+    testUserIDs.forEach((id) => {
+      deletionRequests.push(auth0Service.deleteUser({ id }));
+    });
+    const resp = await Promise.all(deletionRequests);
+    testUserIDs = [];
+  }
+};
+
 const appConfig = configLoader.loadConfig();
 
 describe('POST /applicants', () => {
@@ -223,15 +235,7 @@ describe('POST /applicants', () => {
       appConfig,
     );
     afterEach(async () => {
-      if (testUserIDs.length > 0) {
-        const deletionRequests = Array<Promise<void>>();
-        const auth0Service = authService.getClient();
-        testUserIDs.forEach((id) => {
-          deletionRequests.push(auth0Service.deleteUser({ id }));
-        });
-        await Promise.all(deletionRequests);
-        testUserIDs = [];
-      }
+      await deleteAuth0Users();
     });
 
     itif('CI' in process.env)(
@@ -407,15 +411,7 @@ describe('POST /applicants/me/submissions', () => {
 describe('DELETE /applicants/:id', () => {
   describe('Auth0 Integration', () => {
     afterEach(async () => {
-      if (testUserIDs.length > 0) {
-        const deletionRequests = Array<Promise<void>>();
-        const auth0Service = authService.getClient();
-        testUserIDs.forEach((id) => {
-          deletionRequests.push(auth0Service.deleteUser({ id }));
-        });
-        await Promise.all(deletionRequests);
-        testUserIDs = [];
-      }
+      await deleteAuth0Users();
     });
     const app = getApp(
       authService,
