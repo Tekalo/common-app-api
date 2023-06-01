@@ -5,8 +5,8 @@
 * @param {PostLoginAPI} api - Interface whose methods can be used to change the behavior of the login.
 */
 exports.onExecutePostLogin = async (event, api) => {
-  if (event.authentication) {
-    api.accessToken.setCustomClaim('auth0.capp.com/email', event.user.email)
+  if (event.authorization) {
+    api.accessToken.setCustomClaim('auth0.capp.com/roles', event.authorization.roles)
   }
 };
 

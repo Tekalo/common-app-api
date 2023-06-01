@@ -126,14 +126,14 @@ Add `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and `AWS_SESSION_TOKEN` to you
 Prequisite: install auth0deploy `npm install -g auth0-deploy-cli`
 
 The `/dev` and `/prod` directories maintain the working version of our Auth0 Dev and Prod tenants setup. `dev/tenant.yaml` holds general dev configuration, and the rest of the `/dev` directory holds supplemental templates/settings, and the same thing applies for the `/prod` directory.
-`auth0/config-dev.json` contains variables for our dev tenant, and `auth0/config-prod.json` contains variables for our prod tenant. The `dev` and `prod` configurations are slightly convergent (the dev tenant also contains an application for staging, for example) so we can't directly apply the dev configuration to production.
+`auth0/config-dev.json` contains variables for our dev tenant, and `auth0/config-prod.json` contains variables for our prod tenant. The `dev` and `prod` configurations are slightly divergent (the dev tenant also contains an application for staging, for example) so we can't directly apply the dev configuration to production.
 
 It is recommended to make changes in the Auth0 UI first. The configuration in the `auth0` directory is primarily a record of what is in Auth0. Updating the configuration in Auth0 using the `export` functionality of the auth0 CLI has been problematic.
 
 > **_NOTE:_** Auth0 has a [known bug](https://auth0.com/docs/deploy-monitor/deploy-cli-tool/keyword-replacement#unidirectional-limitation) where keyword replacements are reverted to literal strings after an `export`. Make sure to **NOT** commit these changes
 
 1. Make changes in Auth0 UI dev tenant
-2. Export changes from dev tenant
+2. Export changes from dev tenant (the credentials can be found in the Deploy CLI application)
 
    ```bash
    # values are the same as those set in .env
