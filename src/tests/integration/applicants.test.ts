@@ -21,7 +21,7 @@ import authHelper from '../util/auth.js';
 import DummyEmailService from '../fixtures/DummyEmailService.js';
 import DummySESService from '../fixtures/DummySesService.js';
 
-let testUserID: string;
+let testUserIDs: Array<string> = [];
 const authService = new AuthService();
 
 afterEach(async () => {
@@ -223,11 +223,17 @@ describe('POST /applicants', () => {
       appConfig,
     );
     afterEach(async () => {
-      if (testUserID) {
+      if (testUserIDs.length > 0) {
+        const deletionRequests = Array<Promise<void>>();
         const auth0Service = authService.getClient();
-        await auth0Service.deleteUser({ id: testUserID });
+        testUserIDs.forEach((id) => {
+          deletionRequests.push(auth0Service.deleteUser({ id }));
+        });
+        await Promise.all(deletionRequests);
+        testUserIDs = [];
       }
     });
+
     itif('CI' in process.env)(
       'should create a new applicant and store in Auth0',
       async () => {
@@ -243,10 +249,44 @@ describe('POST /applicants', () => {
           })
           .expect(200);
         if (body.auth0Id) {
-          testUserID = body.auth0Id;
+          testUserIDs.push(body.auth0Id);
         }
         expect(body).toHaveProperty('auth0Id');
         expect(body).toHaveProperty('email');
+      },
+    );
+
+    itif('CI' in process.env)(
+      'should return a 409 if user already exists in Auth0 with username-password connection',
+      async () => {
+        const bobsEmail = `bboberson${getRandomString()}@gmail.com`;
+        // successfully create first applicant
+        const { body: successBody }: { body: ApplicantResponseBody } =
+          await request(app).post('/applicants').send({
+            name: 'Bob Boberson',
+            email: bobsEmail,
+            preferredContact: 'sms',
+            searchStatus: 'active',
+            acceptedTerms: true,
+            acceptedPrivacy: true,
+          });
+        if (successBody.auth0Id) {
+          testUserIDs.push(successBody.auth0Id);
+        }
+        const failedResp = await request(app).post('/applicants').send({
+          name: 'Bob Boberson',
+          email: bobsEmail,
+          preferredContact: 'sms',
+          searchStatus: 'active',
+          acceptedTerms: true,
+          acceptedPrivacy: true,
+        });
+        const failedBody: ApplicantResponseBody = failedResp.body;
+        // just in case our test fails and we mistakingly successfully created our second applicant
+        if (failedResp && failedBody.auth0Id) {
+          testUserIDs.push(failedBody.auth0Id);
+        }
+        expect(failedResp).toHaveProperty('status', 409);
       },
     );
   });
@@ -367,9 +407,14 @@ describe('POST /applicants/me/submissions', () => {
 describe('DELETE /applicants/:id', () => {
   describe('Auth0 Integration', () => {
     afterEach(async () => {
-      if (testUserID) {
+      if (testUserIDs.length > 0) {
+        const deletionRequests = Array<Promise<void>>();
         const auth0Service = authService.getClient();
-        await auth0Service.deleteUser({ id: testUserID });
+        testUserIDs.forEach((id) => {
+          deletionRequests.push(auth0Service.deleteUser({ id }));
+        });
+        await Promise.all(deletionRequests);
+        testUserIDs = [];
       }
     });
     const app = getApp(
@@ -396,7 +441,7 @@ describe('DELETE /applicants/:id', () => {
             acceptedPrivacy: true,
           });
         if (body.auth0Id) {
-          testUserID = body.auth0Id;
+          testUserIDs.push(body.auth0Id);
         }
         await request(app)
           .delete('/applicants/me')
