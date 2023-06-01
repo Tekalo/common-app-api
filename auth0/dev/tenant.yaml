@@ -690,16 +690,6 @@ actions:
     supported_triggers:
       - id: post-login
         version: v3
-  - name: Add-Role-To-Token
-    code: ./actions/Add-Role-To-Token/code.js
-    dependencies: []
-    deployed: false
-    runtime: node16
-    secrets: []
-    status: built
-    supported_triggers:
-      - id: post-login
-        version: v3
   - name: Post-Social-Login-Delete-Shell-User
     code: ./actions/Post-Social-Login-Delete-Shell-User/code.js
     dependencies: []
