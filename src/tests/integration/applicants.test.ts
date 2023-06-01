@@ -78,7 +78,16 @@ describe('POST /applicants', () => {
       expect(body).toHaveProperty('title', 'Validation Error');
     });
     it('should throw 409 error when creating a duplicate applicant', async () => {
-      await request(dummyAuthApp).post('/applicants').send({
+      const dummyAuthService = new DummyAuthService();
+      // eslint-disable-next-line @typescript-eslint/require-await
+      dummyAuthService.userExists = async () => true;
+      const dummyApp = getApp(
+        dummyAuthService,
+        new DummyMonitoringService(),
+        new DummyEmailService(new DummySESService(), appConfig),
+        appConfig,
+      );
+      await request(dummyApp).post('/applicants').send({
         name: 'Bob Boberson',
         email: 'bboberson123@gmail.com',
         preferredContact: 'sms',
@@ -86,7 +95,7 @@ describe('POST /applicants', () => {
         acceptedTerms: true,
         acceptedPrivacy: true,
       });
-      const { body } = await request(dummyAuthApp)
+      const { body } = await request(dummyApp)
         .post('/applicants')
         .send({
           name: 'Bob Boberson',
@@ -97,7 +106,7 @@ describe('POST /applicants', () => {
           acceptedPrivacy: true,
         })
         .expect(409);
-      expect(body).toHaveProperty('detail', 'User already exists');
+      expect(body).toHaveProperty('detail', 'User must login');
     });
     test('Should throw error if request body has invalid preferred contact', async () => {
       const { body } = await request(dummyAuthApp)
