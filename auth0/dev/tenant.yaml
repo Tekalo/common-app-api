@@ -12,6 +12,7 @@ resourceServers:
   - name: Common-App-API
     identifier: auth0.capp.com
     allow_offline_access: false
+    enforce_policies: true
     scopes:
       - value: create:users
         description: create a user
@@ -25,6 +26,7 @@ resourceServers:
         description: get connections
     signing_alg: RS256
     skip_consent_for_verifiable_first_party_clients: true
+    token_dialect: access_token
     token_lifetime: 86400
     token_lifetime_for_web: 7200
 clients:
@@ -291,8 +293,9 @@ connections:
       - Tekalo Staging
     is_domain_connection: false
     options:
-      email: false
+      email: true
       scope:
+        - r_emailaddress
         - r_liteprofile
       profile: true
       client_id: ''
@@ -483,7 +486,7 @@ clientGrants:
       - read:authentication_methods
       - update:authentication_methods
       - delete:authentication_methods
-  - client_id: Deploy CLI
+  - client_id: Tekalo Management
     audience: https://sf-capp-dev.us.auth0.com/api/v2/
     scope:
       - read:client_grants
@@ -491,6 +494,7 @@ clientGrants:
       - update:client_grants
       - read:users
       - update:users
+      - delete:users
       - create:users
       - read:users_app_metadata
       - update:users_app_metadata
@@ -515,6 +519,7 @@ clientGrants:
       - create:device_credentials
       - read:rules
       - update:rules
+      - delete:rules
       - create:rules
       - read:rules_configs
       - update:rules_configs
@@ -537,14 +542,15 @@ clientGrants:
       - read:shields
       - create:shields
       - update:shields
+      - delete:shields
       - read:anomaly_blocks
+      - delete:anomaly_blocks
       - update:triggers
       - read:triggers
       - read:grants
       - read:guardian_factors
       - update:guardian_factors
       - read:guardian_enrollments
-      - delete:guardian_enrollments
       - create:guardian_enrollment_tickets
       - read:user_idp_tokens
       - create:passwords_checking_job
@@ -563,6 +569,7 @@ clientGrants:
       - update:prompts
       - read:branding
       - update:branding
+      - delete:branding
       - read:log_streams
       - create:log_streams
       - update:log_streams
@@ -621,7 +628,12 @@ guardianPhoneFactorSelectedProvider:
   provider: auth0
 guardianPhoneFactorMessageTypes:
   message_types: []
-roles: []
+roles:
+  - name: admin
+    description: Admins who have privileged access to certain API endpoints
+    permissions:
+      - permission_name: read:users
+        resource_server_identifier: auth0.capp.com
 branding:
   colors:
     page_background: '#000000'
@@ -661,7 +673,27 @@ actions:
   - name: Add-Email-To-Access-Token
     code: ./actions/Add-Email-To-Access-Token/code.js
     dependencies: []
+    deployed: false
+    runtime: node16
+    secrets: []
+    status: built
+    supported_triggers:
+      - id: post-login
+        version: v3
+  - name: Add-Role-To-Access-Token
+    code: ./actions/Add-Role-To-Access-Token/code.js
+    dependencies: []
     deployed: true
+    runtime: node16
+    secrets: []
+    status: built
+    supported_triggers:
+      - id: post-login
+        version: v3
+  - name: Add-Role-To-Token
+    code: ./actions/Add-Role-To-Token/code.js
+    dependencies: []
+    deployed: false
     runtime: node16
     secrets: []
     status: built
@@ -684,6 +716,8 @@ triggers:
   post-login:
     - action_name: Add-Email-To-Access-Token
       display_name: Add-Email-To-Access-Token
+    - action_name: Add-Role-To-Access-Token
+      display_name: Add-Role-To-Access-Token
     - action_name: Post-Social-Login-Delete-Shell-User
       display_name: Post-Social-Login-Delete-Shell-User
 organizations: []

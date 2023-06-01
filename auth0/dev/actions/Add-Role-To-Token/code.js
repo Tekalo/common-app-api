@@ -5,9 +5,19 @@
 * @param {PostLoginAPI} api - Interface whose methods can be used to change the behavior of the login.
 */
 exports.onExecutePostLogin = async (event, api) => {
-  if (event.authentication) {
-    api.accessToken.setCustomClaim('auth0.capp.com/email', event.user.email)
-  }
+  const namespace = 'auth0.capp.com';
+  const assignedRoles = (event.authorization || {}).roles;
+
+  let idTokenClaims = context.idToken || {};
+  let accessTokenClaims = context.accessToken || {};
+
+  idTokenClaims[`${namespace}/roles`] = assignedRoles;
+  accessTokenClaims[`${namespace}/roles`] = assignedRoles;
+
+  context.idToken = idTokenClaims;
+  context.accessToken = accessTokenClaims;
+
+  callback(null, user, context);
 };
 
 
