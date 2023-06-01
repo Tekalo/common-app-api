@@ -132,7 +132,6 @@ class ApplicantController {
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         // P2002 indicates unique constraint failed (in our case, either email or auth0id)
-        // We shouldnt ever reach here, as we check for user existence in Auth0 before creating
         if (e.code === 'P2002') {
           throw new CAPPError(
             {
