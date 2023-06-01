@@ -38,7 +38,7 @@ const deleteAuth0Users = async () => {
     testUserIDs.forEach((id) => {
       deletionRequests.push(auth0Service.deleteUser({ id }));
     });
-    const resp = await Promise.all(deletionRequests);
+    await Promise.all(deletionRequests);
     testUserIDs = [];
   }
 };
