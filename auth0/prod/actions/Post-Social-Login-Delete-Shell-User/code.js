@@ -29,7 +29,8 @@ exports.onExecutePostLogin = async (event, api) => {
         if(
           user.identities && 
           user.identities.length === 1 &&
-          user.identities[0].connection === 'Username-Password-Authentication'
+          user.identities[0].connection === 'Username-Password-Authentication' &&
+          !user.last_password_reset // real shell accounts should never have set a password
         ){
           shellUserId = user.user_id;
           break;

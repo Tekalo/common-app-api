@@ -287,6 +287,8 @@ connections:
       client_secret: '##LINKED_IN_CLIENT_SECRET##'
       strategy_version: 2
 tenant:
+  allowed_logout_urls: []
+  default_redirection_uri: https://tekalo.org/sign-in
   enabled_locales:
     - en
   flags:
@@ -298,6 +300,8 @@ tenant:
   friendly_name: Tekalo
   picture_url: https://auth0-assets-axb.pages.dev/tekalogo-logo-small.png
   sandbox_version: '16'
+  sessions:
+    oidc_logout_prompt_enabled: false
   support_email: support@futuresengine.com
   support_url: ''
   universal_login:
