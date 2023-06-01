@@ -18,6 +18,11 @@ class DummyAuthService extends AuthService {
     } as User;
     return mockUser;
   }
+
+  // eslint-disable-next-line
+  async userExists() {
+    return false;
+  }
 }
 
 export default DummyAuthService;

@@ -77,7 +77,7 @@ describe('POST /applicants', () => {
         .expect(400);
       expect(body).toHaveProperty('title', 'Validation Error');
     });
-    it('should throw 409 error when creating a duplicate applicant in database', async () => {
+    it('should throw 409 error when creating a duplicate applicant', async () => {
       await request(dummyAuthApp).post('/applicants').send({
         name: 'Bob Boberson',
         email: 'bboberson123@gmail.com',
