@@ -1,116 +1,125 @@
-`<html lang="en">
-    <head>
-      <style>
-        .email-contents {
-          text-align: center;
-          font-family: Helvetica, Arial, sans-serif;
-        }
-        .heading-box {
-          background: #f3f9ff;
-          font-weight: 500;
-          padding: 50px;
-          text-align: center;
-          margin-left: 40px;
-          margin-right: 40px;
-        }
+<html lang="en">
 
-        @media (max-width: 600px) {
-          .heading-box {
-            padding: 30px;
-            font-size: 20px;
-            font-weight: 500;
-            margin-bottom: 10px;
-          }
-        }
+<head>
+  <style>
+    .email-contents {
+      text-align: center;
+      font-family: Helvetica, Arial, sans-serif;
+    }
 
-        .footer-msg {
-          margin-top: 60px;
-        }
-        .signoff-text{
-          font-weight: 400;
-          font-size: 14px;
-        }
-        .thank-you-text > p {
-          margin: 0;
-          left: 0px;
-          top: 144px;
-        }
-        .thank-you-text {
-          margin-bottom: 8px;
-          padding: 14px;
-        }
-        .logo {
-          width: 105px;
-          height: 25px;
-        }
-        .logo-box {
-          padding: 16px 64px 16px 64px;
-        }
-        .content-box {
-          width: 100%;
-          margin-left: auto;
-          margin-right: auto;
-          min-width: 340px;
-          max-width: 70%;
-        }
-        .confirm-btn {
-          display: inline-block;
-          background: #317BB5;
-          padding: 14px 46px; 
-          border-radius: 4px;
-          text-decoration: none;
-          margin-bottom: 20px;
-        }
-        .confirm-btn > span {
-          color: white;
-        }
-        .ulink {
-          color: #317BB5 !important;
-        }
-      </style>
-      <meta charset="UTF-8" />
-      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    </head>
-    <body>
-      <div class="email-contents">
-        <div class="logo-box">
-          <img
-            class="logo"
-            src="https://auth0-assets-axb.pages.dev/tekalo-logo.png"
-            alt=""
-          />
+    .heading-box {
+      background: #f3f9ff;
+      font-weight: 500;
+      padding: 50px;
+      text-align: center;
+      margin-left: 40px;
+      margin-right: 40px;
+    }
+
+    @media (max-width: 600px) {
+      .heading-box {
+        padding: 30px;
+        font-size: 20px;
+        font-weight: 500;
+        margin-bottom: 10px;
+      }
+    }
+
+    .footer-msg {
+      margin-top: 60px;
+    }
+
+    .signoff-text {
+      font-weight: 400;
+      font-size: 14px;
+    }
+
+    .thank-you-text>p {
+      margin: 0;
+      left: 0px;
+      top: 144px;
+    }
+
+    .thank-you-text {
+      margin-bottom: 8px;
+      padding: 14px;
+    }
+
+    .logo-box {
+      padding: 16px 64px 16px 64px;
+    }
+
+    .content-box {
+      width: 100%;
+      margin-left: auto;
+      margin-right: auto;
+      min-width: 340px;
+      max-width: 70%;
+    }
+
+    .confirm-btn {
+      display: inline-block;
+      background: #317BB5;
+      padding: 14px 46px;
+      border-radius: 4px;
+      text-decoration: none;
+      margin-bottom: 20px;
+    }
+
+    .password-text {
+      font-size: 16px;
+    }
+
+    .confirm-btn>span {
+      color: white;
+    }
+
+    .ulink {
+      color: #317BB5 !important;
+    }
+  </style>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+
+<body>
+  <div class="email-contents">
+    <div class="logo-box">
+      <img height="25" src="https://auth0-assets-axb.pages.dev/tekalo-logo.png" alt="Tekalo logo" />
+    </div>
+    <div class="email-body">
+      <h1 class="heading-box">You requested a new password</h1>
+      <div class="content-box">
+        <div class="password-text">
+        <p>
+          If this was you, confirm the password change
+        </p>
+
+        <a rel="noopener" class="confirm-btn" target="_blank" href="{{url}}">
+          <span>Confirm</span>
+        </a>
+
+        <p class="explicit-url">
+          Or follow this URL <a class="ulink" href="{{url}}" target="_blank">{{url}}</a>
+        </p>
+      </div>
+      <div class="signoff-text">
+        <div class="thank-you-text">
+          <p>Thanks,</p>
+          <p>Tekalo Team</p>
         </div>
-        <div class="email-body">
-          <h1 class="heading-box">You requested a new password</h1>
-          <div class="content-box">
-            <p>
-              If this was you, confirm the password change
-            </p>
-
-            <a rel="noopener" class="confirm-btn" target="_blank" href="{{url}}">
-                <span>Confirm</span>
-            </a>
-
-            <p class="explicit-url">
-              Or follow this URL <a class="ulink" href="{{url}}"
-            target="_blank">{{url}}</a>
-            </p>
-            <div class="signoff-text">
-              <div class="thank-you-text">
-                 <p>Thanks,</p>
-                <p>Tekalo Team</p>
-              </div>
-              <hr />
-              <div class="footer-msg">
-                <p>
-                  If you're having issues with your account, please don't hesitate
-                  to contact us by replying to this email.
-                </p>
-              </div>
-            </div>
-          </div>
+        <hr />
+        <div class="footer-msg">
+          <p>
+            If you're having issues with your account, please don't hesitate
+            to contact us by replying to this email.
+          </p>
         </div>
       </div>
-    </body>
-  </html>
+    </div>
+  </div>
+  </div>
+</body>
+
+</html>
