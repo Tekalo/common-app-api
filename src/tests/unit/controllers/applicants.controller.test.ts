@@ -137,7 +137,7 @@ describe('Applicant Controller', () => {
         'Database error encountered when creating new user',
       );
     });
-    test('Should return 409 error if Prisma fails because applicant with email already exists', async () => {
+    test('Should return 409 error if Prisma fails because applicant with email already exists in database', async () => {
       mockCtx.prisma.applicant.create.mockRejectedValue(
         new Prisma.PrismaClientKnownRequestError('ERROR', {
           code: 'P2002',
