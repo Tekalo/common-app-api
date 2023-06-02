@@ -683,6 +683,8 @@ prompts:
           descriptionGeneric: >-
             To reset your password, return to the login page and select "I need
             a new password" to send a new email.
+        reset-password-success:
+          buttonText: Back to Tekalo
   identifier_first: false
   universal_login_experience: new
 migrations: {}
