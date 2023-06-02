@@ -369,6 +369,45 @@ describe('Applicant Controller', () => {
       expect(mockEmailSpy).toHaveBeenCalledWith(expectedEmail);
       mockEmailSpy.mockRestore();
     });
+
+    test('Should send deletion completed email after applicant deletion request if applicant only in Auth0', async () => {
+      mockCtx.prisma.applicant.findUniqueOrThrow.mockResolvedValue({
+        id: 1,
+        phone: '777-777-7777',
+        name: 'Bob Boberson',
+        email: 'bboberson@schmidtfutures.com',
+        pronoun: 'she/hers',
+        preferredContact: 'email',
+        searchStatus: 'active',
+        acceptedTerms: new Date('2023-02-01'),
+        acceptedPrivacy: new Date('2023-02-01'),
+        auth0Id: 'auth0|1234',
+        isPaused: false,
+        followUpOptIn: false,
+      });
+
+      const emailService = new EmailService(
+        new DummySESService(),
+        getMockConfig(),
+      );
+
+      const mockEmailSpy = jest.spyOn(emailService, 'sendEmail');
+
+      const applicantController = new ApplicantController(
+        new DummyAuthService(),
+        ctx.prisma,
+        emailService,
+        new DummyMonitoringService(),
+      );
+
+      await applicantController.deleteApplicant(1);
+      const expectedEmail = emailService.generateApplicantDeletionEmail(
+        'bboberson@schmidtfutures.com',
+        'Bob Boberson',
+      );
+      expect(mockEmailSpy).toHaveBeenCalledWith(expectedEmail);
+      mockEmailSpy.mockRestore();
+    });
   });
 
   describe('Applicant Create Submission', () => {

@@ -110,10 +110,9 @@ const applicantRoutes = (
           .catch((err) => next(err));
       } else {
         // Applicant does not exist in the database but still has a JWT
-        // TODO: make sure we can cast this
         const auth0Id = reqWithAuth.auth.payload.sub as string;
-        authService
-          .deleteUser(auth0Id)
+        applicantController
+          .deleteAuth0OnlyApplicant(auth0Id)
           .then((result) => {
             res.status(200).json(result);
           })

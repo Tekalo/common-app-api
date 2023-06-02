@@ -66,6 +66,30 @@ class AuthService {
   }
 
   /**
+   * Returns user with the give auth0 id or undefined if user does not exist
+   * @param auth0Id
+   * @returns
+   */
+  async getUser(auth0Id: string): Promise<User<AppMetadata, UserMetadata>> {
+    const auth0Client: ManagementClient = this.getClient();
+    const params = {
+      id: auth0Id,
+    };
+
+    try {
+      return await auth0Client.getUser(params);
+    } catch (e) {
+      throw new CAPPError(
+        {
+          title: 'Auth0 Error',
+          detail: 'Unable to delete Auth0 user',
+        },
+        e instanceof Error ? { cause: e } : undefined,
+      );
+    }
+  }
+
+  /**
    * Returns all users with given email or undefined if user does not exist
    * Multiple users with same email but different 'connection' types may exist
    * @param email
