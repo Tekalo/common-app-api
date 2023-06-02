@@ -369,20 +369,45 @@ describe('Applicant Controller', () => {
       expect(mockEmailSpy).toHaveBeenCalledWith(expectedEmail);
       mockEmailSpy.mockRestore();
     });
+  });
 
-    test('Should send deletion completed email after applicant deletion request if applicant only in Auth0', async () => {
-      mockCtx.prisma.applicant.findUniqueOrThrow.mockResolvedValue({
-        id: 1,
-        phone: '777-777-7777',
-        name: 'Bob Boberson',
+  describe('Delete Auth0 Only Applicant', () => {
+    test('Should return error if Auth0 fails to delete applicant', async () => {
+      mockCtx.prisma.applicantDeletionRequests.create.mockResolvedValue({
+        id: 25,
+        applicantId: 0,
+        createdAt: new Date('2023-02-01'),
         email: 'bboberson@schmidtfutures.com',
-        pronoun: 'she/hers',
-        preferredContact: 'email',
-        searchStatus: 'active',
         acceptedTerms: new Date('2023-02-01'),
         acceptedPrivacy: new Date('2023-02-01'),
-        auth0Id: 'auth0|1234',
-        isPaused: false,
+        followUpOptIn: false,
+      });
+      const dummyAuthService = new DummyAuthService();
+      dummyAuthService.deleteUser = () => {
+        throw new CAPPError({
+          detail: 'Mock Auth0 Deletion Error',
+          title: 'Mock Error',
+        });
+      };
+      const applicantController = new ApplicantController(
+        dummyAuthService,
+        ctx.prisma,
+        new DummyEmailService(new DummySESService(), getMockConfig()),
+        new DummyMonitoringService(),
+      );
+      await expect(
+        applicantController.deleteAuth0OnlyApplicant('auth0|12456'),
+      ).rejects.toHaveProperty('problem.detail', 'Mock Auth0 Deletion Error');
+    });
+
+    test('Should send deletion complete email after applicant auth0 only deletion request', async () => {
+      mockCtx.prisma.applicantDeletionRequests.create.mockResolvedValue({
+        id: 25,
+        applicantId: 0,
+        createdAt: new Date('2023-02-01'),
+        email: 'bboberson@schmidtfutures.com',
+        acceptedTerms: new Date('2023-02-01'),
+        acceptedPrivacy: new Date('2023-02-01'),
         followUpOptIn: false,
       });
 
@@ -393,15 +418,23 @@ describe('Applicant Controller', () => {
 
       const mockEmailSpy = jest.spyOn(emailService, 'sendEmail');
 
+      const dummyAuthService = new DummyAuthService();
+      dummyAuthService.getUser = () =>
+        Promise.resolve({
+          id: 'auth|12345',
+          email: 'bboberson@schmidtfutures.com',
+          name: 'Bob Boberson',
+        });
+
       const applicantController = new ApplicantController(
-        new DummyAuthService(),
+        dummyAuthService,
         ctx.prisma,
         emailService,
         new DummyMonitoringService(),
       );
 
-      await applicantController.deleteApplicant(1);
-      const expectedEmail = emailService.generateApplicantDeletionEmail(
+      await applicantController.deleteAuth0OnlyApplicant('auth|12345');
+      const expectedEmail = emailService.generateApplicantDeletionCompleteEmail(
         'bboberson@schmidtfutures.com',
         'Bob Boberson',
       );

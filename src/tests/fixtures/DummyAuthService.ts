@@ -23,6 +23,16 @@ class DummyAuthService extends AuthService {
   async userExists() {
     return false;
   }
+
+  // eslint-disable-next-line
+  async getUser(auth0Id: string) {
+    const mockUser = {
+      id: auth0Id,
+      email: 'mockemail@schmidtfutures.com',
+      name: 'Mock TestUser',
+    } as User;
+    return mockUser;
+  }
 }
 
 export default DummyAuthService;
