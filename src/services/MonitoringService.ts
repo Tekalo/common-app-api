@@ -61,15 +61,6 @@ class MonitoringService {
         }
         return event;
       },
-      // ignoring expected errors.
-      // 401 Cannot authenticate request
-      // 404 Not Found
-      // 409 Auth0 User Exists
-      ignoreErrors: [
-        'Cannot authenticate request',
-        'Not Found',
-        'Auth0 User Exists',
-      ],
       sampleRate: isLoadTest ? 0.1 : this.sampleRate,
       // Set tracesSampleRate to 1.0 to capture 100%
       // of transactions for performance monitoring.

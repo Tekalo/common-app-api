@@ -10,4 +10,8 @@ export default class CAPPError extends Error {
     super(problem.title, options);
     this.problem = problem;
   }
+
+  get status() {
+    return this.problem.status;
+  }
 }
