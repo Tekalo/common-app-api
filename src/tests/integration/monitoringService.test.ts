@@ -3,8 +3,9 @@ import getApp from '@App/app.js';
 import sentryTestkit from 'sentry-testkit';
 import { Transport } from '@sentry/types';
 import { getRandomString } from '@App/tests/util/helpers.js';
+import CAPPError from '@App/resources/shared/CAPPError.js';
 import configLoader from '@App/services/configLoader.js';
-import MonitoringService from '../../services/MonitoringService.js';
+import MonitoringService from '@App/services/MonitoringService.js';
 import DummyAuthService from '../fixtures/DummyAuthService.js';
 import DummyEmailService from '../fixtures/DummyEmailService.js';
 import DummySESService from '../fixtures/DummySesService.js';
@@ -99,5 +100,15 @@ describe('Monitoring Service', () => {
     await sleep(100);
 
     expect(testkit.transactions()).toHaveLength(0);
+  });
+
+  it('should be able to get status from a CAPPError', () => {
+    const error = new CAPPError({
+      title: 'Auth0 User Creation Error',
+      detail: 'Invalid email provided',
+      status: 400,
+    });
+
+    expect(error.status).toBe(error.problem.status);
   });
 });
