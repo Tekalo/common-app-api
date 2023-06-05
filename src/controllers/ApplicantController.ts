@@ -322,8 +322,7 @@ class ApplicantController {
       );
     }
 
-    const response = await this.auth0Service.deleteUser(auth0Id);
-
+    await this.auth0Service.deleteUser(auth0Id);
     if (applicantToDelete?.email) {
       const deletionEmail =
         this.emailService.generateApplicantDeletionCompleteEmail(
@@ -332,8 +331,7 @@ class ApplicantController {
         );
       await this.emailService.sendEmail(deletionEmail);
     }
-
-    return response;
+    return { auth0Id };
   }
 
   // Deletes specified applicant without making deletion request entry or sending emails

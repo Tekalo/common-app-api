@@ -1,4 +1,5 @@
 import request from 'supertest';
+import { jest } from '@jest/globals';
 import getApp from '@App/app.js';
 import {
   ApplicantDraftSubmissionBody,
@@ -6,6 +7,7 @@ import {
   ApplicantResponseBody,
   ApplicantSubmissionBody,
 } from '@App/resources/types/applicants.js';
+import logger from '@App/services/logger.js';
 import { itif, getRandomString } from '@App/tests/util/helpers.js';
 import prisma from '@App/resources/client.js';
 import AuthService from '@App/services/AuthService.js';
@@ -445,33 +447,46 @@ describe('DELETE /applicants/me', () => {
           .expect(200);
       },
     );
+    // if('CI' in process.env)
+    it('should delete an existing applicant from Auth0 and create a deletion record when there is nothing in the database', async () => {
+      const randomString = getRandomString();
+      // For the purposes of this test we are creating a user ONLY in Auth0.
+      // We would normally only ever be in this situation if someone had
+      // logged in with a social account without registering
+      const name = 'Bob TheTestUser';
+      const email = `bboberson${randomString}@gmail.com`;
+      const auth0User = await authService.createUser({
+        name,
+        email,
+      });
 
-    itif('CI' in process.env)(
-      'should delete an existing applicant from Auth0 and create a deletion record when there is nothing in the database',
-      async () => {
-        const randomString = getRandomString();
-        const token = await authHelper.getToken(
-          `bboberson${randomString}@gmail.com`,
-        );
-        const { body }: { body: ApplicantResponseBody } = await request(app)
-          .post('/applicants')
-          .send({
-            name: 'Bob Boberson',
-            email: `bboberson${randomString}@gmail.com`,
-            preferredContact: 'email',
-            searchStatus: 'active',
-            acceptedTerms: true,
-            acceptedPrivacy: true,
-          });
-        if (body.auth0Id) {
-          testUserIDs.push(body.auth0Id);
-        }
-        await request(app)
-          .delete('/applicants/me')
-          .set('Authorization', `Bearer ${token}`)
-          .expect(200);
-      },
-    );
+      const token = await authHelper.getToken(email, auth0User.user_id);
+      if (auth0User.user_id) {
+        testUserIDs.push(auth0User.user_id);
+      }
+      const prismaSpy = jest.spyOn(prisma.applicantDeletionRequests, 'create');
+      const auth0Spy = jest.spyOn(authService, 'deleteUser');
+
+      await request(app)
+        .delete('/applicants/me')
+        .set('Authorization', `Bearer ${token}`)
+        .expect(200);
+
+      const neverDate = new Date('2000-01-01');
+
+      // expect prisma deletion record to have been created
+      expect(prismaSpy).toHaveBeenCalledWith({
+        data: {
+          email,
+          applicantId: 0,
+          acceptedTerms: neverDate,
+          acceptedPrivacy: neverDate,
+          followUpOptIn: false,
+        },
+      });
+      // expect auth0 delete user to have been called
+      expect(auth0Spy).toHaveBeenCalledWith(auth0User.user_id);
+    });
   });
   describe('No Auth0 Integration', () => {
     const appNoAuth = getApp(
