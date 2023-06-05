@@ -447,35 +447,92 @@ describe('DELETE /applicants/me', () => {
           .expect(200);
       },
     );
-    // if('CI' in process.env)
-    it('should delete an existing applicant from Auth0 and create a deletion record when there is nothing in the database', async () => {
-      const randomString = getRandomString();
-      // For the purposes of this test we are creating a user ONLY in Auth0.
-      // We would normally only ever be in this situation if someone had
-      // logged in with a social account without registering
+    itif('CI' in process.env)(
+      'should delete an existing applicant from Auth0 and create a deletion record when there is nothing in the database',
+      async () => {
+        const randomString = getRandomString();
+        // For the purposes of this test we are creating a user ONLY in Auth0.
+        // We would normally only ever be in this situation if someone had
+        // logged in with a social account without registering
+        const name = 'Bob TheTestUser';
+        const email = `bboberson${randomString}@gmail.com`;
+        const auth0User = await authService.createUser({
+          name,
+          email,
+        });
+
+        const token = await authHelper.getToken(email, auth0User.user_id);
+        if (auth0User.user_id) {
+          testUserIDs.push(auth0User.user_id);
+        }
+        const prismaSpy = jest.spyOn(
+          prisma.applicantDeletionRequests,
+          'create',
+        );
+        const auth0Spy = jest.spyOn(authService, 'deleteUser');
+
+        await request(app)
+          .delete('/applicants/me')
+          .set('Authorization', `Bearer ${token}`)
+          .expect(200);
+
+        const neverDate = new Date('2000-01-01');
+
+        // expect prisma deletion record to have been created
+        expect(prismaSpy).toHaveBeenCalledWith({
+          data: {
+            email,
+            applicantId: 0,
+            acceptedTerms: neverDate,
+            acceptedPrivacy: neverDate,
+            followUpOptIn: false,
+          },
+        });
+        // expect auth0 delete user to have been called
+        expect(auth0Spy).toHaveBeenCalledWith(auth0User.user_id);
+      },
+    );
+    it('Should be able to create two applicant deletion records for no-data applicants', async () => {
       const name = 'Bob TheTestUser';
-      const email = `bboberson${randomString}@gmail.com`;
+      const email = `bboberson${getRandomString()}@gmail.com`;
       const auth0User = await authService.createUser({
         name,
         email,
       });
 
+      const name2 = 'Bob TheOtherTestUser';
+      const email2 = `bboberson${getRandomString()}@gmail.com`;
+      const auth0User2 = await authService.createUser({
+        name: name2,
+        email: email2,
+      });
+
       const token = await authHelper.getToken(email, auth0User.user_id);
+      const token2 = await authHelper.getToken(email2, auth0User2.user_id);
       if (auth0User.user_id) {
         testUserIDs.push(auth0User.user_id);
       }
+
+      if (auth0User2.user_id) {
+        testUserIDs.push(auth0User2.user_id);
+      }
+
       const prismaSpy = jest.spyOn(prisma.applicantDeletionRequests, 'create');
-      const auth0Spy = jest.spyOn(authService, 'deleteUser');
 
       await request(app)
         .delete('/applicants/me')
         .set('Authorization', `Bearer ${token}`)
         .expect(200);
 
+      await request(app)
+        .delete('/applicants/me')
+        .set('Authorization', `Bearer ${token2}`)
+        .expect(200);
+
       const neverDate = new Date('2000-01-01');
 
-      // expect prisma deletion record to have been created
-      expect(prismaSpy).toHaveBeenCalledWith({
+      // expect prisma deletion records to have been created
+      expect(prismaSpy).toHaveBeenNthCalledWith(1, {
         data: {
           email,
           applicantId: 0,
@@ -484,8 +541,15 @@ describe('DELETE /applicants/me', () => {
           followUpOptIn: false,
         },
       });
-      // expect auth0 delete user to have been called
-      expect(auth0Spy).toHaveBeenCalledWith(auth0User.user_id);
+      expect(prismaSpy).toHaveBeenNthCalledWith(2, {
+        data: {
+          email: email2,
+          applicantId: 0,
+          acceptedTerms: neverDate,
+          acceptedPrivacy: neverDate,
+          followUpOptIn: false,
+        },
+      });
     });
   });
   describe('No Auth0 Integration', () => {

@@ -139,7 +139,7 @@ model OpportunityBatch {
 
 model ApplicantDeletionRequests {
     id              Int      @id @default(autoincrement())
-    applicantId     Int      @unique
+    applicantId     Int
     createdAt       DateTime @default(now())
     email           String
     acceptedTerms   DateTime
