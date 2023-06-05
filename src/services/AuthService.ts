@@ -66,7 +66,7 @@ class AuthService {
   }
 
   /**
-   * Returns user with the give auth0 id or undefined if user does not exist
+   * Returns user with the given auth0 id or undefined if user does not exist
    * @param auth0Id
    * @returns
    */

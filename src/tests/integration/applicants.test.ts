@@ -408,7 +408,7 @@ describe('POST /applicants/me/submissions', () => {
   });
 });
 
-describe('DELETE /applicants/:id', () => {
+describe('DELETE /applicants/me', () => {
   describe('Auth0 Integration', () => {
     afterEach(async () => {
       await deleteAuth0Users();
@@ -421,6 +421,33 @@ describe('DELETE /applicants/:id', () => {
     );
     itif('CI' in process.env)(
       'should delete an existing applicant from Auth0 and from database',
+      async () => {
+        const randomString = getRandomString();
+        const token = await authHelper.getToken(
+          `bboberson${randomString}@gmail.com`,
+        );
+        const { body }: { body: ApplicantResponseBody } = await request(app)
+          .post('/applicants')
+          .send({
+            name: 'Bob Boberson',
+            email: `bboberson${randomString}@gmail.com`,
+            preferredContact: 'email',
+            searchStatus: 'active',
+            acceptedTerms: true,
+            acceptedPrivacy: true,
+          });
+        if (body.auth0Id) {
+          testUserIDs.push(body.auth0Id);
+        }
+        await request(app)
+          .delete('/applicants/me')
+          .set('Authorization', `Bearer ${token}`)
+          .expect(200);
+      },
+    );
+
+    itif('CI' in process.env)(
+      'should delete an existing applicant from Auth0 and create a deletion record when there is nothing in the database',
       async () => {
         const randomString = getRandomString();
         const token = await authHelper.getToken(

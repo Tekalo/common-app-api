@@ -373,11 +373,12 @@ describe('Applicant Controller', () => {
 
   describe('Delete Auth0 Only Applicant', () => {
     test('Should return error if Auth0 fails to delete applicant', async () => {
+      const auth0Id = 'auth0|123456';
       mockCtx.prisma.applicantDeletionRequests.create.mockResolvedValue({
         id: 25,
         applicantId: 0,
         createdAt: new Date('2023-02-01'),
-        email: 'bboberson@schmidtfutures.com',
+        email: auth0Id,
         acceptedTerms: new Date('2023-02-01'),
         acceptedPrivacy: new Date('2023-02-01'),
         followUpOptIn: false,
@@ -396,7 +397,7 @@ describe('Applicant Controller', () => {
         new DummyMonitoringService(),
       );
       await expect(
-        applicantController.deleteAuth0OnlyApplicant('auth0|12456'),
+        applicantController.deleteAuth0OnlyApplicant(auth0Id),
       ).rejects.toHaveProperty('problem.detail', 'Mock Auth0 Deletion Error');
     });
 

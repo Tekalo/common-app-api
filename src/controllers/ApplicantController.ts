@@ -305,7 +305,7 @@ class ApplicantController {
       const neverDate = new Date('2000-01-01');
       await this.prisma.applicantDeletionRequests.create({
         data: {
-          email: applicantToDelete.email || 'unknown email',
+          email: applicantToDelete.email || auth0Id,
           applicantId: 0,
           acceptedTerms: neverDate,
           acceptedPrivacy: neverDate,
