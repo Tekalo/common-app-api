@@ -7,7 +7,6 @@ import {
   ApplicantResponseBody,
   ApplicantSubmissionBody,
 } from '@App/resources/types/applicants.js';
-import logger from '@App/services/logger.js';
 import { itif, getRandomString } from '@App/tests/util/helpers.js';
 import prisma from '@App/resources/client.js';
 import AuthService from '@App/services/AuthService.js';
