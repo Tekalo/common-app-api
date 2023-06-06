@@ -59,6 +59,7 @@ describe('POST /applicants', () => {
         .send({
           name: 'Bob Boberson',
           pronoun: 'he/his',
+          phone: '123-456-7899',
           email: `bboberson${getRandomString()}@gmail.com`,
           preferredContact: 'email',
           searchStatus: 'active',
@@ -67,6 +68,8 @@ describe('POST /applicants', () => {
         })
         .expect(200);
       expect(body).toHaveProperty('id');
+      expect(body).toHaveProperty('pronoun');
+      expect(body).toHaveProperty('phone');
     });
     it('should throw 400 error for missing email', async () => {
       const { body } = await request(dummyAuthApp)
