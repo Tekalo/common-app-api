@@ -8,6 +8,7 @@ import {
   RequestWithJWT,
 } from '@App/resources/types/auth0.js';
 import CAPPError from '@App/resources/shared/CAPPError.js';
+import * as Sentry from '@sentry/node';
 
 const adminRole = 'admin';
 
@@ -45,9 +46,22 @@ class Authenticator {
   // Use on routes that can only authenticate with a JWT and where applicant must exist in the database
   // eslint-disable-next-line @typescript-eslint/require-await
   async validateJwt(req: Request, res: Response, next: NextFunction) {
+    // Get or make transaction
+    let transaction = Sentry.getCurrentHub().getScope().getTransaction();
+    if (transaction == null) {
+      transaction = Sentry.startTransaction({
+        name: 'new-transaction',
+      });
+    }
+    const span = transaction.startChild({
+      op: 'validate',
+      description: 'validateJWT',
+    });
+
     try {
       auth(this.authConfig)(req, res, (async (err) => {
         if (!req.auth) {
+          span.setStatus(Sentry.spanStatusfromHttpCode(401));
           next(
             new CAPPError(
               {
@@ -58,12 +72,17 @@ class Authenticator {
               err instanceof Error ? { cause: err } : undefined,
             ),
           );
+          span.finish();
           return;
         }
+        span.setStatus(Sentry.spanStatusfromHttpCode(200));
         await this.setApplicantID(req as RequestWithJWT, res, next);
       }) as NextFunction);
     } catch (err) {
+      span.setStatus(Sentry.spanStatusfromHttpCode(500));
       next(err);
+    } finally {
+      span.finish();
     }
   }
 
