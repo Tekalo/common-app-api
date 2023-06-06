@@ -30,6 +30,7 @@ afterEach(async () => {
   await prisma.applicantSubmission.deleteMany();
   await prisma.applicant.deleteMany();
   await prisma.applicantDeletionRequests.deleteMany();
+  jest.restoreAllMocks();
 });
 
 const deleteAuth0Users = async () => {
