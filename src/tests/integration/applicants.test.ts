@@ -59,6 +59,7 @@ describe('POST /applicants', () => {
         .send({
           name: 'Bob Boberson',
           pronoun: 'he/his',
+          phone: '123-456-7899',
           email: `bboberson${getRandomString()}@gmail.com`,
           preferredContact: 'email',
           searchStatus: 'active',
