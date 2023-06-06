@@ -146,14 +146,33 @@ const applicantRoutes = (
     '/me/submissions',
     authenticator.verifyJwtOrCookie.bind(authenticator) as RequestHandler,
     (req: Request, res: Response, next: NextFunction) => {
+      // Get or make transaction
+      let transaction = Sentry.getCurrentHub().getScope().getTransaction();
+      if (transaction == null) {
+        transaction = Sentry.startTransaction({
+          name: 'applicants-me-submissions-transaction',
+        });
+      }
+      const span = transaction.startChild({
+        op: 'get',
+        description: 'getApplicantsMeSubmissions',
+      });
+
       // Cast req as RequestWithJWT because our middleware above asserts that there will be an auth property included
       const applicantID = req.auth?.payload.id || req.session.applicant.id;
       applicantController
         .getMySubmissions(applicantID)
         .then((result) => {
+          span.setStatus(Sentry.spanStatusfromHttpCode(200));
           res.status(200).json(result);
         })
-        .catch((err) => next(err));
+        .catch((err) => {
+          span.setStatus(Sentry.spanStatusfromHttpCode(500));
+          next(err);
+        })
+        .finally(() => {
+          span.finish();
+        });
     },
   );
 
@@ -161,17 +180,18 @@ const applicantRoutes = (
     '/me',
     authenticator.validateJwt.bind(authenticator) as RequestHandler,
     (req: Request, res: Response, next: NextFunction) => {
+      // Get or make transaction
       let transaction = Sentry.getCurrentHub().getScope().getTransaction();
       if (transaction == null) {
         transaction = Sentry.startTransaction({
           name: 'applicants-me-transaction',
         });
       }
-      // Should check if transaction is null
       const span = transaction.startChild({
         op: 'get',
         description: 'getApplicantsMe',
       });
+
       const reqWithAuth = req as RequestWithJWT;
       const { id } = reqWithAuth.auth.payload;
       applicantController
