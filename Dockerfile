@@ -5,7 +5,7 @@ RUN apt-get update && apt-get install -y \
     openssl \
     curl \
     && rm -rf /var/lib/apt/lists/* && \
-    npm install -g pnpm
+    npm install -g pnpm@8
 
 COPY package.json pnpm-lock.yaml tsconfig.json ./
 COPY db/ db/

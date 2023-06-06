@@ -46,7 +46,7 @@ const applicantRoutes = (
 
   router.post(
     '/',
-    authenticator.attachJwt.bind(authenticator),
+    authenticator.attachJwt.bind(authenticator) as RequestHandler,
     (req: Request, res: Response, next) => {
       const appBody = req.body as ApplicantRequestBody;
       const validatedBody = ApplicantRequestBodySchema.parse(appBody);
@@ -175,7 +175,7 @@ const applicantRoutes = (
   // Admin endpoints
   router.get(
     '/:id',
-    authenticator.validateJwtAdmin.bind(authenticator),
+    authenticator.validateJwtAdmin.bind(authenticator) as RequestHandler,
     (req: Request, res: Response, next: NextFunction) => {
       const reqWithAuth = req as RequestWithJWT;
       const { id } = reqWithAuth.params;
@@ -190,7 +190,7 @@ const applicantRoutes = (
 
   router.delete(
     '/:id',
-    authenticator.validateJwtAdmin.bind(authenticator),
+    authenticator.validateJwtAdmin.bind(authenticator) as RequestHandler,
     (req: Request, res: Response, next: NextFunction) => {
       const reqWithAuth = req as RequestWithJWT;
       const { id } = reqWithAuth.params;
