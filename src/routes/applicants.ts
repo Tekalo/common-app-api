@@ -26,6 +26,7 @@ import { RequestWithJWT } from '@App/resources/types/auth0.js';
 import EmailService from '@App/services/EmailService.js';
 import MonitoringService from '@App/services/MonitoringService.js';
 import { BaseConfig } from '@App/resources/types/shared.js';
+import * as Sentry from '@sentry/node';
 
 const applicantRoutes = (
   authService: AuthService,
@@ -160,15 +161,33 @@ const applicantRoutes = (
     '/me',
     authenticator.validateJwt.bind(authenticator) as RequestHandler,
     (req: Request, res: Response, next: NextFunction) => {
+      let transaction = Sentry.getCurrentHub().getScope().getTransaction();
+      if (transaction == null) {
+        transaction = Sentry.startTransaction({
+          name: 'applicants-me-transaction',
+        });
+      }
+      // Should check if transaction is null
+      const span = transaction.startChild({
+        op: 'get',
+        description: 'getApplicantsMe',
+      });
       const reqWithAuth = req as RequestWithJWT;
       const { id } = reqWithAuth.auth.payload;
       applicantController
         // id type assertion because our middlware setApplicantId() guarantees an applicant ID is set
         .getApplicant(id as number)
         .then((result) => {
+          span.setStatus(Sentry.spanStatusfromHttpCode(200));
           res.status(200).json(result);
         })
-        .catch((err) => next(err));
+        .catch((err) => {
+          span.setStatus(Sentry.spanStatusfromHttpCode(500));
+          next(err);
+        })
+        .finally(() => {
+          span.finish();
+        });
     },
   );
 
