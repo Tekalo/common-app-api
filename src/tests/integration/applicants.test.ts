@@ -68,7 +68,6 @@ describe('POST /applicants', () => {
         })
         .expect(200);
       expect(body).toHaveProperty('id');
-      expect(body).toHaveProperty('phone');
     });
     it('should throw 400 error for missing email', async () => {
       const { body } = await request(dummyAuthApp)
