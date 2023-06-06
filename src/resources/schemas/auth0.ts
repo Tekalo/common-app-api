@@ -22,6 +22,7 @@ const Auth0ExpressConfigSchema = z.object({
   issuer: z.string().optional(),
   tokenSigningAlg: z.string().optional(),
   secret: z.string().optional(),
+  cacheMaxAge: z.number().optional(),
 });
 
 export {

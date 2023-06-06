@@ -40,7 +40,9 @@ const applicantRoutes = (
     emailService,
     monitoringService,
   );
-  const authenticator = new Authenticator(prisma, config.auth0.express);
+  const authenticatorConfig = config.auth0.express;
+  authenticatorConfig.cacheMaxAge = 43200; // 12 hours
+  const authenticator = new Authenticator(prisma, authenticatorConfig);
 
   router.post(
     '/',
