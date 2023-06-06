@@ -68,8 +68,9 @@ class Authenticator {
   }
 
   // Attach to requests that can only authenticate with a JWT and are verified as test/admin accounts
-  validateJwtAdmin(req: Request, res: Response, next: NextFunction) {
-    auth(this.authConfig)(req, res, (err) => {
+  async validateJwtAdmin(req: Request, res: Response, next: NextFunction) {
+    // eslint-disable-next-line @typescript-eslint/await-thenable
+    await auth(this.authConfig)(req, res, (err) => {
       if (
         !req.auth ||
         !req.auth.payload['auth0.capp.com/roles'] ||
@@ -92,8 +93,9 @@ class Authenticator {
   }
 
   // Attach auth to request if it exists. If not, do not throw.
-  attachJwt(req: Request, res: Response, next: NextFunction) {
-    auth({ ...this.authConfig, authRequired: false })(req, res, next);
+  async attachJwt(req: Request, res: Response, next: NextFunction) {
+    // eslint-disable-next-line @typescript-eslint/await-thenable
+    await auth({ ...this.authConfig, authRequired: false })(req, res, next);
   }
 
   // Attach to requests that can only authenticate with a cookie
@@ -102,9 +104,9 @@ class Authenticator {
   }
 
   // Attach to requests that can authenticate with either JWT or cookie
-  // eslint-disable-next-line @typescript-eslint/require-await
   async verifyJwtOrCookie(req: Request, res: Response, next: NextFunction) {
-    auth(this.authConfig)(req, res, (async () => {
+    // eslint-disable-next-line @typescript-eslint/await-thenable
+    await auth(this.authConfig)(req, res, (async () => {
       if (!req.auth) {
         verifyCookie(req, res, next);
       } else {
