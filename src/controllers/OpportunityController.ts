@@ -49,6 +49,7 @@ class OpportunityController {
             orgName: organization.name,
             orgType: organization.type,
             orgSize: organization.size,
+            impactAreas: organization.impactAreas,
             contactName: contact.name,
             contactPhone: contact.phone,
             contactEmail: contact.email,

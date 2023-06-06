@@ -64,6 +64,7 @@ describe('POST /opportunities', () => {
       .send(oppBatchPayload)
       .expect(200);
     expect(body).toEqual(expect.objectContaining({ id: expect.any(Number) }));
+    expect(body).toHaveProperty('impactAreas', ['Clean Energy']);
   });
   it('should create multiple new batches of opportunities', async () => {
     const secondOppSubmissionPayload = { ...oppBatchPayload };
