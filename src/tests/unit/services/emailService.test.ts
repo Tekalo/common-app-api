@@ -1,4 +1,5 @@
 import getApplicantDeletionEmail from '@App/resources/emails/applicantDeletion.js';
+import getApplicantDeletionCompleteEmail from '@App/resources/emails/applicantDeletionComplete.js';
 import getOrgWelcomeEmail from '@App/resources/emails/orgWelcomeEmail.js';
 import getApplicantWelcomeEmail from '@App/resources/emails/applicantWelcomeEmail.js';
 import EmailService from '@App/services/EmailService.js';
@@ -124,6 +125,63 @@ describe('Email Service', () => {
       'foo@bar.com',
       'Testy McTesterson',
     );
+    await emailService.sendEmail(deletionEmailBody);
+    expect(mockSesSendEmailFunc).toBeCalledWith(deletionEmailBody);
+  });
+
+  test('should successfully generate applicant deletion complete email', () => {
+    const dummySesService = new DummySESService();
+    const emailService = new EmailService(
+      dummySesService,
+      getMockConfig({
+        aws: {
+          sesFromAddress: 'baz@futurestech.com',
+          sesReplyToAddress: 'replies@futurestech.com',
+          region: 'us-east-1',
+        },
+      }),
+    );
+    const result = emailService.generateApplicantDeletionCompleteEmail(
+      'foo@bar.com',
+      'Robin Williams',
+    );
+    const expectedEmail = getApplicantDeletionCompleteEmail('Robin Williams');
+    expect(result).toHaveProperty('Destination', {
+      ToAddresses: ['foo@bar.com'],
+    });
+    expect(result).toHaveProperty('Source', 'Tekalo <baz@futurestech.com>');
+    expect(result).toHaveProperty('Message', {
+      Subject: {
+        Charset: 'UTF-8',
+        Data: expect.stringMatching(expectedEmail.subject),
+      },
+      Body: {
+        Html: {
+          Charset: 'UTF-8',
+          Data: expect.stringContaining(expectedEmail.htmlBody),
+        },
+      },
+    });
+  });
+
+  test('should successfully send applicant deletion complete email', async () => {
+    const dummySesService = new DummySESService();
+    const mockSesSendEmailFunc = jest.spyOn(dummySesService, 'sendEmail');
+    const emailService = new EmailService(
+      dummySesService,
+      getMockConfig({
+        aws: {
+          sesFromAddress: 'baz@futurestech.com',
+          sesReplyToAddress: 'replies@futurestech.com',
+          region: 'us-east-1',
+        },
+      }),
+    );
+    const deletionEmailBody =
+      emailService.generateApplicantDeletionCompleteEmail(
+        'foo@bar.com',
+        'Testy McTesterson',
+      );
     await emailService.sendEmail(deletionEmailBody);
     expect(mockSesSendEmailFunc).toBeCalledWith(deletionEmailBody);
   });

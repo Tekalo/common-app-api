@@ -3,6 +3,7 @@ import { SendEmailCommandInput } from '@aws-sdk/client-ses';
 import {
   getApplicantWelcomeEmail,
   getApplicantDeletionEmail,
+  getApplicantDeletionCompleteEmail,
   getApplicantPostSubmitEmail,
   getOrgWelcomeEmail,
 } from '@App/resources/emails/index.js';
@@ -68,12 +69,25 @@ class EmailService {
     });
   }
 
+  // standard email when applicant has data in database
   generateApplicantDeletionEmail(
     recipientEmail: string,
     recipientName: string,
   ): SendEmailCommandInput {
     return this.generateEmailTemplate({
       ...getApplicantDeletionEmail(recipientName),
+      recipientEmail,
+    });
+  }
+
+  // email if applicant just needs to be deleted from Auth0.
+  // Applicant has no data in database.
+  generateApplicantDeletionCompleteEmail(
+    recipientEmail: string,
+    recipientName: string,
+  ): SendEmailCommandInput {
+    return this.generateEmailTemplate({
+      ...getApplicantDeletionCompleteEmail(recipientName),
       recipientEmail,
     });
   }

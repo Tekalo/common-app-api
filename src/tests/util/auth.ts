@@ -4,7 +4,10 @@ import configLoader from '@App/services/configLoader.js';
 import CAPPError from '@App/resources/shared/CAPPError.js';
 import { BaseConfig } from '@App/resources/types/shared.js';
 
-const getToken = async (userEmail?: string): Promise<string> => {
+const getToken = async (
+  userEmail?: string,
+  auth0Id?: string,
+): Promise<string> => {
   const config: BaseConfig = configLoader.loadConfig();
   const { issuer, audience, tokenSigningAlg, secret } = config.auth0.express;
   if (!issuer || !audience || !tokenSigningAlg || !secret) {
@@ -26,6 +29,7 @@ const getToken = async (userEmail?: string): Promise<string> => {
     .setIssuer(issuer)
     .setAudience(audience)
     .setExpirationTime('1h')
+    .setSubject(auth0Id || 'auth|12345')
     .sign(secretKey);
 
   return token;

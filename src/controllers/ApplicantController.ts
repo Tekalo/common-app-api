@@ -295,6 +295,45 @@ class ApplicantController {
     return { id: applicantId };
   }
 
+  // Deletes applicants who have no registration or application data from Auth0
+  // and sends deletion complete email
+  async deleteAuth0OnlyApplicant(auth0Id: string) {
+    const applicantToDelete = await this.auth0Service.getUser(auth0Id);
+
+    // Create deletion request
+    try {
+      const neverDate = new Date('2000-01-01');
+      await this.prisma.applicantDeletionRequests.create({
+        data: {
+          email: applicantToDelete.email || auth0Id,
+          applicantId: 0,
+          acceptedTerms: neverDate,
+          acceptedPrivacy: neverDate,
+          followUpOptIn: false,
+        },
+      });
+    } catch (e) {
+      throw new CAPPError(
+        {
+          title: 'Applicant Deletion Error',
+          detail: `Unable to create applicant deletion request for Auth0 User ${auth0Id}`,
+        },
+        e instanceof Error ? { cause: e } : undefined,
+      );
+    }
+
+    await this.auth0Service.deleteUser(auth0Id);
+    if (applicantToDelete?.email) {
+      const deletionEmail =
+        this.emailService.generateApplicantDeletionCompleteEmail(
+          applicantToDelete.email,
+          applicantToDelete.name || 'Applicant',
+        );
+      await this.emailService.sendEmail(deletionEmail);
+    }
+    return { auth0Id };
+  }
+
   // Deletes specified applicant without making deletion request entry or sending emails
   // Meant to be used by E2E tests and admins
   async deleteApplicantForce(applicantId: number) {
