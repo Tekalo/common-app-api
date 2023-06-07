@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@aws-sdk/client-ses':
-    specifier: 3.347.0
-    version: 3.347.0
+    specifier: 3.347.1
+    version: 3.347.1
   '@prisma/client':
     specifier: 4.15.0
     version: 4.15.0(prisma@4.15.0)
@@ -230,13 +230,13 @@ packages:
       tslib: 2.5.3
     dev: false
 
-  /@aws-sdk/client-ses@3.347.0:
-    resolution: {integrity: sha512-fo3fmoBI++QsIFZgB4pTqZE2//bYH0ePikrR1a/Kuy/G+nmxZ49450wxi2oEpFE2Jzug0vpdH4LtLR8DXQAong==}
+  /@aws-sdk/client-ses@3.347.1:
+    resolution: {integrity: sha512-zrPaVykH8LGp1YJIVF9jD75/pGWME+TKH9hnFZIrtJGHd9ISOhWyl1RcSNnqs+mEen3b9tzZc8WEr4FUaN3agQ==}
     engines: {node: '>=14.0.0'}
     dependencies:
       '@aws-crypto/sha256-browser': 3.0.0
       '@aws-crypto/sha256-js': 3.0.0
-      '@aws-sdk/client-sts': 3.347.0
+      '@aws-sdk/client-sts': 3.347.1
       '@aws-sdk/config-resolver': 3.347.0
       '@aws-sdk/credential-provider-node': 3.347.0
       '@aws-sdk/fetch-http-handler': 3.347.0
@@ -270,7 +270,7 @@ packages:
       '@aws-sdk/util-waiter': 3.347.0
       '@smithy/protocol-http': 1.0.1
       '@smithy/types': 1.0.0
-      fast-xml-parser: 4.1.2
+      fast-xml-parser: 4.2.4
       tslib: 2.5.3
     transitivePeerDependencies:
       - aws-crt
@@ -358,8 +358,8 @@ packages:
       - aws-crt
     dev: false
 
-  /@aws-sdk/client-sts@3.347.0:
-    resolution: {integrity: sha512-QcJCUlzJZLAFTFSuELKd4BF5I5W38TR/m7NX2y1tn2la9JIrWSrz+tj598zfp2V4pJPzRJ1i8RglTZxSRIvsxQ==}
+  /@aws-sdk/client-sts@3.347.1:
+    resolution: {integrity: sha512-i7vomVsbZcGD2pzOuEl0RS7yCtFcT6CVfSP1wZLwgcjAssUKTLHi65I/uSAUF0KituChw31aXlxh7EGq1uDqaA==}
     engines: {node: '>=14.0.0'}
     dependencies:
       '@aws-crypto/sha256-browser': 3.0.0
@@ -397,7 +397,7 @@ packages:
       '@aws-sdk/util-utf8': 3.310.0
       '@smithy/protocol-http': 1.0.1
       '@smithy/types': 1.0.0
-      fast-xml-parser: 4.1.2
+      fast-xml-parser: 4.2.4
       tslib: 2.5.3
     transitivePeerDependencies:
       - aws-crt
@@ -3619,8 +3619,8 @@ packages:
   /fast-safe-stringify@2.1.1:
     resolution: {integrity: sha512-W+KJc2dmILlPplD/H4K9l9LcAHAfPtP6BY84uVLXQ6Evcz9Lcg33Y2z1IVblT6xdY54PXYVHEv+0Wpq8Io6zkA==}
 
-  /fast-xml-parser@4.1.2:
-    resolution: {integrity: sha512-CDYeykkle1LiA/uqQyNwYpFbyF6Axec6YapmpUP+/RHWIoR1zKjocdvNaTsxCxZzQ6v9MLXaSYm9Qq0thv0DHg==}
+  /fast-xml-parser@4.2.4:
+    resolution: {integrity: sha512-fbfMDvgBNIdDJLdLOwacjFAPYt67tr31H9ZhWSm45CDAxvd0I6WTlSOUo7K2P/K5sA5JgMKG64PI3DMcaFdWpQ==}
     hasBin: true
     dependencies:
       strnum: 1.0.5
