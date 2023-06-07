@@ -41,7 +41,7 @@ const applicantRoutes = (
     monitoringService,
   );
   const authenticatorConfig = config.auth0.express;
-  authenticatorConfig.cacheMaxAge = 43200; // 12 hours
+  authenticatorConfig.cacheMaxAge = 12 * 60 * 60 * 1000; // 12 hours
   const authenticator = new Authenticator(prisma, authenticatorConfig);
 
   router.post(
