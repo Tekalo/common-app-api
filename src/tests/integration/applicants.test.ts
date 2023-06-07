@@ -13,7 +13,7 @@ import configLoader from '@App/services/configLoader.js';
 
 import cookie from 'cookie';
 import cookieParser from 'cookie-parser';
-import { ApplicantSession, Prisma } from '@prisma/client';
+import { ApplicantSession, ApplicantSubmission, Prisma } from '@prisma/client';
 import applicantSubmissionGenerator from '../fixtures/applicantSubmissionGenerator.js';
 import DummyAuthService from '../fixtures/DummyAuthService.js';
 import DummyMonitoringService from '../fixtures/DummyMonitoringService.js';
@@ -54,13 +54,14 @@ describe('POST /applicants', () => {
       appConfig,
     );
     it('should create a new applicant only in database', async () => {
+      const randomString = getRandomString();
       const { body } = await request(dummyAuthApp)
         .post('/applicants')
         .send({
           name: 'Bob Boberson',
           pronoun: 'he/his',
           phone: '123-456-7899',
-          email: `bboberson${getRandomString()}@gmail.com`,
+          email: `bboberson${randomString}@gmail.com`,
           preferredContact: 'email',
           searchStatus: 'active',
           acceptedTerms: true,
@@ -68,6 +69,11 @@ describe('POST /applicants', () => {
         })
         .expect(200);
       expect(body).toHaveProperty('id');
+      expect(body).toHaveProperty(
+        'email',
+        `bboberson${randomString}@gmail.com`,
+      );
+      expect(body).toHaveProperty('auth0Id');
     });
     it('should throw 400 error for missing email', async () => {
       const { body } = await request(dummyAuthApp)
@@ -311,25 +317,34 @@ describe('POST /applicants/me/submissions', () => {
       const token = await authHelper.getToken(
         `bboberson${randomString}@gmail.com`,
       );
-      await request(dummyAuthApp)
-        .post('/applicants')
-        .send({
-          name: 'Bob Boberson',
-          auth0Id: 'auth0|123456',
-          email: `bboberson${randomString}@gmail.com`,
-          preferredContact: 'email',
-          searchStatus: 'active',
-          acceptedTerms: true,
-          acceptedPrivacy: true,
-        });
+      const { body: applicantBody }: { body: ApplicantResponseBody } =
+        await request(dummyAuthApp)
+          .post('/applicants')
+          .send({
+            name: 'Bob Boberson',
+            auth0Id: 'auth0|123456',
+            email: `bboberson${randomString}@gmail.com`,
+            preferredContact: 'email',
+            searchStatus: 'active',
+            acceptedTerms: true,
+            acceptedPrivacy: true,
+          });
       const testBody: ApplicantSubmissionBody =
         applicantSubmissionGenerator.getAPIRequestBody();
-      const { body } = await request(dummyAuthApp)
+      const { body }: { body: ApplicantSubmission } = await request(
+        dummyAuthApp,
+      )
         .post('/applicants/me/submissions')
         .send(testBody)
         .set('Authorization', `Bearer ${token}`)
         .expect(200);
-      expect(body).toHaveProperty('id');
+      expect(Object.keys(body).length).toEqual(30);
+      expect(body).toEqual({
+        id: expect.any(Number),
+        applicantId: applicantBody.id,
+        createdAt: expect.any(String),
+        ...testBody,
+      });
     });
 
     it('should return 400 error for missing years of experience (yoe)', async () => {

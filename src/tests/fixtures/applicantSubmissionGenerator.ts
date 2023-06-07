@@ -16,11 +16,11 @@ const getAPIRequestBody = (
   otherSkills: ['juggling', 'curling'],
   linkedInUrl: 'https://www.linkedin.com/in/bob-bobberson',
   githubUrl: 'https://github.com/bboberson',
-  portfolioUrl: null,
-  portfolioPassword: '',
-  resumeUrl: 'myportfolio.com',
-  resumePassword: null,
-  hoursPerWeek: null,
+  portfolioUrl: 'https://bobsportfolio.com',
+  portfolioPassword: 'bobsTheWord',
+  resumeUrl: 'myresume.com',
+  resumePassword: 'bobsTheWord',
+  hoursPerWeek: '40 ish',
   interestEmploymentType: ['full'], // enum
   interestRoles: [
     'software engineer - frontend',
