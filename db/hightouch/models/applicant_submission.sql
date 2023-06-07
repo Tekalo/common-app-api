@@ -47,7 +47,10 @@ SELECT
   appsub."interestRoles",
   appsub."interestGovt",
   appsub."interestGovtEmplTypes",
-  ARRAY_CAT(appsub."interestCauses", appsub."otherCauses") AS "allCauses",
+  ARRAY_CAT(
+    appsub."interestCauses",
+    LOWER(appsub."otherCauses" :: TEXT) :: TEXT []
+  ) AS "allCauses",
   ARRAY_CAT(
     appsub.skills,
     LOWER(appsub."otherSkills" :: TEXT) :: TEXT []
