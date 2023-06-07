@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import escapeHTML from '../shared/util.js';
 
 const PreferredContact = z.enum(['sms', 'whatsapp', 'email']);
 const SearchStatus = z.enum(['active', 'passive', 'future']);
@@ -68,36 +69,39 @@ const ApplicantResponseBodySchema = z.object({
   email: z.string(),
 });
 
-const ApplicantSubmissionRequestBodySchema = z.object({
-  // TODO re name these they are way 2 long
-  originTag: z.string(),
-  lastRole: z.string().max(255),
-  lastOrg: z.string().max(255),
-  yoe: YOE,
-  skills: z.array(Skills),
-  otherSkills: z.array(z.string().max(255)),
-  linkedInUrl: z.string().max(500).nullable().optional(),
-  githubUrl: z.string().max(500).nullable().optional(),
-  portfolioUrl: z.string().max(500).nullable().optional(),
-  portfolioPassword: z.string().max(255).nullable().optional(),
-  resumeUrl: z.string().max(500).optional(),
-  resumePassword: z.string().max(255).nullable().optional(),
-  hoursPerWeek: z.string().max(255).nullable().optional(),
-  interestEmploymentType: z.array(EmploymentType),
-  interestRoles: z.array(z.string().max(255)), // keep this as non-zod-enum?
-  currentLocation: z.string().max(255),
-  openToRelocate: OpenToRelocate,
-  openToRemote: OpenToRemote,
-  desiredSalary: z.string().max(255).nullable().optional(),
-  interestCauses: z.array(z.string().max(255)), // order matters
-  otherCauses: z.array(z.string().max(255)).nullable(),
-  workAuthorization: WorkAuthorization.optional(),
-  interestGovt: z.boolean(),
-  interestGovtEmplTypes: z.array(InterestGovtEmplTypes).optional(),
-  previousImpactExperience: z.boolean(),
-  essayResponse: z.string().max(5000),
-  referenceAttribution: ReferenceAttribution.nullable().optional(),
-});
+const ApplicantSubmissionRequestBodySchema = z
+  .object({
+    // TODO re name these they are way 2 long
+    originTag: z.string(),
+    lastRole: z.string().max(255),
+    lastOrg: z.string().max(255),
+    yoe: YOE,
+    skills: z.array(Skills),
+    otherSkills: z.array(z.string().max(255)),
+    linkedInUrl: z.string().max(500).nullable().optional(),
+    githubUrl: z.string().max(500).nullable().optional(),
+    portfolioUrl: z.string().max(500).nullable().optional(),
+    portfolioPassword: z.string().max(255).nullable().optional(),
+    resumeUrl: z.string().max(500).optional(),
+    resumePassword: z.string().max(255).nullable().optional(),
+    hoursPerWeek: z.string().max(255).nullable().optional(),
+    interestEmploymentType: z.array(EmploymentType),
+    interestRoles: z.array(z.string().max(255)), // keep this as non-zod-enum?
+    currentLocation: z.string().max(255),
+    openToRelocate: OpenToRelocate,
+    openToRemote: OpenToRemote,
+    desiredSalary: z.string().max(255).nullable().optional(),
+    interestCauses: z.array(z.string().max(255)), // order matters
+    otherCauses: z.array(z.string().max(255)).nullable(),
+    workAuthorization: WorkAuthorization.optional(),
+    interestGovt: z.boolean(),
+    interestGovtEmplTypes: z.array(InterestGovtEmplTypes).optional(),
+    previousImpactExperience: z.boolean(),
+    essayResponse: z.string().max(5000),
+    referenceAttribution: ReferenceAttribution.nullable().optional(),
+  })
+  .transform((raw) => escapeHTML(raw))
+  .innerType();
 // TOOD: Figure out typesript error on refining interestGovtTypes to ensure it is filled if interestGovt is true
 
 const ApplicantDraftSubmissionRequestBodySchema =

@@ -2,6 +2,7 @@ import request from 'supertest';
 import getApp from '@App/app.js';
 import prisma from '@App/resources/client.js';
 import configLoader from '@App/services/configLoader.js';
+import { OpportunityBatchResponseBody } from '@App/resources/types/opportunities.js';
 import DummyAuthService from '../fixtures/DummyAuthService.js';
 import DummyMonitoringService from '../fixtures/DummyMonitoringService.js';
 import DummyEmailService from '../fixtures/DummyEmailService.js';
@@ -97,6 +98,22 @@ describe('POST /opportunities', () => {
       .expect(200);
     expect(body).toEqual(expect.objectContaining({ id: expect.any(Number) }));
   });
+
+  it('should escape HTML in request body', async () => {
+    const payload = {
+      ...oppBatchPayload,
+      organization: {
+        ...oppBatchPayload.organization,
+        name: '<script>alert("hi")</script>',
+      },
+    };
+    const { body }: { body: OpportunityBatchResponseBody } = await request(app)
+      .post('/opportunities/batch')
+      .send(payload)
+      .expect(200);
+    expect(body.orgName).toEqual('&lt;script&gt;alert("hi")&lt;/script&gt;');
+  });
+
   it('should throw 400 error if request body is missing organization type', async () => {
     const missingOrgType = { ...oppBatchPayload };
     // @ts-expect-error: Ignore TS error for invalid request body

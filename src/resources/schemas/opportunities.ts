@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import escapeHTML from '@App/resources/shared/util.js';
 
 const OrgType = z.enum(['501(c)(3)', '501(c)(4)', 'LLC', 'other']);
 const OrgSize = z.enum([
@@ -41,44 +42,47 @@ const RoleType = z.enum([
 
 const YOE = z.enum(['0-2', '2-4', '4-8', '8-12', '12-15', '15+']);
 
-const OpportunityBatchRequestBodySchema = z.object({
-  organization: z.object({
-    name: z.string().max(255),
-    type: OrgType,
-    size: OrgSize,
-    impactAreas: z.array(z.string().max(255)),
-    eoe: z.boolean(),
-  }),
-  contact: z.object({
-    name: z.string().max(255),
-    email: z.string().max(255),
-    phone: z.string().max(255).nullable().optional(),
-  }),
-  acceptedPrivacy: z.literal(true),
-  submissions: z.array(
-    z.object({
-      roleType: RoleType,
-      positionTitle: z.string().max(255),
-      fullyRemote: z.boolean(),
-      location: z.string().optional(),
-      paid: z.boolean(),
-      pitchEssay: z.string().max(5000),
-      source: z.string(),
-      employmentType: z.string().max(255), // UI has dropdown, but they have input box for an "other" option
-      salaryRange: z.string().max(255).optional(),
-      desiredHoursPerWeek: z.string().max(255).nullable().optional(),
-      desiredStartDate: z.coerce.date().optional(),
-      desiredEndDate: z.coerce.date().optional(),
-      jdUrl: z.string().max(500).optional(),
-      desiredYoe: z.array(YOE),
-      desiredSkills: z.array(Skills).optional(),
-      desiredOtherSkills: z.array(z.string()).optional(),
-      visaSponsorship: VisaSponsorship.optional(),
-      similarStaffed: z.boolean(),
-      desiredImpactExp: z.string().max(5000).optional(),
+const OpportunityBatchRequestBodySchema = z
+  .object({
+    organization: z.object({
+      name: z.string().max(255),
+      type: OrgType,
+      size: OrgSize,
+      impactAreas: z.array(z.string().max(255)),
+      eoe: z.boolean(),
     }),
-  ),
-});
+    contact: z.object({
+      name: z.string().max(255),
+      email: z.string().max(255),
+      phone: z.string().max(255).nullable().optional(),
+    }),
+    acceptedPrivacy: z.literal(true),
+    submissions: z.array(
+      z.object({
+        roleType: RoleType,
+        positionTitle: z.string().max(255),
+        fullyRemote: z.boolean(),
+        location: z.string().optional(),
+        paid: z.boolean(),
+        pitchEssay: z.string().max(5000),
+        source: z.string(),
+        employmentType: z.string().max(255), // UI has dropdown, but they have input box for an "other" option
+        salaryRange: z.string().max(255).optional(),
+        desiredHoursPerWeek: z.string().max(255).nullable().optional(),
+        desiredStartDate: z.coerce.date().optional(),
+        desiredEndDate: z.coerce.date().optional(),
+        jdUrl: z.string().max(500).optional(),
+        desiredYoe: z.array(YOE),
+        desiredSkills: z.array(Skills).optional(),
+        desiredOtherSkills: z.array(z.string()).optional(),
+        visaSponsorship: VisaSponsorship.optional(),
+        similarStaffed: z.boolean(),
+        desiredImpactExp: z.string().max(5000).optional(),
+      }),
+    ),
+  })
+  .transform((data) => escapeHTML(data))
+  .innerType();
 
 const OpportunityBatchResponseBodySchema = z.object({
   id: z.number(),

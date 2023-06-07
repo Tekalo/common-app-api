@@ -541,6 +541,28 @@ describe('POST /applicants/me/submissions/draft', () => {
       expect(body).toHaveProperty('id');
     });
 
+    it('should escape HTML in request body', async () => {
+      const agent = request.agent(dummyAuthApp);
+      await agent.post('/applicants').send({
+        name: 'Bob Boberson',
+        email: 'bboberson@gmail.com',
+        preferredContact: 'sms',
+        searchStatus: 'active',
+        acceptedTerms: true,
+        acceptedPrivacy: true,
+      });
+      const testBody: ApplicantDraftSubmissionBody = {
+        resumeUrl: "<script>alert('hi')</script>",
+      };
+      const { body }: { body: ApplicantDraftSubmissionResponseBody } =
+        await agent
+          .post('/applicants/me/submissions/draft')
+          .send(testBody)
+          .expect(200);
+      console.log(body);
+      expect(body.submission.resumeUrl).toEqual("<script>alert('hi')</script>");
+    });
+
     it('should update an existing draft applicant submission', async () => {
       const agent = request.agent(dummyAuthApp);
       await agent.post('/applicants').send({

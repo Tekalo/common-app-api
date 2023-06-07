@@ -53,6 +53,7 @@
     "pino": "8.14.1",
     "pino-http": "8.3.3",
     "swagger-ui-express": "4.6.3",
+    "xss": "1.0.14",
     "zod": "3.21.4"
   },
   "devDependencies": {
