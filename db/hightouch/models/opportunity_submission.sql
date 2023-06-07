@@ -33,7 +33,10 @@ SELECT
   os."desiredStartDate",
   os."desiredEndDate",
   os."desiredYoe",
-  ARRAY_CAT(os."desiredSkills", os."desiredOtherSkills") AS "desiredAllSkills",
+  ARRAY_CAT(
+    os."desiredSkills",
+    LOWER(os."desiredOtherSkills" :: TEXT) :: TEXT []
+  ) AS "desiredAllSkills",
   os."desiredImpactExp",
   os."similarStaffed",
   os."jdUrl",
