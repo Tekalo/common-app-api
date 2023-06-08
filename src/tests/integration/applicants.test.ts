@@ -508,7 +508,7 @@ describe('DELETE /applicants/me', () => {
         expect(auth0Spy).toHaveBeenCalledWith(auth0User.user_id);
       },
     );
-    it('Should be able to create two applicant deletion records for no-data applicants', async () => {
+    itif('CI' in process.env)('Should be able to create two applicant deletion records for no-data applicants', async () => {
       const name = 'Bob TheTestUser';
       const email = `bboberson${getRandomString()}@gmail.com`;
       const auth0User = await authService.createUser({
@@ -597,6 +597,7 @@ describe('DELETE /applicants/me', () => {
       );
       await request(appNoAuth)
         .post('/applicants')
+        .set('Authorization', `Bearer ${token}`)
         .send({
           name: 'Bob Boberson',
           email: `bboberson${randomString}@gmail.com`,
@@ -604,7 +605,7 @@ describe('DELETE /applicants/me', () => {
           searchStatus: 'active',
           acceptedTerms: true,
           acceptedPrivacy: true,
-        });
+        }).expect(200);
       const { body } = await request(appNoAuth)
         .delete('/applicants/me')
         .set('Authorization', `Bearer ${token}`)

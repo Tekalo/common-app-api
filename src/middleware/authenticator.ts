@@ -1,5 +1,5 @@
-import { Request, Response, NextFunction } from 'express';
-import { auth } from 'express-oauth2-jwt-bearer';
+import { Request, Response, NextFunction, Handler } from 'express';
+import { auth, AuthOptions } from 'express-oauth2-jwt-bearer';
 import { verifyCookie } from '@App/services/cookieService.js';
 import { PrismaClient } from '@prisma/client';
 import {
@@ -16,9 +16,20 @@ class Authenticator {
 
   private authConfig: Auth0ExpressConfig;
 
+  private authHandler?: Handler; // TODO not make optional ?
+
   constructor(prisma: PrismaClient, authConfig: Auth0ExpressConfig) {
     this.prisma = prisma;
     this.authConfig = authConfig;
+  }
+
+  getAuthHandler(overrides?: Partial<AuthOptions>): Handler {
+    if (!this.authHandler) {
+      const config = { ...this.authConfig, ...overrides };
+      this.authHandler = auth(config);
+    }
+    // TODO dont re-use if we have overrides like "authRequred"
+    return this.authHandler;
   }
 
   // An alternative to validateJwt().
@@ -46,7 +57,9 @@ class Authenticator {
   // eslint-disable-next-line @typescript-eslint/require-await
   async validateJwt(req: Request, res: Response, next: NextFunction) {
     try {
-      auth(this.authConfig)(req, res, (async (err) => {
+      const authHandler = this.getAuthHandler();
+      // eslint-disable-next-line @typescript-eslint/await-thenable
+      await authHandler(req, res, (async (err) => {
         if (!req.auth) {
           next(
             new CAPPError(
@@ -69,8 +82,9 @@ class Authenticator {
 
   // Attach to requests that can only authenticate with a JWT and are verified as test/admin accounts
   async validateJwtAdmin(req: Request, res: Response, next: NextFunction) {
+    const authHandler = this.getAuthHandler();
     // eslint-disable-next-line @typescript-eslint/await-thenable
-    await auth(this.authConfig)(req, res, (err) => {
+    await authHandler(req, res, (err) => {
       if (
         !req.auth ||
         !req.auth.payload['auth0.capp.com/roles'] ||
@@ -94,8 +108,9 @@ class Authenticator {
 
   // Attach auth to request if it exists. If not, do not throw.
   async attachJwt(req: Request, res: Response, next: NextFunction) {
+    const authHandler = this.getAuthHandler({ authRequired: false } );
     // eslint-disable-next-line @typescript-eslint/await-thenable
-    await auth({ ...this.authConfig, authRequired: false })(req, res, next);
+    await authHandler(req, res, next);
   }
 
   // Attach to requests that can only authenticate with a cookie
@@ -106,7 +121,9 @@ class Authenticator {
   // Attach to requests that can authenticate with either JWT or cookie
   async verifyJwtOrCookie(req: Request, res: Response, next: NextFunction) {
     // eslint-disable-next-line @typescript-eslint/await-thenable
-    await auth(this.authConfig)(req, res, (async () => {
+    const authHandler = this.getAuthHandler();
+    // eslint-disable-next-line @typescript-eslint/await-thenable
+    await authHandler(req, res, (async () => {
       if (!req.auth) {
         verifyCookie(req, res, next);
       } else {
