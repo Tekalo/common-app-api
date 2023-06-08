@@ -13,7 +13,12 @@ import configLoader from '@App/services/configLoader.js';
 
 import cookie from 'cookie';
 import cookieParser from 'cookie-parser';
-import { ApplicantSession, Prisma } from '@prisma/client';
+import {
+  ApplicantDraftSubmission,
+  ApplicantSession,
+  ApplicantSubmission,
+  Prisma,
+} from '@prisma/client';
 import applicantSubmissionGenerator from '../fixtures/applicantSubmissionGenerator.js';
 import DummyAuthService from '../fixtures/DummyAuthService.js';
 import DummyMonitoringService from '../fixtures/DummyMonitoringService.js';
@@ -324,7 +329,9 @@ describe('POST /applicants/me/submissions', () => {
         });
       const testBody: ApplicantSubmissionBody =
         applicantSubmissionGenerator.getAPIRequestBody();
-      const { body } = await request(dummyAuthApp)
+      const { body }: { body: ApplicantSubmission } = await request(
+        dummyAuthApp,
+      )
         .post('/applicants/me/submissions')
         .send(testBody)
         .set('Authorization', `Bearer ${token}`)
@@ -554,13 +561,11 @@ describe('POST /applicants/me/submissions/draft', () => {
       const testBody: ApplicantDraftSubmissionBody = {
         resumeUrl: "<script>alert('hi')</script>",
       };
-      const { body }: { body: ApplicantDraftSubmissionResponseBody } =
-        await agent
-          .post('/applicants/me/submissions/draft')
-          .send(testBody)
-          .expect(200);
-      console.log(body);
-      expect(body.submission.resumeUrl).toEqual("<script>alert('hi')</script>");
+      const { body }: { body: ApplicantDraftSubmission } = await agent
+        .post('/applicants/me/submissions/draft')
+        .send(testBody)
+        .expect(200);
+      expect(body.resumeUrl).toEqual("<script>alert('hi')</script>");
     });
 
     it('should update an existing draft applicant submission', async () => {
