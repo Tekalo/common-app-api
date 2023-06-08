@@ -42,7 +42,7 @@ class OpportunityController {
         similarStaffed: submission.similarStaffed,
         desiredImpactExp: submission.desiredImpactExp,
       }));
-      const { organization, contact } = data;
+      const { organization, contact, referenceAttribution } = data;
       const returnBatch: OpportunityBatchResponseBody =
         await this.prisma.opportunityBatch.create({
           data: {
@@ -54,6 +54,7 @@ class OpportunityController {
             contactPhone: contact.phone,
             contactEmail: contact.email,
             equalOpportunityEmployer: organization.eoe,
+            referenceAttribution,
             opportunitySubmissions: {
               createMany: {
                 data: opportunitySubmissions,
