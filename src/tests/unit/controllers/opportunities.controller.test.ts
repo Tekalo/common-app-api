@@ -30,6 +30,7 @@ describe('Opportunity Controller', () => {
     );
     const reqPayload: OpportunityBatchRequestBody = {
       acceptedPrivacy: true,
+      referenceAttribution: 'linkedin',
       organization: {
         name: 'Bobs Burgers Foundation',
         type: '501(c)(3)',
@@ -78,6 +79,7 @@ describe('Opportunity Controller', () => {
       contactPhone: contact.phone || null,
       contactEmail: contact.email,
       equalOpportunityEmployer: organization.eoe,
+      referenceAttribution: 'linkedin',
     };
     mockCtx.prisma.opportunityBatch.create.mockResolvedValue(mockResolved);
     const response = await opportunityController.createOpportunityBatch(
@@ -154,6 +156,7 @@ describe('Opportunity Controller', () => {
     const orgEmail = 'bboberson@gmail.com';
     const reqPayload: OpportunityBatchRequestBody = {
       acceptedPrivacy: true,
+      referenceAttribution: 'other',
       organization: {
         name: 'Bobs Burgers Foundation',
         type: '501(c)(3)',
@@ -202,6 +205,7 @@ describe('Opportunity Controller', () => {
       contactPhone: contact.phone || null,
       contactEmail: contact.email,
       equalOpportunityEmployer: organization.eoe,
+      referenceAttribution: 'other',
     };
     mockCtx.prisma.opportunityBatch.create.mockResolvedValue(mockResolved);
 
