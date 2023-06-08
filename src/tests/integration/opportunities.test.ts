@@ -27,13 +27,13 @@ describe('POST /opportunities', () => {
       name: 'Bobs Burgers Foundation',
       type: '501(c)(3)',
       size: '<20',
-      impactAreas: ['Clean Energy'],
+      impactAreas: ['Clean Energy', 'Education'],
       eoe: true,
     },
     contact: {
       name: 'Bob Boberson',
       email: 'bboberson@gmail.com',
-      phone: '4258287733',
+      phone: '+918-867-5309',
     },
     submissions: [
       {
@@ -64,7 +64,18 @@ describe('POST /opportunities', () => {
       .send(oppBatchPayload)
       .expect(200);
     expect(body).toEqual(expect.objectContaining({ id: expect.any(Number) }));
-    expect(body).toHaveProperty('impactAreas', ['Clean Energy']);
+    expect(body).toEqual({
+      id: expect.any(Number),
+      acceptedPrivacy: expect.any(String),
+      contactEmail: 'bboberson@gmail.com',
+      contactName: 'Bob Boberson',
+      contactPhone: '+918-867-5309',
+      equalOpportunityEmployer: true,
+      impactAreas: ['Clean Energy', 'Education'],
+      orgName: 'Bobs Burgers Foundation',
+      orgSize: '<20',
+      orgType: '501(c)(3)',
+    });
   });
   it('should create multiple new batches of opportunities', async () => {
     const secondOppSubmissionPayload = { ...oppBatchPayload };
