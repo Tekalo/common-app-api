@@ -38,7 +38,7 @@ const getAPIRequestBody = (
   previousImpactExperience: false,
   essayResponse:
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non iaculis erat.',
-  referenceAttribution: 'social media', // enum
+  referenceAttribution: 'social media',
   ...overrides,
 });
 

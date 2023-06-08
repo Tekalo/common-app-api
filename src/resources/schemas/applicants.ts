@@ -36,14 +36,6 @@ const YOE = z.enum([
 const OpenToRelocate = z.enum(['yes', 'no', 'not sure']);
 const OpenToRemote = z.enum(['only remote', 'no remote', 'both', 'not sure']);
 const WorkAuthorization = z.enum(['authorized', 'sponsorship']);
-const ReferenceAttribution = z.enum([
-  'website',
-  'linkedin',
-  'social media',
-  'partner organization',
-  'career fair',
-  'other',
-]);
 const EmploymentType = z.enum(['full', 'part']);
 
 const ApplicantRequestBodySchema = z.object({
@@ -96,7 +88,7 @@ const ApplicantSubmissionRequestBodySchema = z.object({
   interestGovtEmplTypes: z.array(InterestGovtEmplTypes).optional(),
   previousImpactExperience: z.boolean(),
   essayResponse: z.string().max(5000),
-  referenceAttribution: ReferenceAttribution.nullable().optional(),
+  referenceAttribution: z.string().nullable().optional(),
 });
 // TOOD: Figure out typesript error on refining interestGovtTypes to ensure it is filled if interestGovt is true
 
