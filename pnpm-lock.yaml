@@ -21,8 +21,8 @@ dependencies:
     specifier: 2.0.1
     version: 2.0.1
   '@types/auth0':
-    specifier: 3.3.2
-    version: 3.3.2
+    specifier: 3.3.3
+    version: 3.3.3
   '@types/cookie':
     specifier: ^0.5.1
     version: 0.5.1
@@ -1851,8 +1851,8 @@ packages:
     resolution: {integrity: sha512-UqdfvuJK0SArA2CxhKWwwAWfnVSXiYe63bVpMutc27vpngCntGUZQETO24pEJ46zU6XM+7SpqYoMgcO3bM11Ew==}
     dev: false
 
-  /@types/auth0@3.3.2:
-    resolution: {integrity: sha512-lnZKcXQar1SGYsOkQuHFM4OONlqJyN10h3+BD670IbxW/qFHCaul1rcJeE89RfzA3oF3WXl8sS/Rrazu2KHagQ==}
+  /@types/auth0@3.3.3:
+    resolution: {integrity: sha512-dLGI50h+rjKhF/wt1Az+QZZhdvjSXa7EjjBp9aV3/n+xdNdkYIXelOXAm5C2G3PraZK99wMflbdt6dyJUwh2rg==}
     dev: false
 
   /@types/babel__core@7.20.1:
