@@ -508,65 +508,71 @@ describe('DELETE /applicants/me', () => {
         expect(auth0Spy).toHaveBeenCalledWith(auth0User.user_id);
       },
     );
-    it('Should be able to create two applicant deletion records for no-data applicants', async () => {
-      const name = 'Bob TheTestUser';
-      const email = `bboberson${getRandomString()}@gmail.com`;
-      const auth0User = await authService.createUser({
-        name,
-        email,
-      });
-
-      const name2 = 'Bob TheOtherTestUser';
-      const email2 = `bboberson${getRandomString()}@gmail.com`;
-      const auth0User2 = await authService.createUser({
-        name: name2,
-        email: email2,
-      });
-
-      const token = await authHelper.getToken(email, auth0User.user_id);
-      const token2 = await authHelper.getToken(email2, auth0User2.user_id);
-      if (auth0User.user_id) {
-        testUserIDs.push(auth0User.user_id);
-      }
-
-      if (auth0User2.user_id) {
-        testUserIDs.push(auth0User2.user_id);
-      }
-
-      const prismaSpy = jest.spyOn(prisma.applicantDeletionRequests, 'create');
-
-      await request(app)
-        .delete('/applicants/me')
-        .set('Authorization', `Bearer ${token}`)
-        .expect(200);
-
-      await request(app)
-        .delete('/applicants/me')
-        .set('Authorization', `Bearer ${token2}`)
-        .expect(200);
-
-      const neverDate = new Date('2000-01-01');
-
-      // expect prisma deletion records to have been created
-      expect(prismaSpy).toHaveBeenNthCalledWith(1, {
-        data: {
+    itif('CI' in process.env)(
+      'Should be able to create two applicant deletion records for no-data applicants',
+      async () => {
+        const name = 'Bob TheTestUser';
+        const email = `bboberson${getRandomString()}@gmail.com`;
+        const auth0User = await authService.createUser({
+          name,
           email,
-          applicantId: 0,
-          acceptedTerms: neverDate,
-          acceptedPrivacy: neverDate,
-          followUpOptIn: false,
-        },
-      });
-      expect(prismaSpy).toHaveBeenNthCalledWith(2, {
-        data: {
+        });
+
+        const name2 = 'Bob TheOtherTestUser';
+        const email2 = `bboberson${getRandomString()}@gmail.com`;
+        const auth0User2 = await authService.createUser({
+          name: name2,
           email: email2,
-          applicantId: 0,
-          acceptedTerms: neverDate,
-          acceptedPrivacy: neverDate,
-          followUpOptIn: false,
-        },
-      });
-    });
+        });
+
+        const token = await authHelper.getToken(email, auth0User.user_id);
+        const token2 = await authHelper.getToken(email2, auth0User2.user_id);
+        if (auth0User.user_id) {
+          testUserIDs.push(auth0User.user_id);
+        }
+
+        if (auth0User2.user_id) {
+          testUserIDs.push(auth0User2.user_id);
+        }
+
+        const prismaSpy = jest.spyOn(
+          prisma.applicantDeletionRequests,
+          'create',
+        );
+
+        await request(app)
+          .delete('/applicants/me')
+          .set('Authorization', `Bearer ${token}`)
+          .expect(200);
+
+        await request(app)
+          .delete('/applicants/me')
+          .set('Authorization', `Bearer ${token2}`)
+          .expect(200);
+
+        const neverDate = new Date('2000-01-01');
+
+        // expect prisma deletion records to have been created
+        expect(prismaSpy).toHaveBeenNthCalledWith(1, {
+          data: {
+            email,
+            applicantId: 0,
+            acceptedTerms: neverDate,
+            acceptedPrivacy: neverDate,
+            followUpOptIn: false,
+          },
+        });
+        expect(prismaSpy).toHaveBeenNthCalledWith(2, {
+          data: {
+            email: email2,
+            applicantId: 0,
+            acceptedTerms: neverDate,
+            acceptedPrivacy: neverDate,
+            followUpOptIn: false,
+          },
+        });
+      },
+    );
   });
   describe('No Auth0 Integration', () => {
     const appNoAuth = getApp(
@@ -885,7 +891,8 @@ describe('PUT /applicants/me/state', () => {
         searchStatus: 'active',
         acceptedTerms: true,
         acceptedPrivacy: true,
-      });
+      })
+      .expect(200);
     const { body: pausedBody } = await request(dummyAuthApp)
       .put('/applicants/me/state')
       .send({ pause: true })

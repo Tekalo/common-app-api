@@ -33,3 +33,7 @@ declare module 'express-oauth2-jwt-bearer' {
 export interface RequestWithJWT extends Request {
   auth: AuthResult;
 }
+
+export interface RequestWithoutJWT extends Request {
+  authError?: Error;
+}
