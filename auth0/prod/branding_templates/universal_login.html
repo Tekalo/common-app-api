@@ -15,6 +15,19 @@
       body {
         background-color: white;
       }
+      .nav_content_wrapper {
+        max-width: 1120px;
+        margin: 0 auto;
+      }
+      .site_nav {
+        width: 100%;
+        background: white;
+        padding: 16px;
+        box-shadow: 0px 10px #363d3f;
+      }
+      .site_nav img {
+        max-width: 132px;
+      }
       .prompt-wrapper {
         position: relative;
         align-items: center;
@@ -55,6 +68,15 @@
   </head>
 
   <body class="_widget-auto-layout">
+    <nav class="site_nav">
+      <div class="nav_content_wrapper">
+        <a class="" href="https://tekalo.org"
+          ><img
+            src="https://www.tekalo.org/images/logo_nav.png"
+            alt="Tekalo Logo"
+        /></a>
+      </div>
+    </nav>
     {% if prompt.name == "login" or prompt.name == "signup" %}
     <div class="prompt-wrapper">
       <div class="before-widget">
