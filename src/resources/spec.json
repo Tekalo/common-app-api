@@ -400,6 +400,9 @@
           "acceptedPrivacy": {
             "type": "boolean"
           },
+          "referenceAttribution": {
+            "type": "string"
+          },
           "contact": {
             "type": "object",
             "properties": {
