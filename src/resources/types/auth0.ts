@@ -34,6 +34,6 @@ export interface RequestWithJWT extends Request {
   auth: AuthResult;
 }
 
-export interface RequestWithoutJWT extends Request {
+export interface AuthRequest extends Request {
   authError?: Error;
 }
