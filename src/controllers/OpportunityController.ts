@@ -103,9 +103,6 @@ class OpportunityController {
   // Meant to be used by E2E tests and admins
   async deleteOpportunityForce(opportunityBatchId: number) {
     try {
-      await this.prisma.opportunityBatch.findUniqueOrThrow({
-        where: { id: opportunityBatchId },
-      });
       // Delete from opportunity batch table
       await this.prisma.opportunityBatch.delete({
         where: { id: opportunityBatchId },
