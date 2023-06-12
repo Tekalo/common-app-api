@@ -99,6 +99,8 @@ class OpportunityController {
     }
   }
 
+  // Deletes specified opportunity batch immediately
+  // Meant to be used by E2E tests and admins
   async deleteOpportunityForce(opportunityBatchId: number) {
     let opportunityBatchToDelete;
     try {
