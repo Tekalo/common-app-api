@@ -134,8 +134,8 @@ model OpportunityBatch {
     contactEmail             String
     contactPhone             String?
     equalOpportunityEmployer Boolean
-    acceptedPrivacy          DateTime                  @default(now())
-    referenceAttribution     String? 
+    acceptedPrivacy          DateTime                @default(now())
+    referenceAttribution     String?
 }
 
 model ApplicantDeletionRequests {
@@ -151,7 +151,7 @@ model ApplicantDeletionRequests {
 model OpportunitySubmission {
     id Int @id @default(autoincrement())
 
-    opportunityBatch   OpportunityBatch @relation(fields: [opportunityBatchId], references: [id])
+    opportunityBatch   OpportunityBatch @relation(fields: [opportunityBatchId], references: [id], onDelete: Cascade)
     opportunityBatchId Int
 
     createdAt      DateTime @default(now())
