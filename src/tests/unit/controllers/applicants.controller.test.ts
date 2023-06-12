@@ -211,7 +211,7 @@ describe('Applicant Controller', () => {
       });
       mockEmailSpy.mockRestore();
     });
-    test('Should send welcome email after applicant registration for username-password authenticated users', async () => {
+    test('Should send welcome email after applicant registration for un-authenticated users', async () => {
       mockCtx.prisma.applicant.create.mockResolvedValue({
         id: 1,
         phone: '777-777-7777',
@@ -259,6 +259,58 @@ describe('Applicant Controller', () => {
         `${webUrl}/sign-in`,
       );
       expect(mockEmailSpy).toHaveBeenCalledWith(expectedEmail);
+      mockEmailSpy.mockRestore();
+    });
+    test('Should not send welcome email after applicant registration users authenticated via social-provider', async () => {
+      mockCtx.prisma.applicant.create.mockResolvedValue({
+        id: 1,
+        phone: '777-777-7777',
+        name: 'Bob Boberson',
+        email: 'bboberson@schmidtfutures.com',
+        pronoun: 'she/hers',
+        preferredContact: 'email',
+        searchStatus: 'active',
+        acceptedTerms: new Date('2023-02-01'),
+        acceptedPrivacy: new Date('2023-02-01'),
+        auth0Id: 'auth0|1234',
+        isPaused: false,
+        followUpOptIn: false,
+      });
+      const dummyEmailService = new DummyEmailService(
+        new DummySESService(),
+        getMockConfig(),
+      );
+      const mockEmailSpy = jest.spyOn(dummyEmailService, 'sendEmail');
+      const applicantController = new ApplicantController(
+        new DummyAuthService(),
+        ctx.prisma,
+        dummyEmailService,
+        new DummyMonitoringService(),
+      );
+      const bobEmail = 'bboberson@schmidtfutures.com';
+
+      const auth = {
+        header: {},
+        token: '',
+        payload: {
+          sub: 'google-oauth-2|12345678',
+          'auth0.capp.com/email': 'bboberson@schmidtfutures.com',
+          'auth0.capp.com/roles': [],
+        },
+      };
+      await applicantController.createApplicant(
+        {
+          name: 'Bob Boberson',
+          email: bobEmail,
+          pronoun: 'he/his',
+          preferredContact: 'email',
+          searchStatus: 'active',
+          acceptedTerms: true,
+          acceptedPrivacy: true,
+        },
+        auth,
+      );
+      expect(mockEmailSpy).not.toHaveBeenCalled();
       mockEmailSpy.mockRestore();
     });
   });
