@@ -70,7 +70,7 @@ const getApp = (
     '/applicants',
     applicantRoutes(authService, emailService, monitoringService, config),
   );
-  app.use('/opportunities', opportunitiesRoutes(emailService));
+  app.use('/opportunities', opportunitiesRoutes(emailService, config));
   app.use('/health', healthRoutes());
 
   /**
