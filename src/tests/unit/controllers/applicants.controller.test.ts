@@ -211,7 +211,7 @@ describe('Applicant Controller', () => {
       });
       mockEmailSpy.mockRestore();
     });
-    test('Should send welcome email after applicant registration', async () => {
+    test('Should send welcome email after applicant registration for username-password authenticated users', async () => {
       mockCtx.prisma.applicant.create.mockResolvedValue({
         id: 1,
         phone: '777-777-7777',

@@ -61,7 +61,6 @@ class ApplicantController {
       }
       auth0UserId = auth.payload.sub;
     } else {
-      // let auth0User: User<AppMetadata, UserMetadata> | undefined;
       const userExists = await this.auth0Service.userExists(data.email);
       // If our user is not coming in with a JWT, but they already exist in Auth0, they need to make this request with their JWT aka "login"
       if (userExists) {
@@ -105,15 +104,15 @@ class ApplicantController {
           auth0Id: auth0UserId,
         },
       });
-      const userConnection: string = auth0User?.identities ? auth0User.identities[0].connection : '';
-      if (userConnection === 'Username-Password-Authentication') {
-        // if (applicant has username password connection)
+      // Do not sent a welcome email if our user has a valid JWT.
+      // A valid JWT at this stage means they are authenticated with social login.
+      if (!auth) {
         try {
           const { ticket } = await this.auth0Service.generatePasswordReset(
             returnApplicant.auth0Id,
           );
           const signInLink: string = AuthService.getSignInLink();
-  
+
           const welcomeEmail = this.emailService.generateApplicantWelcomeEmail(
             returnApplicant.email,
             ticket,
@@ -129,7 +128,6 @@ class ApplicantController {
           );
         }
       }
-
       return {
         id: returnApplicant.id,
         auth0Id: auth0UserId || null,
