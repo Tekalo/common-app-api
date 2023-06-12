@@ -98,6 +98,37 @@ class OpportunityController {
       );
     }
   }
+
+  // Deletes specified opportunity batch immediately
+  // Meant to be used by E2E tests and admins
+  async deleteOpportunityForce(opportunityBatchId: number) {
+    try {
+      // Delete from opportunity batch table
+      await this.prisma.opportunityBatch.delete({
+        where: { id: opportunityBatchId },
+      });
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        throw new CAPPError(
+          {
+            title: 'Opportunity Batch Deletion Error',
+            detail:
+              'Database error encountered when deleting opportunity batch',
+            status: 400,
+          },
+          e instanceof Error ? { cause: e } : undefined,
+        );
+      }
+      throw new CAPPError(
+        {
+          title: 'Opportunity Batch Deletion Error',
+          detail: 'Error when deleting opportunity batch',
+        },
+        e instanceof Error ? { cause: e } : undefined,
+      );
+    }
+    return { id: opportunityBatchId };
+  }
 }
 
 export default OpportunityController;

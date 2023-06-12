@@ -3,11 +3,20 @@ import prisma from '@App/resources/client.js';
 import { OpportunityBatchRequestBodySchema } from '@App/resources/schemas/opportunities.js';
 import { OpportunityBatchRequestBody } from '@App/resources/types/opportunities.js';
 import EmailService from '@App/services/EmailService.js';
-import express, { Request, Response } from 'express';
+import express, { Request, RequestHandler, Response } from 'express';
+import Authenticator from '@App/middleware/authenticator.js';
+import { RequestWithJWT } from '@App/resources/types/auth0.js';
+import { BaseConfig } from '@App/resources/types/shared.js';
 
-const opportunitiesRoutes = (emailService: EmailService) => {
+const opportunitiesRoutes = (
+  emailService: EmailService,
+  config: BaseConfig,
+) => {
   const opportunityController = new OpportunityController(prisma, emailService);
   const router = express.Router();
+  const authenticatorConfig = config.auth0.express;
+  authenticatorConfig.cacheMaxAge = 12 * 60 * 60 * 1000; // 12 hours
+  const authenticator = new Authenticator(prisma, authenticatorConfig);
 
   router.post('/batch', (req: Request, res: Response, next) => {
     const appBody = req.body as OpportunityBatchRequestBody;
@@ -19,6 +28,22 @@ const opportunitiesRoutes = (emailService: EmailService) => {
       })
       .catch((err) => next(err));
   });
+
+  // Admin endpoints
+  router.delete(
+    '/batch/:id',
+    authenticator.validateJwtAdmin.bind(authenticator) as RequestHandler,
+    (req: Request, res: Response, next) => {
+      const reqWithAuth = req as RequestWithJWT;
+      const { id } = reqWithAuth.params;
+      opportunityController
+        .deleteOpportunityForce(Number(id))
+        .then((result) => {
+          res.status(200).json(result);
+        })
+        .catch((err) => next(err));
+    },
+  );
 
   return router;
 };
