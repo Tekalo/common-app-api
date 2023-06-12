@@ -46,6 +46,7 @@ class ApplicantController {
     auth?: AuthResult,
   ): Promise<ApplicantResponseBody> {
     let auth0UserId;
+    let auth0User: User<AppMetadata, UserMetadata> | undefined;
     let returnApplicant: Applicant;
     // If our request already has a JWT, user must have signed up with social/password before registering.
     // Ensure registration email matches auth0 email
@@ -60,7 +61,7 @@ class ApplicantController {
       }
       auth0UserId = auth.payload.sub;
     } else {
-      let auth0User: User<AppMetadata, UserMetadata> | undefined;
+      // let auth0User: User<AppMetadata, UserMetadata> | undefined;
       const userExists = await this.auth0Service.userExists(data.email);
       // If our user is not coming in with a JWT, but they already exist in Auth0, they need to make this request with their JWT aka "login"
       if (userExists) {
@@ -104,26 +105,31 @@ class ApplicantController {
           auth0Id: auth0UserId,
         },
       });
-      try {
-        const { ticket } = await this.auth0Service.generatePasswordReset(
-          returnApplicant.auth0Id,
-        );
-        const signInLink: string = AuthService.getSignInLink();
-
-        const welcomeEmail = this.emailService.generateApplicantWelcomeEmail(
-          returnApplicant.email,
-          ticket,
-          signInLink,
-        );
-        await this.emailService.sendEmail(welcomeEmail);
-      } catch (e) {
-        MonitoringService.logError(
-          new CAPPError(
-            { title: 'Failed to send post sign-up set password email' },
-            e instanceof Error ? { cause: e } : undefined,
-          ),
-        );
+      const userConnection: string = auth0User?.identities ? auth0User.identities[0].connection : '';
+      if (userConnection === 'Username-Password-Authentication') {
+        // if (applicant has username password connection)
+        try {
+          const { ticket } = await this.auth0Service.generatePasswordReset(
+            returnApplicant.auth0Id,
+          );
+          const signInLink: string = AuthService.getSignInLink();
+  
+          const welcomeEmail = this.emailService.generateApplicantWelcomeEmail(
+            returnApplicant.email,
+            ticket,
+            signInLink,
+          );
+          await this.emailService.sendEmail(welcomeEmail);
+        } catch (e) {
+          MonitoringService.logError(
+            new CAPPError(
+              { title: 'Failed to send post sign-up set password email' },
+              e instanceof Error ? { cause: e } : undefined,
+            ),
+          );
+        }
       }
+
       return {
         id: returnApplicant.id,
         auth0Id: auth0UserId || null,
