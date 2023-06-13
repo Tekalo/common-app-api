@@ -104,7 +104,7 @@ class Authenticator {
   async verifyJwtOrCookie(req: AuthRequest, res: Response, next: NextFunction) {
     if (!req.auth) {
       if (req.authError) {
-        next(req.authError); // TODO Add test for some random 500 error comin thruuu!
+        next(req.authError);
       } else {
         try {
           verifyCookie(req);
