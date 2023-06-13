@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
 
     container:
-      image: node:18.15.0
+      image: node:18.16.0
 
     env:
       POSTGRES_HOST: postgres
