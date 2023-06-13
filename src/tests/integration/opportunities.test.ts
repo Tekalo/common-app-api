@@ -23,7 +23,8 @@ afterEach(async () => {
 describe('POST /opportunities', () => {
   const oppBatchPayload = {
     acceptedPrivacy: true,
-    referenceAttribution: 'partner organization - all tech is human',
+    referenceAttribution: 'other',
+    referenceAttributionOther: 'reddit',
     organization: {
       name: 'Bobs Burgers Foundation',
       type: '501(c)(3)',
@@ -76,7 +77,8 @@ describe('POST /opportunities', () => {
       orgName: 'Bobs Burgers Foundation',
       orgSize: '<20',
       orgType: '501(c)(3)',
-      referenceAttribution: 'partner organization - all tech is human',
+      referenceAttribution: 'other',
+      referenceAttributionOther: 'reddit',
     });
   });
   it('should create multiple new batches of opportunities', async () => {

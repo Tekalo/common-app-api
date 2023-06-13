@@ -136,6 +136,7 @@ model OpportunityBatch {
     equalOpportunityEmployer Boolean
     acceptedPrivacy          DateTime                @default(now())
     referenceAttribution     String?
+    referenceAttributionOther   String?
 }
 
 model ApplicantDeletionRequests {
