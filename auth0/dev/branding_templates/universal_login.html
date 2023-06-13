@@ -20,10 +20,11 @@
         margin: 0 auto;
       }
       .site_nav {
-        width: 100%;
         background: white;
-        padding: 16px;
         box-shadow: 0px 10px #363d3f;
+        padding: 16px;
+        text-align: center;
+        width: 100%;
       }
       .site_nav img {
         max-width: 132px;
@@ -101,7 +102,7 @@
     <title>{{application.name}}</title>
   </head>
 
-  <body class="_widget-auto-layout">
+  <body class="_widget-auto-layout _hide-prompt-logo">
     <nav class="site_nav">
       <div class="nav_content_wrapper">
         {% if application.name == "Tekalo Dev" %}
