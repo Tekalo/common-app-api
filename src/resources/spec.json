@@ -403,6 +403,9 @@
           "referenceAttribution": {
             "type": "string"
           },
+          "referenceAttributionOther": {
+            "type": "string"
+          },
           "contact": {
             "type": "object",
             "properties": {

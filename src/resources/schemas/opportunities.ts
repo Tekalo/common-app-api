@@ -56,6 +56,7 @@ const OpportunityBatchRequestBodySchema = z.object({
   }),
   acceptedPrivacy: z.literal(true),
   referenceAttribution: z.string().nullable().optional(),
+  referenceAttributionOther: z.string().nullable().optional(),
   submissions: z.array(
     z.object({
       roleType: RoleType,
