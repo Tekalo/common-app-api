@@ -37,8 +37,8 @@
   "dependencies": {
     "@aws-sdk/client-ses": "3.350.0",
     "@prisma/client": "4.15.0",
-    "@sentry/node": "7.54.0",
-    "@sentry/types": "7.54.0",
+    "@sentry/node": "7.55.0",
+    "@sentry/types": "7.55.0",
     "@tsconfig/node18": "2.0.1",
     "@types/auth0": "3.3.3",
     "@types/cookie": "^0.5.1",
