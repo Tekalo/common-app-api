@@ -800,7 +800,7 @@ themes:
         bold: false
         size: 100
       links:
-        bold: true
+        bold: false
         size: 87.5
       links_style: normal
     page_background:

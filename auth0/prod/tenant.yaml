@@ -89,11 +89,11 @@ clients:
     allowed_clients: []
     allowed_logout_urls:
       - https://www.tekalo.org
-      - https://*.common-app-frontend.pages.dev
+      - https://prod.common-app-frontend.pages.dev
     app_type: spa
     callbacks:
       - https://www.tekalo.org
-      - https://*.common-app-frontend.pages.dev
+      - https://prod.common-app-frontend.pages.dev
     client_aliases: []
     cross_origin_auth: false
     custom_login_page_on: true
@@ -128,7 +128,7 @@ clients:
     token_endpoint_auth_method: none
     web_origins:
       - https://www.tekalo.org
-      - https://*.common-app-frontend.pages.dev
+      - https://prod.common-app-frontend.pages.dev
   - name: Tekalo Management
     allowed_clients: []
     allowed_logout_urls:
@@ -138,6 +138,7 @@ clients:
     callbacks:
       - https://www.tekalo.org
       - https://*.common-app-frontend.pages.dev
+      - https://login.futuresengine.com
     client_aliases: []
     cross_origin_auth: false
     custom_login_page_on: true
@@ -292,10 +293,7 @@ tenant:
   enabled_locales:
     - en
   flags:
-    universal_login: true
     revoke_refresh_token_grant: false
-    require_signed_request_object: false
-    dashboard_new_onboarding: false
     disable_clickjack_protection_headers: false
   friendly_name: Tekalo
   picture_url: https://auth0-assets-axb.pages.dev/tekalogo-logo-small.png
@@ -819,7 +817,7 @@ themes:
         bold: false
         size: 100
       links:
-        bold: true
+        bold: false
         size: 87.5
       links_style: normal
     page_background:
