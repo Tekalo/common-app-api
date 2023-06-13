@@ -43,4 +43,5 @@ SELECT
   os."pitchEssay"
 FROM
   "OpportunitySubmission" os
-  LEFT JOIN "OpportunityBatch" ob ON os."opportunityBatchId" = ob.id;
+  LEFT JOIN "OpportunityBatch" ob ON os."opportunityBatchId" = ob.id
+  WHERE ob."contactEmail" != 'test-user-contact@schmidtfutures.com';

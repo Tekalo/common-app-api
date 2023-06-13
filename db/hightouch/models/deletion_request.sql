@@ -1,5 +1,9 @@
 SELECT
   id,
-  "applicantId"
+  "applicantId",
+  "createdAt",
+  email
 FROM
-  PUBLIC."ApplicantDeletionRequests";
+  PUBLIC."ApplicantDeletionRequests"
+WHERE
+  email NOT LIKE 'test-user-%@schmidtfutures.com';
