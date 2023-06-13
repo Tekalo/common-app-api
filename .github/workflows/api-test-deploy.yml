@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
 
     container:
-      image: node:buster-slim
+      image: node:lts-slim
 
     env:
       POSTGRES_HOST: postgres
