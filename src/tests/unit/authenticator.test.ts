@@ -5,6 +5,7 @@ import { jest } from '@jest/globals';
 import prisma from '@App/resources/client.js';
 import configLoader from '@App/services/configLoader.js';
 import { Prisma } from '@prisma/client';
+import { RequestWithJWT } from '@App/resources/types/auth0.js';
 import { createMockContext } from '../util/context.js';
 
 type MockRequestWithParams = Request & {
@@ -120,6 +121,31 @@ describe('Authenticator', () => {
         status: 404,
       }),
     );
+  });
+
+  test('validateJwt should pass auth middleware errors to error handler', async () => {
+    type ReqWithAuthError = RequestWithJWT & {
+      authError: Error;
+    };
+
+    const mockRequest = {
+      body: {},
+      authError: new Error('RUH ROH'),
+    } as ReqWithAuthError;
+
+    const mockCtx = createMockContext();
+    const authenticatorWithMockPrisma = new Authenticator(
+      mockCtx.prisma,
+      configLoader.loadConfig().auth0.express,
+    );
+    const mockNext: NextFunction = jest.fn();
+
+    await authenticatorWithMockPrisma.validateJwt(
+      mockRequest,
+      {} as Response,
+      mockNext,
+    );
+    expect(mockNext).toBeCalledWith(new Error('RUH ROH'));
   });
 
   test('validateJwtOfUnregisteredUser should not throw error if we cannot find an applicant with a given email in the database', async () => {
