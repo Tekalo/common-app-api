@@ -31,6 +31,7 @@ resource "aws_rds_cluster" "main" {
   master_password        = var.db_password
   vpc_security_group_ids = [data.aws_security_group.db_security_group.id]
   # allow_major_version_upgrade = true
+  backup_retention_period = var.env == "prod" ? 8 : 1
 
   final_snapshot_identifier = "capp-${var.env}-final"
 
