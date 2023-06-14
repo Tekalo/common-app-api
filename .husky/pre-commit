@@ -1,5 +1,18 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
+
+CHANGED=`git diff HEAD@{1} --stat -- ./src/resources/schemas/* | wc -l`
+if [ $CHANGED -gt 0 ];
+then
+    RED='\033[0;31m'
+    NC='\033[0m' # No Color
+    echo "
+    ${RED}
+    HEYOOOOO!
+    Looks like you modified a schema! Did you make sure to check the Airtable CAPP Field Checklist? 
+    https://docs.google.com/document/d/1cdj83P5KRGqC6YvM8aVA5d9HwII--dEp1YX1k-KX2a0${NC}"
+fi
+
 pnpm format && git add -A .
 pnpm lint
