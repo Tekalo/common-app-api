@@ -141,6 +141,11 @@
       "to": "Desired Skills",
       "from": "desiredAllSkills",
       "type": "standard"
+    },
+    {
+      "from": "referenceAttributionAll",
+      "to": "How did you hear about Tekalo?",
+      "type": "standard"
     }
   ],
   "tableName": "Opportunities",

@@ -74,7 +74,8 @@ SELECT
     ELSE appsub."workAuthorization"
   END "workAuthorization",
   appsub."hoursPerWeek",
-  appsub."essayResponse"
+  appsub."essayResponse",
+  appsub."referenceAttribution"
 FROM
   PUBLIC."ApplicantSubmission" appsub
   LEFT JOIN PUBLIC."Applicant" apl ON appsub."applicantId" = apl.id

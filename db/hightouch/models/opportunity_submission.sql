@@ -7,6 +7,11 @@ SELECT
   ob."orgSize",
   ob."orgType",
   ob."equalOpportunityEmployer",
+  CASE
+    WHEN ob."referenceAttribution" = '' THEN ob."referenceAttributionOther"
+    WHEN ob."referenceAttributionOther" = '' THEN ob."referenceAttribution"
+    ELSE ob."referenceAttribution" || ' - ' || ob."referenceAttributionOther"
+  END AS "referenceAttributionAll",
   ob."orgName" || ' - ' || os."positionTitle" AS "opportunityName",
   os.id,
   os."opportunityBatchId",
@@ -44,4 +49,5 @@ SELECT
 FROM
   "OpportunitySubmission" os
   LEFT JOIN "OpportunityBatch" ob ON os."opportunityBatchId" = ob.id
-  WHERE ob."contactEmail" != 'test-user-contact@schmidtfutures.com';
+WHERE
+  ob."contactEmail" != 'test-user-contact@schmidtfutures.com';
