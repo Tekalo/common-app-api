@@ -306,9 +306,7 @@ tenant:
   enabled_locales:
     - en
   flags:
-    universal_login: true
     revoke_refresh_token_grant: false
-    dashboard_new_onboarding: false
     disable_clickjack_protection_headers: false
   friendly_name: Tekalo
   picture_url: https://auth0-assets-axb.pages.dev/tekalogo-logo-small.png
@@ -802,7 +800,7 @@ themes:
         bold: false
         size: 100
       links:
-        bold: true
+        bold: false
         size: 87.5
       links_style: normal
     page_background:

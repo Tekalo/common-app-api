@@ -15,6 +15,20 @@
       body {
         background-color: white;
       }
+      .nav_content_wrapper {
+        max-width: 1120px;
+        margin: 0 auto;
+      }
+      .site_nav {
+        background: white;
+        box-shadow: 0px 10px #363d3f;
+        padding: 16px;
+        text-align: center;
+        width: 100%;
+      }
+      .site_nav img {
+        max-width: 132px;
+      }
       .prompt-wrapper {
         position: relative;
         align-items: center;
@@ -46,7 +60,6 @@
       #tekalo-heading {
         text-align: center;
       }
-
       .sub-title {
         margin-bottom: 17px;
       }
@@ -85,11 +98,31 @@
       .tooltip-container {
         position: relative;
       }
+      ._widget-auto-layout ._widget {
+        padding-top: 0;
+      }
     </style>
     <title>{{application.name}}</title>
   </head>
 
-  <body class="_widget-auto-layout">
+  <body class="_widget-auto-layout _hide-prompt-logo">
+    <nav class="site_nav">
+      <div class="nav_content_wrapper">
+        {% if application.name == "Tekalo Dev" %}
+        <a class="" href="https://develop.common-app-frontend.pages.dev"
+          ><img
+            src="https://develop.common-app-frontend.pages.dev/images/logo_nav.png"
+            alt="Tekalo Logo"
+        /></a>
+        {% else %}
+        <a href="https://www.tekalo.org/"
+          ><img
+            src="https://www.tekalo.org/images/logo_nav.png"
+            alt="Tekalo Logo"
+        /></a>
+        {% endif %}
+      </div>
+    </nav>
     {% if prompt.name == "login" or prompt.name == "signup" %}
     <div class="prompt-wrapper">
       <div class="before-widget">
