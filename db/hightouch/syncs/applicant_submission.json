@@ -163,8 +163,13 @@
       "type": "standard"
     },
     {
-      "from": "followUpOptIn",
       "to": "Follow Up Opt In",
+      "from": "followUpOptIn",
+      "type": "standard"
+    },
+    {
+      "to": "How did you hear about Tekalo?",
+      "from": "referenceAttribution",
       "type": "standard"
     }
   ],
