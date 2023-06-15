@@ -1,184 +1,184 @@
 // When making any changes to this file you intend to merge into main, make sure to run "pnpm prisma:migrate"
 
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider = "postgresql"
-    url      = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model ApplicantSession {
-    sid    String   @id
-    sess   Json
-    expire DateTime
+  sid    String   @id
+  sess   Json
+  expire DateTime
 }
 
 model Applicant {
-    id                Int                        @id @default(autoincrement())
-    auth0Id           String                     @unique
-    name              String
-    email             String                     @unique
-    phone             String?
-    pronoun           String?
-    preferredContact  String // enum
-    searchStatus      String // Actively looking or not, cadidate open to // enum
-    applications      ApplicantSubmission[]
-    draftApplications ApplicantDraftSubmission[]
-    acceptedTerms     DateTime                   @default(now())
-    acceptedPrivacy   DateTime                   @default(now())
-    followUpOptIn     Boolean                    @default(false)
-    isPaused          Boolean                    @default(false)
+  id                Int                        @id @default(autoincrement())
+  auth0Id           String                     @unique
+  name              String
+  email             String                     @unique
+  phone             String?
+  pronoun           String?
+  preferredContact  String // enum
+  searchStatus      String // Actively looking or not, cadidate open to // enum
+  applications      ApplicantSubmission[]
+  draftApplications ApplicantDraftSubmission[]
+  acceptedTerms     DateTime                   @default(now())
+  acceptedPrivacy   DateTime                   @default(now())
+  followUpOptIn     Boolean                    @default(false)
+  isPaused          Boolean                    @default(false)
 }
 
 model ApplicantSubmission {
-    id Int @id @default(autoincrement())
+  id Int @id @default(autoincrement())
 
-    applicant   Applicant @relation(fields: [applicantId], references: [id], onDelete: Cascade)
-    applicantId Int       @unique
+  applicant   Applicant @relation(fields: [applicantId], references: [id], onDelete: Cascade)
+  applicantId Int       @unique
 
-    createdAt DateTime @default(now())
-    originTag String // Whose link did they click, data attribution  // enum
+  createdAt DateTime @default(now())
+  originTag String // Whose link did they click, data attribution  // enum
 
-    resumeUrl      String?
-    resumePassword String?
+  resumeUrl      String?
+  resumePassword String?
 
-    lastOrg  String // Current or Most Recent Org
-    lastRole String // Current or Most Recent Role
-    yoe      String // Years of Relevant Experience
+  lastOrg  String // Current or Most Recent Org
+  lastRole String // Current or Most Recent Role
+  yoe      String // Years of Relevant Experience
 
-    linkedInUrl       String?
-    githubUrl         String?
-    portfolioUrl      String?
-    portfolioPassword String?
+  linkedInUrl       String?
+  githubUrl         String?
+  portfolioUrl      String?
+  portfolioPassword String?
 
-    interestEmploymentType String[] // Interested In - Opportunities    //enum
-    interestRoles          String[] // Interested In - Roles            //enum
-    interestCauses         String[] // Interested In - Impact Causes   //enum
-    interestGovt           Boolean // Interested In - Govt
-    interestGovtEmplTypes  String[] // Interested In - Govt Paid/Unpaid //enum
+  interestEmploymentType String[] // Interested In - Opportunities    //enum
+  interestRoles          String[] // Interested In - Roles            //enum
+  interestCauses         String[] // Interested In - Impact Causes   //enum
+  interestGovt           Boolean // Interested In - Govt
+  interestGovtEmplTypes  String[] // Interested In - Govt Paid/Unpaid //enum
 
-    otherCauses String[] // Additional cause(s) they are interested in
-    skills      String[] // Enum or FKs
-    otherSkills String[] // Additional skill(s) they have
+  otherCauses String[] // Additional cause(s) they are interested in
+  skills      String[] // Enum or FKs
+  otherSkills String[] // Additional skill(s) they have
 
-    currentLocation String
-    openToRelocate  String // enum
-    openToRemote    String // enum
+  currentLocation String
+  openToRelocate  String // enum
+  openToRemote    String // enum
 
-    desiredSalary            String?
-    previousImpactExperience Boolean
-    workAuthorization        String? // enum
-    hoursPerWeek             String? // Only part-time
+  desiredSalary            String?
+  previousImpactExperience Boolean
+  workAuthorization        String? // enum
+  hoursPerWeek             String? // Only part-time
 
-    essayResponse String
+  essayResponse String
 
-    referenceAttribution String? //How did you hear about us  //enum
+  referenceAttribution String? //How did you hear about us  //enum
 }
 
 model ApplicantDraftSubmission {
-    id Int @id @default(autoincrement())
+  id Int @id @default(autoincrement())
 
-    applicant   Applicant @relation(fields: [applicantId], references: [id], onDelete: Cascade)
-    applicantId Int       @unique
+  applicant   Applicant @relation(fields: [applicantId], references: [id], onDelete: Cascade)
+  applicantId Int       @unique
 
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-    originTag String? // Whose link did they click, data attribution  // enum
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  originTag String? // Whose link did they click, data attribution  // enum
 
-    resumeUrl      String?
-    resumePassword String?
+  resumeUrl      String?
+  resumePassword String?
 
-    lastOrg  String? // Current or Most Recent Org
-    lastRole String? // Current or Most Recent Role
-    yoe      String? // Years of Relevant Experience
+  lastOrg  String? // Current or Most Recent Org
+  lastRole String? // Current or Most Recent Role
+  yoe      String? // Years of Relevant Experience
 
-    linkedInUrl       String?
-    githubUrl         String?
-    portfolioUrl      String?
-    portfolioPassword String?
+  linkedInUrl       String?
+  githubUrl         String?
+  portfolioUrl      String?
+  portfolioPassword String?
 
-    interestEmploymentType String[] // Interested In - Opportunities    //enum
-    interestRoles          String[] // Interested In - Roles            //enum
-    interestCauses         String[] // Interested In - Impact Causes   //enum
-    interestGovt           Boolean? // Interested In - Govt
-    interestGovtEmplTypes  String[] // Interested In - Govt Paid/Unpaid // enum
+  interestEmploymentType String[] // Interested In - Opportunities    //enum
+  interestRoles          String[] // Interested In - Roles            //enum
+  interestCauses         String[] // Interested In - Impact Causes   //enum
+  interestGovt           Boolean? // Interested In - Govt
+  interestGovtEmplTypes  String[] // Interested In - Govt Paid/Unpaid // enum
 
-    otherCauses String[] // Additional cause(s) they are interested in
-    skills      String[] // Enum or FKs
-    otherSkills String[] // Additional skill(s) they have
+  otherCauses String[] // Additional cause(s) they are interested in
+  skills      String[] // Enum or FKs
+  otherSkills String[] // Additional skill(s) they have
 
-    currentLocation String?
-    openToRelocate  String? // enum
-    openToRemote    String? // enum
+  currentLocation String?
+  openToRelocate  String? // enum
+  openToRemote    String? // enum
 
-    desiredSalary            String?
-    previousImpactExperience Boolean?
-    workAuthorization        String? // enum
-    hoursPerWeek             String? // Only part-time
+  desiredSalary            String?
+  previousImpactExperience Boolean?
+  workAuthorization        String? // enum
+  hoursPerWeek             String? // Only part-time
 
-    essayResponse String?
+  essayResponse String?
 
-    referenceAttribution String? //How did you hear about us  //enum
+  referenceAttribution String? //How did you hear about us  //enum
 }
 
 model OpportunityBatch {
-    id                       Int                     @id @default(autoincrement())
-    opportunitySubmissions   OpportunitySubmission[]
-    orgName                  String
-    orgType                  String // enum
-    orgSize                  String // enum
-    impactAreas              String[] // enum
-    contactName              String
-    contactEmail             String
-    contactPhone             String?
-    equalOpportunityEmployer Boolean
-    acceptedPrivacy          DateTime                @default(now())
-    referenceAttribution     String?
-    referenceAttributionOther   String?
+  id                        Int                     @id @default(autoincrement())
+  opportunitySubmissions    OpportunitySubmission[]
+  orgName                   String
+  orgType                   String // enum
+  orgSize                   String // enum
+  impactAreas               String[] // enum
+  contactName               String
+  contactEmail              String
+  contactPhone              String?
+  equalOpportunityEmployer  Boolean
+  acceptedPrivacy           DateTime                @default(now())
+  referenceAttribution      String?
+  referenceAttributionOther String?
 }
 
 model ApplicantDeletionRequests {
-    id              Int      @id @default(autoincrement())
-    applicantId     Int
-    createdAt       DateTime @default(now())
-    email           String
-    acceptedTerms   DateTime
-    acceptedPrivacy DateTime
-    followUpOptIn   Boolean
+  id              Int      @id @default(autoincrement())
+  applicantId     Int
+  createdAt       DateTime @default(now())
+  email           String
+  acceptedTerms   DateTime
+  acceptedPrivacy DateTime
+  followUpOptIn   Boolean
 }
 
 model OpportunitySubmission {
-    id Int @id @default(autoincrement())
+  id Int @id @default(autoincrement())
 
-    opportunityBatch   OpportunityBatch @relation(fields: [opportunityBatchId], references: [id], onDelete: Cascade)
-    opportunityBatchId Int
+  opportunityBatch   OpportunityBatch @relation(fields: [opportunityBatchId], references: [id], onDelete: Cascade)
+  opportunityBatchId Int
 
-    createdAt      DateTime @default(now())
-    source         String // enum
-    employmentType String // enum
+  createdAt      DateTime @default(now())
+  source         String // enum
+  employmentType String // enum
 
-    paid          Boolean // Whether this is paid or volunteer
-    roleType      String
-    salaryRange   String?
-    positionTitle String
+  paid          Boolean // Whether this is paid or volunteer
+  roleType      String
+  salaryRange   String?
+  positionTitle String
 
-    fullyRemote     Boolean
-    location        String?
-    visaSponsorship String?
+  fullyRemote     Boolean
+  location        String?
+  visaSponsorship String?
 
-    desiredHoursPerWeek String?
-    desiredStartDate    DateTime?
-    desiredEndDate      DateTime?
-    desiredYoe          String[] // enum
-    desiredSkills       String[] // enum, optional
-    desiredOtherSkills  String[] // optional
-    desiredImpactExp    String?
+  desiredHoursPerWeek String?
+  desiredStartDate    DateTime?
+  desiredEndDate      DateTime?
+  desiredYoe          String[] // enum
+  desiredSkills       String[] // enum, optional
+  desiredOtherSkills  String[] // optional
+  desiredImpactExp    String?
 
-    similarStaffed Boolean?
+  similarStaffed Boolean?
 
-    jdUrl String? // Link to job description
+  jdUrl String? // Link to job description
 
-    pitchEssay String // How would you pitch this role in 2 sentences?
+  pitchEssay String // How would you pitch this role in 2 sentences?
 }
