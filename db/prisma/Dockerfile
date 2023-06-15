@@ -7,4 +7,4 @@ RUN apt-get update && apt-get install -y postgresql && apt-get install -y openss
 COPY db/prisma/ prisma/
 COPY scripts/ scripts/
 
-CMD npx prisma studio
+CMD npx prisma studio --browser none
