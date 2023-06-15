@@ -1,0 +1,1 @@
+IF(Spam, 'SPAM', IF({Closed/Filled}, 'CLOSED', IF({Active Match Count}>0, 'MATCHED', IF({Good Fit?} = 'Rejected, Not a Good Fit', 'BAD_FIT', IF({Vetted}, 'VETTED', IF({Vetting Call Date}, 'CALL_SCHEDULED', IF({Reached out for Vetting}, 'REACHED_OUT', IF({Assigned Opportunity Recruiter}, 'MM_ASSIGNED', 'NEW'))))))))
