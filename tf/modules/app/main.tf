@@ -50,7 +50,7 @@ resource "aws_rds_cluster" "main" {
 
   enabled_cloudwatch_logs_exports = [ "postgresql" ]
   create_cloudwatch_log_group     = true
-  cloudwatch_log_group_retention_in_days = 30
+  cloudwatch_log_group_retention_in_days = 7
 }
 
 resource "aws_rds_cluster_instance" "instance0" {
