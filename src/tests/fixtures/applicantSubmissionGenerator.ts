@@ -22,6 +22,7 @@ const getAPIRequestBody = (
   resumePassword: 'bobsTheWord',
   hoursPerWeek: '40 ish',
   interestEmploymentType: ['full'], // enum
+  interestWorkArrangement: 'advisor',
   interestRoles: [
     'software engineer - frontend',
     'software engineer - backend',

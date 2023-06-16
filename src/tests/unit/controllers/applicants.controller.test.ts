@@ -517,6 +517,7 @@ describe('Applicant Controller', () => {
         resumePassword: null,
         hoursPerWeek: null,
         interestEmploymentType: ['full'], // enum
+        interestWorkArrangement: 'contractor',
         interestRoles: [
           'software engineer - frontend',
           'software engineer - backend',
