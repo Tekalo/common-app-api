@@ -52,7 +52,7 @@ resource "aws_rds_cluster" "main" {
 }
 
 resource "aws_cloudwatch_log_group" "rds" {
-  name              = "/aws/rds/instance/${aws_rds_cluster_instance.instance0.identifier}/postgresql"
+  name              = "/aws/rds/cluster/${aws_rds_cluster.main.id}/postgresql"
   retention_in_days = 7
 }
 
