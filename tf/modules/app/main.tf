@@ -51,7 +51,7 @@ resource "aws_rds_cluster" "main" {
   enabled_cloudwatch_logs_exports = [ "postgresql" ]
 }
 
-resource "aws_cloudwatch_log_group" "dblogs" {
+resource "aws_cloudwatch_log_group" "rds" {
   name              = "/aws/rds/instance/${aws_rds_cluster_instance.instance0.name}/postgresql"
   retention_in_days = 7
 
