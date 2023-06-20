@@ -127,6 +127,7 @@ resource "aws_ecs_task_definition" "api" {
       image     = "${var.image}"
       memory    = 256
       essential = true
+      readonlyRootFilesystem = true
       portMappings = [
         {
           containerPort = var.api_port
@@ -160,7 +161,6 @@ resource "aws_ecs_task_definition" "api" {
           name      = "AUTH0_API_CONFIG"
           valueFrom = aws_secretsmanager_secret.auth0_api_config.arn
         },
-
       ]
 
       environment = [
@@ -218,6 +218,7 @@ resource "aws_ecs_task_definition" "cli" {
       image     = "${var.cli_image}"
       memory    = 512
       essential = true
+      readonlyRootFilesystem = true
       logConfiguration = {
         logDriver = "awslogs"
         options = {

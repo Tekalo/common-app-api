@@ -26,7 +26,7 @@ CMD pnpm dev
 
 # Build the project's compiled files
 FROM base AS build
-# TODO: Run all operations, in lower-leel envs, as notroot
+# TODO: Run all operations, in lower-level envs, as notroot
 # https://denibertovic.com/posts/handling-permissions-with-docker-volumes/
 RUN mkdir ./build && chown -R node:node ./build
 # pnpm install has prefer-frozen-lockfile set to true by default
