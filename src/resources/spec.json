@@ -584,8 +584,11 @@
           "openToRelocate": {
             "type": "string"
           },
-          "openToRemote": {
-            "type": "string"
+          "openToRemoteMulti": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           },
           "desiredSalary": {
             "type": "string"
@@ -633,6 +636,7 @@
           "currentLocation",
           "openToRelocate",
           "openToRemote",
+          "openToRemoteMulti",
           "interestCauses",
           "workAuthorization",
           "interestGovt",
