@@ -44,21 +44,17 @@ const applicantRoutes = (
   authenticatorConfig.cacheMaxAge = 12 * 60 * 60 * 1000; // 12 hours
   const authenticator = new Authenticator(prisma, authenticatorConfig);
 
-  router.post(
-    '/',
-    authenticator.attachJwt.bind(authenticator) as RequestHandler,
-    (req: Request, res: Response, next) => {
-      const appBody = req.body as ApplicantRequestBody;
-      const validatedBody = ApplicantRequestBodySchema.parse(appBody);
-      applicantController
-        .createApplicant(validatedBody, req.auth)
-        .then((result) => {
-          req.session.applicant = setCookie(result);
-          res.status(200).json(result);
-        })
-        .catch((err) => next(err));
-    },
-  );
+  router.post('/', (req: Request, res: Response, next) => {
+    const appBody = req.body as ApplicantRequestBody;
+    const validatedBody = ApplicantRequestBodySchema.parse(appBody);
+    applicantController
+      .createApplicant(validatedBody, req.auth)
+      .then((result) => {
+        req.session.applicant = setCookie(result);
+        res.status(200).json(result);
+      })
+      .catch((err) => next(err));
+  });
 
   router.post(
     '/me/submissions',
@@ -171,7 +167,11 @@ const applicantRoutes = (
     },
   );
 
-  // Admin endpoints
+  /**
+   * ADMIN ENDPOINTS BELOW
+   * ONLY for use by E2E frontend tests OR by developers
+   * Do not call from applicant code
+   * */
   router.get(
     '/:id',
     authenticator.validateJwtAdmin.bind(authenticator) as RequestHandler,

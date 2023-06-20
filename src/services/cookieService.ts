@@ -1,19 +1,15 @@
 import CAPPError from '@App/resources/shared/CAPPError.js';
 import { ApplicantResponseBody } from '@App/resources/types/applicants.js';
 import { SessionCookie } from '@App/resources/types/shared.js';
-import { NextFunction, Request, Response } from 'express';
+import { Request } from 'express';
 
-function verifyCookie(req: Request, res: Response, next: NextFunction) {
+function verifyCookie(req: Request) {
   if (!req.session.applicant || !req.session.applicant.id) {
-    next(
-      new CAPPError({
-        title: 'Cannot authenticate request',
-        detail: 'Applicant cannot be authenticated',
-        status: 401,
-      }),
-    );
-  } else {
-    next();
+    throw new CAPPError({
+      title: 'Cannot authenticate request',
+      detail: 'Applicant cannot be authenticated',
+      status: 401,
+    });
   }
 }
 
