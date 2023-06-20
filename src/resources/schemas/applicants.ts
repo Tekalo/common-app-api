@@ -80,7 +80,7 @@ const ApplicantSubmissionRequestBodySchema = z.object({
   currentLocation: z.string().max(255),
   openToRelocate: OpenToRelocate,
   openToRemote: OpenToRemote,
-  openToRemoteMulti: z.array(OpenToRemote),
+  openToRemoteMulti: z.array(OpenToRemote).optional(),
   desiredSalary: z.string().max(255).nullable().optional(),
   interestCauses: z.array(z.string().max(255)), // order matters
   otherCauses: z.array(z.string().max(255)).nullable(),

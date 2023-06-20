@@ -346,6 +346,7 @@ describe('POST /applicants/me/submissions', () => {
         applicantId: applicantBody.id,
         createdAt: expect.any(String),
         ...testBody,
+        openToRemoteMulti: [],
       });
     });
 
