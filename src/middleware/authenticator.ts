@@ -46,8 +46,15 @@ class Authenticator {
   // eslint-disable-next-line @typescript-eslint/require-await
   async validateJwt(req: AuthRequest, res: Response, next: NextFunction) {
     try {
-      if (req.authError) {
-        next(req.authError);
+      if (!req.auth) {
+        next(
+          req.authError ||
+            new CAPPError({
+              title: 'Cannot authenticate request',
+              detail: 'Applicant cannot be authenticated',
+              status: 401,
+            }),
+        );
         return;
       }
       await this.setApplicantID(req as RequestWithJWT);
