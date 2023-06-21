@@ -73,13 +73,13 @@ const getApp = (
     (req: AuthRequest, res: Response, next: NextFunction) =>
       authMiddleware(req, res, (err) => {
         if (err && err instanceof Error) {
-          // Attach any error for further processing in Authenticator.ts
+          // Attach any error for further processing in Authenticator.ts (eg. 401 Unauthorized or anything else)
           req.authError = err;
         }
         next();
       });
   // JWT not required by default. Use middleware in Authenticator.ts to require JWT.
-  app.use(authWrapper(auth({ ...config.auth0.express, authRequired: false })));
+  app.use(authWrapper(auth({ ...config.auth0.express })));
 
   app.use(
     '/applicants',

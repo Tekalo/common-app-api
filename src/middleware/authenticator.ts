@@ -46,17 +46,8 @@ class Authenticator {
   // eslint-disable-next-line @typescript-eslint/require-await
   async validateJwt(req: AuthRequest, res: Response, next: NextFunction) {
     try {
-      if (!req.auth) {
-        if (req.authError) {
-          next(req.authError);
-        }
-        next(
-          new CAPPError({
-            title: 'Cannot authenticate request',
-            detail: 'Applicant cannot be authenticated',
-            status: 401,
-          }),
-        );
+      if (req.authError) {
+        next(req.authError);
         return;
       }
       await this.setApplicantID(req as RequestWithJWT);
@@ -69,23 +60,22 @@ class Authenticator {
   // Attach to requests that can only authenticate with a JWT and are verified as test/admin accounts
   // eslint-disable-next-line class-methods-use-this
   validateJwtAdmin(req: AuthRequest, res: Response, next: NextFunction) {
+    if (req.authError) {
+      next(req.authError);
+    }
     if (
-      !req.auth ||
-      !req.auth.payload['auth0.capp.com/roles'] ||
-      !req.auth.payload['auth0.capp.com/roles'].includes(adminRole)
+      req.auth &&
+      (!req.auth.payload['auth0.capp.com/roles'] ||
+        !req.auth.payload['auth0.capp.com/roles'].includes(adminRole))
     ) {
-      if (req.authError) {
-        next(req.authError);
-      } else {
-        next(
-          new CAPPError({
-            title: 'Cannot authenticate request',
-            detail: 'Applicant cannot be authenticated',
-            status: 401,
-          }),
-        );
-        return;
-      }
+      next(
+        new CAPPError({
+          title: 'Cannot authenticate request',
+          detail: 'Applicant cannot be authenticated',
+          status: 401,
+        }),
+      );
+      return;
     }
     next();
   }
@@ -102,15 +92,11 @@ class Authenticator {
 
   // Attach to requests that can authenticate with either JWT or cookie
   async verifyJwtOrCookie(req: AuthRequest, res: Response, next: NextFunction) {
-    if (!req.auth) {
-      if (req.authError) {
-        next(req.authError);
-      } else {
-        try {
-          verifyCookie(req);
-        } catch (e) {
-          next(e);
-        }
+    if (req.authError) {
+      try {
+        verifyCookie(req);
+      } catch (e) {
+        next(e);
       }
     } else {
       try {
