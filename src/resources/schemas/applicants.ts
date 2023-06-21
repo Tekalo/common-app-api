@@ -76,7 +76,7 @@ const ApplicantSubmissionRequestBodySchema = z.object({
   resumePassword: z.string().max(255).nullable().optional(),
   hoursPerWeek: z.string().max(255).nullable().optional(),
   interestEmploymentType: z.array(EmploymentType),
-  interestWorkArrangement: z.string().optional(),
+  interestWorkArrangement: z.array(z.string()).optional(),
   interestRoles: z.array(z.string().max(255)),
   currentLocation: z.string().max(255),
   openToRelocate: OpenToRelocate,

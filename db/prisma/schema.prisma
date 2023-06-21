@@ -54,7 +54,7 @@ model ApplicantSubmission {
   portfolioPassword String?
 
   interestEmploymentType  String[] // Interested In - Part time/Full Time    //enum
-  interestWorkArrangement String? // Interested In - Part time role type
+  interestWorkArrangement String[] // Interested In - Part time role type
   interestRoles           String[] // Interested In - Roles            //enum
   interestCauses          String[] // Interested In - Impact Causes   //enum
   interestGovt            Boolean // Interested In - Govt
@@ -100,12 +100,12 @@ model ApplicantDraftSubmission {
   portfolioUrl      String?
   portfolioPassword String?
 
-  interestEmploymentType String[] // Interested In - Part time/Full Time    //enum
-  interestWorkArrangement String? // Interested In - Part time role type
-  interestRoles          String[] // Interested In - Roles            //enum
-  interestCauses         String[] // Interested In - Impact Causes   //enum
-  interestGovt           Boolean? // Interested In - Govt
-  interestGovtEmplTypes  String[] // Interested In - Govt Paid/Unpaid // enum
+  interestEmploymentType  String[] // Interested In - Part time/Full Time    //enum
+  interestWorkArrangement String[]
+  interestRoles           String[] // Interested In - Roles            //enum
+  interestCauses          String[] // Interested In - Impact Causes   //enum
+  interestGovt            Boolean? // Interested In - Govt
+  interestGovtEmplTypes   String[] // Interested In - Govt Paid/Unpaid // enum
 
   otherCauses String[] // Additional cause(s) they are interested in
   skills      String[] // Enum or FKs
