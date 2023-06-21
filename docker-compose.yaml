@@ -11,6 +11,9 @@ services:
     extends:
       file: docker-compose.common.yaml
       service: api
+    read_only: true
+    tmpfs:
+      - /tmp
     image: common-app:dev
     build:
       context: .
