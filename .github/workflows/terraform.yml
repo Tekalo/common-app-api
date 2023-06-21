@@ -1,4 +1,4 @@
-name: 'Terraform Deploy'
+name: 'Terraform'
 
 on:
   push:
@@ -37,10 +37,8 @@ jobs:
               - 'tf/modules/**'
             staging:
               - 'tf/envs/staging/**'
-              - 'tf/modules/**'
             prod:
               - 'tf/envs/prod/**'
-              - 'tf/modules/**'
 
   deploy-dev:
     name: 'Deploy to Dev'
@@ -51,27 +49,27 @@ jobs:
       env: dev
     secrets: inherit
 
-  # deploy-staging:
-  #   name: 'Deploy to Staging'
-  #   needs: [changes, deploy-dev]
-  #   if: |
-  #     (success() || ! failure()) &&
-  #     (needs.deploy-dev.result == 'success' || needs.deploy-dev.result == 'skipped') &&
-  #     (needs.changes.outputs.staging == 'true')
-  #   uses: ./.github/workflows/terraform-apply.yml
-  #   with:
-  #     env: staging
-  #   secrets: inherit
+  deploy-staging:
+    name: 'Deploy to Staging'
+    needs: [changes, deploy-dev]
+    if: |
+      (success() || ! failure()) &&
+      (needs.deploy-dev.result == 'success' || needs.deploy-dev.result == 'skipped') &&
+      (needs.changes.outputs.staging == 'true')
+    uses: ./.github/workflows/terraform-apply.yml
+    with:
+      env: staging
+    secrets: inherit
 
-  # deploy-prod:
-  #   name: 'Deploy to Prod'
-  #   needs: [changes, deploy-staging]
-  #   if: |
-  #     (success() || ! failure()) &&
-  #     (needs.deploy-dev.result == 'success' || needs.deploy-dev.result == 'skipped') &&
-  #     (needs.deploy-staging.result == 'success' || needs.deploy-staging.result == 'skipped') &&
-  #     (needs.changes.outputs.prod == 'true')
-  #   uses: ./.github/workflows/terraform-apply.yml
-  #   with:
-  #     env: prod
-  #   secrets: inherit
+  deploy-prod:
+    name: 'Deploy to Prod'
+    needs: [changes, deploy-staging]
+    if: |
+      (success() || ! failure()) &&
+      (needs.deploy-dev.result == 'success' || needs.deploy-dev.result == 'skipped') &&
+      (needs.deploy-staging.result == 'success' || needs.deploy-staging.result == 'skipped') &&
+      (needs.changes.outputs.prod == 'true')
+    uses: ./.github/workflows/terraform-apply.yml
+    with:
+      env: prod
+    secrets: inherit
