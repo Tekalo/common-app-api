@@ -37,8 +37,10 @@ jobs:
               - 'tf/modules/**'
             staging:
               - 'tf/envs/staging/**'
+              - 'tf/modules/**'
             prod:
               - 'tf/envs/prod/**'
+              - 'tf/modules/**'
 
   deploy-dev:
     name: 'Deploy to Dev'
