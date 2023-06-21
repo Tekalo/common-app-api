@@ -891,7 +891,8 @@ describe('PUT /applicants/me/state', () => {
         searchStatus: 'active',
         acceptedTerms: true,
         acceptedPrivacy: true,
-      });
+      })
+      .expect(200);
     const { body: pausedBody } = await request(dummyAuthApp)
       .put('/applicants/me/state')
       .send({ pause: true })
