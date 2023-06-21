@@ -47,6 +47,13 @@ resource "aws_rds_cluster" "main" {
   lifecycle {
     create_before_destroy = true
   }
+
+  enabled_cloudwatch_logs_exports = [ "postgresql" ]
+}
+
+resource "aws_cloudwatch_log_group" "rds" {
+  name              = "/aws/rds/cluster/${aws_rds_cluster.main.id}/postgresql"
+  retention_in_days = 7
 }
 
 resource "aws_rds_cluster_instance" "instance0" {

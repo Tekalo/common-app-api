@@ -1,4 +1,4 @@
-import express, { Application } from 'express';
+import express, { Application, Handler, NextFunction, Response } from 'express';
 import * as swaggerUi from 'swagger-ui-express';
 import { pinoHttp } from 'pino-http';
 import { randomUUID } from 'crypto';
@@ -11,11 +11,13 @@ import {
 } from '@App/routes/index.js';
 import session from 'express-session';
 import ConnectPg from 'connect-pg-simple';
+import { auth } from 'express-oauth2-jwt-bearer';
 import errorHandler from './middleware/errorHandler.js';
 import AuthService from './services/AuthService.js';
 import MonitoringService from './services/MonitoringService.js';
 import { BaseConfig } from './resources/types/shared.js';
 import EmailService from './services/EmailService.js';
+import { AuthRequest } from './resources/types/auth0.js';
 
 const getApp = (
   authService: AuthService,
@@ -65,6 +67,19 @@ const getApp = (
    * Sets the app to use router and auth
    */
   app.use(router);
+
+  const authWrapper =
+    (authMiddleware: Handler) =>
+    (req: AuthRequest, res: Response, next: NextFunction) =>
+      authMiddleware(req, res, (err) => {
+        if (err && err instanceof Error) {
+          // Attach any error for further processing in Authenticator.ts
+          req.authError = err;
+        }
+        next();
+      });
+  // JWT not required by default. Use middleware in Authenticator.ts to require JWT.
+  app.use(authWrapper(auth({ ...config.auth0.express, authRequired: false })));
 
   app.use(
     '/applicants',
