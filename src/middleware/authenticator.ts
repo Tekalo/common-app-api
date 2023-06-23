@@ -67,24 +67,20 @@ class Authenticator {
   // Attach to requests that can only authenticate with a JWT and are verified as test/admin accounts
   // eslint-disable-next-line class-methods-use-this
   validateJwtAdmin(req: AuthRequest, res: Response, next: NextFunction) {
-    if (req.authError) {
-      next(req.authError);
-    }
     if (
-      req.auth &&
-      (!req.auth.payload['auth0.capp.com/roles'] ||
-        !req.auth.payload['auth0.capp.com/roles'].includes(adminRole))
+      !req.auth ||
+      !req.auth.payload['auth0.capp.com/roles'] ||
+      !req.auth.payload['auth0.capp.com/roles'].includes(adminRole)
     ) {
       next(
-        new CAPPError({
-          title: 'Cannot authenticate request',
-          detail: 'Applicant cannot be authenticated',
-          status: 401,
-        }),
+        req.authError ||
+          new CAPPError({
+            title: 'Cannot authenticate request',
+            detail: 'Applicant cannot be authenticated',
+            status: 401,
+          }),
       );
-      return;
     }
-    next();
   }
 
   // Attach to requests that can only authenticate with a cookie
@@ -99,7 +95,7 @@ class Authenticator {
 
   // Attach to requests that can authenticate with either JWT or cookie
   async verifyJwtOrCookie(req: AuthRequest, res: Response, next: NextFunction) {
-    if (req.authError) {
+    if (!req.auth) {
       try {
         verifyCookie(req);
       } catch (e) {
