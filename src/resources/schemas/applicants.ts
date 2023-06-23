@@ -79,8 +79,7 @@ const ApplicantSubmissionRequestBodySchema = z.object({
   interestRoles: z.array(z.string().max(255)), // keep this as non-zod-enum?
   currentLocation: z.string().max(255),
   openToRelocate: OpenToRelocate,
-  openToRemote: OpenToRemote,
-  openToRemoteMulti: z.array(OpenToRemote).optional(),
+  openToRemote: z.array(OpenToRemote).or(OpenToRemote), // TODO: Remove support for a single string
   desiredSalary: z.string().max(255).nullable().optional(),
   interestCauses: z.array(z.string().max(255)), // order matters
   otherCauses: z.array(z.string().max(255)).nullable(),
