@@ -572,6 +572,12 @@
               "type": "string"
             }
           },
+          "interestWorkArrangement": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
           "interestRoles": {
             "type": "array",
             "items": {
