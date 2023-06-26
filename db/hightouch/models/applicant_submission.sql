@@ -57,14 +57,7 @@ SELECT
   ) AS "allSkills",
   appsub."currentLocation",
   appsub."openToRelocate",
-  CASE
-    appsub."openToRemote"
-    WHEN 'only remote' THEN 'Only open to remote'
-    WHEN 'no remote' THEN 'Not open to remote'
-    WHEN 'both' THEN 'Open to in-person or remote'
-    WHEN 'not sure' THEN 'Not Sure'
-    ELSE appsub."openToRemote"
-  END "openToRemote",
+  appsub."openToRemote",
   appsub."desiredSalary",
   appsub."previousImpactExperience",
   CASE
@@ -75,7 +68,8 @@ SELECT
   END "workAuthorization",
   appsub."hoursPerWeek",
   appsub."essayResponse",
-  appsub."referenceAttribution"
+  appsub."referenceAttribution",
+  appsub."interestWorkArrangement"
 FROM
   PUBLIC."ApplicantSubmission" appsub
   LEFT JOIN PUBLIC."Applicant" apl ON appsub."applicantId" = apl.id
