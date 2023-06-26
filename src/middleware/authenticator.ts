@@ -80,7 +80,9 @@ class Authenticator {
             status: 401,
           }),
       );
+      return;
     }
+    next();
   }
 
   // Attach to requests that can only authenticate with a cookie
