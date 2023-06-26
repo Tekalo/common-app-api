@@ -47,15 +47,13 @@ class Authenticator {
   async validateJwt(req: AuthRequest, res: Response, next: NextFunction) {
     try {
       if (!req.auth) {
-        if (req.authError) {
-          next(req.authError);
-        }
         next(
-          new CAPPError({
-            title: 'Cannot authenticate request',
-            detail: 'Applicant cannot be authenticated',
-            status: 401,
-          }),
+          req.authError ||
+            new CAPPError({
+              title: 'Cannot authenticate request',
+              detail: 'Applicant cannot be authenticated',
+              status: 401,
+            }),
         );
         return;
       }
@@ -74,18 +72,15 @@ class Authenticator {
       !req.auth.payload['auth0.capp.com/roles'] ||
       !req.auth.payload['auth0.capp.com/roles'].includes(adminRole)
     ) {
-      if (req.authError) {
-        next(req.authError);
-      } else {
-        next(
+      next(
+        req.authError ||
           new CAPPError({
             title: 'Cannot authenticate request',
             detail: 'Applicant cannot be authenticated',
             status: 401,
           }),
-        );
-        return;
-      }
+      );
+      return;
     }
     next();
   }
@@ -103,14 +98,10 @@ class Authenticator {
   // Attach to requests that can authenticate with either JWT or cookie
   async verifyJwtOrCookie(req: AuthRequest, res: Response, next: NextFunction) {
     if (!req.auth) {
-      if (req.authError) {
-        next(req.authError);
-      } else {
-        try {
-          verifyCookie(req);
-        } catch (e) {
-          next(e);
-        }
+      try {
+        verifyCookie(req);
+      } catch (e) {
+        next(e);
       }
     } else {
       try {
