@@ -27,8 +27,8 @@ dependencies:
     specifier: ^0.5.1
     version: 0.5.1
   auth0:
-    specifier: 3.4.0
-    version: 3.4.0
+    specifier: 3.5.0
+    version: 3.5.0
   connect-pg-simple:
     specifier: 9.0.0
     version: 9.0.0
@@ -2380,8 +2380,8 @@ packages:
     resolution: {integrity: sha512-kNOjDqAh7px0XWNI+4QbzoiR/nTkHAWNud2uvnJquD1/x5a7EQZMJT0AczqK0Qn67oY/TTQ1LbUKajZpp3I9tQ==}
     engines: {node: '>=8.0.0'}
 
-  /auth0@3.4.0:
-    resolution: {integrity: sha512-qaRVZfykFhROZlKa6i/G7Tlo4Df6GXdtMdvO41XuJ2XlJ/AMUAxL0u/FJJyII/HWwosVtypD92nHB2gqRwIbYg==}
+  /auth0@3.5.0:
+    resolution: {integrity: sha512-uPe4tP2cNgpprgG8HPvwlBw31QGFY+tSIkQLT+F9zbSa0mZh4LwcGVXOghZZRoqauRFa0/nXMndbrRpFS/O0/A==}
     engines: {node: '>=14'}
     dependencies:
       axios: 0.27.2
@@ -3771,15 +3771,6 @@ packages:
       combined-stream: 1.0.8
       mime-types: 2.1.35
 
-  /formidable@2.1.1:
-    resolution: {integrity: sha512-0EcS9wCFEzLvfiks7omJ+SiYJAiD+TzK4Pcw1UlUoGnhUxDcMKjt0P7x8wEb0u6OHu8Nb98WG3nxtlF5C7bvUQ==}
-    dependencies:
-      dezalgo: 1.0.4
-      hexoid: 1.0.0
-      once: 1.4.0
-      qs: 6.11.2
-    dev: false
-
   /formidable@2.1.2:
     resolution: {integrity: sha512-CM3GuJ57US06mlpQ47YcunuUZ9jpm8Vx+P2CGt2j7HpgkKZO/DJYQ0Bobim8G6PFQmK5lOqOOdUXboU+h73A4g==}
     dependencies:
@@ -3787,7 +3778,6 @@ packages:
       hexoid: 1.0.0
       once: 1.4.0
       qs: 6.11.2
-    dev: true
 
   /forwarded@0.2.0:
     resolution: {integrity: sha512-buRG0fpBtRHSTCOASe6hD258tEubFoRLb4ZNA6NxMVHNw2gOcwHo9wyablzMzOA5z9xA9L1KNjk/Nt6MT9aYow==}
@@ -6194,7 +6184,7 @@ packages:
       debug: 4.3.4
       fast-safe-stringify: 2.1.1
       form-data: 4.0.0
-      formidable: 2.1.1
+      formidable: 2.1.2
       methods: 1.1.2
       mime: 2.6.0
       qs: 6.11.2
