@@ -37,7 +37,15 @@ const OpenToRelocate = z.enum(['yes', 'no', 'not sure']);
 
 // Temporarily overloading enum for backward compatibility.
 // Final list is: ['remote', 'in-person', 'hybrid', 'not sure']
-const OpenToRemote = z.enum(['only remote', 'remote', 'no remote', 'in-person', 'both', 'hybrid', 'not sure']);
+const OpenToRemote = z.enum([
+  'only remote',
+  'remote',
+  'no remote',
+  'in-person',
+  'both',
+  'hybrid',
+  'not sure',
+]);
 const WorkAuthorization = z.enum(['authorized', 'sponsorship']);
 const EmploymentType = z.enum(['full', 'part']);
 
