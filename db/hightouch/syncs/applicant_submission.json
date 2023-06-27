@@ -171,6 +171,11 @@
       "to": "How did you hear about Tekalo?",
       "from": "referenceAttribution",
       "type": "standard"
+    },
+    {
+      "to": "Type(s) of part-time / short-term opportunities",
+      "from": "interestWorkArrangement",
+      "type": "standard"
     }
   ],
   "tableName": "Candidates",

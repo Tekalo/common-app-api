@@ -75,7 +75,8 @@ SELECT
   END "workAuthorization",
   appsub."hoursPerWeek",
   appsub."essayResponse",
-  appsub."referenceAttribution"
+  appsub."referenceAttribution",
+  appsub."interestWorkArrangement"
 FROM
   PUBLIC."ApplicantSubmission" appsub
   LEFT JOIN PUBLIC."Applicant" apl ON appsub."applicantId" = apl.id
