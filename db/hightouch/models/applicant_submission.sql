@@ -57,14 +57,10 @@ SELECT
   ) AS "allSkills",
   appsub."currentLocation",
   appsub."openToRelocate",
-  CASE
-    appsub."openToRemote"
-    WHEN 'only remote' THEN 'Only open to remote'
-    WHEN 'no remote' THEN 'Not open to remote'
-    WHEN 'both' THEN 'Open to in-person or remote'
-    WHEN 'not sure' THEN 'Not Sure'
-    ELSE appsub."openToRemote"
-  END "openToRemote",
+  COALESCE(
+    appsub."openToRemoteMulti",
+    string_to_array(appsub."openToRemote", '')
+  ) AS "openToRemote",
   appsub."desiredSalary",
   appsub."previousImpactExperience",
   CASE
