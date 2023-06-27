@@ -14,7 +14,12 @@ import configLoader from '@App/services/configLoader.js';
 
 import cookie from 'cookie';
 import cookieParser from 'cookie-parser';
-import { ApplicantSession, ApplicantSubmission, Prisma } from '@prisma/client';
+import {
+  Applicant,
+  ApplicantSession,
+  ApplicantSubmission,
+  Prisma,
+} from '@prisma/client';
 import applicantSubmissionGenerator from '../fixtures/applicantSubmissionGenerator.js';
 import DummyAuthService from '../fixtures/DummyAuthService.js';
 import DummyMonitoringService from '../fixtures/DummyMonitoringService.js';
@@ -504,7 +509,9 @@ describe('DELETE /applicants/me', () => {
           email,
         });
 
-        const token = await authHelper.getToken(email, auth0User.user_id);
+        const token = await authHelper.getToken(email, {
+          auth0Id: auth0User.user_id,
+        });
         if (auth0User.user_id) {
           testUserIDs.push(auth0User.user_id);
         }
@@ -552,8 +559,12 @@ describe('DELETE /applicants/me', () => {
           email: email2,
         });
 
-        const token = await authHelper.getToken(email, auth0User.user_id);
-        const token2 = await authHelper.getToken(email2, auth0User2.user_id);
+        const token = await authHelper.getToken(email, {
+          auth0Id: auth0User.user_id,
+        });
+        const token2 = await authHelper.getToken(email2, {
+          auth0Id: auth0User2.user_id,
+        });
         if (auth0User.user_id) {
           testUserIDs.push(auth0User.user_id);
         }
@@ -942,6 +953,81 @@ describe('PUT /applicants/me/state', () => {
       .put('/applicants/me/state')
       .send({ pause: true })
       .set('Authorization', `Bearer ${token}`)
+      .expect(404);
+  });
+});
+
+describe('PUT /applicants/:id', () => {
+  const dummyAuthApp = getApp(
+    new DummyAuthService(),
+    new DummyMonitoringService(),
+    new DummyEmailService(new DummySESService(), appConfig),
+    appConfig,
+  );
+
+  it('should update applicant auth0Id', async () => {
+    const randomString = getRandomString();
+    const adminToken = await authHelper.getToken('bboberson@gmail.com', {
+      roles: ['admin'],
+    });
+    const { body }: { body: ApplicantResponseBody } = await request(
+      dummyAuthApp,
+    )
+      .post('/applicants')
+      .send({
+        name: 'Bob Boberson',
+        auth0Id: 'auth0|12345',
+        email: `bboberson${randomString}@gmail.com`,
+        preferredContact: 'email',
+        searchStatus: 'active',
+        acceptedTerms: true,
+        acceptedPrivacy: true,
+      })
+      .expect(200);
+    const { body: updatedAuthID }: { body: Applicant } = await request(
+      dummyAuthApp,
+    )
+      .put(`/applicants/${body.id}`)
+      .send({ auth0Id: 'google-oauth|12345' })
+      .set('Authorization', `Bearer ${adminToken}`)
+      .expect(200);
+    expect(updatedAuthID.auth0Id).toEqual('google-oauth|12345');
+  });
+
+  it('should return 401 for non-admin making request', async () => {
+    const randomString = getRandomString();
+    const token = await authHelper.getToken(
+      `bboberson${randomString}@gmail.com`,
+    );
+    const { body }: { body: ApplicantResponseBody } = await request(
+      dummyAuthApp,
+    )
+      .post('/applicants')
+      .send({
+        name: 'Bob Boberson',
+        auth0Id: 'auth0|123456',
+        email: `bboberson${randomString}@gmail.com`,
+        preferredContact: 'email',
+        searchStatus: 'active',
+        acceptedTerms: true,
+        acceptedPrivacy: true,
+      })
+      .expect(200);
+    await request(dummyAuthApp)
+      .put(`/applicants/${body.id}`)
+      .send({ auth0Id: 'google-oauth|12345' })
+      .set('Authorization', `Bearer ${token}`)
+      .expect(401);
+  });
+
+  it('should return 404 for non-existent applicant', async () => {
+    const adminToken = await authHelper.getToken('bboberson@gmail.com', {
+      roles: ['admin'],
+    });
+    await request(dummyAuthApp)
+      .put('/applicants/999')
+      .send({ auth0Id: 'google-oauth|99999' })
+      .set('Authorization', `Bearer ${adminToken}`)
       .expect(404);
   });
 });
