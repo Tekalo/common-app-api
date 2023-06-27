@@ -591,17 +591,7 @@
             "type": "string"
           },
           "openToRemote": {
-            "oneOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              }
-            ]
+            "type": "string"
           },
           "desiredSalary": {
             "type": "string"
@@ -721,17 +711,7 @@
             "type": "string"
           },
           "openToRemote": {
-            "oneOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              }
-            ]
+            "type": "string"
           },
           "desiredSalary": {
             "type": "string"

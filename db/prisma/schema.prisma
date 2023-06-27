@@ -66,8 +66,7 @@ model ApplicantSubmission {
 
   currentLocation String
   openToRelocate  String // enum
-  openToRemote    String? // enum // TODO: Remove this field entirely after CAPP-920 is in production
-  openToRemoteMulti String[] // enum
+  openToRemote    String // enum
 
   desiredSalary            String?
   previousImpactExperience Boolean
@@ -114,8 +113,7 @@ model ApplicantDraftSubmission {
 
   currentLocation String?
   openToRelocate  String? // enum
-  openToRemote    String? // enum // TODO: Remove this field entirely after CAPP-920 is in production
-  openToRemoteMulti String[] // enum
+  openToRemote    String? // enum
 
   desiredSalary            String?
   previousImpactExperience Boolean?
