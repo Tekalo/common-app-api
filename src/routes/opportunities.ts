@@ -14,9 +14,9 @@ const opportunitiesRoutes = (
 ) => {
   const opportunityController = new OpportunityController(prisma, emailService);
   const router = express.Router();
-  const authenticatorConfig = config.auth0.express;
-  authenticatorConfig.cacheMaxAge = 12 * 60 * 60 * 1000; // 12 hours
-  const authenticator = new Authenticator(prisma, authenticatorConfig);
+  const appConfig = config;
+  appConfig.auth0.express.cacheMaxAge = 12 * 60 * 60 * 1000; // 12 hours
+  const authenticator = new Authenticator(prisma, appConfig);
 
   router.post('/batch', (req: Request, res: Response, next) => {
     const appBody = req.body as OpportunityBatchRequestBody;

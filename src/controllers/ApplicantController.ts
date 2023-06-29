@@ -257,11 +257,12 @@ class ApplicantController {
     }
   }
 
-  async updateApplicant(applicantId: number, updateBody: ApplicantUpdateBody) {
+  async updateApplicant(prevAuth0Id: string, updateBody: ApplicantUpdateBody) {
     try {
+      const { auth0Id: newAuth0Id } = updateBody;
       const applicant = await this.prisma.applicant.update({
-        data: { auth0Id: updateBody.auth0Id },
-        where: { id: applicantId },
+        data: { auth0Id: newAuth0Id },
+        where: { auth0Id: prevAuth0Id },
       });
       return applicant;
     } catch (e) {

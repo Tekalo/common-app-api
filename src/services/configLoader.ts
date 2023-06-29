@@ -26,6 +26,7 @@ function loadConfig(): BaseConfig {
     sentryDSN: process.env.SENTRY_DSN || '',
     isLoadTest: process.env.LOAD_TEST === 'true',
     webUrl: process.env.WEB_URL || '',
+    applicationAuthSecret: process.env.APPLICATION_AUTH_SECRET || '',
   });
   return validatedConfig;
 }

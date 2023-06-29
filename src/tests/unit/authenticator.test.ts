@@ -12,10 +12,7 @@ type MockRequestWithParams = Request & {
   params: { id: string };
 };
 
-const authenticator = new Authenticator(
-  prisma,
-  configLoader.loadConfig().auth0.express,
-);
+const authenticator = new Authenticator(prisma, configLoader.loadConfig());
 
 type ReqWithAuthError = RequestWithJWT & {
   authError: Error;
@@ -91,7 +88,7 @@ describe('Authenticator', () => {
     );
     const authenticatorWithMockPrisma = new Authenticator(
       mockCtx.prisma,
-      configLoader.loadConfig().auth0.express,
+      configLoader.loadConfig(),
     );
     const mockNext: NextFunction = jest.fn();
 
@@ -118,7 +115,7 @@ describe('Authenticator', () => {
     const mockCtx = createMockContext();
     const authenticatorWithMockPrisma = new Authenticator(
       mockCtx.prisma,
-      configLoader.loadConfig().auth0.express,
+      configLoader.loadConfig(),
     );
     const mockNext: NextFunction = jest.fn();
 
@@ -148,7 +145,7 @@ describe('Authenticator', () => {
     );
     const authenticatorWithMockPrisma = new Authenticator(
       mockCtx.prisma,
-      configLoader.loadConfig().auth0.express,
+      configLoader.loadConfig(),
     );
     const mockNext: NextFunction = jest.fn();
 

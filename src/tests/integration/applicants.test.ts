@@ -966,10 +966,6 @@ describe('PUT /applicants/:id', () => {
   );
 
   it('should update applicant auth0Id', async () => {
-    const randomString = getRandomString();
-    const adminToken = await authHelper.getToken('bboberson@gmail.com', {
-      roles: ['admin'],
-    });
     const { body }: { body: ApplicantResponseBody } = await request(
       dummyAuthApp,
     )
@@ -977,7 +973,7 @@ describe('PUT /applicants/:id', () => {
       .send({
         name: 'Bob Boberson',
         auth0Id: 'auth0|12345',
-        email: `bboberson${randomString}@gmail.com`,
+        email: `bboberson${getRandomString()}@gmail.com`,
         preferredContact: 'email',
         searchStatus: 'active',
         acceptedTerms: true,
@@ -987,18 +983,14 @@ describe('PUT /applicants/:id', () => {
     const { body: updatedAuthID }: { body: Applicant } = await request(
       dummyAuthApp,
     )
-      .put(`/applicants/${body.id}`)
+      .put(`/applicants/${body.auth0Id as string}`)
       .send({ auth0Id: 'google-oauth|12345' })
-      .set('Authorization', `Bearer ${adminToken}`)
+      .set('application-auth-secret', 'foo-secret')
       .expect(200);
     expect(updatedAuthID.auth0Id).toEqual('google-oauth|12345');
   });
 
-  it('should return 401 for non-admin making request', async () => {
-    const randomString = getRandomString();
-    const token = await authHelper.getToken(
-      `bboberson${randomString}@gmail.com`,
-    );
+  it('should return 401 for request made without valid auth secret', async () => {
     const { body }: { body: ApplicantResponseBody } = await request(
       dummyAuthApp,
     )
@@ -1006,7 +998,7 @@ describe('PUT /applicants/:id', () => {
       .send({
         name: 'Bob Boberson',
         auth0Id: 'auth0|123456',
-        email: `bboberson${randomString}@gmail.com`,
+        email: `bboberson${getRandomString()}@gmail.com`,
         preferredContact: 'email',
         searchStatus: 'active',
         acceptedTerms: true,
@@ -1016,18 +1008,15 @@ describe('PUT /applicants/:id', () => {
     await request(dummyAuthApp)
       .put(`/applicants/${body.id}`)
       .send({ auth0Id: 'google-oauth|12345' })
-      .set('Authorization', `Bearer ${token}`)
+      .set('application-auth-secret', '123-wrong-auth-token-456')
       .expect(401);
   });
 
   it('should return 404 for non-existent applicant', async () => {
-    const adminToken = await authHelper.getToken('bboberson@gmail.com', {
-      roles: ['admin'],
-    });
     await request(dummyAuthApp)
       .put('/applicants/999')
       .send({ auth0Id: 'google-oauth|99999' })
-      .set('Authorization', `Bearer ${adminToken}`)
+      .set('application-auth-secret', 'foo-secret')
       .expect(404);
   });
 });

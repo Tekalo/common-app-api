@@ -2,23 +2,23 @@ import { Request, Response, NextFunction } from 'express';
 import { verifyCookie } from '@App/services/cookieService.js';
 import { PrismaClient } from '@prisma/client';
 import {
-  Auth0ExpressConfig,
   Claims,
   RequestWithJWT,
   AuthRequest,
 } from '@App/resources/types/auth0.js';
 import CAPPError from '@App/resources/shared/CAPPError.js';
+import { BaseConfig } from '@App/resources/types/shared.js';
 
 const adminRole = 'admin';
 
 class Authenticator {
   private prisma: PrismaClient;
 
-  private authConfig: Auth0ExpressConfig;
+  private config: BaseConfig;
 
-  constructor(prisma: PrismaClient, authConfig: Auth0ExpressConfig) {
+  constructor(prisma: PrismaClient, config: BaseConfig) {
     this.prisma = prisma;
-    this.authConfig = authConfig;
+    this.config = config;
   }
 
   // An alternative to validateJwt().
@@ -71,6 +71,27 @@ class Authenticator {
       !req.auth ||
       !req.auth.payload['auth0.capp.com/roles'] ||
       !req.auth.payload['auth0.capp.com/roles'].includes(adminRole)
+    ) {
+      next(
+        req.authError ||
+          new CAPPError({
+            title: 'Cannot authenticate request',
+            detail: 'Applicant cannot be authenticated',
+            status: 401,
+          }),
+      );
+      return;
+    }
+    next();
+  }
+
+  // Used for applications to authenticate with the API. Application needs to supply a secret key
+  // eslint-disable-next-line class-methods-use-this
+  validateApplication(req: AuthRequest, res: Response, next: NextFunction) {
+    if (
+      !req.headers['Application-Auth-Secret'] ||
+      req.headers['Application-Auth-Secret'] !==
+        this.config.applicationAuthSecret
     ) {
       next(
         req.authError ||

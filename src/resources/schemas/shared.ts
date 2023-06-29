@@ -16,6 +16,7 @@ const BaseConfigSchema = z.object({
   sentryDSN: z.string(),
   isLoadTest: z.boolean(),
   webUrl: z.string(),
+  applicationAuthSecret: z.string(),
 });
 
 export default BaseConfigSchema;
