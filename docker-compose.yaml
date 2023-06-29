@@ -11,8 +11,6 @@ services:
     extends:
       file: docker-compose.common.yaml
       service: api
-    tmpfs:
-      - /tmp
     image: common-app:dev
     build:
       context: .
