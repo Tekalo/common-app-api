@@ -23,7 +23,6 @@ services:
       - SENTRY_DSN
       - WEB_URL=https://head.common-app-frontend.pages.dev
       - AWS_REGION=us-east-1
-      - APPLICATION_AUTH_SECRET=foo-secret
     ports:
       - "3000:3000"
     command: "pnpm debug"
@@ -67,7 +66,6 @@ services:
       - 'AUTH0_EXPRESS_CONFIG={"audience":"${AUTH0_AUDIENCE}", "secret":"mysupersecretsecret", "tokenSigningAlg":"HS256", "issuer": "${AUTH0_ISSUER}/"}'
       - SENTRY_DSN=https://dummy_dsn_with_valid_format@example.org/123
       - AWS_REGION=us-east-1
-      - APPLICATION_AUTH_SECRET=foo-secret
     profiles:
       - test
     depends_on:
