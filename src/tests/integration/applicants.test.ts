@@ -957,7 +957,7 @@ describe('PUT /applicants/me/state', () => {
   });
 });
 
-describe('PUT /applicants/:id', () => {
+describe('PUT /applicants/:auth0Id', () => {
   const dummyAuthApp = getApp(
     new DummyAuthService(),
     new DummyMonitoringService(),
@@ -985,7 +985,7 @@ describe('PUT /applicants/:id', () => {
     )
       .put(`/applicants/${body.auth0Id as string}`)
       .send({ auth0Id: 'google-oauth|12345' })
-      .set('application-auth-secret', 'foo-secret')
+      .set('Application-Auth-Secret', appConfig.applicationAuthSecret)
       .expect(200);
     expect(updatedAuthID.auth0Id).toEqual('google-oauth|12345');
   });
@@ -1008,7 +1008,7 @@ describe('PUT /applicants/:id', () => {
     await request(dummyAuthApp)
       .put(`/applicants/${body.id}`)
       .send({ auth0Id: 'google-oauth|12345' })
-      .set('application-auth-secret', '123-wrong-auth-token-456')
+      .set('Application-Auth-Secret', '123-wrong-auth-token-456')
       .expect(401);
   });
 
@@ -1016,7 +1016,7 @@ describe('PUT /applicants/:id', () => {
     await request(dummyAuthApp)
       .put('/applicants/999')
       .send({ auth0Id: 'google-oauth|99999' })
-      .set('application-auth-secret', 'foo-secret')
+      .set('Application-Auth-Secret', appConfig.applicationAuthSecret)
       .expect(404);
   });
 });

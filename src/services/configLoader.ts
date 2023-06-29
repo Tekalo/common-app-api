@@ -26,6 +26,7 @@ function loadConfig(): BaseConfig {
     sentryDSN: process.env.SENTRY_DSN || '',
     isLoadTest: process.env.LOAD_TEST === 'true',
     webUrl: process.env.WEB_URL || '',
+    // Supply this value to the Application-Auth-Header for applications that want to authenticate with our API
     applicationAuthSecret: process.env.APPLICATION_AUTH_SECRET || '',
   });
   return validatedConfig;

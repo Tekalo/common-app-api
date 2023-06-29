@@ -89,8 +89,8 @@ class Authenticator {
   // eslint-disable-next-line class-methods-use-this
   validateApplication(req: AuthRequest, res: Response, next: NextFunction) {
     if (
-      !req.headers['Application-Auth-Secret'] ||
-      req.headers['Application-Auth-Secret'] !==
+      !req.headers['application-auth-secret'] ||
+      req.headers['application-auth-secret'] !==
         this.config.applicationAuthSecret
     ) {
       next(
