@@ -34,6 +34,8 @@ AWS_ACCESS_KEY_ID={AWS Access Key}
 AWS_SECRET_ACCESS_KEY={AWS Secret Key}
 AWS_SESSION_TOKEN={AWS Session Token}
 
+APPLICATION_AUTH_SECRET={Secret used to identify Applications } # Found in AWS Secrets Manager
+
 # NOTE: Only set if you want to actually send events to Sentry
 SENTRY_DSN="https://c38ab9f98fd0404f9d2bfb95d015da8d@o4504962952724480.ingest.sentry.io/4504963428777984"
 ```
