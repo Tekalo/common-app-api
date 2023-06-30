@@ -39,7 +39,7 @@
     "@prisma/client": "4.16.1",
     "@sentry/node": "7.56.0",
     "@sentry/types": "7.56.0",
-    "@tsconfig/node18": "2.0.1",
+    "@tsconfig/node18": "18.2.0",
     "@types/auth0": "3.3.3",
     "@types/cookie": "^0.5.1",
     "auth0": "3.5.0",
