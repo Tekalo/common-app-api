@@ -22,6 +22,7 @@ env:
   AUTH0_EXPRESS_CONFIG: '{"secret": "mysupersecretsecret", "issuer": "https://capp-issuer", "tokenSigningAlg": "HS256", "audience": "auth0.capp.com"}'
   PORT: 3000
   SENTRY_DSN: ${{ vars.SENTRY_DSN }}
+  APPLICATION_AUTH_SECRET: ${{ secrets.APPLICATION_AUTH_SECRET }}
 
 permissions:
   id-token: write
