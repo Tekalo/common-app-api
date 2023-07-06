@@ -257,7 +257,10 @@ class ApplicantController {
     }
   }
 
-  async updateApplicant(prevAuth0Id: string, updateBody: ApplicantUpdateBody) {
+  async updateApplicantAuth0Id(
+    prevAuth0Id: string,
+    updateBody: ApplicantUpdateBody,
+  ) {
     try {
       const { auth0Id: newAuth0Id } = updateBody;
       const applicant = await this.prisma.applicant.update({

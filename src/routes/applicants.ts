@@ -99,7 +99,7 @@ const applicantRoutes = (
       const reqWithAuth = req as RequestWithJWT;
       const { auth0Id } = reqWithAuth.params;
       applicantController
-        .updateApplicant(auth0Id, appBody)
+        .updateApplicantAuth0Id(auth0Id, appBody)
         .then((result) => {
           res.status(200).json(result);
         })
