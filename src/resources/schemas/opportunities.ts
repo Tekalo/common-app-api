@@ -27,18 +27,6 @@ const Skills = z.enum([
   'project management',
 ]);
 
-const RoleType = z.enum([
-  'software engineer',
-  'software engineer - backend',
-  'software engineer - frontend',
-  'product manager',
-  'product designer',
-  'ux/ui designer',
-  'ux researcher',
-  'data analyst',
-  'other',
-]);
-
 const YOE = z.enum(['0-2', '2-4', '4-8', '8-12', '12-15', '15+']);
 
 const OpportunityBatchRequestBodySchema = z.object({
@@ -59,7 +47,7 @@ const OpportunityBatchRequestBodySchema = z.object({
   referenceAttributionOther: z.string().nullable().optional(),
   submissions: z.array(
     z.object({
-      roleType: RoleType,
+      roleType: z.string(),
       positionTitle: z.string().max(255),
       fullyRemote: z.boolean(),
       location: z.string().optional(),
