@@ -379,31 +379,6 @@ describe('POST /applicants/me/submissions', () => {
       expect(body).toHaveProperty('title', 'Validation Error');
     });
 
-    it('should accept string as openToRemote value', async () => {
-      const randomString = getRandomString();
-      const testSubmission = applicantSubmissionGenerator.getAPIRequestBody();
-      const token = await authHelper.getToken(
-        `bboberson${randomString}@gmail.com`,
-      );
-      await request(dummyAuthApp)
-        .post('/applicants')
-        .send({
-          name: 'Bob Boberson',
-          auth0Id: 'auth0|123456',
-          email: `bboberson${randomString}@gmail.com`,
-          preferredContact: 'email',
-          searchStatus: 'active',
-          acceptedTerms: true,
-          acceptedPrivacy: true,
-        });
-      testSubmission.openToRemote = 'not sure';
-      await request(dummyAuthApp)
-        .post('/applicants/me/submissions')
-        .send({ ...testSubmission })
-        .set('Authorization', `Bearer ${token}`)
-        .expect(200);
-    });
-
     it('should return 400 error if request body has invalid openToRelocate value', async () => {
       const randomString = getRandomString();
       const testSubmission = applicantSubmissionGenerator.getAPIRequestBody();
