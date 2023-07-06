@@ -38,14 +38,16 @@ describe('Monitoring Service', () => {
     1.0,
   );
 
-  it('should collect performance events', async () => {
-    const dummyAuthApp = getApp(
-      dummyAuthService,
-      monitoringService,
-      dummyEmailService,
-      appConfig,
-    );
+  // We need to use the same app for all tests.
+  // There is an error if sentryInit is called more than once on the same prisma client.
+  const dummyAuthApp = getApp(
+    dummyAuthService,
+    monitoringService,
+    dummyEmailService,
+    appConfig,
+  );
 
+  it('should collect performance events', async () => {
     await request(dummyAuthApp)
       .post('/applicants')
       .send({
@@ -68,13 +70,6 @@ describe('Monitoring Service', () => {
   });
 
   it('should collect error events for 500 error', async () => {
-    const dummyAuthApp = getApp(
-      dummyAuthService,
-      monitoringService,
-      dummyEmailService,
-      appConfig,
-    );
-
     await request(dummyAuthApp).post('/opportunities/batch').expect(400);
 
     await sleep(100);
@@ -88,13 +83,6 @@ describe('Monitoring Service', () => {
   });
 
   it('should not collect data for health check events', async () => {
-    const dummyAuthApp = getApp(
-      dummyAuthService,
-      monitoringService,
-      dummyEmailService,
-      appConfig,
-    );
-
     await request(dummyAuthApp).get('/health').expect(200);
 
     await sleep(100);
