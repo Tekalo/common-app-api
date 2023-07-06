@@ -917,10 +917,11 @@ describe('PUT /applicants/me/state', () => {
     new DummyEmailService(new DummySESService(), appConfig),
     appConfig,
   );
-  it('should return 401 for request without JWT', async () => {
+  it('should return 401 for request without valid JWT', async () => {
     await request(dummyAuthApp)
       .put('/applicants/me/state')
       .send({ pause: true })
+      .set('Authorization', 'Bearer #!InvalidToken#!')
       .expect(401);
   });
   it('should pause and un-pause an applicants status', async () => {
