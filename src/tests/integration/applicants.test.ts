@@ -917,7 +917,7 @@ describe('PUT /applicants/me/state', () => {
     new DummyEmailService(new DummySESService(), appConfig),
     appConfig,
   );
-  it('should return 401 for request without valid JWT', async () => {
+  it('should return 401 for request with a malformed JWT', async () => {
     await request(dummyAuthApp)
       .put('/applicants/me/state')
       .send({ pause: true })
