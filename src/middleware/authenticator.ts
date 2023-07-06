@@ -102,12 +102,14 @@ class Authenticator {
         verifyCookie(req);
       } catch (e) {
         next(e);
+        return;
       }
     } else {
       try {
         await this.setApplicantID(req as RequestWithJWT);
       } catch (e) {
         next(e);
+        return;
       }
     }
     next();

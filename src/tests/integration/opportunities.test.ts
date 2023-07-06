@@ -19,7 +19,6 @@ afterEach(async () => {
   await prisma.opportunitySubmission.deleteMany();
   await prisma.opportunityBatch.deleteMany();
 });
-
 describe('POST /opportunities', () => {
   const oppBatchPayload = {
     acceptedPrivacy: true,
@@ -141,5 +140,11 @@ describe('POST /opportunities', () => {
       .send([invalidOrgSize])
       .expect(400);
     expect(body).toHaveProperty('title', 'Validation Error');
+  });
+});
+
+describe('DELETE /opportunities/batch/:id', () => {
+  it('should return 401 without valid JWT', async () => {
+    await request(app).delete('/opportunities/batch/1').expect(401);
   });
 });

@@ -312,7 +312,22 @@ describe('POST /applicants/me/submissions', () => {
     new DummyEmailService(new DummySESService(), appConfig),
     appConfig,
   );
-
+  it('should return 401 for request with no cookie or JWT', async () => {
+    const randomString = getRandomString();
+    await request(dummyAuthApp)
+      .post('/applicants/me/submissions')
+      .send({
+        name: 'Bob Boberson',
+        pronoun: 'he/his',
+        phone: '123-456-7899',
+        email: `bboberson${randomString}@gmail.com`,
+        preferredContact: 'email',
+        searchStatus: 'active',
+        acceptedTerms: true,
+        acceptedPrivacy: true,
+      })
+      .expect(401);
+  });
   describe('JWT authentication', () => {
     it('should create a new applicant submission', async () => {
       const randomString = getRandomString();
@@ -671,7 +686,7 @@ describe('POST /applicants/me/submissions/draft', () => {
       .post('/applicants/me/submissions/draft')
       .send(testBody)
       .expect(401);
-    expect(body).toHaveProperty('title', 'Cannot authenticate request');
+    expect(body).toHaveProperty('title', 'Unauthorized');
   });
 
   describe('Cookie based authentication', () => {
@@ -902,7 +917,13 @@ describe('PUT /applicants/me/state', () => {
     new DummyEmailService(new DummySESService(), appConfig),
     appConfig,
   );
-
+  it('should return 401 for request with a malformed JWT', async () => {
+    await request(dummyAuthApp)
+      .put('/applicants/me/state')
+      .send({ pause: true })
+      .set('Authorization', 'Bearer #!InvalidToken#!')
+      .expect(401);
+  });
   it('should pause and un-pause an applicants status', async () => {
     const randomString = getRandomString();
     const token = await authHelper.getToken(
@@ -989,5 +1010,57 @@ describe('GET /applicants/me', () => {
       acceptedPrivacy: true,
     });
     await agent.get('/applicants/me').expect(401);
+  });
+});
+
+describe('GET /applicants/:id', () => {
+  const dummyAuthApp = getApp(
+    new DummyAuthService(),
+    new DummyMonitoringService(),
+    new DummyEmailService(new DummySESService(), appConfig),
+    appConfig,
+  );
+
+  it('should return 401 without valid JWT', async () => {
+    const randomString = getRandomString();
+    const { body }: { body: ApplicantResponseBody } = await request(
+      dummyAuthApp,
+    )
+      .post('/applicants')
+      .send({
+        name: 'Bob Boberson',
+        email: `bboberson${randomString}@gmail.com`,
+        preferredContact: 'sms',
+        searchStatus: 'active',
+        acceptedTerms: true,
+        acceptedPrivacy: true,
+      });
+    await request(dummyAuthApp).get(`/applicants/${body.id}`).expect(401);
+  });
+});
+
+describe('DELETE /applicants/:id', () => {
+  const dummyAuthApp = getApp(
+    new DummyAuthService(),
+    new DummyMonitoringService(),
+    new DummyEmailService(new DummySESService(), appConfig),
+    appConfig,
+  );
+
+  it('should return 401 without valid JWT', async () => {
+    const randomString = getRandomString();
+    const { body }: { body: ApplicantResponseBody } = await request(
+      dummyAuthApp,
+    )
+      .post('/applicants')
+      .send({
+        name: 'Bob Boberson',
+        email: `bboberson${randomString}@gmail.com`,
+        preferredContact: 'sms',
+        searchStatus: 'active',
+        acceptedTerms: true,
+        acceptedPrivacy: true,
+      });
+    await request(dummyAuthApp).delete(`/applicants/${body.id}`).expect(401);
   });
 });

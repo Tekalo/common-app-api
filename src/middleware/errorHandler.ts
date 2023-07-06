@@ -14,7 +14,7 @@ const errorHandler = (
   }
 
   const problem: Problem = err.problem || {};
-  if (err.message === 'Unauthorized') {
+  if (err.message === 'Unauthorized' || err.status === 401) {
     problem.title = 'Unauthorized';
     problem.status = 401;
   }
