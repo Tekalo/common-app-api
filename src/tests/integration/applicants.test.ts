@@ -686,7 +686,7 @@ describe('POST /applicants/me/submissions/draft', () => {
       .post('/applicants/me/submissions/draft')
       .send(testBody)
       .expect(401);
-    expect(body).toHaveProperty('title', 'Cannot authenticate request');
+    expect(body).toHaveProperty('title', 'Unauthorized');
   });
 
   describe('Cookie based authentication', () => {
