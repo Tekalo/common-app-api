@@ -966,6 +966,7 @@ describe('PUT /applicants/:auth0Id', () => {
   );
 
   it('should update applicant auth0Id', async () => {
+    const token = await authHelper.getToken();
     const { body }: { body: ApplicantResponseBody } = await request(
       dummyAuthApp,
     )
@@ -985,19 +986,19 @@ describe('PUT /applicants/:auth0Id', () => {
     )
       .put(`/applicants/${body.auth0Id as string}`)
       .send({ auth0Id: 'google-oauth|12345' })
-      .set('Application-Auth-Secret', appConfig.applicationAuthSecret)
+      .set('Authorization', `Bearer ${token}`)
       .expect(200);
     expect(updatedAuthID.auth0Id).toEqual('google-oauth|12345');
   });
 
-  it('should return 401 for request made without valid auth secret', async () => {
+  it('should return 401 for request made without valid JWT', async () => {
     const { body }: { body: ApplicantResponseBody } = await request(
       dummyAuthApp,
     )
       .post('/applicants')
       .send({
         name: 'Bob Boberson',
-        auth0Id: 'auth0|123456',
+        auth0Id: 'auth0|12345',
         email: `bboberson${getRandomString()}@gmail.com`,
         preferredContact: 'email',
         searchStatus: 'active',
@@ -1006,17 +1007,17 @@ describe('PUT /applicants/:auth0Id', () => {
       })
       .expect(200);
     await request(dummyAuthApp)
-      .put(`/applicants/${body.id}`)
-      .send({ auth0Id: 'google-oauth|12345' })
-      .set('Application-Auth-Secret', '123-wrong-auth-token-456')
+      .put(`/applicants/${body.auth0Id as string}`)
+      .send({ auth0Id: 'google-oauth|6789' })
       .expect(401);
   });
 
   it('should return 404 for non-existent applicant', async () => {
+    const token = await authHelper.getToken();
     await request(dummyAuthApp)
       .put('/applicants/999')
       .send({ auth0Id: 'google-oauth|99999' })
-      .set('Application-Auth-Secret', appConfig.applicationAuthSecret)
+      .set('Authorization', `Bearer ${token}`)
       .expect(404);
   });
 });

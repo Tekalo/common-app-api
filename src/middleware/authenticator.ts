@@ -85,25 +85,25 @@ class Authenticator {
     next();
   }
 
-  // Used for applications to authenticate with the API. Application needs to supply a secret key
+  // Used for applications to authenticate with the API.
   // eslint-disable-next-line class-methods-use-this
   validateApplication(req: AuthRequest, res: Response, next: NextFunction) {
-    if (
-      !req.headers['application-auth-secret'] ||
-      req.headers['application-auth-secret'] !==
-        this.config.applicationAuthSecret
-    ) {
-      next(
-        req.authError ||
-          new CAPPError({
-            title: 'Cannot authenticate request',
-            detail: 'Applicant cannot be authenticated',
-            status: 401,
-          }),
-      );
-      return;
+    try {
+      if (!req.auth) {
+        next(
+          req.authError ||
+            new CAPPError({
+              title: 'Cannot authenticate request',
+              detail: 'Application cannot be authenticated',
+              status: 401,
+            }),
+        );
+        return;
+      }
+      next();
+    } catch (e) {
+      next(e);
     }
-    next();
   }
 
   // Attach to requests that can only authenticate with a cookie

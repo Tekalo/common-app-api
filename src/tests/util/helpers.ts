@@ -33,7 +33,6 @@ const getMockConfig = (overrides: Partial<BaseConfig> = {}): BaseConfig => ({
   sentryDSN: '',
   isLoadTest: false,
   webUrl: '',
-  applicationAuthSecret: '',
   ...overrides,
 });
 
