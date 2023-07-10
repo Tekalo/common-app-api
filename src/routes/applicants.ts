@@ -93,7 +93,9 @@ const applicantRoutes = (
 
   router.put(
     '/:auth0Id',
-    authenticator.validateApplication.bind(authenticator) as RequestHandler,
+    authenticator
+      .validateApplicationJwt('update:tekalo_db_user_auth0_id')
+      .bind(authenticator) as RequestHandler,
     (req: Request, res: Response, next) => {
       const appBody = req.body as ApplicantUpdateBody;
       const reqWithAuth = req as RequestWithJWT;

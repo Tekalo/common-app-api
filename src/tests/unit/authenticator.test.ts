@@ -156,4 +156,52 @@ describe('Authenticator', () => {
     );
     expect(mockNext).toBeCalledWith();
   });
+
+  test('validateApplicationJwt() should throw error without appropriate scope', () => {
+    const mockRequest = {
+      session: {},
+      auth: {
+        payload: {
+          scope: '',
+        },
+      },
+    } as ReqWithAuthError;
+    const mockNext: NextFunction = jest.fn();
+    authenticator.validateApplicationJwt('tekalo_db_user_auth0_id')(
+      mockRequest,
+      {} as Response,
+      mockNext,
+    );
+    expect(mockNext).toBeCalledWith(
+      new CAPPError({
+        title: 'Cannot authenticate request',
+        detail: 'Applicant cannot be authenticated',
+        status: 401,
+      }),
+    );
+  });
+
+  // test('validateApplicationJwt() should throw error with appropriate scope', () => {
+  //   const mockRequest = {
+  //     session: {},
+  //     auth: {
+  //       payload: {
+  //         scope: 'update:',
+  //       },
+  //     },
+  //   } as ReqWithAuthError;
+  //   const mockNext: NextFunction = jest.fn();
+  //   authenticator.validateApplicationJwt(
+  //     mockRequest,
+  //     {} as Response,
+  //     mockNext,
+  //   );
+  //   expect(mockNext).toBeCalledWith(
+  //     new CAPPError({
+  //       title: 'Cannot authenticate request',
+  //       detail: 'Applicant cannot be authenticated',
+  //       status: 401,
+  //     }),
+  //   );
+  // });
 });
