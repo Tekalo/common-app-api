@@ -362,7 +362,7 @@ describe('POST /applicants/me/submissions', () => {
         createdAt: expect.any(String),
         ...testBody,
         openToRemote: null,
-        openToRemoteMulti: ['both', 'only remote'],
+        openToRemoteMulti: ['in-person', 'hybrid'],
       });
     });
 
@@ -415,7 +415,7 @@ describe('POST /applicants/me/submissions', () => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       delete testSubmission.openToRemoteMulti;
-      testSubmission.openToRemote = ['not sure'];
+      testSubmission.openToRemote = ['hybrid'];
       const { body }: { body: ApplicantSubmission } = await request(
         dummyAuthApp,
       )
@@ -423,7 +423,7 @@ describe('POST /applicants/me/submissions', () => {
         .send({ ...testSubmission })
         .set('Authorization', `Bearer ${token}`)
         .expect(200);
-      expect(body.openToRemoteMulti).toEqual(['not sure']);
+      expect(body.openToRemoteMulti).toEqual(['hybrid']);
     });
 
     it('should return 400 error if request body has invalid openToRelocate value', async () => {
@@ -770,7 +770,7 @@ describe('POST /applicants/me/submissions/draft', () => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       delete testSubmission.openToRemoteMulti;
-      testSubmission.openToRemote = ['both'];
+      testSubmission.openToRemote = ['in-person'];
       const { body }: { body: ApplicantSubmission } = await request(
         dummyAuthApp,
       )
@@ -778,7 +778,7 @@ describe('POST /applicants/me/submissions/draft', () => {
         .send({ ...testSubmission })
         .set('Authorization', `Bearer ${token}`)
         .expect(200);
-      expect(body.openToRemoteMulti).toEqual(['both']);
+      expect(body.openToRemoteMulti).toEqual(['in-person']);
     });
   });
 
