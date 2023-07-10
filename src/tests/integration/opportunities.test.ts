@@ -141,6 +141,20 @@ describe('POST /opportunities', () => {
       .expect(400);
     expect(body).toHaveProperty('title', 'Validation Error');
   });
+  test('Should throw error if request body has invalid email', async () => {
+    const invalidEmail = {
+      ...oppBatchPayload,
+      organization: {
+        ...oppBatchPayload.contact,
+        email: 'bobbobersonhasnoemail',
+      },
+    };
+    const { body } = await request(app)
+      .post('/opportunities/batch')
+      .send([invalidEmail])
+      .expect(400);
+    expect(body).toHaveProperty('title', 'Validation Error');
+  });
 });
 
 describe('DELETE /opportunities/batch/:id', () => {
