@@ -29,7 +29,7 @@ const getAPIRequestBody = (
   ],
   currentLocation: 'Boston, MA',
   openToRelocate: 'not sure',
-  openToRemote: ['both', 'only remote'],
+  openToRemoteMulti: ['both', 'only remote'],
   desiredSalary: '100,000',
   interestCauses: ['climate change', 'responsible AI'],
   otherCauses: ['animal rights'],

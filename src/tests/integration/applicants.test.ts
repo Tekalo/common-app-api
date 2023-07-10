@@ -394,7 +394,8 @@ describe('POST /applicants/me/submissions', () => {
       expect(body).toHaveProperty('title', 'Validation Error');
     });
 
-    it('should accept string as openToRemote value', async () => {
+    // TODO: Remove test once we remove support for openToRemote
+    it('should accept openToRemote value', async () => {
       const randomString = getRandomString();
       const testSubmission = applicantSubmissionGenerator.getAPIRequestBody();
       const token = await authHelper.getToken(
@@ -411,12 +412,18 @@ describe('POST /applicants/me/submissions', () => {
           acceptedTerms: true,
           acceptedPrivacy: true,
         });
-      testSubmission.openToRemote = 'not sure';
-      await request(dummyAuthApp)
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      delete testSubmission.openToRemoteMulti;
+      testSubmission.openToRemote = ['not sure'];
+      const { body }: { body: ApplicantSubmission } = await request(
+        dummyAuthApp,
+      )
         .post('/applicants/me/submissions')
         .send({ ...testSubmission })
         .set('Authorization', `Bearer ${token}`)
         .expect(200);
+      expect(body.openToRemoteMulti).toEqual(['not sure']);
     });
 
     it('should return 400 error if request body has invalid openToRelocate value', async () => {
@@ -742,6 +749,36 @@ describe('POST /applicants/me/submissions/draft', () => {
         'resumeUrl',
         'https://bobcanREALLYbuild.com/resume',
       );
+    });
+    it('should accept openToRemote value', async () => {
+      const randomString = getRandomString();
+      const testSubmission = applicantSubmissionGenerator.getAPIRequestBody();
+      const token = await authHelper.getToken(
+        `bboberson${randomString}@gmail.com`,
+      );
+      await request(dummyAuthApp)
+        .post('/applicants')
+        .send({
+          name: 'Bob Boberson',
+          auth0Id: 'auth0|123456',
+          email: `bboberson${randomString}@gmail.com`,
+          preferredContact: 'email',
+          searchStatus: 'active',
+          acceptedTerms: true,
+          acceptedPrivacy: true,
+        });
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      delete testSubmission.openToRemoteMulti;
+      testSubmission.openToRemote = ['both'];
+      const { body }: { body: ApplicantSubmission } = await request(
+        dummyAuthApp,
+      )
+        .post('/applicants/me/submissions/draft')
+        .send({ ...testSubmission })
+        .set('Authorization', `Bearer ${token}`)
+        .expect(200);
+      expect(body.openToRemoteMulti).toEqual(['both']);
     });
   });
 

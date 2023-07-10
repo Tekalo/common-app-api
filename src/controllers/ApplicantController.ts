@@ -171,14 +171,17 @@ class ApplicantController {
     data: ApplicantSubmissionBody,
   ): Promise<ApplicantSubmission> {
     try {
-      const { openToRemote, otherCauses, ...restOfSubmission } = data;
+      const {
+        openToRemote,
+        openToRemoteMulti,
+        otherCauses,
+        ...restOfSubmission
+      } = data;
       const applicantSubmission = await this.prisma.applicantSubmission.create({
         data: {
           ...restOfSubmission,
-          // TODO: Remove support for a single string
-          openToRemoteMulti: Array.isArray(openToRemote)
-            ? openToRemote
-            : [openToRemote],
+          // TODO: Remove support for openToRemote
+          openToRemoteMulti: openToRemoteMulti || openToRemote,
           otherCauses: otherCauses || [],
           applicantId,
         },
@@ -381,24 +384,23 @@ class ApplicantController {
     data: ApplicantDraftSubmissionBody,
   ): Promise<ApplicantDraftSubmission> {
     try {
-      const { openToRemote, otherCauses, ...restOfSubmission } = data;
-      // TODO: Remove support for single string
-      let openToRemoteMulti;
-      if (openToRemote) {
-        openToRemoteMulti = Array.isArray(openToRemote)
-          ? openToRemote
-          : [openToRemote];
-      }
+      const {
+        openToRemote,
+        openToRemoteMulti,
+        otherCauses,
+        ...restOfSubmission
+      } = data;
+      // TODO: Remove support for openToRemote
       return await this.prisma.applicantDraftSubmission.upsert({
         create: {
           ...restOfSubmission,
-          openToRemoteMulti,
+          openToRemoteMulti: openToRemoteMulti || openToRemote || undefined,
           otherCauses: otherCauses || [],
           applicantId,
         },
         update: {
           ...restOfSubmission,
-          openToRemoteMulti,
+          openToRemoteMulti: openToRemoteMulti || openToRemote || undefined,
           otherCauses: otherCauses || [],
         },
         where: { applicantId },
