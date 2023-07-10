@@ -112,31 +112,6 @@ class Authenticator {
     };
   }
 
-  // // Used for applications to authenticate with the API.
-  // // eslint-disable-next-line class-methods-use-this
-  // validateApplicationJwt(req: AuthRequest, res: Response, next: NextFunction) {
-  //   try {
-  //     if (
-  //       !req.auth ||
-  //       !req.auth.payload.scope ||
-  //       !req.auth?.payload.scope.includes('update:tekalo_db_user_auth0_id')
-  //     ) {
-  //       next(
-  //         req.authError ||
-  //           new CAPPError({
-  //             title: 'Cannot authenticate request',
-  //             detail: 'Application cannot be authenticated',
-  //             status: 401,
-  //           }),
-  //       );
-  //       return;
-  //     }
-  //     next();
-  //   } catch (e) {
-  //     next(e);
-  //   }
-  // }
-
   // Attach to requests that can only authenticate with a cookie
   static validateCookie(req: AuthRequest, res: Response, next: NextFunction) {
     try {
