@@ -10,6 +10,7 @@ import {
   ApplicantSubmissionBody,
   ApplicantDraftSubmissionBody,
   ApplicantStateBody,
+  ApplicantUpdateBody,
 } from '@App/resources/types/applicants.js';
 import { setCookie } from '@App/services/cookieService.js';
 
@@ -40,9 +41,9 @@ const applicantRoutes = (
     emailService,
     monitoringService,
   );
-  const authenticatorConfig = config.auth0.express;
-  authenticatorConfig.cacheMaxAge = 12 * 60 * 60 * 1000; // 12 hours
-  const authenticator = new Authenticator(prisma, authenticatorConfig);
+  const appConfig = config;
+  appConfig.auth0.express.cacheMaxAge = 12 * 60 * 60 * 1000; // 12 hours
+  const authenticator = new Authenticator(prisma, appConfig);
 
   router.post('/', (req: Request, res: Response, next) => {
     const appBody = req.body as ApplicantRequestBody;
@@ -83,6 +84,24 @@ const applicantRoutes = (
       applicantController
         // applicantID type assertion because our middlware setApplicantId() guarantees an applicant ID is set
         .pauseApplicant(applicantID as number, pause)
+        .then((result) => {
+          res.status(200).json(result);
+        })
+        .catch((err) => next(err));
+    },
+  );
+
+  router.put(
+    '/:auth0Id',
+    authenticator.requiresScope(
+      'update:tekalo_db_user_auth0_id',
+    ) as RequestHandler,
+    (req: Request, res: Response, next) => {
+      const appBody = req.body as ApplicantUpdateBody;
+      const reqWithAuth = req as RequestWithJWT;
+      const { auth0Id } = reqWithAuth.params;
+      applicantController
+        .updateApplicantAuth0Id(auth0Id, appBody)
         .then((result) => {
           res.status(200).json(result);
         })

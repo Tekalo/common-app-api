@@ -3,10 +3,18 @@ import crypto from 'crypto';
 import configLoader from '@App/services/configLoader.js';
 import CAPPError from '@App/resources/shared/CAPPError.js';
 import { BaseConfig } from '@App/resources/types/shared.js';
+import { JWTPayload } from 'express-oauth2-jwt-bearer';
+import { Claims } from '@App/resources/types/auth0.js';
+
+type TokenOptions = {
+  auth0Id?: string;
+  roles?: Array<string>;
+  scope?: string;
+};
 
 const getToken = async (
   userEmail?: string,
-  auth0Id?: string,
+  tokenOptions?: TokenOptions,
 ): Promise<string> => {
   const config: BaseConfig = configLoader.loadConfig();
   const { issuer, audience, tokenSigningAlg, secret } = config.auth0.express;
@@ -20,16 +28,22 @@ const getToken = async (
   const secretKey: crypto.KeyObject = crypto.createSecretKey(
     Buffer.from(secret),
   );
-  const emailKey = `${configLoader.loadConfig().auth0.express.audience}/email`;
-  const token = await new jose.SignJWT({
-    [emailKey]: userEmail || '',
-    'urn:example:claim': true,
-  })
+  const payload: JWTPayload = {};
+  if (userEmail) {
+    payload[Claims.email] = userEmail;
+  }
+  if (tokenOptions?.roles) {
+    payload[Claims.roles] = tokenOptions?.roles;
+  }
+  if (tokenOptions?.scope) {
+    payload.scope = tokenOptions.scope;
+  }
+  const token = await new jose.SignJWT(payload)
     .setProtectedHeader({ alg: tokenSigningAlg })
     .setIssuer(issuer)
     .setAudience(audience)
     .setExpirationTime('1h')
-    .setSubject(auth0Id || 'auth|12345')
+    .setSubject(tokenOptions?.auth0Id || 'auth|12345')
     .sign(secretKey);
 
   return token;

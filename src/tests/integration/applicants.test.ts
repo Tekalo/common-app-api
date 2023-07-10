@@ -14,7 +14,12 @@ import configLoader from '@App/services/configLoader.js';
 
 import cookie from 'cookie';
 import cookieParser from 'cookie-parser';
-import { ApplicantSession, ApplicantSubmission, Prisma } from '@prisma/client';
+import {
+  Applicant,
+  ApplicantSession,
+  ApplicantSubmission,
+  Prisma,
+} from '@prisma/client';
 import applicantSubmissionGenerator from '../fixtures/applicantSubmissionGenerator.js';
 import DummyAuthService from '../fixtures/DummyAuthService.js';
 import DummyMonitoringService from '../fixtures/DummyMonitoringService.js';
@@ -548,7 +553,9 @@ describe('DELETE /applicants/me', () => {
           email,
         });
 
-        const token = await authHelper.getToken(email, auth0User.user_id);
+        const token = await authHelper.getToken(email, {
+          auth0Id: auth0User.user_id,
+        });
         if (auth0User.user_id) {
           testUserIDs.push(auth0User.user_id);
         }
@@ -596,8 +603,12 @@ describe('DELETE /applicants/me', () => {
           email: email2,
         });
 
-        const token = await authHelper.getToken(email, auth0User.user_id);
-        const token2 = await authHelper.getToken(email2, auth0User2.user_id);
+        const token = await authHelper.getToken(email, {
+          auth0Id: auth0User.user_id,
+        });
+        const token2 = await authHelper.getToken(email2, {
+          auth0Id: auth0User2.user_id,
+        });
         if (auth0User.user_id) {
           testUserIDs.push(auth0User.user_id);
         }
@@ -1021,6 +1032,75 @@ describe('PUT /applicants/me/state', () => {
     await request(dummyAuthApp)
       .put('/applicants/me/state')
       .send({ pause: true })
+      .set('Authorization', `Bearer ${token}`)
+      .expect(404);
+  });
+});
+
+describe('PUT /applicants/:auth0Id', () => {
+  const dummyAuthApp = getApp(
+    new DummyAuthService(),
+    new DummyMonitoringService(),
+    new DummyEmailService(new DummySESService(), appConfig),
+    appConfig,
+  );
+
+  it('should update applicant auth0Id', async () => {
+    const token = await authHelper.getToken(undefined, {
+      scope: 'another:scope update:tekalo_db_user_auth0_id',
+    });
+    const { body }: { body: ApplicantResponseBody } = await request(
+      dummyAuthApp,
+    )
+      .post('/applicants')
+      .send({
+        name: 'Bob Boberson',
+        auth0Id: 'auth0|12345',
+        email: `bboberson${getRandomString()}@gmail.com`,
+        preferredContact: 'email',
+        searchStatus: 'active',
+        acceptedTerms: true,
+        acceptedPrivacy: true,
+      })
+      .expect(200);
+    const { body: updatedAuthID }: { body: Applicant } = await request(
+      dummyAuthApp,
+    )
+      .put(`/applicants/${body.auth0Id as string}`)
+      .send({ auth0Id: 'google-oauth|12345' })
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200);
+    expect(updatedAuthID.auth0Id).toEqual('google-oauth|12345');
+  });
+
+  it('should return 401 for request made without valid JWT', async () => {
+    const { body }: { body: ApplicantResponseBody } = await request(
+      dummyAuthApp,
+    )
+      .post('/applicants')
+      .send({
+        name: 'Bob Boberson',
+        auth0Id: 'auth0|12345',
+        email: `bboberson${getRandomString()}@gmail.com`,
+        preferredContact: 'email',
+        searchStatus: 'active',
+        acceptedTerms: true,
+        acceptedPrivacy: true,
+      })
+      .expect(200);
+    await request(dummyAuthApp)
+      .put(`/applicants/${body.auth0Id as string}`)
+      .send({ auth0Id: 'google-oauth|6789' })
+      .expect(401);
+  });
+
+  it('should return 404 for non-existent applicant', async () => {
+    const token = await authHelper.getToken(undefined, {
+      scope: 'another:scope update:tekalo_db_user_auth0_id',
+    });
+    await request(dummyAuthApp)
+      .put('/applicants/999')
+      .send({ auth0Id: 'google-oauth|99999' })
       .set('Authorization', `Bearer ${token}`)
       .expect(404);
   });

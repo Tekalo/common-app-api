@@ -55,6 +55,10 @@ const ApplicantStateRequestBodySchema = z.object({
   pause: z.boolean(),
 });
 
+const ApplicantUpdateRequestBodySchema = z.object({
+  auth0Id: z.string(),
+});
+
 const ApplicantResponseBodySchema = z.object({
   id: z.number(),
   auth0Id: z.string().nullable(),
@@ -110,4 +114,5 @@ export {
   ApplicantDraftSubmissionRequestBodySchema,
   ApplicantStateRequestBodySchema,
   ApplicantDraftSubmissionResponseBodySchema,
+  ApplicantUpdateRequestBodySchema,
 };
