@@ -77,6 +77,28 @@ describe('POST /applicants', () => {
       );
       expect(body).toHaveProperty('auth0Id');
     });
+    it('should lowercase email before saving to database', async () => {
+      const randomString = getRandomString();
+      const { body } = await request(dummyAuthApp)
+        .post('/applicants')
+        .send({
+          name: 'Bob Boberson',
+          pronoun: 'he/his',
+          phone: '123-456-7899',
+          email: `BBoberson${randomString}@gmail.com`,
+          preferredContact: 'email',
+          searchStatus: 'active',
+          acceptedTerms: true,
+          acceptedPrivacy: true,
+        })
+        .expect(200);
+      expect(body).toHaveProperty('id');
+      expect(body).toHaveProperty(
+        'email',
+        `bboberson${randomString}@gmail.com`,
+      );
+      expect(body).toHaveProperty('auth0Id');
+    });
     it('should throw 400 error for missing email', async () => {
       const { body } = await request(dummyAuthApp)
         .post('/applicants')
