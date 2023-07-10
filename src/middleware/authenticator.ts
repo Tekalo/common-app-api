@@ -89,7 +89,11 @@ class Authenticator {
   // eslint-disable-next-line class-methods-use-this
   validateApplication(req: AuthRequest, res: Response, next: NextFunction) {
     try {
-      if (!req.auth) {
+      if (
+        !req.auth ||
+        !req.auth.payload.scope ||
+        !req.auth?.payload.scope.includes('update:tekalo_db_user_auth0_id')
+      ) {
         next(
           req.authError ||
             new CAPPError({

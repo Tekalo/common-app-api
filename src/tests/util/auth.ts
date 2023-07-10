@@ -4,10 +4,12 @@ import configLoader from '@App/services/configLoader.js';
 import CAPPError from '@App/resources/shared/CAPPError.js';
 import { BaseConfig } from '@App/resources/types/shared.js';
 import { JWTPayload } from 'express-oauth2-jwt-bearer';
+import { Claims } from '@App/resources/types/auth0.js';
 
 type TokenOptions = {
   auth0Id?: string;
   roles?: Array<string>;
+  scope?: string;
 };
 
 const getToken = async (
@@ -28,16 +30,13 @@ const getToken = async (
   );
   const payload: JWTPayload = {};
   if (userEmail) {
-    const emailKey = `${
-      configLoader.loadConfig().auth0.express.audience
-    }/email`;
-    payload[emailKey] = userEmail;
+    payload[Claims.email] = userEmail;
   }
   if (tokenOptions?.roles) {
-    const rolesKey = `${
-      configLoader.loadConfig().auth0.express.audience
-    }/roles`;
-    payload[rolesKey] = userEmail;
+    payload[Claims.roles] = tokenOptions?.roles;
+  }
+  if (tokenOptions?.scope) {
+    payload.scope = tokenOptions.scope;
   }
   const token = await new jose.SignJWT(payload)
     .setProtectedHeader({ alg: tokenSigningAlg })

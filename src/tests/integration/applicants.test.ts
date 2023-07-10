@@ -966,7 +966,9 @@ describe('PUT /applicants/:auth0Id', () => {
   );
 
   it('should update applicant auth0Id', async () => {
-    const token = await authHelper.getToken();
+    const token = await authHelper.getToken(undefined, {
+      scope: 'another:scope update:tekalo_db_user_auth0_id',
+    });
     const { body }: { body: ApplicantResponseBody } = await request(
       dummyAuthApp,
     )
@@ -1013,7 +1015,9 @@ describe('PUT /applicants/:auth0Id', () => {
   });
 
   it('should return 404 for non-existent applicant', async () => {
-    const token = await authHelper.getToken();
+    const token = await authHelper.getToken(undefined, {
+      scope: 'another:scope update:tekalo_db_user_auth0_id',
+    });
     await request(dummyAuthApp)
       .put('/applicants/999')
       .send({ auth0Id: 'google-oauth|99999' })
