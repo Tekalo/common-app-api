@@ -87,7 +87,7 @@ class Authenticator {
 
   // Used for applications to authenticate with the API.
   // eslint-disable-next-line class-methods-use-this
-  validateApplicationJwt(scope: string) {
+  requiresScope(scope: string) {
     return (req: AuthRequest, res: Response, next: NextFunction) => {
       try {
         if (
