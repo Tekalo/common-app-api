@@ -93,7 +93,7 @@ class Authenticator {
         if (
           !req.auth ||
           !req.auth.payload.scope ||
-          !req.auth?.payload.scope.includes(scope)
+          !req.auth?.payload.scope.split(' ').includes(scope)
         ) {
           next(
             req.authError ||

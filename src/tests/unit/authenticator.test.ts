@@ -157,17 +157,17 @@ describe('Authenticator', () => {
     expect(mockNext).toBeCalledWith();
   });
 
-  test('validateApplicationJwt() should throw error without appropriate scope', () => {
+  test('requiresScope() should throw error without appropriate scope', () => {
     const mockRequest = {
       session: {},
       auth: {
         payload: {
-          scope: '',
+          scope: 'create:foosball',
         },
       },
     } as ReqWithAuthError;
     const mockNext: NextFunction = jest.fn();
-    authenticator.validateApplicationJwt('tekalo_db_user_auth0_id')(
+    authenticator.requiresScope('create:foo')(
       mockRequest,
       {} as Response,
       mockNext,
@@ -181,27 +181,21 @@ describe('Authenticator', () => {
     );
   });
 
-  // test('validateApplicationJwt() should throw error with appropriate scope', () => {
-  //   const mockRequest = {
-  //     session: {},
-  //     auth: {
-  //       payload: {
-  //         scope: 'update:',
-  //       },
-  //     },
-  //   } as ReqWithAuthError;
-  //   const mockNext: NextFunction = jest.fn();
-  //   authenticator.validateApplicationJwt(
-  //     mockRequest,
-  //     {} as Response,
-  //     mockNext,
-  //   );
-  //   expect(mockNext).toBeCalledWith(
-  //     new CAPPError({
-  //       title: 'Cannot authenticate request',
-  //       detail: 'Applicant cannot be authenticated',
-  //       status: 401,
-  //     }),
-  //   );
-  // });
+  test('requiresScope() should not throw error with appropriate scope', () => {
+    const mockRequest = {
+      session: {},
+      auth: {
+        payload: {
+          scope: 'read:foo create:foo delete:bar',
+        },
+      },
+    } as ReqWithAuthError;
+    const mockNext: NextFunction = jest.fn();
+    authenticator.requiresScope('create:foo')(
+      mockRequest,
+      {} as Response,
+      mockNext,
+    );
+    expect(mockNext).toBeCalledWith();
+  });
 });
