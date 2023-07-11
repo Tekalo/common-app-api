@@ -111,16 +111,6 @@ describe('POST /opportunities', () => {
       .expect(200);
     expect(body).toEqual(expect.objectContaining({ id: expect.any(Number) }));
   });
-  it('should throw 400 error if request body is missing organization type', async () => {
-    const missingOrgType = { ...oppBatchPayload };
-    // @ts-expect-error: Ignore TS error for invalid request body
-    delete { ...oppBatchPayload }.organization.type;
-    const { body } = await request(app)
-      .post('/opportunities/batch')
-      .send([missingOrgType])
-      .expect(400);
-    expect(body).toHaveProperty('title', 'Validation Error');
-  });
   it('should throw 400 error if acceptedPrivacy is false', async () => {
     const falseAcceptedPrivacy = { ...oppBatchPayload };
     falseAcceptedPrivacy.acceptedPrivacy = false;
@@ -171,6 +161,17 @@ describe('POST /opportunities', () => {
     expect(body).toEqual(
       expect.objectContaining({ contactEmail: email.toLowerCase() }),
     );
+  });
+  // this test mutates oppBatchPayload by removing an element, so we should run it last
+  it('should throw 400 error if request body is missing organization type', async () => {
+    const missingOrgType = { ...oppBatchPayload };
+    // @ts-expect-error: Ignore TS error for invalid request body
+    delete { ...oppBatchPayload }.organization.type;
+    const { body } = await request(app)
+      .post('/opportunities/batch')
+      .send([missingOrgType])
+      .expect(400);
+    expect(body).toHaveProperty('title', 'Validation Error');
   });
 });
 
