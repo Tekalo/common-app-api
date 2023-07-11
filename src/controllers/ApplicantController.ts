@@ -3,6 +3,7 @@ import {
   ApplicantRequestBody,
   ApplicantSubmissionBody,
   ApplicantDraftSubmissionBody,
+  ApplicantUpdateBody,
 } from '@App/resources/types/applicants.js';
 import {
   Applicant,
@@ -171,14 +172,17 @@ class ApplicantController {
     data: ApplicantSubmissionBody,
   ): Promise<ApplicantSubmission> {
     try {
-      const { openToRemote, otherCauses, ...restOfSubmission } = data;
+      const {
+        openToRemote,
+        openToRemoteMulti,
+        otherCauses,
+        ...restOfSubmission
+      } = data;
       const applicantSubmission = await this.prisma.applicantSubmission.create({
         data: {
           ...restOfSubmission,
-          // TODO: Remove support for a single string
-          openToRemoteMulti: Array.isArray(openToRemote)
-            ? openToRemote
-            : [openToRemote],
+          // TODO: Remove support for openToRemote
+          openToRemoteMulti: openToRemoteMulti || openToRemote,
           otherCauses: otherCauses || [],
           applicantId,
         },
@@ -237,7 +241,7 @@ class ApplicantController {
           detail: 'Database error encountered when pausing applicant status',
           status: 400,
         };
-        if (e.code === 'P2001') {
+        if (e.code === 'P2025') {
           problem.detail = 'Applicant not found';
           problem.status = 404;
         }
@@ -250,6 +254,43 @@ class ApplicantController {
         {
           title: 'Applicant Pause Error',
           detail: 'Error when pausing applicant status',
+        },
+        e instanceof Error ? { cause: e } : undefined,
+      );
+    }
+  }
+
+  async updateApplicantAuth0Id(
+    prevAuth0Id: string,
+    updateBody: ApplicantUpdateBody,
+  ) {
+    try {
+      const { auth0Id: newAuth0Id } = updateBody;
+      const applicant = await this.prisma.applicant.update({
+        data: { auth0Id: newAuth0Id },
+        where: { auth0Id: prevAuth0Id },
+      });
+      return applicant;
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        const problem: Problem = {
+          title: 'Applicant Update Error',
+          detail: 'Database error encountered when updating applicant',
+          status: 400,
+        };
+        if (e.code === 'P2025') {
+          problem.detail = 'Applicant not found';
+          problem.status = 404;
+        }
+        throw new CAPPError(
+          problem,
+          e instanceof Error ? { cause: e } : undefined,
+        );
+      }
+      throw new CAPPError(
+        {
+          title: 'Applicant Update Error',
+          detail: 'Error when updating applicant',
         },
         e instanceof Error ? { cause: e } : undefined,
       );
@@ -381,24 +422,23 @@ class ApplicantController {
     data: ApplicantDraftSubmissionBody,
   ): Promise<ApplicantDraftSubmission> {
     try {
-      const { openToRemote, otherCauses, ...restOfSubmission } = data;
-      // TODO: Remove support for single string
-      let openToRemoteMulti;
-      if (openToRemote) {
-        openToRemoteMulti = Array.isArray(openToRemote)
-          ? openToRemote
-          : [openToRemote];
-      }
+      const {
+        openToRemote,
+        openToRemoteMulti,
+        otherCauses,
+        ...restOfSubmission
+      } = data;
+      // TODO: Remove support for openToRemote
       return await this.prisma.applicantDraftSubmission.upsert({
         create: {
           ...restOfSubmission,
-          openToRemoteMulti,
+          openToRemoteMulti: openToRemoteMulti || openToRemote || undefined,
           otherCauses: otherCauses || [],
           applicantId,
         },
         update: {
           ...restOfSubmission,
-          openToRemoteMulti,
+          openToRemoteMulti: openToRemoteMulti || openToRemote || undefined,
           otherCauses: otherCauses || [],
         },
         where: { applicantId },

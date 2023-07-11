@@ -591,17 +591,16 @@
             "type": "string"
           },
           "openToRemote": {
-            "oneOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              }
-            ]
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "openToRemoteMulti": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           },
           "desiredSalary": {
             "type": "string"

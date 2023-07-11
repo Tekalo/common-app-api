@@ -39,7 +39,7 @@ const OpportunityBatchRequestBodySchema = z.object({
   }),
   contact: z.object({
     name: z.string().max(255),
-    email: z.string().max(255),
+    email: z.string().email().toLowerCase(),
     phone: z.string().max(255).nullable().optional(),
   }),
   acceptedPrivacy: z.literal(true),

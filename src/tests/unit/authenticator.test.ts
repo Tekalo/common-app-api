@@ -12,10 +12,7 @@ type MockRequestWithParams = Request & {
   params: { id: string };
 };
 
-const authenticator = new Authenticator(
-  prisma,
-  configLoader.loadConfig().auth0.express,
-);
+const authenticator = new Authenticator(prisma, configLoader.loadConfig());
 
 type ReqWithAuthError = RequestWithJWT & {
   authError: Error;
@@ -91,7 +88,7 @@ describe('Authenticator', () => {
     );
     const authenticatorWithMockPrisma = new Authenticator(
       mockCtx.prisma,
-      configLoader.loadConfig().auth0.express,
+      configLoader.loadConfig(),
     );
     const mockNext: NextFunction = jest.fn();
 
@@ -118,7 +115,7 @@ describe('Authenticator', () => {
     const mockCtx = createMockContext();
     const authenticatorWithMockPrisma = new Authenticator(
       mockCtx.prisma,
-      configLoader.loadConfig().auth0.express,
+      configLoader.loadConfig(),
     );
     const mockNext: NextFunction = jest.fn();
 
@@ -148,11 +145,53 @@ describe('Authenticator', () => {
     );
     const authenticatorWithMockPrisma = new Authenticator(
       mockCtx.prisma,
-      configLoader.loadConfig().auth0.express,
+      configLoader.loadConfig(),
     );
     const mockNext: NextFunction = jest.fn();
 
     await authenticatorWithMockPrisma.validateJwtOfUnregisteredUser(
+      mockRequest,
+      {} as Response,
+      mockNext,
+    );
+    expect(mockNext).toBeCalledWith();
+  });
+
+  test('requiresScope() should throw error without appropriate scope', () => {
+    const mockRequest = {
+      session: {},
+      auth: {
+        payload: {
+          scope: 'create:foosball',
+        },
+      },
+    } as ReqWithAuthError;
+    const mockNext: NextFunction = jest.fn();
+    authenticator.requiresScope('create:foo')(
+      mockRequest,
+      {} as Response,
+      mockNext,
+    );
+    expect(mockNext).toBeCalledWith(
+      new CAPPError({
+        title: 'Cannot authenticate request',
+        detail: 'Applicant cannot be authenticated',
+        status: 401,
+      }),
+    );
+  });
+
+  test('requiresScope() should not throw error with appropriate scope', () => {
+    const mockRequest = {
+      session: {},
+      auth: {
+        payload: {
+          scope: 'read:foo create:foo delete:bar',
+        },
+      },
+    } as ReqWithAuthError;
+    const mockNext: NextFunction = jest.fn();
+    authenticator.requiresScope('create:foo')(
       mockRequest,
       {} as Response,
       mockNext,

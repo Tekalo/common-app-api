@@ -35,23 +35,13 @@ const YOE = z.enum([
 ]);
 const OpenToRelocate = z.enum(['yes', 'no', 'not sure']);
 
-// Temporarily overloading enum for backward compatibility.
-// Final list is: ['remote', 'in-person', 'hybrid', 'not sure']
-const OpenToRemote = z.enum([
-  'only remote',
-  'remote',
-  'no remote',
-  'in-person',
-  'both',
-  'hybrid',
-  'not sure',
-]);
+const OpenToRemote = z.enum(['remote', 'in-person', 'hybrid', 'not sure']);
 const WorkAuthorization = z.enum(['authorized', 'sponsorship']);
 const EmploymentType = z.enum(['full', 'part']);
 
 const ApplicantRequestBodySchema = z.object({
   name: z.string().max(255),
-  email: z.string().email(),
+  email: z.string().email().toLowerCase(),
   phone: z.string().optional(),
   pronoun: z.string().max(255).optional(),
   preferredContact: PreferredContact,
@@ -63,6 +53,10 @@ const ApplicantRequestBodySchema = z.object({
 
 const ApplicantStateRequestBodySchema = z.object({
   pause: z.boolean(),
+});
+
+const ApplicantUpdateRequestBodySchema = z.object({
+  auth0Id: z.string(),
 });
 
 const ApplicantResponseBodySchema = z.object({
@@ -91,7 +85,8 @@ const ApplicantSubmissionRequestBodySchema = z.object({
   interestRoles: z.array(z.string().max(255)),
   currentLocation: z.string().max(255),
   openToRelocate: OpenToRelocate,
-  openToRemote: z.array(OpenToRemote).or(OpenToRemote), // TODO: Remove support for a single string
+  openToRemote: z.array(OpenToRemote).optional(), // TODO: Remove support
+  openToRemoteMulti: z.array(OpenToRemote).optional(), // TODO: Remove optional
   desiredSalary: z.string().max(255).nullable().optional(),
   interestCauses: z.array(z.string().max(255)), // order matters
   otherCauses: z.array(z.string().max(255)).nullable(),
@@ -119,4 +114,5 @@ export {
   ApplicantDraftSubmissionRequestBodySchema,
   ApplicantStateRequestBodySchema,
   ApplicantDraftSubmissionResponseBodySchema,
+  ApplicantUpdateRequestBodySchema,
 };
