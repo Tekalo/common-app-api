@@ -141,6 +141,37 @@ describe('POST /opportunities', () => {
       .expect(400);
     expect(body).toHaveProperty('title', 'Validation Error');
   });
+  test('Should throw error if request body has invalid email', async () => {
+    const invalidEmail = {
+      ...oppBatchPayload,
+      organization: {
+        ...oppBatchPayload.contact,
+        email: 'bobbobersonhasnoemail',
+      },
+    };
+    const { body } = await request(app)
+      .post('/opportunities/batch')
+      .send([invalidEmail])
+      .expect(400);
+    expect(body).toHaveProperty('title', 'Validation Error');
+  });
+  test('Should convert email to lower case before saving in the database', async () => {
+    const email = 'BBoberson@gmail.com';
+    const uppercasedEmail = {
+      ...oppBatchPayload,
+      contact: {
+        ...oppBatchPayload.contact,
+        email,
+      },
+    };
+    const { body } = await request(app)
+      .post('/opportunities/batch')
+      .send(uppercasedEmail)
+      .expect(200);
+    expect(body).toEqual(
+      expect.objectContaining({ contactEmail: email.toLowerCase() }),
+    );
+  });
 });
 
 describe('DELETE /opportunities/batch/:id', () => {
