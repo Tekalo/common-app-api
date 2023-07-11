@@ -1,0 +1,49 @@
+resource "aws_s3_bucket" "upload_files" {
+    bucket = "capp-api-uploads-${var.env}"
+}
+
+resource "aws_s3_bucket_lifecycle_configuration" "upload_files_lifecycle" {
+  bucket = aws_s3_bucket.upload_files.id
+  rule {
+    id     = "default-to-intelligent-tiering"
+    status = "Enabled"
+
+    transition {
+        storage_class = "INTELLIGENT_TIERING"
+    }
+  }
+}
+
+// add s3 permissions to task role
+resource "aws_iam_role_policy" "s3_policy" {
+  name   = "s3-policy"
+  role   = aws_iam_role.ecs_task_role.id
+  policy = data.aws_iam_policy_document.task_s3_policy.json
+}
+
+data "aws_iam_policy_document" "task_s3_policy" {
+  statement {
+    actions   = ["s3:GetObject", "s3:PutObject", "s3:CreateBucket"]
+    resources = [aws_s3_bucket.upload_files.arn,"${aws_s3_bucket.upload_files.arn}/*"]
+  }
+}
+
+resource "aws_s3_bucket_versioning" "upload_files_versioning" {
+  bucket = aws_s3_bucket.upload_files.id
+  versioning_configuration {
+    status = "Suspended"
+  }
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "upload_files_encryption" {
+  bucket = aws_s3_bucket.upload_files.id
+
+  rule {
+    bucket_key_enabled = false
+
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
+    }
+  }
+}
+
