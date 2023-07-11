@@ -162,11 +162,10 @@ describe('POST /opportunities', () => {
       expect.objectContaining({ contactEmail: email.toLowerCase() }),
     );
   });
-  // this test mutates oppBatchPayload by removing an element, so we should run it last
   it('should throw 400 error if request body is missing organization type', async () => {
     const missingOrgType = { ...oppBatchPayload };
     // @ts-expect-error: Ignore TS error for invalid request body
-    delete { ...oppBatchPayload }.organization.type;
+    delete { ...missingOrgType }.organization.type;
     const { body } = await request(app)
       .post('/opportunities/batch')
       .send([missingOrgType])
