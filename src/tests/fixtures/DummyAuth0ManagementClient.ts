@@ -6,6 +6,10 @@ class DummyAuth0ManagementClient extends ManagementClient {
   getUsersByEmail(email: string): Promise<Array<Object>> {
     return Promise.resolve([]);
   }
+  // eslint-disable-next-line
+  deleteUser(params: object): Promise<void> {
+    return Promise.resolve();
+  }
 }
 
 export default DummyAuth0ManagementClient;

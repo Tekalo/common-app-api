@@ -123,7 +123,7 @@ class AuthService {
           deletionRequests.push(auth0Client.deleteUser({ id: user.user_id }));
         }
       });
-      await Promise.all(deletionRequests);
+      responseBody = await Promise.all(deletionRequests);
     } catch (e) {
       if (e instanceof Error) {
         throw new CAPPError(
