@@ -547,7 +547,7 @@ describe('DELETE /applicants/me', () => {
           },
         });
         // expect auth0 delete user to have been called
-        expect(auth0Spy).toHaveBeenCalledWith(auth0User.user_id);
+        expect(auth0Spy).toHaveBeenCalledWith(email);
       },
     );
     itif('CI' in process.env)(
