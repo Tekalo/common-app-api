@@ -367,7 +367,7 @@ describe('Applicant Controller', () => {
       });
       mockCtx.prisma.$transaction.mockResolvedValue(true);
       const dummyAuthService = new DummyAuthService();
-      dummyAuthService.deleteUser = () => {
+      dummyAuthService.deleteUsers = () => {
         throw new CAPPError({
           detail: 'Mock Auth0 Deletion Error',
           title: 'Mock Error',
@@ -436,7 +436,7 @@ describe('Applicant Controller', () => {
         followUpOptIn: false,
       });
       const dummyAuthService = new DummyAuthService();
-      dummyAuthService.deleteUser = () => {
+      dummyAuthService.deleteUsers = () => {
         throw new CAPPError({
           detail: 'Mock Auth0 Deletion Error',
           title: 'Mock Error',

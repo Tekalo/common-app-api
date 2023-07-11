@@ -106,11 +106,24 @@ class AuthService {
     return `${configLoader.loadConfig().webUrl}/sign-in`;
   }
 
-  async deleteUser(id: string) {
+  /**
+   * Delete all Auth0 users that have a given email.
+   * Typically should only be 1, unless there are users with a given email who have multiple connection types.
+   * @param email
+   * @returns
+   */
+  async deleteUsers(email: string) {
     const auth0Client: ManagementClient = this.getClient();
     let responseBody;
     try {
-      responseBody = await auth0Client.deleteUser({ id });
+      const allUsers = await auth0Client.getUsersByEmail(email);
+      const deletionRequests: Array<Promise<void>> = [];
+      allUsers.forEach((user) => {
+        if (user.user_id) {
+          deletionRequests.push(auth0Client.deleteUser({ id: user.user_id }));
+        }
+      });
+      await Promise.all(deletionRequests);
     } catch (e) {
       if (e instanceof Error) {
         throw new CAPPError(

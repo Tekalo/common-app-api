@@ -527,7 +527,7 @@ describe('DELETE /applicants/me', () => {
           prisma.applicantDeletionRequests,
           'create',
         );
-        const auth0Spy = jest.spyOn(authService, 'deleteUser');
+        const auth0Spy = jest.spyOn(authService, 'deleteUsers');
 
         await request(app)
           .delete('/applicants/me')
