@@ -372,7 +372,7 @@ class ApplicantController {
         e instanceof Error ? { cause: e } : undefined,
       );
     }
-    await this.auth0Service.deleteUsers(applicantToDelete.auth0Id);
+    await this.auth0Service.deleteUsers(applicantToDelete.email);
     return { id: applicantId };
   }
 
