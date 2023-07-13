@@ -69,13 +69,12 @@ resource "aws_s3_bucket" "cloudtrail" {
 }
 resource "aws_s3_bucket_lifecycle_configuration" "cloudtrail_lifecycle" {
   bucket   = aws_s3_bucket.cloudtrail.id
-  expiration {
-    days   = 365
-  }
   rule {
-    id     = "move-to-infrequent-access"
+    id     = "update-storage-tier"
     status = "Enabled"
-
+    expiration {
+      days   = 365
+    }
     transition {
         days          = 30
         storage_class = "STANDARD_IA"
