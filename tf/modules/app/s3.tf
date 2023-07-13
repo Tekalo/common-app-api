@@ -67,7 +67,26 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "upload_files_encr
 resource "aws_s3_bucket" "cloudtrail" {
   bucket = "capp-${var.env}-cloudtrail"
 }
+resource "aws_s3_bucket_lifecycle_configuration" "cloudtrail_lifecycle" {
+  bucket   = aws_s3_bucket.cloudtrail.id
+  expiration {
+    days   = 365
+  }
+  rule {
+    id     = "move-to-infrequent-access"
+    status = "Enabled"
 
+    transition {
+        days          = 30
+        storage_class = "STANDARD_IA"
+    }
+
+    transition {
+        days          = 90
+        storage_class = "GLACIER"
+    }
+  }
+}
 resource "aws_s3_bucket_policy" "cloudtrail_access" {
   bucket = aws_s3_bucket.cloudtrail.id
   policy = data.aws_iam_policy_document.cloudtrail_access.json
@@ -85,7 +104,7 @@ data "aws_iam_policy_document" "cloudtrail_access" {
 resource "aws_cloudtrail" "upload_files_bucket_trail" {
   name  = "UploadFilesBucketTrail"
   s3_bucket_name = aws_s3_bucket.cloudtrail.id
-  s3_key_prefix = "s3"
+  s3_key_prefix = "s3/${aws_s3_bucket.upload_files.id}"
   include_global_service_events = false
 
   event_selector {
@@ -98,4 +117,3 @@ resource "aws_cloudtrail" "upload_files_bucket_trail" {
     }
   }
 }
-
