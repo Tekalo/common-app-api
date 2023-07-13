@@ -69,7 +69,7 @@ resource "aws_s3_bucket" "cloudtrail" {
 }
 
 resource "aws_s3_bucket_policy" "cloudtrail_access" {
-  bucket = aws_s3_bucket.cloudtrail
+  bucket = aws_s3_bucket.cloudtrail.id
   policy = data.aws_iam_policy_document.cloudtrail_access.json
 }
 
