@@ -106,11 +106,29 @@ class AuthService {
     return `${configLoader.loadConfig().webUrl}/sign-in`;
   }
 
-  async deleteUser(id: string) {
+  /**
+   * Delete all Auth0 users that have a given email.
+   * Typically should only be 1, unless there are users with a given email who have multiple connection types.
+   * @param email
+   * @returns
+   */
+  async deleteUsers(email: string, auth0Id: string) {
     const auth0Client: ManagementClient = this.getClient();
     let responseBody;
     try {
-      responseBody = await auth0Client.deleteUser({ id });
+      // TODO: When we have account linking setup, we won't need to do the double delete
+      // Delete #1: Delete Auth0 User by ID
+      await auth0Client.deleteUser({ id: auth0Id });
+
+      const allUsers = await auth0Client.getUsersByEmail(email);
+      const deletionRequests: Array<Promise<void>> = [];
+      allUsers.forEach((user) => {
+        if (user.user_id) {
+          deletionRequests.push(auth0Client.deleteUser({ id: user.user_id }));
+        }
+      });
+      // Delete #2: In case there is a mismatch between email and auth0ID, also attempt to delete by auth0 ID
+      responseBody = await Promise.all(deletionRequests);
     } catch (e) {
       if (e instanceof Error) {
         throw new CAPPError(

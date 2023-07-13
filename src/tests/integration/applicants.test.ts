@@ -563,7 +563,7 @@ describe('DELETE /applicants/me', () => {
           prisma.applicantDeletionRequests,
           'create',
         );
-        const auth0Spy = jest.spyOn(authService, 'deleteUser');
+        const auth0Spy = jest.spyOn(authService, 'deleteUsers');
 
         await request(app)
           .delete('/applicants/me')
@@ -583,7 +583,10 @@ describe('DELETE /applicants/me', () => {
           },
         });
         // expect auth0 delete user to have been called
-        expect(auth0Spy).toHaveBeenCalledWith(auth0User.user_id);
+        expect(auth0Spy).toHaveBeenCalledWith(
+          auth0User.email,
+          auth0User.user_id,
+        );
       },
     );
     itif('CI' in process.env)(
