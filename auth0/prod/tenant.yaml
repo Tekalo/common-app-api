@@ -2,6 +2,8 @@ rules: []
 rulesConfigs: []
 hooks: []
 pages:
+  - name: error_page
+    url: https://www.tekalo.org/500
   - name: login
     enabled: false
     html: ./pages/login.html
@@ -12,6 +14,7 @@ resourceServers:
   - name: Common-App-API
     identifier: auth0.capp.com
     allow_offline_access: false
+    enforce_policies: true
     scopes:
       - value: create:users
         description: create a user
@@ -25,6 +28,7 @@ resourceServers:
         description: get connections
     signing_alg: RS256
     skip_consent_for_verifiable_first_party_clients: true
+    token_dialect: access_token
     token_lifetime: 86400
     token_lifetime_for_web: 7200
 clients:
@@ -93,6 +97,7 @@ clients:
     app_type: spa
     callbacks:
       - https://www.tekalo.org
+      - https://www.tekalo.org/signin-action
       - https://prod.common-app-frontend.pages.dev
     client_aliases: []
     cross_origin_auth: false
@@ -293,7 +298,11 @@ tenant:
   enabled_locales:
     - en
   flags:
+    new_universal_login_experience_enabled: true
+    universal_login: true
     revoke_refresh_token_grant: false
+    require_signed_request_object: false
+    dashboard_new_onboarding: false
     disable_clickjack_protection_headers: false
   friendly_name: Tekalo
   picture_url: https://auth0-assets-axb.pages.dev/tekalogo-logo-small.png
@@ -756,7 +765,15 @@ attackProtection:
       pre-user-registration:
         max_attempts: 50
         rate: 1200
-logStreams: []
+logStreams:
+  - name: Amazon EventBridge
+    sink:
+      awsAccountId: '297669039735'
+      awsRegion: us-east-1
+      awsPartnerEventSource: >-
+        aws.partner/auth0.com/sf-futuresengine-prod-216e8292-428a-4995-b75f-7efa3c6f2b77/auth0.logs
+    status: active
+    type: eventbridge
 customDomains:
   - domain: login.futuresengine.com
     primary: true
