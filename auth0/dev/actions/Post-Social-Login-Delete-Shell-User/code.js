@@ -6,6 +6,8 @@
 */
 exports.onExecutePostLogin = async (event, api) => {
 
+  const axios = require('axios');
+
   const ManagementClient = require('auth0').ManagementClient;
 
    const management = new ManagementClient({
@@ -44,9 +46,38 @@ exports.onExecutePostLogin = async (event, api) => {
         } catch(e) {
           throw new Error(`Could not delete user with ID ${shellUserId}`);
         }
+
+        // Update Auth0Id of user in Tekalo DB from shell ID to new social user ID
+        try {
+          const { data: tokenData } = await axios.post('https://capp-auth.dev.apps.futurestech.cloud/oauth/token', {
+              client_id: event.secrets.tekaloClientId,
+              client_secret: event.secrets.tekaloClientSecret, // make me a secret
+              audience: "auth0.capp.com",
+              grant_type: "client_credentials"
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json'
+            },
+          });
+          const { access_token } = tokenData;
+          const { status } = await axios.put(`https://capp-api.dev.apps.futurestech.cloud/applicants/${shellUserId}`, {
+            auth0Id: event.user.user_id // new userId
+          }, {
+            headers: {
+              'Authorization': `Bearer ${access_token}`
+            },
+          });
+          if (status !== 200) {
+            throw new Error(`Failed to login user ${event.user.email} via social login`);
+          }
+
+        } catch (e){
+          throw new Error(`Failed to login user ${event.user.email} via social login`);
+        }
       }
     } catch (e) {
-      throw new Error(`Something went wrong when determining whether to delete shell user ${userEmail}`);
+      throw new Error(`Failed to login user ${event.user.email} via social login`);
     }
   }
 };

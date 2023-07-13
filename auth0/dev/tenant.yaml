@@ -2,6 +2,8 @@ rules: []
 rulesConfigs: []
 hooks: []
 pages:
+  - name: error_page
+    url: https://staging.common-app-frontend.pages.dev/500
   - name: login
     enabled: false
     html: ./pages/login.html
@@ -24,6 +26,8 @@ resourceServers:
         description: get user idp tokens
       - value: read:connections
         description: get connections
+      - value: update:tekalo_db_user_auth0_id
+        description: Update auth0Id of user in Tekalo DB
     signing_alg: RS256
     skip_consent_for_verifiable_first_party_clients: true
     token_dialect: access_token
@@ -87,6 +91,38 @@ clients:
       rotation_type: non-rotating
     sso_disabled: false
     token_endpoint_auth_method: client_secret_post
+  - name: Tekalo Auth0 Action Management
+    allowed_clients: []
+    app_type: non_interactive
+    callbacks: []
+    client_aliases: []
+    cross_origin_auth: false
+    custom_login_page_on: true
+    description: Used for the Auth0 Action to authenticate with Tekalo API
+    grant_types:
+      - client_credentials
+    is_first_party: true
+    is_token_endpoint_ip_header_trusted: false
+    jwt_configuration:
+      alg: RS256
+      lifetime_in_seconds: 36000
+      secret_encoded: false
+    native_social_login:
+      apple:
+        enabled: false
+      facebook:
+        enabled: false
+    oidc_conformant: true
+    refresh_token:
+      expiration_type: non-expiring
+      leeway: 0
+      infinite_token_lifetime: true
+      infinite_idle_token_lifetime: true
+      token_lifetime: 31557600
+      idle_token_lifetime: 2592000
+      rotation_type: non-rotating
+    sso_disabled: false
+    token_endpoint_auth_method: client_secret_post
   - name: Tekalo Dev
     allowed_clients: []
     allowed_logout_urls:
@@ -98,6 +134,9 @@ clients:
       - http://localhost:3000
       - http://localhost:3001
       - https://*.common-app-frontend.pages.dev
+      - http://localhost:3000/signin-action
+      - http://localhost:3001/signin-action
+      - https://*.common-app-frontend.pages.dev/signin-action
     client_aliases: []
     client_metadata: {}
     cross_origin_auth: false
@@ -215,6 +254,7 @@ databases:
     enabled_clients:
       - API Explorer Application
       - Deploy CLI
+      - Tekalo Auth0 Action Management
       - Tekalo Dev
       - Tekalo Management
       - Tekalo Staging
@@ -253,6 +293,7 @@ connections:
     strategy: email
     enabled_clients:
       - Deploy CLI
+      - Tekalo Auth0 Action Management
       - Tekalo Management
       - Tekalo Staging
     is_domain_connection: false
@@ -273,6 +314,7 @@ connections:
     enabled_clients:
       - API Explorer Application
       - Deploy CLI
+      - Tekalo Auth0 Action Management
       - Tekalo Dev
       - Tekalo Management
       - Tekalo Staging
@@ -289,6 +331,7 @@ connections:
   - name: linkedin
     strategy: linkedin
     enabled_clients:
+      - Tekalo Auth0 Action Management
       - Tekalo Dev
       - Tekalo Staging
     is_domain_connection: false
@@ -484,6 +527,14 @@ clientGrants:
       - read:authentication_methods
       - update:authentication_methods
       - delete:authentication_methods
+  - client_id: Tekalo Auth0 Action Management
+    audience: auth0.capp.com
+    scope:
+      - read:connections
+      - update:tekalo_db_user_auth0_id
+  - client_id: Tekalo Management
+    audience: auth0.capp.com
+    scope: []
   - client_id: Tekalo Management
     audience: https://sf-capp-dev.us.auth0.com/api/v2/
     scope:
@@ -690,12 +741,18 @@ actions:
         version: v3
   - name: Post-Social-Login-Delete-Shell-User
     code: ./actions/Post-Social-Login-Delete-Shell-User/code.js
-    dependencies: []
+    dependencies:
+      - name: auth0
+        version: 3.5.0
+      - name: axios
+        version: 1.4.0
     deployed: true
-    runtime: node16
+    runtime: node18-actions
     secrets:
       - name: clientSecret
       - name: clientId
+      - name: tekaloClientSecret
+      - name: tekaloClientId
     status: built
     supported_triggers:
       - id: post-login
@@ -739,7 +796,15 @@ attackProtection:
       pre-user-registration:
         max_attempts: 50
         rate: 1200
-logStreams: []
+logStreams:
+  - name: Amazon EventBridge
+    sink:
+      awsAccountId: '297530360210'
+      awsRegion: us-east-1
+      awsPartnerEventSource: >-
+        aws.partner/auth0.com/sf-capp-dev-7ffe5c7f-3382-471e-831a-5c3811a9020f/auth0.logs
+    status: active
+    type: eventbridge
 customDomains:
   - domain: capp-auth.dev.apps.futurestech.cloud
     primary: true
