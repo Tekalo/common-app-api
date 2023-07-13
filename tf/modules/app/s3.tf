@@ -98,6 +98,11 @@ data "aws_iam_policy_document" "cloudtrail_access" {
       identifiers = ["cloudtrail.amazonaws.com"]
     }
     actions = ["s3:GetBucktAcl","s3:PutObject"]
+
+    resources = [
+      aws_s3_bucket.cloudtrail_access.arn,
+      "${aws_s3_bucket.cloudtrail_access.arn}/*"
+    ]
   }
 }
 resource "aws_cloudtrail" "upload_files_bucket_trail" {
