@@ -84,7 +84,7 @@ data "aws_iam_policy_document" "cloudtrail_access" {
 }
 resource "aws_cloudtrail" "upload_files_bucket_trail" {
   name  = "UploadFilesBucketTrail"
-  s3_bucket_name = aws_s3_bucket.cloudtrail
+  s3_bucket_name = aws_s3_bucket.cloudtrail.id
   s3_key_prefix = "s3"
   include_global_service_events = false
 
