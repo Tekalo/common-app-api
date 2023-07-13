@@ -88,7 +88,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "cloudtrail_lifecycle" {
 }
 resource "aws_s3_bucket_policy" "cloudtrail_access" {
   bucket = aws_s3_bucket.cloudtrail.id
-  policy = jsonencode({})
+  policy = data.aws_iam_policy_document.cloudtrail_access.json
 }
 
 data "aws_iam_policy_document" "cloudtrail_access" {
