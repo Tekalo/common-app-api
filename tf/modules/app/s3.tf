@@ -97,7 +97,7 @@ data "aws_iam_policy_document" "cloudtrail_access" {
       type = "Service"
       identifiers = ["cloudtrail.amazonaws.com"]
     }
-    actions = ["s3:GetBucktAcl","s3:PutObject"]
+    actions = ["s3:GetBucketAcl","s3:PutObject"]
 
     resources = [
       aws_s3_bucket.cloudtrail.arn,
