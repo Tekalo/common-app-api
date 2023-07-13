@@ -30,7 +30,7 @@ resource "aws_iam_role_policy" "s3_policy" {
 
 data "aws_iam_policy_document" "task_s3_policy" {
   statement {
-    actions   = [
+    actions = [
       "s3:GetObject",
       "s3:PutObject",
       "s3:AbortMultipartUpload",
@@ -94,7 +94,7 @@ resource "aws_cloudtrail" "upload_files_bucket_trail" {
 
     data_resource {
       type = "AWS::S3::Object"
-      values = ["${data.aws_s3_bucket.upload_files.arn}/"]
+      values = ["${aws_s3_bucket.upload_files.arn}/"]
     }
   }
 }
