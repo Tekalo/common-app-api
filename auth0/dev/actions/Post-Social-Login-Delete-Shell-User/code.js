@@ -1,5 +1,11 @@
 /**
 * Handler that will be called during the execution of a PostLogin flow.
+* When an applicant registers with Tekalo for the first time, we create a shell Auth0 account for them so that
+* they are able to set a password later on.
+* If they come back to Tekalo, and try logging in with a social provider, we want to remove the shell account
+* in lieu of their new, social account. This action will:
+* 1. Delete their shell account
+* 2. Update their auth0ID in the Tekalo DB with that of their new social logged-in account 
 *
 * @param {Event} event - Details about the user and the context in which they are logging in.
 * @param {PostLoginAPI} api - Interface whose methods can be used to change the behavior of the login.
@@ -39,6 +45,7 @@ exports.onExecutePostLogin = async (event, api) => {
       }
       if (shellUserId){
         try {
+          // Delete the shell user that Tekalo created upon initial registration
           await management.deleteUser({id:shellUserId})
           // Set flag on our social user that we have already deleted their shell account
           api.user.setAppMetadata("has_cleaned_shell_accounts", true);
@@ -47,11 +54,11 @@ exports.onExecutePostLogin = async (event, api) => {
           throw new Error(`Could not delete user with ID ${shellUserId}`);
         }
 
-        // Update Auth0Id of user in Tekalo DB from shell ID to new social user ID
         try {
+          // Get token from Auth0 to authenticate with Tekalo API
           const { data: tokenData } = await axios.post('https://capp-auth.dev.apps.futurestech.cloud/oauth/token', {
               client_id: event.secrets.tekaloClientId,
-              client_secret: event.secrets.tekaloClientSecret, // make me a secret
+              client_secret: event.secrets.tekaloClientSecret,
               audience: "auth0.capp.com",
               grant_type: "client_credentials"
           },
@@ -61,8 +68,9 @@ exports.onExecutePostLogin = async (event, api) => {
             },
           });
           const { access_token } = tokenData;
+        // Call Tekalo API to update Auth0Id of user in Tekalo DB from shell Auth0Id to new socially logged-in Auth0Id
           const { status } = await axios.put(`https://capp-api.dev.apps.futurestech.cloud/applicants/${shellUserId}`, {
-            auth0Id: event.user.user_id // new userId
+            auth0Id: event.user.user_id // Auth0Id of new, socially logged-in user
           }, {
             headers: {
               'Authorization': `Bearer ${access_token}`
