@@ -295,7 +295,8 @@ class ApplicantController {
         e instanceof Error ? { cause: e } : undefined,
       );
     }
-    await this.auth0Service.deleteUsers(applicantToDelete.email);
+    const { email, auth0Id } = applicantToDelete;
+    await this.auth0Service.deleteUsers(email, auth0Id);
     const deletionEmail = this.emailService.generateApplicantDeletionEmail(
       applicantToDelete.email,
       applicantToDelete.name,
@@ -332,7 +333,8 @@ class ApplicantController {
     }
 
     if (applicantToDelete?.email) {
-      await this.auth0Service.deleteUsers(applicantToDelete.email);
+      const { email } = applicantToDelete;
+      await this.auth0Service.deleteUsers(email, auth0Id);
       const deletionEmail =
         this.emailService.generateApplicantDeletionCompleteEmail(
           applicantToDelete.email,
@@ -372,7 +374,8 @@ class ApplicantController {
         e instanceof Error ? { cause: e } : undefined,
       );
     }
-    await this.auth0Service.deleteUsers(applicantToDelete.email);
+    const { email, auth0Id } = applicantToDelete;
+    await this.auth0Service.deleteUsers(email, auth0Id);
     return { id: applicantId };
   }
 

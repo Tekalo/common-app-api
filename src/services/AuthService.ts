@@ -112,10 +112,14 @@ class AuthService {
    * @param email
    * @returns
    */
-  async deleteUsers(email: string) {
+  async deleteUsers(email: string, auth0Id: string) {
     const auth0Client: ManagementClient = this.getClient();
     let responseBody;
     try {
+      // TODO: When we have account linking setup, we won't need to do the double delete
+      // Delete #1: Delete Auth0 User by ID
+      await auth0Client.deleteUser({ id: auth0Id });
+
       const allUsers = await auth0Client.getUsersByEmail(email);
       const deletionRequests: Array<Promise<void>> = [];
       allUsers.forEach((user) => {
@@ -123,6 +127,7 @@ class AuthService {
           deletionRequests.push(auth0Client.deleteUser({ id: user.user_id }));
         }
       });
+      // Delete #2: In case there is a mismatch between email and auth0ID, also attempt to delete by auth0 ID
       responseBody = await Promise.all(deletionRequests);
     } catch (e) {
       if (e instanceof Error) {
