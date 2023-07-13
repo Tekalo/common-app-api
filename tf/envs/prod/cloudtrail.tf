@@ -65,7 +65,7 @@ data "aws_iam_policy_document" "cloudtrail_access" {
 resource "aws_cloudtrail" "upload_files_bucket_trail" {
   name  = "UploadFilesBucketTrail"
   s3_bucket_name = aws_s3_bucket.cloudtrail.id
-  s3_key_prefix = "s3/${aws_s3_bucket.upload_files.id}"
+  s3_key_prefix = "s3/${module.upload_files_bucket.name}"
   include_global_service_events = false
 
   event_selector {
@@ -74,7 +74,7 @@ resource "aws_cloudtrail" "upload_files_bucket_trail" {
 
     data_resource {
       type = "AWS::S3::Object"
-      values = ["${aws_s3_bucket.upload_files.arn}/"]
+      values = ["${module.upload_files_bucket.arn}/"]
     }
   }
 }
