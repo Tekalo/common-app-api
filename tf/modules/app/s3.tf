@@ -93,16 +93,34 @@ resource "aws_s3_bucket_policy" "cloudtrail_access" {
 
 data "aws_iam_policy_document" "cloudtrail_access" {
   statement {
+    sid       = "AWSCloudTrailAclCheck"
+    effect    = "Allow"
     principals {
       type = "Service"
       identifiers = ["cloudtrail.amazonaws.com"]
     }
-    actions = ["s3:GetBucketAcl","s3:PutObject"]
+    actions = ["s3:GetBucketAcl"]
+
+    resources = [aws_s3_bucket.cloudtrail.arn]
+  }
+  statement {
+    sid       = "AWSCloudTrailWrite"
+    effect    = "Allow"
+    principals {
+      type = "Service"
+      identifiers = ["cloudtrail.amazonaws.com"]
+    }
+    actions = ["s3:PutObject"]
 
     resources = [
       aws_s3_bucket.cloudtrail.arn,
       "${aws_s3_bucket.cloudtrail.arn}/*"
     ]
+    condition {
+      test     = "StringEquals"
+      variable = "s3:x-amz-acl"
+      values   = ["bucket-owner-full-control"]
+    }
   }
 }
 resource "aws_cloudtrail" "upload_files_bucket_trail" {
