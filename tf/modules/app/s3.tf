@@ -88,23 +88,24 @@ resource "aws_s3_bucket_lifecycle_configuration" "cloudtrail_lifecycle" {
 }
 resource "aws_s3_bucket_policy" "cloudtrail_access" {
   bucket = aws_s3_bucket.cloudtrail.id
-  policy = data.aws_iam_policy_document.cloudtrail_access.json
-}
-
-data "aws_iam_policy_document" "cloudtrail_access" {
-  statement {
-    principals {
-      type = "Service"
-      identifiers = ["cloudtrail.amazonaws.com"]
-    }
-    actions = ["s3:GetBucktAcl","s3:PutObject"]
-
-    resources = [
-      aws_s3_bucket.cloudtrail_access.arn,
-      "${aws_s3_bucket.cloudtrail_access.arn}/*"
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Id      = "cloudtrail_access_bucket_policy" 
+    Statement = [
+      {
+        Sid       = "GetAclPutObject"
+        Effect    = "Allow"
+        Principal = { "Service": "cloudtrail.amazonaws.com"}
+        Action    = ["s3:GetBucktAcl","s3:PutObject"]
+        Resource  =  [
+          aws_s3_bucket.cloudtrail_access.arn,
+          "${aws_s3_bucket.cloudtrail_access.arn}/*"
+        ]
+      }
     ]
-  }
+  })
 }
+
 resource "aws_cloudtrail" "upload_files_bucket_trail" {
   name  = "UploadFilesBucketTrail"
   s3_bucket_name = aws_s3_bucket.cloudtrail.id
