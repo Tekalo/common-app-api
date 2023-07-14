@@ -77,4 +77,5 @@ resource "aws_cloudtrail" "upload_files_bucket_trail" {
       values = ["${module.app.upload_files_bucket.arn}/"]
     }
   }
+  depends_on = [ aws_s3_bucket_policy.cloudtrail_access ]
 }
