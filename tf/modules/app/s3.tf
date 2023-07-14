@@ -62,3 +62,10 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "upload_files_encr
     }
   }
 }
+
+output "upload_files_bucket" {
+  value = {
+    name = aws_s3_bucket.upload_files.id
+    arn  = aws_s3_bucket.upload_files.arn
+  }
+}
