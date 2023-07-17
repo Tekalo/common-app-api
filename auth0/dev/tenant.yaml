@@ -213,6 +213,7 @@ clients:
     app_type: spa
     callbacks:
       - https://*.common-app-frontend.pages.dev
+      - https://*.common-app-frontend.pages.dev/signin-action
     client_aliases: []
     client_metadata: {}
     cross_origin_auth: false
@@ -749,10 +750,10 @@ actions:
     deployed: true
     runtime: node18-actions
     secrets:
-      - name: clientSecret
-      - name: clientId
-      - name: tekaloClientSecret
-      - name: tekaloClientId
+      - name: tekaloActionManagementClientSecret
+      - name: tekaloActionManagementClientId
+      - name: managementApiClientSecret
+      - name: managementApiClientId
     status: built
     supported_triggers:
       - id: post-login

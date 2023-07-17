@@ -18,8 +18,8 @@ exports.onExecutePostLogin = async (event, api) => {
 
    const management = new ManagementClient({
       domain: 'sf-capp-dev.us.auth0.com',
-      clientId: event.secrets.clientId,
-      clientSecret: event.secrets.clientSecret
+      clientId: event.secrets.managementApiClientId,
+      clientSecret: event.secrets.managementApiClientSecret
   });
   // Social login, first time for user who has never had their shell account cleaned
   if ((event.connection.name === 'google-oauth2' || event.connection.name === 'linkedin') &&
@@ -53,12 +53,12 @@ exports.onExecutePostLogin = async (event, api) => {
         } catch(e) {
           throw new Error(`Could not delete user with ID ${shellUserId}`);
         }
-
+      if (event.client.client_id === 'bk8hnOe5NfVA8xsVFy69iYJ1XEn42DTi') {
         try {
           // Get token from Auth0 to authenticate with Tekalo API
           const { data: tokenData } = await axios.post('https://capp-auth.dev.apps.futurestech.cloud/oauth/token', {
-              client_id: event.secrets.tekaloClientId,
-              client_secret: event.secrets.tekaloClientSecret,
+              client_id: event.secrets.tekaloActionManagementClientId,
+              client_secret: event.secrets.tekaloActionManagementClientSecret,
               audience: "auth0.capp.com",
               grant_type: "client_credentials"
           },
@@ -79,10 +79,10 @@ exports.onExecutePostLogin = async (event, api) => {
           if (status !== 200) {
             throw new Error(`Failed to login user ${event.user.email} via social login`);
           }
-
         } catch (e){
           throw new Error(`Failed to login user ${event.user.email} via social login`);
         }
+       }
       }
     } catch (e) {
       throw new Error(`Failed to login user ${event.user.email} via social login`);
