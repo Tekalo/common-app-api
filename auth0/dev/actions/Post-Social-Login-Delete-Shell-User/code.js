@@ -55,6 +55,9 @@ exports.onExecutePostLogin = async (event, api) => {
         }
       if (event.client.client_id === 'bk8hnOe5NfVA8xsVFy69iYJ1XEn42DTi') {
         try {
+          // Check our Action cache for an existing accessToken
+          let accessToken = api.cache.get('accessToken')?.value;
+          if (accessToken === undefined) {
           // Get token from Auth0 to authenticate with Tekalo API
           const { data: tokenData } = await axios.post('https://capp-auth.dev.apps.futurestech.cloud/oauth/token', {
               client_id: event.secrets.tekaloActionManagementClientId,
@@ -67,13 +70,17 @@ exports.onExecutePostLogin = async (event, api) => {
               'Content-Type': 'application/json'
             },
           });
-          const { access_token } = tokenData;
+          // Store accessToken in cache for the next X hours
+          const expiration = tokenData.expires_in * 1000; // accesstoken expiration in ms
+          api.cache.set('accessToken', tokenData.access_token, {expires_at: expiration - 60000});
+          accessToken = tokenData.access_token;
+        }
         // Call Tekalo API to update Auth0Id of user in Tekalo DB from shell Auth0Id to new socially logged-in Auth0Id
           const { status } = await axios.put(`https://capp-api.dev.apps.futurestech.cloud/applicants/${shellUserId}`, {
             auth0Id: event.user.user_id // Auth0Id of new, socially logged-in user
           }, {
             headers: {
-              'Authorization': `Bearer ${access_token}`
+              'Authorization': `Bearer ${accessToken}`
             },
           });
           if (status !== 200) {
