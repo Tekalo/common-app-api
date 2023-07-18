@@ -590,12 +590,6 @@
           "openToRelocate": {
             "type": "string"
           },
-          "openToRemote": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
           "openToRemoteMulti": {
             "type": "array",
             "items": {
@@ -647,7 +641,6 @@
           "interestRoles",
           "currentLocation",
           "openToRelocate",
-          "openToRemote",
           "interestCauses",
           "workAuthorization",
           "interestGovt",
@@ -719,18 +712,11 @@
           "openToRelocate": {
             "type": "string"
           },
-          "openToRemote": {
-            "oneOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              }
-            ]
+          "openToRemoteMulti": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           },
           "desiredSalary": {
             "type": "string"

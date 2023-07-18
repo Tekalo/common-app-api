@@ -73,7 +73,7 @@
         "interestGovt": true,
         "interestGovtEmplTypes": ["paid"],
         "openToRelocate": "not sure",
-        "openToRemote": "no remote",
+        "openToRemoteMulti": ["hybrid", "not sure"],
         "previousImpactExperience": true,
         "workAuthorization": "authorized",
         "essayResponse": "Flubber was the greatest movie of all time"
@@ -95,7 +95,7 @@
         "desiredSalary": "$3",
         "interestGovt": false,
         "openToRelocate": "not sure",
-        "openToRemote": "only remote",
+        "openToRemoteMulti": ["remote", "in-person", "hybrid"],
         "previousImpactExperience": false,
         "workAuthorization": "authorized",
         "essayResponse": "Good ideas are always crazy until they're not."
@@ -118,7 +118,7 @@
         "interestGovt": true,
         "interestGovtEmplTypes": ["paid"],
         "openToRelocate": "not sure",
-        "openToRemote": "no remote",
+        "openToRemoteMulti": ["remote", "hybrid"],
         "previousImpactExperience": true,
         "workAuthorization": "authorized",
         "essayResponse": "Flubber was the greatest movie of all time"

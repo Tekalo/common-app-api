@@ -388,7 +388,6 @@ describe('POST /applicants/me/submissions', () => {
         applicantId: applicantBody.id,
         createdAt: expect.any(String),
         ...testBody,
-        openToRemote: null,
         openToRemoteMulti: ['in-person', 'hybrid'],
       });
     });
@@ -419,38 +418,6 @@ describe('POST /applicants/me/submissions', () => {
         .set('Authorization', `Bearer ${token}`)
         .expect(400);
       expect(body).toHaveProperty('title', 'Validation Error');
-    });
-
-    // TODO: Remove test once we remove support for openToRemote
-    it('should accept openToRemote value', async () => {
-      const randomString = getRandomString();
-      const testSubmission = applicantSubmissionGenerator.getAPIRequestBody();
-      const token = await authHelper.getToken(
-        `bboberson${randomString}@gmail.com`,
-      );
-      await request(dummyAuthApp)
-        .post('/applicants')
-        .send({
-          name: 'Bob Boberson',
-          auth0Id: 'auth0|123456',
-          email: `bboberson${randomString}@gmail.com`,
-          preferredContact: 'email',
-          searchStatus: 'active',
-          acceptedTerms: true,
-          acceptedPrivacy: true,
-        });
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      delete testSubmission.openToRemoteMulti;
-      testSubmission.openToRemote = ['hybrid'];
-      const { body }: { body: ApplicantSubmission } = await request(
-        dummyAuthApp,
-      )
-        .post('/applicants/me/submissions')
-        .send({ ...testSubmission })
-        .set('Authorization', `Bearer ${token}`)
-        .expect(200);
-      expect(body.openToRemoteMulti).toEqual(['hybrid']);
     });
 
     it('should return 400 error if request body has invalid openToRelocate value', async () => {
@@ -785,36 +752,6 @@ describe('POST /applicants/me/submissions/draft', () => {
         'resumeUrl',
         'https://bobcanREALLYbuild.com/resume',
       );
-    });
-    it('should accept openToRemote value', async () => {
-      const randomString = getRandomString();
-      const testSubmission = applicantSubmissionGenerator.getAPIRequestBody();
-      const token = await authHelper.getToken(
-        `bboberson${randomString}@gmail.com`,
-      );
-      await request(dummyAuthApp)
-        .post('/applicants')
-        .send({
-          name: 'Bob Boberson',
-          auth0Id: 'auth0|123456',
-          email: `bboberson${randomString}@gmail.com`,
-          preferredContact: 'email',
-          searchStatus: 'active',
-          acceptedTerms: true,
-          acceptedPrivacy: true,
-        });
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      delete testSubmission.openToRemoteMulti;
-      testSubmission.openToRemote = ['in-person'];
-      const { body }: { body: ApplicantSubmission } = await request(
-        dummyAuthApp,
-      )
-        .post('/applicants/me/submissions/draft')
-        .send({ ...testSubmission })
-        .set('Authorization', `Bearer ${token}`)
-        .expect(200);
-      expect(body.openToRemoteMulti).toEqual(['in-person']);
     });
   });
 

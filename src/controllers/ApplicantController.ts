@@ -172,17 +172,10 @@ class ApplicantController {
     data: ApplicantSubmissionBody,
   ): Promise<ApplicantSubmission> {
     try {
-      const {
-        openToRemote,
-        openToRemoteMulti,
-        otherCauses,
-        ...restOfSubmission
-      } = data;
+      const { otherCauses, ...restOfSubmission } = data;
       const applicantSubmission = await this.prisma.applicantSubmission.create({
         data: {
           ...restOfSubmission,
-          // TODO: Remove support for openToRemote
-          openToRemoteMulti: openToRemoteMulti || openToRemote,
           otherCauses: otherCauses || [],
           applicantId,
         },
@@ -425,23 +418,15 @@ class ApplicantController {
     data: ApplicantDraftSubmissionBody,
   ): Promise<ApplicantDraftSubmission> {
     try {
-      const {
-        openToRemote,
-        openToRemoteMulti,
-        otherCauses,
-        ...restOfSubmission
-      } = data;
-      // TODO: Remove support for openToRemote
+      const { otherCauses, ...restOfSubmission } = data;
       return await this.prisma.applicantDraftSubmission.upsert({
         create: {
           ...restOfSubmission,
-          openToRemoteMulti: openToRemoteMulti || openToRemote || undefined,
           otherCauses: otherCauses || [],
           applicantId,
         },
         update: {
           ...restOfSubmission,
-          openToRemoteMulti: openToRemoteMulti || openToRemote || undefined,
           otherCauses: otherCauses || [],
         },
         where: { applicantId },
