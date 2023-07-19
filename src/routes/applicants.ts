@@ -1,4 +1,5 @@
 import ApplicantController from '@App/controllers/ApplicantController.js';
+import UploadController from '@App/controllers/UploadController.js';
 import {
   ApplicantRequestBodySchema,
   ApplicantSubmissionRequestBodySchema,
@@ -12,6 +13,8 @@ import {
   ApplicantStateBody,
   ApplicantUpdateBody,
 } from '@App/resources/types/applicants.js';
+import { UploadRequestBodySchema } from '@App/resources/schemas/uploads.js';
+import { UploadRequestBody } from '@App/resources/types/uploads.js';
 import { setCookie } from '@App/services/cookieService.js';
 
 import AuthService from '@App/services/AuthService.js';
@@ -41,6 +44,9 @@ const applicantRoutes = (
     emailService,
     monitoringService,
   );
+
+  const uploadController = new UploadController(authService);
+
   const appConfig = config;
   appConfig.auth0.express.cacheMaxAge = 12 * 60 * 60 * 1000; // 12 hours
   const authenticator = new Authenticator(prisma, appConfig);
@@ -179,6 +185,23 @@ const applicantRoutes = (
       applicantController
         // id type assertion because our middlware setApplicantId() guarantees an applicant ID is set
         .getApplicant(id as number)
+        .then((result) => {
+          res.status(200).json(result);
+        })
+        .catch((err) => next(err));
+    },
+  );
+
+  // resume upload
+  router.post(
+    '/me/uploads/resume',
+    authenticator.verifyJwtOrCookie.bind(authenticator) as RequestHandler,
+    (req: Request, res: Response, next) => {
+      const appBody = req.body as UploadRequestBody;
+      const applicantID = req.auth?.payload.id || req.session.applicant.id; // token applicant ID
+      const validatedBody = UploadRequestBodySchema.parse(appBody);
+      uploadController
+        .createSignedUploadLink(applicantID, validatedBody)
         .then((result) => {
           res.status(200).json(result);
         })
