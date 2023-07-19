@@ -9,7 +9,9 @@ class DummyAuthService extends AuthService {
   }
 
   // eslint-disable-next-line
-  async deleteUser(id: string) {}
+  async deleteUsers(email: string, auth0Id: string): Promise<void[]> {
+    return [];
+  }
 
   // eslint-disable-next-line
   async createUser() {
