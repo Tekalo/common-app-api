@@ -598,7 +598,8 @@
             "type": "array",
             "items": {
               "type": "string"
-            }
+            },
+            "deprecated": true
           },
           "openToRemoteMulti": {
             "type": "array",
@@ -730,7 +731,8 @@
             "type": "array",
             "items": {
               "type": "string"
-            }
+            },
+            "deprecated": true
           },
           "openToRemoteMulti": {
             "type": "array",
