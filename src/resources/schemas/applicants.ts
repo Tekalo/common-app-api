@@ -66,7 +66,6 @@ const ApplicantResponseBodySchema = z.object({
 });
 
 const ApplicantSubmissionRequestBodySchema = z.object({
-  // TODO re name these they are way 2 long
   originTag: z.string(),
   lastRole: z.string().max(255),
   lastOrg: z.string().max(255),
@@ -77,7 +76,8 @@ const ApplicantSubmissionRequestBodySchema = z.object({
   githubUrl: z.string().max(500).nullable().optional(),
   portfolioUrl: z.string().max(500).nullable().optional(),
   portfolioPassword: z.string().max(255).nullable().optional(),
-  resumeUrl: z.string().max(500).optional(),
+  resumeUrl: z.string().max(500).optional(), // deprecated
+  resumeUploadId: z.string().uuid().optional(),
   resumePassword: z.string().max(255).nullable().optional(),
   hoursPerWeek: z.string().max(255).nullable().optional(),
   interestEmploymentType: z.array(EmploymentType),

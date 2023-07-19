@@ -382,7 +382,7 @@ describe('POST /applicants/me/submissions', () => {
         .send(testBody)
         .set('Authorization', `Bearer ${token}`)
         .expect(200);
-      expect(Object.keys(body).length).toEqual(32);
+      expect(Object.keys(body).length).toEqual(33);
       expect(body).toEqual({
         id: expect.any(Number),
         applicantId: applicantBody.id,

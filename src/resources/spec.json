@@ -558,6 +558,10 @@
             "type": "string"
           },
           "resumeUrl": {
+            "type": "string",
+            "deprecated": true
+          },
+          "resumeUploadId": {
             "type": "string"
           },
           "resumePassword": {
@@ -642,12 +646,11 @@
           "lastOrg",
           "yoe",
           "skills",
-          "resumeUrl",
           "interestEmploymentType",
           "interestRoles",
           "currentLocation",
           "openToRelocate",
-          "openToRemote",
+          "openToRemoteMulti",
           "interestCauses",
           "workAuthorization",
           "interestGovt",
@@ -693,6 +696,10 @@
             "type": "string"
           },
           "resumeUrl": {
+            "type": "string",
+            "deprecated": true
+          },
+          "resumeUploadId": {
             "type": "string"
           },
           "resumePassword": {
@@ -720,17 +727,16 @@
             "type": "string"
           },
           "openToRemote": {
-            "oneOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              }
-            ]
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "openToRemoteMulti": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           },
           "desiredSalary": {
             "type": "string"

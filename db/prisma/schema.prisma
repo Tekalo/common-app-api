@@ -41,6 +41,7 @@ model ApplicantSubmission {
   createdAt DateTime @default(now())
   originTag String // Whose link did they click, data attribution  // enum
 
+  resumeUploadId      String?
   resumeUrl      String?
   resumePassword String?
 
@@ -89,6 +90,7 @@ model ApplicantDraftSubmission {
   updatedAt DateTime @updatedAt
   originTag String? // Whose link did they click, data attribution  // enum
 
+  resumeUploadId      String?
   resumeUrl      String?
   resumePassword String?
 
