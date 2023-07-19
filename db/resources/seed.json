@@ -66,6 +66,7 @@
       "application": {
         "originTag": "SF",
         "resumeUrl": "www.myresume.com",
+        "resumeUploadId": "12344444-0000-41d4-a716-446655440000",
         "lastOrg": "Apfel",
         "lastRole": "Just some guy",
         "yoe": ">11",
@@ -73,7 +74,7 @@
         "interestGovt": true,
         "interestGovtEmplTypes": ["paid"],
         "openToRelocate": "not sure",
-        "openToRemote": "no remote",
+        "openToRemoteMulti": ["in-person", "hybrid"],
         "previousImpactExperience": true,
         "workAuthorization": "authorized",
         "essayResponse": "Flubber was the greatest movie of all time"
@@ -88,6 +89,7 @@
       "application": {
         "originTag": "TSLA",
         "resumeUrl": "www.mydadsresume.com",
+        "resumeUploadId": "550e8400-e29b-41d4-a716-446655440000",
         "lastOrg": "Illuminati",
         "lastRole": "Supreme Emperor",
         "yoe": "1",
@@ -95,7 +97,7 @@
         "desiredSalary": "$3",
         "interestGovt": false,
         "openToRelocate": "not sure",
-        "openToRemote": "only remote",
+        "openToRemoteMulti": ["not sure"],
         "previousImpactExperience": false,
         "workAuthorization": "authorized",
         "essayResponse": "Good ideas are always crazy until they're not."
@@ -111,6 +113,7 @@
       "application": {
         "originTag": "SF",
         "resumeUrl": null,
+        "resumeUploadId": null,
         "lastOrg": "",
         "lastRole": "Just some guy",
         "yoe": ">11",
@@ -118,7 +121,7 @@
         "interestGovt": true,
         "interestGovtEmplTypes": ["paid"],
         "openToRelocate": "not sure",
-        "openToRemote": "no remote",
+        "openToRemoteMulti": ["remote", "hybrid"],
         "previousImpactExperience": true,
         "workAuthorization": "authorized",
         "essayResponse": "Flubber was the greatest movie of all time"
