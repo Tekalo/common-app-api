@@ -203,16 +203,16 @@ enum UploadStatus {
 }
 
 model Uploads {
-  id                       Int                        @id @default(autoincrement())
-  applicant                Applicant                  @relation(fields: [applicantId], references: [id], onDelete: Cascade)
-  applicantId              Int
-  type                     UploadType // enum
-  originalFilename         String
-  createdAt                DateTime                   @default(now())
-  completedAt              DateTime?
-  status                   UploadStatus               @default(REQUESTED) // enum
-  ApplicantSubmission      ApplicantSubmission        @relation(fields: [applicantSubmissionId], references: [id], onDelete: Cascade)
-  applicantSubmissionId     Int @unique
-  ApplicantDraftSubmission ApplicantDraftSubmission   @relation(fields: [applicantDraftSubmissionId], references: [id], onDelete: Cascade)
-  applicantDraftSubmissionId  Int @unique
+  id                         Int                      @id @default(autoincrement())
+  applicant                  Applicant                @relation(fields: [applicantId], references: [id], onDelete: Cascade)
+  applicantId                Int
+  type                       UploadType // enum
+  originalFilename           String
+  createdAt                  DateTime                 @default(now())
+  completedAt                DateTime?
+  status                     UploadStatus             @default(REQUESTED) // enum
+  ApplicantSubmission        ApplicantSubmission      @relation(fields: [applicantSubmissionId], references: [id], onDelete: Cascade)
+  applicantSubmissionId      Int                      @unique
+  ApplicantDraftSubmission   ApplicantDraftSubmission @relation(fields: [applicantDraftSubmissionId], references: [id], onDelete: Cascade)
+  applicantDraftSubmissionId Int                      @unique
 }
