@@ -1,5 +1,5 @@
 -- AlterTable
-ALTER TABLE "ApplicantDraftSubmission" ADD COLUMN     "resumeUploadId" TEXT;
+ALTER TABLE "ApplicantDraftSubmission" ADD COLUMN     "resumeId" TEXT;
 
 -- AlterTable
-ALTER TABLE "ApplicantSubmission" ADD COLUMN     "resumeUploadId" TEXT;
+ALTER TABLE "ApplicantSubmission" ADD COLUMN     "resumeId" TEXT;

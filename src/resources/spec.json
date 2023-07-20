@@ -561,8 +561,8 @@
             "type": "string",
             "deprecated": true
           },
-          "resumeUploadId": {
-            "type": "string"
+          "resumeId": {
+            "type": "number"
           },
           "resumePassword": {
             "type": "string"
@@ -700,8 +700,8 @@
             "type": "string",
             "deprecated": true
           },
-          "resumeUploadId": {
-            "type": "string"
+          "resumeId": {
+            "type": "number"
           },
           "resumePassword": {
             "type": "string"
