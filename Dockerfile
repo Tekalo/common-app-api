@@ -1,4 +1,4 @@
-FROM node:18.16.1-slim AS base
+FROM node:18.17.0-slim AS base
 WORKDIR /api
 RUN chown node:node /api
 RUN apt-get update && apt-get install -y \
