@@ -389,7 +389,7 @@ describe('POST /applicants/me/submissions', () => {
         createdAt: expect.any(String),
         ...testBody,
         openToRemote: null,
-        resumeId: null,
+        resumeUploadId: null,
         openToRemoteMulti: ['in-person', 'hybrid'],
       });
     });

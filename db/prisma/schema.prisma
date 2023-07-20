@@ -30,7 +30,7 @@ model Applicant {
   acceptedPrivacy   DateTime                   @default(now())
   followUpOptIn     Boolean                    @default(false)
   isPaused          Boolean                    @default(false)
-  uploads           Uploads[]
+  uploads           Upload[]
 }
 
 model ApplicantSubmission {
@@ -42,8 +42,8 @@ model ApplicantSubmission {
   createdAt DateTime @default(now())
   originTag String // Whose link did they click, data attribution  // enum
 
-  resume         Uploads?
-  resumeId       Int?
+  resume         Upload?
+  resumeUploadId Int?
   resumeUrl      String? // TODO: Deprecate
   resumePassword String?
 
@@ -92,8 +92,8 @@ model ApplicantDraftSubmission {
   updatedAt DateTime @updatedAt
   originTag String? // Whose link did they click, data attribution  // enum
 
-  resume         Uploads?
-  resumeId       Int?
+  resume         Upload?
+  resumeUploadId Int?
   resumeUrl      String? // TODO: Deprecate
   resumePassword String?
 
@@ -202,7 +202,7 @@ enum UploadStatus {
   FAILURE
 }
 
-model Uploads {
+model Upload {
   id                         Int                       @id @default(autoincrement())
   applicant                  Applicant                 @relation(fields: [applicantId], references: [id], onDelete: Cascade)
   applicantId                Int

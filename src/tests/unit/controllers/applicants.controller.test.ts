@@ -513,7 +513,7 @@ describe('Applicant Controller', () => {
         githubUrl: 'https://github.com/bboberson',
         portfolioUrl: null,
         portfolioPassword: '',
-        resumeId: null,
+        resumeUploadId: null,
         resumeUrl: 'myportfolio.com',
         resumePassword: null,
         hoursPerWeek: null,
