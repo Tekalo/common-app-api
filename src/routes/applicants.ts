@@ -29,6 +29,8 @@ import Authenticator from '@App/middleware/authenticator.js';
 import { RequestWithJWT } from '@App/resources/types/auth0.js';
 import EmailService from '@App/services/EmailService.js';
 import MonitoringService from '@App/services/MonitoringService.js';
+import S3Service from '@App/services/S3Service.js';
+import UploadService from '@App/services/UploadService.js';
 import { BaseConfig } from '@App/resources/types/shared.js';
 
 const applicantRoutes = (
@@ -45,7 +47,8 @@ const applicantRoutes = (
     monitoringService,
   );
 
-  const uploadController = new UploadController(authService);
+  const uploadService = new UploadService(prisma, new S3Service());
+  const uploadController = new UploadController(uploadService);
 
   const appConfig = config;
   appConfig.auth0.express.cacheMaxAge = 12 * 60 * 60 * 1000; // 12 hours
@@ -198,10 +201,10 @@ const applicantRoutes = (
     authenticator.verifyJwtOrCookie.bind(authenticator) as RequestHandler,
     (req: Request, res: Response, next) => {
       const appBody = req.body as UploadRequestBody;
-      const applicantID = req.auth?.payload.id || req.session.applicant.id; // token applicant ID
+      const applicantID = req.auth?.payload.id || req.session.applicant.id;
       const validatedBody = UploadRequestBodySchema.parse(appBody);
       uploadController
-        .createSignedUploadLink(applicantID, validatedBody)
+        .getResumeUploadUrl(applicantID, validatedBody)
         .then((result) => {
           res.status(200).json(result);
         })
