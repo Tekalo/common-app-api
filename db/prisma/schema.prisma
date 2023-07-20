@@ -42,8 +42,8 @@ model ApplicantSubmission {
   createdAt DateTime @default(now())
   originTag String // Whose link did they click, data attribution  // enum
 
-  resume         Upload?
-  resumeUploadId Int?
+  resumeUpload   Upload? @relation(fields: [resumeUploadId], references: [id])
+  resumeUploadId Int? @unique
   resumeUrl      String? // TODO: Deprecate
   resumePassword String?
 
@@ -92,8 +92,8 @@ model ApplicantDraftSubmission {
   updatedAt DateTime @updatedAt
   originTag String? // Whose link did they click, data attribution  // enum
 
-  resume         Upload?
-  resumeUploadId Int?
+  resumeUpload   Upload? @relation(fields: [resumeUploadId], references: [id])
+  resumeUploadId Int? @unique
   resumeUrl      String? // TODO: Deprecate
   resumePassword String?
 
@@ -211,8 +211,6 @@ model Upload {
   createdAt                  DateTime                  @default(now())
   completedAt                DateTime?
   status                     UploadStatus              @default(REQUESTED) // enum
-  ApplicantSubmission        ApplicantSubmission?      @relation(fields: [applicantSubmissionId], references: [id], onDelete: Cascade)
-  applicantSubmissionId      Int                       @unique
-  ApplicantDraftSubmission   ApplicantDraftSubmission? @relation(fields: [applicantDraftSubmissionId], references: [id], onDelete: Cascade)
-  applicantDraftSubmissionId Int                       @unique
+  ApplicantSubmission        ApplicantSubmission?
+  ApplicantDraftSubmission   ApplicantDraftSubmission?
 }
