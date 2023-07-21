@@ -6,6 +6,10 @@ import {
   ApplicantUpdateBody,
 } from '@App/resources/types/applicants.js';
 import {
+  UploadResponseBody,
+  UploadRequestBody,
+} from '@App/resources/types/uploads.js';
+import {
   Applicant,
   ApplicantDraftSubmission,
   ApplicantSubmission,
@@ -17,6 +21,7 @@ import CAPPError from '@App/resources/shared/CAPPError.js';
 import { Problem } from '@App/resources/types/shared.js';
 import EmailService from '@App/services/EmailService.js';
 import MonitoringService from '@App/services/MonitoringService.js';
+import UploadService from '@App/services/UploadService.js';
 import { AuthResult } from 'express-oauth2-jwt-bearer';
 import { Claims } from '@App/resources/types/auth0.js';
 import { AppMetadata, User, UserMetadata } from 'auth0';
@@ -30,16 +35,20 @@ class ApplicantController {
 
   private monitoringService: MonitoringService;
 
+  private uploadService: UploadService;
+
   constructor(
     auth0Service: AuthService,
     prisma: PrismaClient,
     emailService: EmailService,
     monitoringService: MonitoringService,
+    uploadService: UploadService,
   ) {
     this.auth0Service = auth0Service;
     this.prisma = prisma;
     this.emailService = emailService;
     this.monitoringService = monitoringService;
+    this.uploadService = uploadService;
   }
 
   async createApplicant(
@@ -532,6 +541,23 @@ class ApplicantController {
         e instanceof Error ? { cause: e } : undefined,
       );
     }
+  }
+
+  async getResumeUploadUrl(
+    applicantId: number,
+    data: UploadRequestBody,
+  ): Promise<UploadResponseBody> {
+    // create record in db
+    // use s3 service to generate a url
+    await this.uploadService.generateSignedResumeUploadUrl(
+      applicantId,
+      data.originalFilename || 'signedLink',
+    );
+    // TODO
+    return {
+      uploadId: 12345,
+      signedLink: data.originalFilename || 'signedLink',
+    };
   }
 }
 

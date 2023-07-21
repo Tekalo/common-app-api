@@ -15,9 +15,12 @@ import { auth } from 'express-oauth2-jwt-bearer';
 import errorHandler from './middleware/errorHandler.js';
 import AuthService from './services/AuthService.js';
 import MonitoringService from './services/MonitoringService.js';
+import UploadService from './services/UploadService.js';
 import { BaseConfig } from './resources/types/shared.js';
 import EmailService from './services/EmailService.js';
+import S3Service from './services/S3Service.js';
 import { AuthRequest } from './resources/types/auth0.js';
+import prisma from './resources/client.js';
 
 const getApp = (
   authService: AuthService,
@@ -28,6 +31,7 @@ const getApp = (
   const app: Application = express();
 
   monitoringService.sentryInit(app);
+  const uploadService = new UploadService(prisma, new S3Service());
 
   const router = express.Router();
 
@@ -83,7 +87,13 @@ const getApp = (
 
   app.use(
     '/applicants',
-    applicantRoutes(authService, emailService, monitoringService, config),
+    applicantRoutes(
+      authService,
+      emailService,
+      monitoringService,
+      uploadService,
+      config,
+    ),
   );
   app.use('/opportunities', opportunitiesRoutes(emailService, config));
   app.use('/health', healthRoutes());

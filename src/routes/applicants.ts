@@ -1,5 +1,4 @@
 import ApplicantController from '@App/controllers/ApplicantController.js';
-import UploadController from '@App/controllers/UploadController.js';
 import {
   ApplicantRequestBodySchema,
   ApplicantSubmissionRequestBodySchema,
@@ -29,7 +28,6 @@ import Authenticator from '@App/middleware/authenticator.js';
 import { RequestWithJWT } from '@App/resources/types/auth0.js';
 import EmailService from '@App/services/EmailService.js';
 import MonitoringService from '@App/services/MonitoringService.js';
-import S3Service from '@App/services/S3Service.js';
 import UploadService from '@App/services/UploadService.js';
 import { BaseConfig } from '@App/resources/types/shared.js';
 
@@ -37,18 +35,18 @@ const applicantRoutes = (
   authService: AuthService,
   emailService: EmailService,
   monitoringService: MonitoringService,
+  uploadService: UploadService,
   config: BaseConfig,
 ) => {
   const router = express.Router();
+
   const applicantController = new ApplicantController(
     authService,
     prisma,
     emailService,
     monitoringService,
+    uploadService,
   );
-
-  const uploadService = new UploadService(prisma, new S3Service());
-  const uploadController = new UploadController(uploadService);
 
   const appConfig = config;
   appConfig.auth0.express.cacheMaxAge = 12 * 60 * 60 * 1000; // 12 hours
@@ -195,22 +193,24 @@ const applicantRoutes = (
     },
   );
 
-  // resume upload
-  router.post(
-    '/me/uploads/resume',
-    authenticator.verifyJwtOrCookie.bind(authenticator) as RequestHandler,
-    (req: Request, res: Response, next) => {
-      const appBody = req.body as UploadRequestBody;
-      const applicantID = req.auth?.payload.id || req.session.applicant.id;
-      const validatedBody = UploadRequestBodySchema.parse(appBody);
-      uploadController
-        .getResumeUploadUrl(applicantID, validatedBody)
-        .then((result) => {
-          res.status(200).json(result);
-        })
-        .catch((err) => next(err));
-    },
-  );
+  // DEV ONLY resume upload
+  if (config.env === 'dev') {
+    router.post(
+      '/me/uploads/resume',
+      authenticator.verifyJwtOrCookie.bind(authenticator) as RequestHandler,
+      (req: Request, res: Response, next) => {
+        const appBody = req.body as UploadRequestBody;
+        const applicantID = req.auth?.payload.id || req.session.applicant.id;
+        const validatedBody = UploadRequestBodySchema.parse(appBody);
+        applicantController
+          .getResumeUploadUrl(applicantID, validatedBody)
+          .then((result) => {
+            res.status(200).json(result);
+          })
+          .catch((err) => next(err));
+      },
+    );
+  }
 
   /**
    * ADMIN ENDPOINTS BELOW

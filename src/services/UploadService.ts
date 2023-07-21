@@ -19,10 +19,8 @@ class UploadService {
     applicantId: number,
     originalFilename: string,
   ) {
-    // create record in uploads table
-    await this.prisma.applicant.findFirstOrThrow({
-      where: { id: applicantId },
-    });
+    // TODO: create record in uploads table
+
     // use info from record create to generate signed s3 link
     await this.s3Service.generateSignedUploadUrl(S3_BUCKET, 'my_key');
     return {
