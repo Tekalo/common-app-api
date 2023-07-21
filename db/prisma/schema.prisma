@@ -30,7 +30,7 @@ model Applicant {
   acceptedPrivacy   DateTime                   @default(now())
   followUpOptIn     Boolean                    @default(false)
   isPaused          Boolean                    @default(false)
-  uploads           Uploads[]
+  uploads           Upload[]
 }
 
 model ApplicantSubmission {
@@ -42,8 +42,9 @@ model ApplicantSubmission {
   createdAt DateTime @default(now())
   originTag String // Whose link did they click, data attribution  // enum
 
-  resumeUploadId String?
-  resumeUrl      String?
+  resumeUpload   Upload? @relation(fields: [resumeUploadId], references: [id])
+  resumeUploadId Int?    @unique
+  resumeUrl      String? // TODO: Deprecate
   resumePassword String?
 
   lastOrg  String // Current or Most Recent Org
@@ -91,8 +92,9 @@ model ApplicantDraftSubmission {
   updatedAt DateTime @updatedAt
   originTag String? // Whose link did they click, data attribution  // enum
 
-  resumeUploadId String?
-  resumeUrl      String?
+  resumeUpload   Upload? @relation(fields: [resumeUploadId], references: [id])
+  resumeUploadId Int?    @unique
+  resumeUrl      String? // TODO: Deprecate
   resumePassword String?
 
   lastOrg  String? // Current or Most Recent Org
@@ -200,13 +202,15 @@ enum UploadStatus {
   FAILURE
 }
 
-model Uploads {
-  id               Int           @id @default(autoincrement())
-  applicant        Applicant     @relation(fields: [applicantId], references: [id], onDelete: Cascade)
-  applicantId      Int
-  type             UploadType
-  originalFilename String
-  createdAt        DateTime      @default(now())
-  completedAt      DateTime?
-  status           UploadStatus? @default(REQUESTED)
+model Upload {
+  id                       Int                       @id @default(autoincrement())
+  applicant                Applicant                 @relation(fields: [applicantId], references: [id], onDelete: Cascade)
+  applicantId              Int
+  type                     UploadType
+  originalFilename         String
+  createdAt                DateTime                  @default(now())
+  completedAt              DateTime?
+  status                   UploadStatus              @default(REQUESTED)
+  ApplicantSubmission      ApplicantSubmission?
+  ApplicantDraftSubmission ApplicantDraftSubmission?
 }
