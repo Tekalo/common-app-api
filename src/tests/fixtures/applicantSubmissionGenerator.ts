@@ -18,7 +18,6 @@ const getAPIRequestBody = (
   githubUrl: 'https://github.com/bboberson',
   portfolioUrl: 'https://bobsportfolio.com',
   portfolioPassword: 'bobsTheWord',
-  resumeUploadId: '550e8400-e29b-41d4-a716-446655440000',
   resumeUrl: 'myresume.com',
   resumePassword: 'bobsTheWord',
   hoursPerWeek: '40 ish',
