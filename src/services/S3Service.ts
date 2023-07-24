@@ -15,6 +15,7 @@ class S3Service {
       Key: key,
     });
     const url = await getSignedUrl(s3Client, command);
+    console.log(url);
     return url;
   }
 }

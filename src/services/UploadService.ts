@@ -22,7 +22,10 @@ class UploadService {
     // TODO: create record in uploads table
 
     // use info from record create to generate signed s3 link
-    await this.s3Service.generateSignedUploadUrl(S3_BUCKET, 'my_key');
+    await this.s3Service.generateSignedUploadUrl(
+      S3_BUCKET,
+      `resumes/${applicantId}/123456`,
+    );
     return {
       uploadId: 12345,
       signedLink: originalFilename || 'signedLink',
