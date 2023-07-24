@@ -549,15 +549,11 @@ class ApplicantController {
   ): Promise<UploadResponseBody> {
     // create record in db
     // use s3 service to generate a url
-    await this.uploadService.generateSignedResumeUploadUrl(
+    return this.uploadService.generateSignedResumeUploadUrl(
       applicantId,
-      data.originalFilename || 'signedLink',
+      data.originalFilename,
+      data.mimeType,
     );
-    // TODO
-    return {
-      uploadId: 12345,
-      signedLink: data.originalFilename || 'signedLink',
-    };
   }
 }
 
