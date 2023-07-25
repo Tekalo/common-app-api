@@ -1,16 +1,18 @@
+import { BaseConfig } from '@App/resources/types/shared.js';
 import { PrismaClient } from '@prisma/client';
 import S3Service from './S3Service.js';
 
-// TODO: env variable
-const S3_BUCKET = 'capp-dev-api-uploads';
 class UploadService {
   private s3Service: S3Service;
 
   private prisma: PrismaClient;
 
-  constructor(prisma: PrismaClient, s3Service: S3Service) {
+  private config: BaseConfig;
+
+  constructor(prisma: PrismaClient, s3Service: S3Service, config: BaseConfig) {
     this.prisma = prisma;
     this.s3Service = s3Service;
+    this.config = config;
   }
 
   async generateSignedResumeUploadUrl(
@@ -23,7 +25,7 @@ class UploadService {
     const uploadId = 123456;
     const contentType = UploadService.getContentType(mimeType);
     const signedLink = await this.s3Service.generateSignedUploadUrl(
-      S3_BUCKET,
+      this.config.uploadBucket,
       `resumes/${applicantId}/${uploadId}.${mimeType}`,
       contentType,
     );

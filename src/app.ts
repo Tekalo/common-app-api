@@ -31,7 +31,7 @@ const getApp = (
   const app: Application = express();
 
   monitoringService.sentryInit(app);
-  const uploadService = new UploadService(prisma, new S3Service());
+  const uploadService = new UploadService(prisma, new S3Service(), config);
 
   const router = express.Router();
 

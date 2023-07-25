@@ -56,6 +56,15 @@ output "sentry_dsn" {
   value       = module.app.sentry_dsn
 }
 
+variable "upload_bucket" {
+  description = "s3 bucket where applicant files are uploaded"
+  type        = string
+}
+
+output "upload_bucket" {
+  description = "s3 bucket where applicant files are uploaded"
+  value       = module.app.upload_bucket
+}
 variable "load_test" {
   description = "When true, indicates that we are running a load test against the env"
   type        = bool

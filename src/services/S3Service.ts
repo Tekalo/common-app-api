@@ -6,7 +6,6 @@ class S3Service {
     return new S3Client({});
   }
 
-  // https://fourtheorem.com/the-illustrated-guide-to-s3-pre-signed-urls/
   /* eslint-disable class-methods-use-this */
   async generateSignedUploadUrl(
     bucket: string,

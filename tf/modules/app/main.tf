@@ -177,6 +177,10 @@ resource "aws_ecs_task_definition" "api" {
           value = "${var.sentry_dsn}"
         },
         {
+          name  = "UPLOAD_BUCKET"
+          value = "${var.upload_bucket}"
+        },
+        {
           name  = "LOAD_TEST"
           value = var.load_test != null ? var.load_test : "false"
         },
