@@ -4828,7 +4828,7 @@ packages:
       '@jest/test-sequencer': 29.6.1
       '@jest/types': 29.6.1
       '@types/node': 18.17.0
-      babel-jest: 29.6.1(@babel/core@7.22.9)
+      babel-jest: 29.6.1(@babel/core@7.22.1)
       chalk: 4.1.2
       ci-info: 3.8.0
       deepmerge: 4.3.1
