@@ -674,7 +674,7 @@ packages:
     engines: {node: '>=14.0.0'}
     dependencies:
       '@aws-sdk/types': 3.370.0
-      '@smithy/types': 1.1.1
+      '@smithy/types': 1.2.0
       tslib: 2.5.3
     dev: false
 
@@ -684,7 +684,7 @@ packages:
     dependencies:
       '@aws-sdk/types': 3.370.0
       '@smithy/protocol-http': 1.1.1
-      '@smithy/types': 1.1.1
+      '@smithy/types': 1.2.0
       tslib: 2.5.3
     dev: false
 
@@ -717,7 +717,7 @@ packages:
       '@smithy/property-provider': 1.0.1
       '@smithy/protocol-http': 1.1.1
       '@smithy/signature-v4': 1.0.1
-      '@smithy/types': 1.1.1
+      '@smithy/types': 1.2.0
       '@smithy/util-middleware': 1.0.2
       tslib: 2.5.3
     dev: false
@@ -738,7 +738,7 @@ packages:
       '@aws-sdk/types': 3.370.0
       '@aws-sdk/util-endpoints': 3.370.0
       '@smithy/protocol-http': 1.1.1
-      '@smithy/types': 1.1.1
+      '@smithy/types': 1.2.0
       tslib: 2.5.3
     dev: false
 
@@ -792,7 +792,7 @@ packages:
     resolution: {integrity: sha512-8PGMKklSkRKjunFhzM2y5Jm0H2TBu7YRNISdYzXLUHKSP9zlMEYagseKVdmox0zKHf1LXVNuSlUV2b6SRrieCQ==}
     engines: {node: '>=14.0.0'}
     dependencies:
-      '@smithy/types': 1.1.1
+      '@smithy/types': 1.2.0
       tslib: 2.5.3
     dev: false
 
@@ -833,7 +833,7 @@ packages:
     dependencies:
       '@aws-sdk/types': 3.370.0
       '@smithy/querystring-builder': 1.0.1
-      '@smithy/types': 1.1.1
+      '@smithy/types': 1.2.0
       tslib: 2.5.3
     dev: false
 
@@ -848,7 +848,7 @@ packages:
     resolution: {integrity: sha512-028LxYZMQ0DANKhW+AKFQslkScZUeYlPmSphrCIXgdIItRZh6ZJHGzE7J/jDsEntZOrZJsjI4z0zZ5W2idj04w==}
     dependencies:
       '@aws-sdk/types': 3.370.0
-      '@smithy/types': 1.1.1
+      '@smithy/types': 1.2.0
       bowser: 2.11.0
       tslib: 2.5.3
     dev: false
@@ -864,7 +864,7 @@ packages:
     dependencies:
       '@aws-sdk/types': 3.370.0
       '@smithy/node-config-provider': 1.0.1
-      '@smithy/types': 1.1.1
+      '@smithy/types': 1.2.0
       tslib: 2.5.3
     dev: false
 
@@ -1665,7 +1665,7 @@ packages:
     resolution: {integrity: sha512-quj0xUiEVG/UHfY82EtthR/+S5/17p3IxXArC3NFSNqryMobWbG9oWgJy2s2cgUSVZLzxevjKKvxrilK7JEDaA==}
     engines: {node: '>=14.0.0'}
     dependencies:
-      '@smithy/types': 1.1.1
+      '@smithy/types': 1.2.0
       '@smithy/util-config-provider': 1.0.1
       '@smithy/util-middleware': 1.0.2
       tslib: 2.5.3
@@ -1687,7 +1687,7 @@ packages:
     dependencies:
       '@aws-crypto/crc32': 3.0.0
       '@smithy/types': 1.2.0
-      '@smithy/util-hex-encoding': 1.0.1
+      '@smithy/util-hex-encoding': 1.1.0
       tslib: 2.5.3
     dev: false
 
@@ -1806,7 +1806,7 @@ packages:
     resolution: {integrity: sha512-bn5lWk8UUeXFCQfkrNErz5SbeNd+2hgYegHMLsOLPt4URDIsyREar6wMsdsR+8UCdgR5s8udG3Zalgc7puizIQ==}
     engines: {node: '>=14.0.0'}
     dependencies:
-      '@smithy/types': 1.1.1
+      '@smithy/types': 1.2.0
       tslib: 2.5.3
     dev: false
 
@@ -1858,7 +1858,7 @@ packages:
     resolution: {integrity: sha512-H5y/kZOqfJSqRkwtcAoVbqONmhdXwSgYNJ1Glk5Ry8qlhVVy5qUzD9EklaCH8/XLnoCsLO/F/Giee8MIvaBRkg==}
     engines: {node: '>=14.0.0'}
     dependencies:
-      '@smithy/types': 1.1.1
+      '@smithy/types': 1.2.0
       tslib: 2.5.3
     dev: false
 
@@ -1874,16 +1874,8 @@ packages:
     resolution: {integrity: sha512-J5Tzkw1PMtu01h6wl+tlN5vsyROmS6/z5lEfNlLo/L4ELHeVkQ4Q0PEIjDddPLfjVLCm8biQTESE5GCMixSRNQ==}
     engines: {node: '>=14.0.0'}
     dependencies:
-      '@smithy/types': 1.1.1
-      '@smithy/util-uri-escape': 1.0.1
-      tslib: 2.5.3
-    dev: false
-
-  /@smithy/querystring-parser@1.0.1:
-    resolution: {integrity: sha512-zauxdMc3cwxoLitI5DZqH7xN6Fk0mwRxrUMAETbav2j6Se2U0UGak/55rZcDg2yGzOURaLYi5iOm1gHr98P+Bw==}
-    engines: {node: '>=14.0.0'}
-    dependencies:
       '@smithy/types': 1.2.0
+      '@smithy/util-uri-escape': 1.0.1
       tslib: 2.5.3
     dev: false
 
@@ -1956,8 +1948,8 @@ packages:
   /@smithy/url-parser@1.0.1:
     resolution: {integrity: sha512-33vWEtE6HzmwjEcEb4I58XMLRAchwPS93YhfDyXAXr1jwDCzfXmMayQwwpyW847rpWj0XJimxqia8q0z+k/ybw==}
     dependencies:
-      '@smithy/querystring-parser': 1.0.1
-      '@smithy/types': 1.1.1
+      '@smithy/querystring-parser': 1.0.2
+      '@smithy/types': 1.2.0
       tslib: 2.5.3
     dev: false
 
