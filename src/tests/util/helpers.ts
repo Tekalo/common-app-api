@@ -31,6 +31,7 @@ const getMockConfig = (overrides: Partial<BaseConfig> = {}): BaseConfig => ({
     region: '',
   },
   sentryDSN: '',
+  uploadBucket: '',
   isLoadTest: false,
   webUrl: '',
   ...overrides,
