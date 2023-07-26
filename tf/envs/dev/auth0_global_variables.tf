@@ -1,0 +1,1 @@
+../auth0_global_variables.tf
