@@ -40,10 +40,11 @@ class UploadService {
     switch (mimeType) {
       case 'docx':
         return 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
-      case 'odt':
-        return 'application/vnd.oasis.opendocument.text';
-      case 'rtf':
-        return 'application/rtf';
+      case 'jpg':
+      case 'jpeg':
+        return 'image/jpeg';
+      case 'png':
+        return 'image/png';
       case 'pdf':
       default:
         return 'application/pdf';
