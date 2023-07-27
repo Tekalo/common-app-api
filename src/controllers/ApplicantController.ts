@@ -187,6 +187,10 @@ class ApplicantController {
         otherCauses,
         ...restOfSubmission
       } = data;
+      // if we have a resumeUpload
+      if (data.resumeUploadId) {
+        this.uploadService.verifyUploadOwner(applicantId, data.resumeUploadId);
+      }
       const applicantSubmission = await this.prisma.applicantSubmission.create({
         data: {
           ...restOfSubmission,

@@ -5,6 +5,12 @@ import S3Service from './S3Service.js';
 const S3_BUCKET = 'capp-dev-api-uploads';
 
 class UploadService {
+
+  verifyUploadOwner(applicantId: number, resumeUploadId: string) {
+    await this.prisma.uploads.findFirstOrThrow({ where: { id: resumeUploadId } });
+    throw new Error('Method not implemented.');
+  }
+
   private s3Service: S3Service;
 
   private prisma: PrismaClient;
