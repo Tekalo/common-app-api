@@ -599,6 +599,7 @@ describe('Applicant Controller', () => {
         essayResponse:
           'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non iaculis erat.',
         referenceAttribution: 'social media', // enum
+        referenceAttributionOther: null,
       };
 
       mockCtx.prisma.applicantSubmission.create.mockResolvedValue(
