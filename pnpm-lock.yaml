@@ -51,8 +51,8 @@ dependencies:
     specifier: 4.14.4
     version: 4.14.4
   pino:
-    specifier: 8.14.1
-    version: 8.14.1
+    specifier: 8.14.2
+    version: 8.14.2
   pino-http:
     specifier: 8.3.3
     version: 8.3.3
@@ -5575,7 +5575,7 @@ packages:
     resolution: {integrity: sha512-p4umsNIXXVu95HD2C8wie/vXH7db5iGRpc+yj1/ZQ3sRtTQLXNjoS6Be5+eI+rQbqCRxen/7k/KSN+qiZubGDw==}
     dependencies:
       get-caller-file: 2.0.5
-      pino: 8.14.1
+      pino: 8.14.2
       pino-std-serializers: 6.2.1
       process-warning: 2.2.0
     dev: false
@@ -5604,8 +5604,8 @@ packages:
     resolution: {integrity: sha512-wHuWB+CvSVb2XqXM0W/WOYUkVSPbiJb9S5fNB7TBhd8s892Xq910bRxwHtC4l71hgztObTjXL6ZheZXFjhDrDQ==}
     dev: false
 
-  /pino@8.14.1:
-    resolution: {integrity: sha512-8LYNv7BKWXSfS+k6oEc6occy5La+q2sPwU3q2ljTX5AZk7v+5kND2o5W794FyRaqha6DJajmkNRsWtPpFyMUdw==}
+  /pino@8.14.2:
+    resolution: {integrity: sha512-zKu9aWeSWTy1JgvxIpZveJKKsAr4+6uNMZ0Vf0KRwzl/UNZA3XjHiIl/0WwqLMkDwuHuDkT5xAgPA2jpKq4whA==}
     hasBin: true
     dependencies:
       atomic-sleep: 1.0.0
