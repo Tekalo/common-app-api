@@ -639,6 +639,9 @@
           },
           "referenceAttribution": {
             "type": "string"
+          },
+          "referenceAttributionOther": {
+            "type": "string"
           }
         },
         "required": [
@@ -656,8 +659,7 @@
           "workAuthorization",
           "interestGovt",
           "previousImpactExperience",
-          "essayResponse",
-          "referenceAttribution"
+          "essayResponse"
         ]
       },
       "applicantDraftSubmissionRequestBody": {
