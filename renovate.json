@@ -28,6 +28,10 @@
     {
       "extends": "monorepo:prisma",
       "automerge": false
+    },
+    {
+      "matchPackagePatterns": ["^@aws-sdk"],
+      "enabled": false
     }
   ]
 }
