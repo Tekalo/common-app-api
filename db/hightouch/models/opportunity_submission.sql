@@ -2,7 +2,7 @@ SELECT
   ob."contactEmail",
   ob."contactName",
   ob."contactPhone",
-  ob."impactAreas",
+  LOWER(ob."impactAreas") as "impactAreas",
   ob."orgName",
   ob."orgSize",
   ob."orgType",
