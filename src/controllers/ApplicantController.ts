@@ -180,31 +180,31 @@ class ApplicantController {
     applicantId: number,
     data: ApplicantSubmissionBody,
   ): Promise<ApplicantSubmission> {
-    try {
-      const {
-        openToRemote,
-        openToRemoteMulti,
-        otherCauses,
-        ...restOfSubmission
-      } = data;
-      // If we have a resumeUpload, make sure it belongs to the authed user. If not, throw CAPPError.
-      if (data.resumeUploadId) {
-        try {
-          await this.uploadService.verifyUploadOwner(
-            applicantId,
-            data.resumeUploadId,
-          );
-        } catch (e) {
-          throw new CAPPError(
-            {
-              title: 'Applicant Submission Creation Error',
-              detail: 'Invalid upload provided',
-              status: 400,
-            },
-            e instanceof Error ? { cause: e } : undefined,
-          );
-        }
+    const {
+      openToRemote,
+      openToRemoteMulti,
+      otherCauses,
+      ...restOfSubmission
+    } = data;
+    // If we have a resumeUpload, make sure it belongs to the authed user. If not, throw CAPPError.
+    if (data.resumeUploadId) {
+      try {
+        await this.uploadService.verifyUploadOwner(
+          applicantId,
+          data.resumeUploadId,
+        );
+      } catch (e) {
+        throw new CAPPError(
+          {
+            title: 'Applicant Submission Creation Error',
+            detail: 'Invalid upload provided',
+            status: 400,
+          },
+          e instanceof Error ? { cause: e } : undefined,
+        );
       }
+    }
+    try {
       const applicantSubmission = await this.prisma.applicantSubmission.create({
         data: {
           ...restOfSubmission,
