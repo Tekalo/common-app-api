@@ -5,7 +5,7 @@ import { Prisma } from '@prisma/client';
 import { createMockContext } from '../../util/context.js';
 
 describe('Upload Service', () => {
-  test('should throw error if applicant does not match upload', async () => {
+  test('should throw error if uploads table does not have an upload belonging to the specified applicant', async () => {
     const mockCtx = createMockContext();
     const uploadService = new UploadService(
       mockCtx.prisma,

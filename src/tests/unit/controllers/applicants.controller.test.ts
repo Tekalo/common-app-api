@@ -596,7 +596,7 @@ describe('Applicant Controller', () => {
       expect(mockEmailSpy).toHaveBeenCalledWith(expectedEmail);
       mockEmailSpy.mockRestore();
     });
-    test('Should throw error if resumeUploadId does not belong to authenticated applicant', async () => {
+    test('Should throw error if verifyUploadOwner() does not return successfully', async () => {
       const dummyUploadService = new DummyUploadService(
         ctx.prisma,
         new DummyS3Service(),
