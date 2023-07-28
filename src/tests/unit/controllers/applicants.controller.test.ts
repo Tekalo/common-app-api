@@ -614,7 +614,6 @@ describe('Applicant Controller', () => {
       const requestBody = applicantSubmissionGenerator.getAPIRequestBody();
       requestBody.resumeUploadId = 1;
 
-      // this should throw b/c applicantId is diff than uploadId's applicantId
       await expect(
         applicantController.createSubmission(1, requestBody),
       ).rejects.toEqual(
