@@ -80,6 +80,7 @@ model ApplicantSubmission {
   essayResponse String
 
   referenceAttribution String? //How did you hear about us  //enum
+  referenceAttributionOther String?
 }
 
 model ApplicantDraftSubmission {
@@ -130,6 +131,7 @@ model ApplicantDraftSubmission {
   essayResponse String?
 
   referenceAttribution String? //How did you hear about us  //enum
+  referenceAttributionOther String?
 }
 
 model OpportunityBatch {
