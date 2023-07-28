@@ -97,7 +97,7 @@ const ApplicantSubmissionRequestBodySchema = z.object({
   referenceAttribution: z.string().nullable().optional(),
   referenceAttributionOther: z.string().nullable().optional(),
 });
-// TOOD: Figure out typesript error on refining interestGovtTypes to ensure it is filled if interestGovt is true
+// TOOD: Figure out typescript error on refining interestGovtTypes to ensure it is filled if interestGovt is true
 
 const ApplicantDraftSubmissionRequestBodySchema =
   ApplicantSubmissionRequestBodySchema.partial();
