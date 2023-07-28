@@ -1,5 +1,4 @@
 import CAPPError from '@App/resources/shared/CAPPError.js';
-import { Problem } from '@App/resources/types/shared.js';
 import { PrismaClient, Upload } from '@prisma/client';
 import S3Service from './S3Service.js';
 
@@ -16,29 +15,20 @@ class UploadService {
     this.s3Service = s3Service;
   }
 
-  /**
-   * Verify that the uploadId belongs to the applicant with the specified ID. If not, throw an error
-   * applicantId should always be the ID of the authenticated applicant.
-   */
-  async validateUploadForSubmission(
+  async getApplicantUpload(
     applicantId: number,
     uploadId: number,
   ): Promise<Upload> {
     const applicantUpload = await this.prisma.upload.findFirst({
       where: { id: uploadId, applicantId },
     });
-    const problem: Problem = {
-      title: 'Upload Error',
-      status: 400,
-    };
     if (!applicantUpload) {
-      problem.detail =
-        'Upload does not exist or does not belong to authenticated applicant';
-      throw new CAPPError(problem);
-    }
-    if (applicantUpload.status !== 'SUCCESS') {
-      problem.detail = 'Upload does not have a valid status';
-      throw new CAPPError(problem);
+      throw new CAPPError({
+        title: 'Upload Error',
+        detail:
+          'Upload does not exist or does not belong to authenticated applicant',
+        status: 400,
+      });
     }
     return applicantUpload;
   }

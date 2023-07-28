@@ -188,21 +188,7 @@ class ApplicantController {
     } = data;
     // Make sure the specified resume upload belongs to the authed user. If not, throw CAPPError.
     if (data.resumeUploadId) {
-      try {
-        await this.uploadService.validateUploadForSubmission(
-          applicantId,
-          data.resumeUploadId,
-        );
-      } catch (e) {
-        throw new CAPPError(
-          {
-            title: 'Applicant Submission Creation Error',
-            detail: 'Invalid upload provided',
-            status: 400,
-          },
-          e instanceof Error ? { cause: e } : undefined,
-        );
-      }
+      await this.validateResumeUpload(applicantId, data.resumeUploadId);
     }
     try {
       const applicantSubmission = await this.prisma.applicantSubmission.create({
@@ -446,17 +432,45 @@ class ApplicantController {
     return { id: applicantId };
   }
 
+  async validateResumeUpload(applicantId: number, resumeUploadId: number) {
+    try {
+      const resume = await this.uploadService.getApplicantUpload(
+        applicantId,
+        resumeUploadId,
+      );
+      if (resume.status !== 'SUCCESS') {
+        throw new CAPPError({
+          title: 'Upload Error',
+          detail: "Upload status must be 'SUCCESS'",
+          status: 400,
+        });
+      }
+    } catch (e) {
+      throw new CAPPError(
+        {
+          title: 'Applicant Submission Creation Error',
+          detail: 'Invalid upload provided',
+          status: 400,
+        },
+        e instanceof Error ? { cause: e } : undefined,
+      );
+    }
+  }
+
   async createOrUpdateDraftSubmission(
     applicantId: number,
     data: ApplicantDraftSubmissionBody,
   ): Promise<ApplicantDraftSubmission> {
+    const {
+      openToRemote,
+      openToRemoteMulti,
+      otherCauses,
+      ...restOfSubmission
+    } = data;
+    if (data.resumeUploadId) {
+      await this.validateResumeUpload(applicantId, data.resumeUploadId);
+    }
     try {
-      const {
-        openToRemote,
-        openToRemoteMulti,
-        otherCauses,
-        ...restOfSubmission
-      } = data;
       // TODO: Remove support for openToRemote
       return await this.prisma.applicantDraftSubmission.upsert({
         create: {
