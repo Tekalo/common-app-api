@@ -186,7 +186,7 @@ class ApplicantController {
       otherCauses,
       ...restOfSubmission
     } = data;
-    // If we have a resumeUpload, make sure it belongs to the authed user. If not, throw CAPPError.
+    // Make sure the specified resume upload belongs to the authed user. If not, throw CAPPError.
     if (data.resumeUploadId) {
       try {
         await this.uploadService.verifyUploadOwner(

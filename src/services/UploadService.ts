@@ -15,14 +15,16 @@ class UploadService {
     this.s3Service = s3Service;
   }
 
-  // If applicant does not match upload being attached, throw an error
+  /**
+   * Verify that the uploadId belongs to the applicant making the request. If not, throw an error
+   */
   async verifyUploadOwner(
     applicantId: number,
-    resumeUploadId: number,
+    uploadId: number,
   ): Promise<Upload> {
     try {
       return await this.prisma.upload.findFirstOrThrow({
-        where: { id: resumeUploadId, applicantId },
+        where: { id: uploadId, applicantId },
       });
     } catch (e) {
       throw new CAPPError(
