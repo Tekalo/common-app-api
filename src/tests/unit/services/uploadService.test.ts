@@ -11,7 +11,9 @@ describe('Upload Service', () => {
       new DummyS3Service(),
     );
     mockCtx.prisma.upload.findFirst.mockResolvedValue(null);
-    await expect(uploadService.getApplicantUpload(1, 2)).rejects.toThrowError(
+    await expect(
+      uploadService.getApplicantUploadOrThrow(1, 2),
+    ).rejects.toThrowError(
       new CAPPError({
         title: 'Upload Error',
         detail:

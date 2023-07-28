@@ -434,7 +434,7 @@ class ApplicantController {
 
   async validateResumeUpload(applicantId: number, resumeUploadId: number) {
     try {
-      const resume = await this.uploadService.getApplicantUpload(
+      const resume = await this.uploadService.getApplicantUploadOrThrow(
         applicantId,
         resumeUploadId,
       );

@@ -601,7 +601,7 @@ describe('Applicant Controller', () => {
         ctx.prisma,
         new DummyS3Service(),
       );
-      dummyUploadService.getApplicantUpload = () => {
+      dummyUploadService.getApplicantUploadOrThrow = () => {
         throw new CAPPError({ title: 'Upload Error' });
       };
       const applicantController = new ApplicantController(
@@ -630,7 +630,7 @@ describe('Applicant Controller', () => {
         ctx.prisma,
         new DummyS3Service(),
       );
-      dummyUploadService.getApplicantUpload = () =>
+      dummyUploadService.getApplicantUploadOrThrow = () =>
         Promise.resolve({
           id: 1,
           applicantId: 1,

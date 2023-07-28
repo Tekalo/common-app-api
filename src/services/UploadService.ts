@@ -15,7 +15,13 @@ class UploadService {
     this.s3Service = s3Service;
   }
 
-  async getApplicantUpload(
+  /**
+   * Get upload belonging to an applicant. If it does not exist, throw an error.
+   * @param applicantId
+   * @param uploadId
+   * @returns
+   */
+  async getApplicantUploadOrThrow(
     applicantId: number,
     uploadId: number,
   ): Promise<Upload> {
