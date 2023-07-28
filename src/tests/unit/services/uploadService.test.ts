@@ -1,33 +1,51 @@
 import CAPPError from '@App/resources/shared/CAPPError.js';
 import UploadService from '@App/services/UploadService.js';
 import DummyS3Service from '@App/tests/fixtures/DummyS3Service.js';
-import { Prisma } from '@prisma/client';
 import { createMockContext } from '../../util/context.js';
 
 describe('Upload Service', () => {
-  test('should throw error if uploads table does not have an upload belonging to the specified applicant', async () => {
+  test('should throw error if upload belonging to the specified applicant does not exist', async () => {
     const mockCtx = createMockContext();
     const uploadService = new UploadService(
       mockCtx.prisma,
       new DummyS3Service(),
     );
-    const prismaError = new Prisma.PrismaClientKnownRequestError('ERROR', {
-      code: 'P2025',
-      clientVersion: '1.0',
-    });
-    mockCtx.prisma.upload.findFirstOrThrow.mockRejectedValue(
-      new Prisma.PrismaClientKnownRequestError('ERROR', prismaError),
+    mockCtx.prisma.upload.findFirst.mockResolvedValue(null);
+    await expect(
+      uploadService.validateUploadForSubmission(1, 2),
+    ).rejects.toThrowError(
+      new CAPPError({
+        title: 'Upload Error',
+        detail:
+          'Upload does not exist or does not belong to authenticated applicant',
+        status: 400,
+      }),
     );
-    await expect(uploadService.verifyUploadOwner(1, 2)).rejects.toThrowError(
-      new CAPPError(
-        {
-          title: 'Upload Error',
-          detail:
-            'Upload does not exist or does not belong to authenticated applicant',
-          status: 400,
-        },
-        { cause: prismaError },
-      ),
+  });
+
+  test('should throw error if upload belonging to the specified applicant does not have the status "SUCCESS"', async () => {
+    const mockCtx = createMockContext();
+    const uploadService = new UploadService(
+      mockCtx.prisma,
+      new DummyS3Service(),
+    );
+    mockCtx.prisma.upload.findFirst.mockResolvedValue({
+      id: 1,
+      applicantId: 1,
+      status: 'FAILURE',
+      createdAt: new Date(),
+      type: 'RESUME',
+      originalFilename: 'myresume.pdf',
+      completedAt: new Date(),
+    });
+    await expect(
+      uploadService.validateUploadForSubmission(1, 2),
+    ).rejects.toThrowError(
+      new CAPPError({
+        title: 'Upload Error',
+        detail: 'Upload does not have a valid status',
+        status: 400,
+      }),
     );
   });
 });

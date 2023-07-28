@@ -601,7 +601,7 @@ describe('Applicant Controller', () => {
         ctx.prisma,
         new DummyS3Service(),
       );
-      dummyUploadService.verifyUploadOwner = () => {
+      dummyUploadService.validateUploadForSubmission = () => {
         throw new CAPPError({ title: 'Upload Error' });
       };
       const applicantController = new ApplicantController(

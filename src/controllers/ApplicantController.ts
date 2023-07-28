@@ -189,7 +189,7 @@ class ApplicantController {
     // Make sure the specified resume upload belongs to the authed user. If not, throw CAPPError.
     if (data.resumeUploadId) {
       try {
-        await this.uploadService.verifyUploadOwner(
+        await this.uploadService.validateUploadForSubmission(
           applicantId,
           data.resumeUploadId,
         );
