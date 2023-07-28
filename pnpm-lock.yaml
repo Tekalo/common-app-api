@@ -5703,7 +5703,7 @@ packages:
     resolution: {integrity: sha512-p4umsNIXXVu95HD2C8wie/vXH7db5iGRpc+yj1/ZQ3sRtTQLXNjoS6Be5+eI+rQbqCRxen/7k/KSN+qiZubGDw==}
     dependencies:
       get-caller-file: 2.0.5
-      pino: 8.14.1
+      pino: 8.14.2
       pino-std-serializers: 6.2.2
       process-warning: 2.2.0
     dev: false
