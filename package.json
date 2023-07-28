@@ -35,7 +35,7 @@
   },
   "homepage": "https://github.com/schmidtfutures/common-app-api#readme",
   "dependencies": {
-    "@aws-sdk/client-ses": "3.378.0",
+    "@aws-sdk/client-ses": "3.379.1",
     "@prisma/client": "5.0.0",
     "@sentry/node": "7.57.0",
     "@sentry/types": "7.57.0",
