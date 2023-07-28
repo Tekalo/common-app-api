@@ -16,7 +16,8 @@ class UploadService {
   }
 
   /**
-   * Verify that the uploadId belongs to the applicant making the request. If not, throw an error
+   * Verify that the uploadId belongs to the applicant with the specified ID. If not, throw an error
+   * applicantId should always be the ID of the authenticated applicant.
    */
   async verifyUploadOwner(
     applicantId: number,
