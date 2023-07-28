@@ -39,7 +39,8 @@ const getAPIRequestBody = (
   previousImpactExperience: false,
   essayResponse:
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non iaculis erat.',
-  referenceAttribution: 'social media',
+  referenceAttribution: 'other',
+  referenceAttributionOther: 'my friend bob told me about Tekalo',
   ...overrides,
 });
 
