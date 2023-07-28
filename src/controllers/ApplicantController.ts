@@ -187,14 +187,27 @@ class ApplicantController {
         otherCauses,
         ...restOfSubmission
       } = data;
-      // if we have a resumeUpload
+      // If we have a resumeUpload, make sure it belongs to the authed user. If not, throw CAPPError.
       if (data.resumeUploadId) {
-        this.uploadService.verifyUploadOwner(applicantId, data.resumeUploadId);
+        try {
+          await this.uploadService.verifyUploadOwner(
+            applicantId,
+            data.resumeUploadId,
+          );
+        } catch (e) {
+          throw new CAPPError(
+            {
+              title: 'Applicant Submission Creation Error',
+              detail: 'Invalid upload provided',
+              status: 400,
+            },
+            e instanceof Error ? { cause: e } : undefined,
+          );
+        }
       }
       const applicantSubmission = await this.prisma.applicantSubmission.create({
         data: {
           ...restOfSubmission,
-          // TODO: Remove support for openToRemote
           openToRemoteMulti: openToRemoteMulti || openToRemote,
           otherCauses: otherCauses || [],
           applicantId,

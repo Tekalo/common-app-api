@@ -1,14 +1,31 @@
-import { PrismaClient } from '@prisma/client';
+import CAPPError from '@App/resources/shared/CAPPError.js';
+import { PrismaClient, Upload } from '@prisma/client';
 import S3Service from './S3Service.js';
 
 // TODO: env variable
 const S3_BUCKET = 'capp-dev-api-uploads';
 
 class UploadService {
-
-  verifyUploadOwner(applicantId: number, resumeUploadId: string) {
-    await this.prisma.uploads.findFirstOrThrow({ where: { id: resumeUploadId } });
-    throw new Error('Method not implemented.');
+  // If applicant does not match upload being attached, throw an error
+  async verifyUploadOwner(
+    applicantId: number,
+    resumeUploadId: number,
+  ): Promise<Upload> {
+    try {
+      return await this.prisma.upload.findFirstOrThrow({
+        where: { id: resumeUploadId, applicantId },
+      });
+    } catch (e) {
+      throw new CAPPError(
+        {
+          title: 'Upload Error',
+          detail:
+            'Upload does not exist or does not belong to authenticated applicant',
+          status: 400,
+        },
+        e instanceof Error ? { cause: e } : undefined,
+      );
+    }
   }
 
   private s3Service: S3Service;

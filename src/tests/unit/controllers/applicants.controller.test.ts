@@ -597,97 +597,30 @@ describe('Applicant Controller', () => {
       mockEmailSpy.mockRestore();
     });
     test('Should throw error if resumeUploadId does not belong to authenticated applicant', async () => {
-      const applicantId = 1;
-      const resolvedValue: ApplicantSubmission = {
-        id: 445566,
-        createdAt: new Date(),
-        applicantId,
-        originTag: '',
-        lastRole: 'senior software engineer',
-        lastOrg: 'mozilla',
-        yoe: '>11',
-        skills: ['react', 'python'], // enum
-        otherSkills: ['juggling', 'curling'],
-        linkedInUrl: 'https://www.linkedin.com/in/bob-bobberson',
-        githubUrl: 'https://github.com/bboberson',
-        portfolioUrl: null,
-        portfolioPassword: '',
-        resumeUploadId: '550e8400-e29b-41d4-a716-446655440000',
-        resumeUrl: 'myportfolio.com',
-        resumePassword: null,
-        hoursPerWeek: null,
-        interestEmploymentType: ['full'], // enum
-        interestWorkArrangement: ['contractor', 'advisor'],
-        interestRoles: [
-          'software engineer - frontend',
-          'software engineer - backend',
-        ],
-        currentLocation: 'Boston, MA',
-        openToRelocate: 'not sure',
-        openToRemote: null,
-        openToRemoteMulti: ['not sure'],
-        desiredSalary: '100,000',
-        interestCauses: ['climate change', 'responsible AI'],
-        otherCauses: ['animal rights'],
-        workAuthorization: 'sponsorship',
-        interestGovt: true,
-        interestGovtEmplTypes: ['paid'],
-        previousImpactExperience: false,
-        essayResponse:
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non iaculis erat.',
-        referenceAttribution: 'social media', // enum
+      const dummyUploadService = new DummyUploadService(
+        ctx.prisma,
+        new DummyS3Service(),
+      );
+      dummyUploadService.verifyUploadOwner = () => {
+        throw new CAPPError({ title: 'Upload Error' });
       };
-
-      mockCtx.prisma.applicantSubmission.create.mockResolvedValue(
-        resolvedValue,
-      );
-
-      mockCtx.prisma.uploads.create.mockResolvedValue(
-        {
-          id: 1,
-          applicantId: 2, // diff applicantId
-          originalFilename: 'myUpload.pdf',
-          type: 'RESUME',
-          createdAt: new Date(),
-          completedAt: new Date(),
-          status: 'SUCCESS',
-        },
-      );
-
-      const bobEmail = 'bboberson@schmidtfutures.com';
-      mockCtx.prisma.applicant.findUniqueOrThrow.mockResolvedValue({
-        id: 666,
-        phone: '777-777-7777',
-        name: 'Bob Boberson',
-        email: bobEmail,
-        pronoun: 'she/hers',
-        preferredContact: 'email',
-        searchStatus: 'active',
-        acceptedTerms: new Date('2023-02-01'),
-        acceptedPrivacy: new Date('2023-02-01'),
-        auth0Id: 'auth0|1234',
-        isPaused: false,
-        followUpOptIn: false,
-      });
-
       const applicantController = new ApplicantController(
         new DummyAuthService(),
         ctx.prisma,
         new DummyEmailService(new DummySESService(), getMockConfig()),
         new DummyMonitoringService(),
-        new DummyUploadService(ctx.prisma, new DummyS3Service()),
+        dummyUploadService,
       );
+      const requestBody = applicantSubmissionGenerator.getAPIRequestBody();
+      requestBody.resumeUploadId = 1;
 
       // this should throw b/c applicantId is diff than uploadId's applicantId
       await expect(
-        applicantController.createSubmission(
-          applicantId,
-          applicantSubmissionGenerator.getAPIRequestBody(),
-        ),
+        applicantController.createSubmission(1, requestBody),
       ).rejects.toEqual(
         new CAPPError({
-          title: 'ERROR',
-          detail: 'WOOHOO',
+          title: 'Applicant Submission Creation Error',
+          detail: 'Invalid upload provided',
           status: 400,
         }),
       );
