@@ -6,6 +6,15 @@ import S3Service from './S3Service.js';
 const S3_BUCKET = 'capp-dev-api-uploads';
 
 class UploadService {
+  private s3Service: S3Service;
+
+  private prisma: PrismaClient;
+
+  constructor(prisma: PrismaClient, s3Service: S3Service) {
+    this.prisma = prisma;
+    this.s3Service = s3Service;
+  }
+
   // If applicant does not match upload being attached, throw an error
   async verifyUploadOwner(
     applicantId: number,
@@ -28,16 +37,6 @@ class UploadService {
     }
   }
 
-  private s3Service: S3Service;
-
-  private prisma: PrismaClient;
-
-  constructor(prisma: PrismaClient, s3Service: S3Service) {
-    this.prisma = prisma;
-    this.s3Service = s3Service;
-  }
-
-  //
   async generateSignedResumeUploadUrl(
     applicantId: number,
     originalFilename: string,
