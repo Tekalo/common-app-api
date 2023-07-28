@@ -3,6 +3,7 @@ import CAPPError from '@App/resources/shared/CAPPError.js';
 import EmailService from '@App/services/EmailService.js';
 import DummyEmailService from '@App/tests/fixtures/DummyEmailService.js';
 import DummyAuthService from '@App/tests/fixtures/DummyAuthService.js';
+import UploadService from '@App/services/UploadService.js';
 import DummyUploadService from '@App/tests/fixtures/DummyUploadService.js';
 import { jest } from '@jest/globals';
 import {
@@ -647,6 +648,50 @@ describe('Applicant Controller', () => {
         emailService.generateApplicantPostSubmitEmail(bobEmail);
       expect(mockEmailSpy).toHaveBeenCalledWith(expectedEmail);
       mockEmailSpy.mockRestore();
+    });
+  });
+  describe('Applicant Get Resume Upload Url', () => {
+    test('Should call upload service to generate a signed resume upload url', async () => {
+      const applicantId = 666;
+      const uploadBucket = 'upload_bucket';
+      const mockConfig = getMockConfig({ uploadBucket });
+      const uploadService = new UploadService(
+        ctx.prisma,
+        new DummyS3Service(),
+        mockConfig,
+      );
+
+      const mockUploadSpy = jest.spyOn(
+        uploadService,
+        'generateSignedResumeUploadUrl',
+      );
+
+      const applicantController = new ApplicantController(
+        new DummyAuthService(),
+        ctx.prisma,
+        new DummyEmailService(new DummySESService(), mockConfig),
+        new DummyMonitoringService(),
+        uploadService,
+      );
+
+      const originalFilename = 'originalResumeFilename.png';
+      const mimeType = 'png';
+      const result = await applicantController.getResumeUploadUrl(applicantId, {
+        originalFilename,
+        mimeType,
+      });
+
+      expect(mockUploadSpy).toHaveBeenCalledWith(
+        applicantId,
+        originalFilename,
+        mimeType,
+      );
+      expect(result).toHaveProperty(
+        'signedLink',
+        expect.stringMatching(
+          `https://${uploadBucket}.*/resumes/${applicantId}.*`,
+        ),
+      );
     });
   });
 });
