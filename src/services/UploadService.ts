@@ -1,5 +1,6 @@
+import CAPPError from '@App/resources/shared/CAPPError.js';
 import { BaseConfig } from '@App/resources/types/shared.js';
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient, Upload } from '@prisma/client';
 import S3Service from './S3Service.js';
 
 class UploadService {
@@ -15,23 +16,58 @@ class UploadService {
     this.config = config;
   }
 
+  async createUploadRecord(
+    originalFilename: string,
+    applicantId: number,
+  ): Promise<Upload> {
+    try {
+      return await this.prisma.upload.create({
+        data: {
+          originalFilename,
+          applicantId,
+          type: 'RESUME',
+          status: 'REQUESTED',
+        },
+      });
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        throw new CAPPError(
+          {
+            title: 'Upload Error',
+            detail: 'Failed to save resume to database',
+            status: 400,
+          },
+          e instanceof Error ? { cause: e } : undefined,
+        );
+      }
+      throw new CAPPError(
+        {
+          title: 'Upload Error',
+          detail: 'Failed to upload resume',
+        },
+        e instanceof Error ? { cause: e } : undefined,
+      );
+    }
+  }
+
   async generateSignedResumeUploadUrl(
     applicantId: number,
     originalFilename: string,
     mimeType: string,
   ) {
-    // TODO: create record in uploads table
-    // use info from upload record to generate signed s3 link
-    const uploadId = 123456;
+    const uploadRecord: Upload = await this.createUploadRecord(
+      originalFilename,
+      applicantId,
+    );
     const contentType = UploadService.getContentType(mimeType);
     const signedLink = await this.s3Service.generateSignedUploadUrl(
       this.config.uploadBucket,
-      `resumes/${applicantId}/${uploadId}.${mimeType}`,
+      `resumes/${applicantId}/${uploadRecord.id}.${mimeType}`,
       contentType,
     );
 
     return {
-      uploadId,
+      id: uploadRecord.id,
       signedLink,
     };
   }

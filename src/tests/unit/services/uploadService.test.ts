@@ -17,21 +17,31 @@ describe('Upload Service', () => {
     const mockConfig = getMockConfig({
       uploadBucket: 'upload_bucket',
     });
+    const applicantId = 666;
+    const originalFilename = 'myGreatResume.pdf';
+    const mimeType = 'pdf';
+
+    mockCtx.prisma.upload.create.mockResolvedValue({
+      id: 1,
+      applicantId,
+      type: 'RESUME',
+      originalFilename,
+      status: 'REQUESTED',
+      createdAt: new Date(),
+      completedAt: null,
+    });
+
     const uploadService = new UploadService(
       ctx.prisma,
       dummyS3Service,
       mockConfig,
     );
-    const applicantId = 666;
-    const originalFilename = 'myGreatResume.pdf';
-    const mimeType = 'pdf';
-
     const resp = await uploadService.generateSignedResumeUploadUrl(
       applicantId,
       originalFilename,
       mimeType,
     );
-    expect(resp).toHaveProperty('uploadId', 123456);
+    expect(resp).toHaveProperty('id', 1);
     expect(resp).toHaveProperty(
       'signedLink',
       expect.stringMatching(
