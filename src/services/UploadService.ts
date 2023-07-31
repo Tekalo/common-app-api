@@ -1,4 +1,5 @@
-import { PrismaClient } from '@prisma/client';
+import CAPPError from '@App/resources/shared/CAPPError.js';
+import { PrismaClient, Upload } from '@prisma/client';
 import S3Service from './S3Service.js';
 
 // TODO: env variable
@@ -14,7 +15,30 @@ class UploadService {
     this.s3Service = s3Service;
   }
 
-  //
+  /**
+   * Get upload belonging to an applicant. If it does not exist, throw an error.
+   * @param applicantId
+   * @param uploadId
+   * @returns
+   */
+  async getApplicantUploadOrThrow(
+    applicantId: number,
+    uploadId: number,
+  ): Promise<Upload> {
+    const applicantUpload = await this.prisma.upload.findFirst({
+      where: { id: uploadId, applicantId },
+    });
+    if (!applicantUpload) {
+      throw new CAPPError({
+        title: 'Upload Error',
+        detail:
+          'Upload does not exist or does not belong to authenticated applicant',
+        status: 400,
+      });
+    }
+    return applicantUpload;
+  }
+
   async generateSignedResumeUploadUrl(
     applicantId: number,
     originalFilename: string,
