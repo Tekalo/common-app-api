@@ -1,11 +1,4 @@
 {
-  // applies some default settings
-  // e.g. SWC infers the "jsc.target" if not supplied, allowing for things like top-level await
-  "env": {
-    "targets": {
-      "node": 18
-    }
-  },
   // how our import statements are transpiled from TS to JS
   // EX: using commonJS will add Object.defineProperty(exports, "__esModule".. to our compiled JS
   "module": {

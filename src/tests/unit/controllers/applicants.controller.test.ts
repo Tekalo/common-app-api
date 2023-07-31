@@ -649,6 +649,70 @@ describe('Applicant Controller', () => {
       expect(mockEmailSpy).toHaveBeenCalledWith(expectedEmail);
       mockEmailSpy.mockRestore();
     });
+    test('Should throw error if verifyUploadOwner() does not return successfully', async () => {
+      const dummyUploadService = new DummyUploadService(
+        ctx.prisma,
+        new DummyS3Service(),
+      );
+      dummyUploadService.getApplicantUploadOrThrow = () => {
+        throw new CAPPError({ title: 'Upload Error' });
+      };
+      const applicantController = new ApplicantController(
+        new DummyAuthService(),
+        ctx.prisma,
+        new DummyEmailService(new DummySESService(), getMockConfig()),
+        new DummyMonitoringService(),
+        dummyUploadService,
+      );
+      const requestBody = applicantSubmissionGenerator.getAPIRequestBody();
+      requestBody.resumeUploadId = 1;
+
+      await expect(
+        applicantController.createSubmission(1, requestBody),
+      ).rejects.toEqual(
+        new CAPPError({
+          title: 'Applicant Submission Creation Error',
+          detail: 'Invalid upload provided',
+          status: 400,
+        }),
+      );
+    });
+
+    test('should throw error if upload belonging to the specified applicant does not have the status "SUCCESS"', async () => {
+      const dummyUploadService = new DummyUploadService(
+        ctx.prisma,
+        new DummyS3Service(),
+      );
+      dummyUploadService.getApplicantUploadOrThrow = () =>
+        Promise.resolve({
+          id: 1,
+          applicantId: 1,
+          status: 'FAILURE',
+          createdAt: new Date(),
+          type: 'RESUME',
+          originalFilename: 'myresume.pdf',
+          completedAt: new Date(),
+        });
+      const applicantController = new ApplicantController(
+        new DummyAuthService(),
+        ctx.prisma,
+        new DummyEmailService(new DummySESService(), getMockConfig()),
+        new DummyMonitoringService(),
+        dummyUploadService,
+      );
+      const requestBody = applicantSubmissionGenerator.getAPIRequestBody();
+      requestBody.resumeUploadId = 1;
+
+      await expect(
+        applicantController.createSubmission(1, requestBody),
+      ).rejects.toEqual(
+        new CAPPError({
+          title: 'Applicant Submission Creation Error',
+          detail: 'Invalid upload provided',
+          status: 400,
+        }),
+      );
+    });
   });
   describe('Applicant Get Resume Upload Url', () => {
     test('Should call upload service to generate a signed resume upload url', async () => {

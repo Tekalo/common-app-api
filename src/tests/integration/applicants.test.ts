@@ -478,6 +478,10 @@ describe('POST /applicants/me/submissions', () => {
         .expect(400);
       expect(body).toHaveProperty('title', 'Validation Error');
     });
+
+    // TODO
+    // it('should return 400 error resumeUploadId is not a valid upload id', async () => {
+    // });
   });
 
   describe('Cookie authentication', () => {
