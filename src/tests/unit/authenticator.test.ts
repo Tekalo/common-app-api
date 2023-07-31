@@ -1,10 +1,10 @@
-import Authenticator from '@App/middleware/authenticator.js';
-import CAPPError from '@App/resources/shared/CAPPError.js';
 import { NextFunction, Request, Response } from 'express';
 import { jest } from '@jest/globals';
+import { Prisma } from '@prisma/client';
+import Authenticator from '@App/middleware/authenticator.js';
+import CAPPError from '@App/resources/shared/CAPPError.js';
 import prisma from '@App/resources/client.js';
 import configLoader from '@App/services/configLoader.js';
-import { Prisma } from '@prisma/client';
 import { RequestWithJWT } from '@App/resources/types/auth0.js';
 import { createMockContext } from '../util/context.js';
 

@@ -1,4 +1,13 @@
 import {
+  Applicant,
+  ApplicantDraftSubmission,
+  ApplicantSubmission,
+  Prisma,
+  PrismaClient,
+} from '@prisma/client';
+import { AuthResult } from 'express-oauth2-jwt-bearer';
+import { AppMetadata, User, UserMetadata } from 'auth0';
+import {
   ApplicantResponseBody,
   ApplicantRequestBody,
   ApplicantSubmissionBody,
@@ -9,22 +18,13 @@ import {
   UploadResponseBody,
   UploadRequestBody,
 } from '@App/resources/types/uploads.js';
-import {
-  Applicant,
-  ApplicantDraftSubmission,
-  ApplicantSubmission,
-  Prisma,
-  PrismaClient,
-} from '@prisma/client';
 import AuthService from '@App/services/AuthService.js';
 import CAPPError from '@App/resources/shared/CAPPError.js';
 import { Problem } from '@App/resources/types/shared.js';
 import EmailService from '@App/services/EmailService.js';
 import MonitoringService from '@App/services/MonitoringService.js';
 import UploadService from '@App/services/UploadService.js';
-import { AuthResult } from 'express-oauth2-jwt-bearer';
 import { Claims } from '@App/resources/types/auth0.js';
-import { AppMetadata, User, UserMetadata } from 'auth0';
 
 class ApplicantController {
   private auth0Service: AuthService;

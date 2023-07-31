@@ -1,7 +1,7 @@
+import { randomBytes } from 'node:crypto';
+import { AppMetadata, ManagementClient, User, UserMetadata } from 'auth0';
 import CAPPError from '@App/resources/shared/CAPPError.js';
 import { Auth0UserBody, Auth0ApiConfig } from '@App/resources/types/auth0.js';
-import { AppMetadata, ManagementClient, User, UserMetadata } from 'auth0';
-import { randomBytes } from 'node:crypto';
 import configLoader from './configLoader.js';
 
 class AuthService {

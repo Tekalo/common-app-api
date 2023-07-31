@@ -1,3 +1,5 @@
+import { Prisma } from '@prisma/client';
+import { jest } from '@jest/globals';
 import { OpportunityBatchRequestBody } from '@App/resources/types/opportunities.js';
 import {
   MockContext,
@@ -5,12 +7,10 @@ import {
   createMockContext,
 } from '@App/tests/util/context.js';
 import { getMockConfig } from '@App/tests/util/helpers.js';
-import { Prisma } from '@prisma/client';
 import OpportunityController from '@App/controllers/OpportunityController.js';
 import EmailService from '@App/services/EmailService.js';
 import DummyEmailService from '@App/tests/fixtures/DummyEmailService.js';
 import DummySESService from '@App/tests/fixtures/DummySesService.js';
-import { jest } from '@jest/globals';
 
 let mockCtx: MockContext;
 let ctx: Context;

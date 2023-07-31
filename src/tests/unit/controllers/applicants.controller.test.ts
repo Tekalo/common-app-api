@@ -1,3 +1,5 @@
+import { jest } from '@jest/globals';
+import { ApplicantSubmission, Prisma } from '@prisma/client';
 import ApplicantController from '@App/controllers/ApplicantController.js';
 import CAPPError from '@App/resources/shared/CAPPError.js';
 import EmailService from '@App/services/EmailService.js';
@@ -5,14 +7,12 @@ import DummyEmailService from '@App/tests/fixtures/DummyEmailService.js';
 import DummyAuthService from '@App/tests/fixtures/DummyAuthService.js';
 import UploadService from '@App/services/UploadService.js';
 import DummyUploadService from '@App/tests/fixtures/DummyUploadService.js';
-import { jest } from '@jest/globals';
 import {
   MockContext,
   Context,
   createMockContext,
 } from '@App/tests/util/context.js';
 import { getMockConfig } from '@App/tests/util/helpers.js';
-import { ApplicantSubmission, Prisma } from '@prisma/client';
 import DummyMonitoringService from '@App/tests/fixtures/DummyMonitoringService.js';
 import SESService from '@App/services/SESService.js';
 import DummySESService from '@App/tests/fixtures/DummySesService.js';

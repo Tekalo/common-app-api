@@ -1,5 +1,5 @@
-import CAPPError from '@App/resources/shared/CAPPError.js';
 import { Prisma, PrismaClient } from '@prisma/client';
+import CAPPError from '@App/resources/shared/CAPPError.js';
 import {
   OpportunityBatchRequestBody,
   OpportunityBatchResponseBody,
