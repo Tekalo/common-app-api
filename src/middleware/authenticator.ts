@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import { verifyCookie } from '@App/services/cookieService.js';
 import { PrismaClient } from '@prisma/client';
+import { verifyCookie } from '@App/services/cookieService.js';
 import {
   Claims,
   RequestWithJWT,

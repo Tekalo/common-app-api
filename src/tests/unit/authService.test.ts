@@ -1,6 +1,6 @@
-import AuthService from '@App/services/AuthService.js';
 import { jest } from '@jest/globals';
 import { AppMetadata, User, UserMetadata } from 'auth0';
+import AuthService from '@App/services/AuthService.js';
 import DummyAuth0ManagementClient from '../fixtures/DummyAuth0ManagementClient.js';
 import { getRandomString } from '../util/helpers.js';
 
