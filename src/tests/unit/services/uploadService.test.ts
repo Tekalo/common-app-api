@@ -1,4 +1,5 @@
 import UploadService from '@App/services/UploadService.js';
+import CAPPError from '@App/resources/shared/CAPPError.js';
 import DummyS3Service from '../../fixtures/DummyS3Service.js';
 import { getMockConfig } from '../../util/helpers.js';
 import { MockContext, Context, createMockContext } from '../../util/context.js';
@@ -37,6 +38,25 @@ describe('Upload Service', () => {
       expect.stringMatching(
         `https://${mockConfig.uploadBucket}.*/resumes/${applicantId}.*`,
       ),
+    );
+  });
+
+  test('should throw error if upload belonging to the specified applicant does not exist', async () => {
+    const uploadService = new UploadService(
+      mockCtx.prisma,
+      new DummyS3Service(),
+      getMockConfig(),
+    );
+    mockCtx.prisma.upload.findFirst.mockResolvedValue(null);
+    await expect(
+      uploadService.getApplicantUploadOrThrow(1, 2),
+    ).rejects.toThrowError(
+      new CAPPError({
+        title: 'Upload Error',
+        detail:
+          'Upload does not exist or does not belong to authenticated applicant',
+        status: 400,
+      }),
     );
   });
 

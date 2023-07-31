@@ -1,7 +1,7 @@
-import CAPPError from '@App/resources/shared/CAPPError.js';
-import { Problem } from '@App/resources/types/shared.js';
 import { Request, Response, NextFunction } from 'express';
 import { ZodError } from 'zod';
+import CAPPError from '@App/resources/shared/CAPPError.js';
+import { Problem } from '@App/resources/types/shared.js';
 
 const errorHandler = (
   err: CAPPError,

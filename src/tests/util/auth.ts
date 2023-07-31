@@ -1,9 +1,9 @@
-import * as jose from 'jose';
 import crypto from 'crypto';
+import * as jose from 'jose';
+import { JWTPayload } from 'express-oauth2-jwt-bearer';
 import configLoader from '@App/services/configLoader.js';
 import CAPPError from '@App/resources/shared/CAPPError.js';
 import { BaseConfig } from '@App/resources/types/shared.js';
-import { JWTPayload } from 'express-oauth2-jwt-bearer';
 import { Claims } from '@App/resources/types/auth0.js';
 
 type TokenOptions = {
