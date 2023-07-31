@@ -1,5 +1,5 @@
-import CAPPError from '@App/resources/shared/CAPPError.js';
 import { PrismaClient, Upload } from '@prisma/client';
+import CAPPError from '@App/resources/shared/CAPPError.js';
 import S3Service from './S3Service.js';
 
 // TODO: env variable
