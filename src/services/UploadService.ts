@@ -1,6 +1,6 @@
+import { Prisma, PrismaClient, Upload } from '@prisma/client';
 import CAPPError from '@App/resources/shared/CAPPError.js';
 import { BaseConfig } from '@App/resources/types/shared.js';
-import { Prisma, PrismaClient, Upload } from '@prisma/client';
 import S3Service from './S3Service.js';
 
 class UploadService {
