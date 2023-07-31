@@ -1,7 +1,7 @@
 import request from 'supertest';
-import getApp from '@App/app.js';
 import sentryTestkit from 'sentry-testkit';
 import { Transport } from '@sentry/types';
+import getApp from '@App/app.js';
 import { getRandomString } from '@App/tests/util/helpers.js';
 import CAPPError from '@App/resources/shared/CAPPError.js';
 import configLoader from '@App/services/configLoader.js';

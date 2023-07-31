@@ -1,3 +1,9 @@
+import express, {
+  NextFunction,
+  Request,
+  RequestHandler,
+  Response,
+} from 'express';
 import ApplicantController from '@App/controllers/ApplicantController.js';
 import {
   ApplicantRequestBodySchema,
@@ -18,12 +24,6 @@ import { setCookie } from '@App/services/cookieService.js';
 
 import AuthService from '@App/services/AuthService.js';
 import prisma from '@App/resources/client.js';
-import express, {
-  NextFunction,
-  Request,
-  RequestHandler,
-  Response,
-} from 'express';
 import Authenticator from '@App/middleware/authenticator.js';
 import { RequestWithJWT } from '@App/resources/types/auth0.js';
 import EmailService from '@App/services/EmailService.js';

@@ -1,7 +1,10 @@
+import { randomUUID } from 'crypto';
 import express, { Application, Handler, NextFunction, Response } from 'express';
 import * as swaggerUi from 'swagger-ui-express';
 import { pinoHttp } from 'pino-http';
-import { randomUUID } from 'crypto';
+import session from 'express-session';
+import ConnectPg from 'connect-pg-simple';
+import { auth } from 'express-oauth2-jwt-bearer';
 import logger from '@App/services/logger.js';
 import spec from '@App/resources/spec.json' assert { type: 'json' };
 import {
@@ -9,9 +12,6 @@ import {
   healthRoutes,
   opportunitiesRoutes,
 } from '@App/routes/index.js';
-import session from 'express-session';
-import ConnectPg from 'connect-pg-simple';
-import { auth } from 'express-oauth2-jwt-bearer';
 import errorHandler from './middleware/errorHandler.js';
 import AuthService from './services/AuthService.js';
 import MonitoringService from './services/MonitoringService.js';
