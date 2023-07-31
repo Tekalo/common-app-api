@@ -1,9 +1,9 @@
+import { jest } from '@jest/globals';
 import getApplicantDeletionEmail from '@App/resources/emails/applicantDeletion.js';
 import getApplicantDeletionCompleteEmail from '@App/resources/emails/applicantDeletionComplete.js';
 import getOrgWelcomeEmail from '@App/resources/emails/orgWelcomeEmail.js';
 import getApplicantWelcomeEmail from '@App/resources/emails/applicantWelcomeEmail.js';
 import EmailService from '@App/services/EmailService.js';
-import { jest } from '@jest/globals';
 import DummySESService from '../../fixtures/DummySesService.js';
 import { getMockConfig } from '../../util/helpers.js';
 

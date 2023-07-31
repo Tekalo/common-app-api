@@ -1,5 +1,5 @@
-import { BaseConfig } from '@App/resources/types/shared.js';
 import { SendEmailCommandInput } from '@aws-sdk/client-ses';
+import { BaseConfig } from '@App/resources/types/shared.js';
 import {
   getApplicantWelcomeEmail,
   getApplicantDeletionEmail,
