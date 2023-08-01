@@ -653,6 +653,7 @@ describe('Applicant Controller', () => {
       const dummyUploadService = new DummyUploadService(
         ctx.prisma,
         new DummyS3Service(),
+        getMockConfig(),
       );
       dummyUploadService.getApplicantUploadOrThrow = () => {
         throw new CAPPError({ title: 'Upload Error' });
@@ -682,6 +683,7 @@ describe('Applicant Controller', () => {
       const dummyUploadService = new DummyUploadService(
         ctx.prisma,
         new DummyS3Service(),
+        getMockConfig(),
       );
       dummyUploadService.getApplicantUploadOrThrow = () =>
         Promise.resolve({
