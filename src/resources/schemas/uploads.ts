@@ -12,7 +12,7 @@ const UploadRequestBodySchema = z.object({
 });
 
 const UploadResponseBodySchema = z.object({
-  uploadId: z.number(),
+  id: z.number(),
   signedLink: z.string(),
 });
 

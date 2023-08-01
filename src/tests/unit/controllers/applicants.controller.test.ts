@@ -727,6 +727,16 @@ describe('Applicant Controller', () => {
         mockConfig,
       );
 
+      mockCtx.prisma.upload.create.mockResolvedValue({
+        id: 1,
+        applicantId,
+        type: 'RESUME',
+        originalFilename: 'bobsresume.docx',
+        status: 'REQUESTED',
+        createdAt: new Date(),
+        completedAt: null,
+      });
+
       const mockUploadSpy = jest.spyOn(
         uploadService,
         'generateSignedResumeUploadUrl',
