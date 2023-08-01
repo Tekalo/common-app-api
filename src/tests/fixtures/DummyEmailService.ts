@@ -1,6 +1,6 @@
 /* eslint-disable class-methods-use-this */
-import EmailService from '@App/services/EmailService.js';
 import { SendEmailCommandOutput } from '@aws-sdk/client-ses';
+import EmailService from '@App/services/EmailService.js';
 
 class DummyEmailService extends EmailService {
   sendEmail(): Promise<SendEmailCommandOutput> {

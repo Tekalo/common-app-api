@@ -1,5 +1,13 @@
 import request from 'supertest';
 import { jest } from '@jest/globals';
+import cookie from 'cookie';
+import cookieParser from 'cookie-parser';
+import {
+  Applicant,
+  ApplicantSession,
+  ApplicantSubmission,
+  Prisma,
+} from '@prisma/client';
 import getApp from '@App/app.js';
 import {
   ApplicantDraftSubmissionBody,
@@ -12,14 +20,6 @@ import prisma from '@App/resources/client.js';
 import AuthService from '@App/services/AuthService.js';
 import configLoader from '@App/services/configLoader.js';
 
-import cookie from 'cookie';
-import cookieParser from 'cookie-parser';
-import {
-  Applicant,
-  ApplicantSession,
-  ApplicantSubmission,
-  Prisma,
-} from '@prisma/client';
 import applicantSubmissionGenerator from '../fixtures/applicantSubmissionGenerator.js';
 import DummyAuthService from '../fixtures/DummyAuthService.js';
 import DummyMonitoringService from '../fixtures/DummyMonitoringService.js';
@@ -382,7 +382,7 @@ describe('POST /applicants/me/submissions', () => {
         .send(testBody)
         .set('Authorization', `Bearer ${token}`)
         .expect(200);
-      expect(Object.keys(body).length).toEqual(33);
+      expect(Object.keys(body).length).toEqual(34);
       expect(body).toEqual({
         id: expect.any(Number),
         applicantId: applicantBody.id,
@@ -478,6 +478,10 @@ describe('POST /applicants/me/submissions', () => {
         .expect(400);
       expect(body).toHaveProperty('title', 'Validation Error');
     });
+
+    // TODO
+    // it('should return 400 error resumeUploadId is not a valid upload id', async () => {
+    // });
   });
 
   describe('Cookie authentication', () => {
