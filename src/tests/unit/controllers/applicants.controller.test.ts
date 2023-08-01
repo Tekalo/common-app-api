@@ -694,6 +694,7 @@ describe('Applicant Controller', () => {
           type: 'RESUME',
           originalFilename: 'myresume.pdf',
           completedAt: new Date(),
+          s3SignedLink: 'https://capp-api.com/resumes/1/1.pdf',
         });
       const applicantController = new ApplicantController(
         new DummyAuthService(),
@@ -735,6 +736,7 @@ describe('Applicant Controller', () => {
         status: 'REQUESTED',
         createdAt: new Date(),
         completedAt: null,
+        s3SignedLink: null,
       });
 
       const mockUploadSpy = jest.spyOn(

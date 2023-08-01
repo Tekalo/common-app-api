@@ -30,6 +30,7 @@ describe('Upload Service', () => {
       status: 'REQUESTED',
       createdAt: new Date(),
       completedAt: null,
+      s3SignedLink: 'https://capp-api.com/resumes/1/1.pdf',
     });
 
     const uploadService = new UploadService(

@@ -90,6 +90,12 @@ class UploadService {
       contentType,
     );
 
+    await this.prisma.upload.update({
+      data: {
+        s3SignedLink: signedLink,
+      },
+      where: { id: uploadRecord.id },
+    });
     return {
       id: uploadRecord.id,
       signedLink,
