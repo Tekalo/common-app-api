@@ -16,7 +16,7 @@ class UploadService {
     this.config = config;
   }
 
-  async createUploadRecord(
+  async createResumeUploadRecord(
     originalFilename: string,
     applicantId: number,
   ): Promise<Upload> {
@@ -79,7 +79,7 @@ class UploadService {
     originalFilename: string,
     mimeType: string,
   ) {
-    const uploadRecord: Upload = await this.createUploadRecord(
+    const uploadRecord: Upload = await this.createResumeUploadRecord(
       originalFilename,
       applicantId,
     );
