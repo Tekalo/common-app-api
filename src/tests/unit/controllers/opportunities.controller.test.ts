@@ -6,11 +6,11 @@ import {
   Context,
   createMockContext,
 } from '@App/tests/util/context.js';
-import { getMockConfig } from '@App/tests/util/helpers.js';
 import OpportunityController from '@App/controllers/OpportunityController.js';
 import EmailService from '@App/services/EmailService.js';
 import DummyEmailService from '@App/tests/fixtures/DummyEmailService.js';
 import DummySESService from '@App/tests/fixtures/DummySesService.js';
+import { getMockConfig } from '../../util/helpers.js';
 
 let mockCtx: MockContext;
 let ctx: Context;

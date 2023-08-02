@@ -16,6 +16,7 @@ import {
   ApplicantSubmissionBody,
 } from '@App/resources/types/applicants.js';
 import { itif, getRandomString } from '@App/tests/util/helpers.js';
+import getDummyApp from '@App/tests/fixtures/appGenerator.js';
 import prisma from '@App/resources/client.js';
 import AuthService from '@App/services/AuthService.js';
 import configLoader from '@App/services/configLoader.js';
@@ -51,18 +52,13 @@ const deleteAuth0Users = async () => {
 };
 
 const appConfig = configLoader.loadConfig();
+const dummyApp = getDummyApp();
 
 describe('POST /applicants', () => {
   describe('No Auth0', () => {
-    const dummyAuthApp = getApp(
-      new DummyAuthService(),
-      new DummyMonitoringService(),
-      new DummyEmailService(new DummySESService(), appConfig),
-      appConfig,
-    );
     it('should create a new applicant only in database', async () => {
       const randomString = getRandomString();
-      const { body } = await request(dummyAuthApp)
+      const { body } = await request(dummyApp)
         .post('/applicants')
         .send({
           name: 'Bob Boberson',
@@ -84,7 +80,7 @@ describe('POST /applicants', () => {
     });
     it('should lowercase email before saving to database', async () => {
       const randomString = getRandomString();
-      const { body } = await request(dummyAuthApp)
+      const { body } = await request(dummyApp)
         .post('/applicants')
         .send({
           name: 'Bob Boberson',
@@ -105,14 +101,14 @@ describe('POST /applicants', () => {
       expect(body).toHaveProperty('auth0Id');
     });
     it('should throw 400 error for missing email', async () => {
-      const { body } = await request(dummyAuthApp)
+      const { body } = await request(dummyApp)
         .post('/applicants')
         .send({ name: 'Bob Boberson' })
         .expect(400);
       expect(body).toHaveProperty('title', 'Validation Error');
     });
     it('should throw 400 error if acceptedPrivacy false', async () => {
-      const { body } = await request(dummyAuthApp)
+      const { body } = await request(dummyApp)
         .post('/applicants')
         .send({
           name: 'Bob Boberson',
@@ -129,13 +125,8 @@ describe('POST /applicants', () => {
       const dummyAuthService = new DummyAuthService();
       // eslint-disable-next-line @typescript-eslint/require-await
       dummyAuthService.userExists = async () => true;
-      const dummyApp = getApp(
-        dummyAuthService,
-        new DummyMonitoringService(),
-        new DummyEmailService(new DummySESService(), appConfig),
-        appConfig,
-      );
-      await request(dummyApp).post('/applicants').send({
+      const authServiceApp = getDummyApp(dummyAuthService);
+      await request(authServiceApp).post('/applicants').send({
         name: 'Bob Boberson',
         email: 'bboberson123@gmail.com',
         preferredContact: 'sms',
@@ -143,7 +134,7 @@ describe('POST /applicants', () => {
         acceptedTerms: true,
         acceptedPrivacy: true,
       });
-      const { body } = await request(dummyApp)
+      const { body } = await request(authServiceApp)
         .post('/applicants')
         .send({
           name: 'Bob Boberson',
@@ -157,7 +148,7 @@ describe('POST /applicants', () => {
       expect(body).toHaveProperty('detail', 'User must login');
     });
     test('Should throw error if request body has invalid preferred contact', async () => {
-      const { body } = await request(dummyAuthApp)
+      const { body } = await request(dummyApp)
         .post('/applicants')
         .send({
           name: 'Bob Boberson',
@@ -174,7 +165,7 @@ describe('POST /applicants', () => {
     // provides a different email when they register for Tekalo.
     test('Should throw error if email in JWT is different than that of request payload', async () => {
       const token = await authHelper.getToken('bobisthebest@gmail.com');
-      const { body } = await request(dummyAuthApp)
+      const { body } = await request(dummyApp)
         .post('/applicants')
         .send({
           name: 'Bob Boberson',
@@ -193,7 +184,7 @@ describe('POST /applicants', () => {
         'set-cookie': string;
       };
       const { clientSecret } = configLoader.loadConfig().auth0.api;
-      const agent = request.agent(dummyAuthApp);
+      const agent = request.agent(dummyApp);
 
       const {
         headers: bobHeaders,
@@ -333,15 +324,9 @@ describe('POST /applicants', () => {
 });
 
 describe('POST /applicants/me/submissions', () => {
-  const dummyAuthApp = getApp(
-    new DummyAuthService(),
-    new DummyMonitoringService(),
-    new DummyEmailService(new DummySESService(), appConfig),
-    appConfig,
-  );
   it('should return 401 for request with no cookie or JWT', async () => {
     const randomString = getRandomString();
-    await request(dummyAuthApp)
+    await request(dummyApp)
       .post('/applicants/me/submissions')
       .send({
         name: 'Bob Boberson',
@@ -362,7 +347,7 @@ describe('POST /applicants/me/submissions', () => {
         `bboberson${randomString}@gmail.com`,
       );
       const { body: applicantBody }: { body: ApplicantResponseBody } =
-        await request(dummyAuthApp)
+        await request(dummyApp)
           .post('/applicants')
           .send({
             name: 'Bob Boberson',
@@ -375,9 +360,7 @@ describe('POST /applicants/me/submissions', () => {
           });
       const testBody: ApplicantSubmissionBody =
         applicantSubmissionGenerator.getAPIRequestBody();
-      const { body }: { body: ApplicantSubmission } = await request(
-        dummyAuthApp,
-      )
+      const { body }: { body: ApplicantSubmission } = await request(dummyApp)
         .post('/applicants/me/submissions')
         .send(testBody)
         .set('Authorization', `Bearer ${token}`)
@@ -400,7 +383,7 @@ describe('POST /applicants/me/submissions', () => {
       const token = await authHelper.getToken(
         `bboberson${randomString}@gmail.com`,
       );
-      await request(dummyAuthApp)
+      await request(dummyApp)
         .post('/applicants')
         .send({
           name: 'Bob Boberson',
@@ -414,7 +397,7 @@ describe('POST /applicants/me/submissions', () => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       delete testSubmission.yoe;
-      const { body } = await request(dummyAuthApp)
+      const { body } = await request(dummyApp)
         .post('/applicants/me/submissions')
         .send({ ...testSubmission })
         .set('Authorization', `Bearer ${token}`)
@@ -429,7 +412,7 @@ describe('POST /applicants/me/submissions', () => {
       const token = await authHelper.getToken(
         `bboberson${randomString}@gmail.com`,
       );
-      await request(dummyAuthApp)
+      await request(dummyApp)
         .post('/applicants')
         .send({
           name: 'Bob Boberson',
@@ -444,9 +427,7 @@ describe('POST /applicants/me/submissions', () => {
       // @ts-ignore
       delete testSubmission.openToRemoteMulti;
       testSubmission.openToRemote = ['hybrid'];
-      const { body }: { body: ApplicantSubmission } = await request(
-        dummyAuthApp,
-      )
+      const { body }: { body: ApplicantSubmission } = await request(dummyApp)
         .post('/applicants/me/submissions')
         .send({ ...testSubmission })
         .set('Authorization', `Bearer ${token}`)
@@ -460,7 +441,7 @@ describe('POST /applicants/me/submissions', () => {
       const token = await authHelper.getToken(
         `bboberson${randomString}@gmail.com`,
       );
-      await request(dummyAuthApp)
+      await request(dummyApp)
         .post('/applicants')
         .send({
           name: 'Bob Boberson',
@@ -471,7 +452,7 @@ describe('POST /applicants/me/submissions', () => {
           acceptedTerms: true,
           acceptedPrivacy: true,
         });
-      const { body } = await request(dummyAuthApp)
+      const { body } = await request(dummyApp)
         .post('/applicants/me/submissions')
         .send({ ...testSubmission, openToRelocate: 'idk maybe' })
         .set('Authorization', `Bearer ${token}`)
@@ -486,7 +467,7 @@ describe('POST /applicants/me/submissions', () => {
 
   describe('Cookie authentication', () => {
     it('should create a new applicant submission', async () => {
-      const agent = request.agent(dummyAuthApp);
+      const agent = request.agent(dummyApp);
       await agent.post('/applicants').send({
         name: 'Bob Boberson',
         auth0Id: 'auth0|123456',
@@ -665,22 +646,15 @@ describe('DELETE /applicants/me', () => {
     );
   });
   describe('No Auth0 Integration', () => {
-    const appNoAuth = getApp(
-      new DummyAuthService(),
-      new DummyMonitoringService(),
-      new DummyEmailService(new DummySESService(), appConfig),
-      appConfig,
-    );
-
     it('should return 401 for un-authed request', async () => {
-      await request(appNoAuth).delete('/applicants/me').expect(401);
+      await request(dummyApp).delete('/applicants/me').expect(401);
     });
 
     it('should return 200 when authenticating with valid token, but applicant does not exist in the database', async () => {
       const token = await authHelper.getToken(
         `bboberson${getRandomString()}@gmail.com`,
       );
-      await request(appNoAuth)
+      await request(dummyApp)
         .delete('/applicants/me')
         .set('Authorization', `Bearer ${token}`)
         .expect(200);
@@ -691,7 +665,7 @@ describe('DELETE /applicants/me', () => {
       const token = await authHelper.getToken(
         `bboberson${randomString}@gmail.com`,
       );
-      await request(appNoAuth)
+      await request(dummyApp)
         .post('/applicants')
         .send({
           name: 'Bob Boberson',
@@ -701,7 +675,7 @@ describe('DELETE /applicants/me', () => {
           acceptedTerms: true,
           acceptedPrivacy: true,
         });
-      const { body } = await request(appNoAuth)
+      const { body } = await request(dummyApp)
         .delete('/applicants/me')
         .set('Authorization', `Bearer ${token}`)
         .expect(200);
@@ -711,15 +685,9 @@ describe('DELETE /applicants/me', () => {
 });
 
 describe('POST /applicants/me/submissions/draft', () => {
-  const dummyAuthApp = getApp(
-    new DummyAuthService(),
-    new DummyMonitoringService(),
-    new DummyEmailService(new DummySESService(), appConfig),
-    appConfig,
-  );
   it('should not allow applicant to save draft submission without a valid cookie or JWT supplied', async () => {
     // Supertest will not save cookies (each request has a separate cookie jar)
-    await request(dummyAuthApp).post('/applicants').send({
+    await request(dummyApp).post('/applicants').send({
       name: 'Bob Boberson',
       email: 'bboberson@gmail.com',
       preferredContact: 'sms',
@@ -730,7 +698,7 @@ describe('POST /applicants/me/submissions/draft', () => {
     const testBody: ApplicantDraftSubmissionBody = {
       resumeUrl: 'https://bobcanbuild.com',
     };
-    const { body } = await request(dummyAuthApp)
+    const { body } = await request(dummyApp)
       .post('/applicants/me/submissions/draft')
       .send(testBody)
       .expect(401);
@@ -739,7 +707,7 @@ describe('POST /applicants/me/submissions/draft', () => {
 
   describe('Cookie based authentication', () => {
     it('should create a new draft applicant submission', async () => {
-      const agent = request.agent(dummyAuthApp);
+      const agent = request.agent(dummyApp);
       await agent.post('/applicants').send({
         name: 'Bob Boberson',
         email: 'bboberson@gmail.com',
@@ -759,7 +727,7 @@ describe('POST /applicants/me/submissions/draft', () => {
     });
 
     it('should update an existing draft applicant submission', async () => {
-      const agent = request.agent(dummyAuthApp);
+      const agent = request.agent(dummyApp);
       await agent.post('/applicants').send({
         name: 'Bob Boberson',
         email: 'bboberson@gmail.com',
@@ -797,7 +765,7 @@ describe('POST /applicants/me/submissions/draft', () => {
       const token = await authHelper.getToken(
         `bboberson${randomString}@gmail.com`,
       );
-      await request(dummyAuthApp)
+      await request(dummyApp)
         .post('/applicants')
         .send({
           name: 'Bob Boberson',
@@ -812,9 +780,7 @@ describe('POST /applicants/me/submissions/draft', () => {
       // @ts-ignore
       delete testSubmission.openToRemoteMulti;
       testSubmission.openToRemote = ['in-person'];
-      const { body }: { body: ApplicantSubmission } = await request(
-        dummyAuthApp,
-      )
+      const { body }: { body: ApplicantSubmission } = await request(dummyApp)
         .post('/applicants/me/submissions/draft')
         .send({ ...testSubmission })
         .set('Authorization', `Bearer ${token}`)
@@ -826,7 +792,7 @@ describe('POST /applicants/me/submissions/draft', () => {
   describe('JWT based authentication', () => {
     it('should create a new draft applicant submission', async () => {
       const token = await authHelper.getToken('bboberson@gmail.com');
-      await request(dummyAuthApp).post('/applicants').send({
+      await request(dummyApp).post('/applicants').send({
         name: 'Bob Boberson',
         email: 'bboberson@gmail.com',
         preferredContact: 'sms',
@@ -837,7 +803,7 @@ describe('POST /applicants/me/submissions/draft', () => {
       const testBody: ApplicantDraftSubmissionBody = {
         resumeUrl: 'https://bobcanbuild.com',
       };
-      const { body } = await request(dummyAuthApp)
+      const { body } = await request(dummyApp)
         .post('/applicants/me/submissions/draft')
         .set('Authorization', `Bearer ${token}`)
         .send(testBody)
@@ -847,7 +813,7 @@ describe('POST /applicants/me/submissions/draft', () => {
 
     it('should not allow applicant to save draft submission of a non-existent user', async () => {
       const token = await authHelper.getToken('bibbitybobbityboo@gmail.com');
-      await request(dummyAuthApp).post('/applicants').send({
+      await request(dummyApp).post('/applicants').send({
         name: 'Pat Patterson',
         email: 'bboberson@gmail.com',
         preferredContact: 'sms',
@@ -858,7 +824,7 @@ describe('POST /applicants/me/submissions/draft', () => {
       const testBody: ApplicantDraftSubmissionBody = {
         resumeUrl: 'https://bobcanbuild.com',
       };
-      const { body } = await request(dummyAuthApp)
+      const { body } = await request(dummyApp)
         .post('/applicants/me/submissions/draft')
         .set('Authorization', `Bearer ${token}`)
         .send(testBody)
@@ -869,17 +835,10 @@ describe('POST /applicants/me/submissions/draft', () => {
 });
 
 describe('GET /applicants/me/submissions', () => {
-  const dummyAuthApp = getApp(
-    new DummyAuthService(),
-    new DummyMonitoringService(),
-    new DummyEmailService(new DummySESService(), appConfig),
-    appConfig,
-  );
-
   describe('JWT authentication', () => {
     it('should get current applicants draft submission with token', async () => {
       // We create draft submission with cookie, get /me/submissions with JWT
-      const agent = request.agent(dummyAuthApp);
+      const agent = request.agent(dummyApp);
       const token = await authHelper.getToken('bboberson@gmail.com');
       await agent.post('/applicants').send({
         name: 'Bob Boberson',
@@ -897,7 +856,7 @@ describe('GET /applicants/me/submissions', () => {
         .send(testBody)
         .expect(200);
       const { body }: { body: ApplicantDraftSubmissionResponseBody } =
-        await request(dummyAuthApp)
+        await request(dummyApp)
           .get('/applicants/me/submissions')
           .set('Authorization', `Bearer ${token}`)
           .expect(200);
@@ -907,7 +866,7 @@ describe('GET /applicants/me/submissions', () => {
     });
 
     it('should get current applicants draft submission with cookie', async () => {
-      const agent = request.agent(dummyAuthApp);
+      const agent = request.agent(dummyApp);
       await agent.post('/applicants').send({
         name: 'Bob Boberson',
         email: 'bboberson@gmail.com',
@@ -932,7 +891,7 @@ describe('GET /applicants/me/submissions', () => {
 
     it('should get current applicants final submission', async () => {
       const token = await authHelper.getToken('bboberson@gmail.com');
-      await request(dummyAuthApp).post('/applicants').send({
+      await request(dummyApp).post('/applicants').send({
         name: 'Bob Boberson',
         email: 'bboberson@gmail.com',
         preferredContact: 'sms',
@@ -942,13 +901,13 @@ describe('GET /applicants/me/submissions', () => {
       });
       const testBody: ApplicantDraftSubmissionBody =
         applicantSubmissionGenerator.getAPIRequestBody();
-      await request(dummyAuthApp)
+      await request(dummyApp)
         .post('/applicants/me/submissions')
         .send(testBody)
         .set('Authorization', `Bearer ${token}`)
         .expect(200);
       const { body }: { body: ApplicantDraftSubmissionResponseBody } =
-        await request(dummyAuthApp)
+        await request(dummyApp)
           .get('/applicants/me/submissions')
           .set('Authorization', `Bearer ${token}`)
           .expect(200);
@@ -958,11 +917,11 @@ describe('GET /applicants/me/submissions', () => {
     });
 
     it('should return 401 if no JWT provided', async () => {
-      await request(dummyAuthApp).get('/applicants/me/submissions').expect(401);
+      await request(dummyApp).get('/applicants/me/submissions').expect(401);
     });
     it('should return 404 if applicant does not exist', async () => {
       const token = await authHelper.getToken('bboberson@gmail.com');
-      const { body } = await request(dummyAuthApp)
+      const { body } = await request(dummyApp)
         .get('/applicants/me/submissions')
         .set('Authorization', `Bearer ${token}`)
         .expect(404);
@@ -970,7 +929,7 @@ describe('GET /applicants/me/submissions', () => {
     });
     it('should return 200 if applicant exists but has no submissions', async () => {
       const token = await authHelper.getToken('bboberson@gmail.com');
-      await request(dummyAuthApp).post('/applicants').send({
+      await request(dummyApp).post('/applicants').send({
         name: 'Bob Boberson',
         email: 'bboberson@gmail.com',
         preferredContact: 'sms',
@@ -978,7 +937,7 @@ describe('GET /applicants/me/submissions', () => {
         acceptedTerms: true,
         acceptedPrivacy: true,
       });
-      const { body } = await request(dummyAuthApp)
+      const { body } = await request(dummyApp)
         .get('/applicants/me/submissions')
         .set('Authorization', `Bearer ${token}`)
         .expect(200);
@@ -989,14 +948,8 @@ describe('GET /applicants/me/submissions', () => {
 });
 
 describe('PUT /applicants/me/state', () => {
-  const dummyAuthApp = getApp(
-    new DummyAuthService(),
-    new DummyMonitoringService(),
-    new DummyEmailService(new DummySESService(), appConfig),
-    appConfig,
-  );
   it('should return 401 for request with a malformed JWT', async () => {
-    await request(dummyAuthApp)
+    await request(dummyApp)
       .put('/applicants/me/state')
       .send({ pause: true })
       .set('Authorization', 'Bearer #!InvalidToken#!')
@@ -1007,7 +960,7 @@ describe('PUT /applicants/me/state', () => {
     const token = await authHelper.getToken(
       `bboberson${randomString}@gmail.com`,
     );
-    await request(dummyAuthApp)
+    await request(dummyApp)
       .post('/applicants')
       .send({
         name: 'Bob Boberson',
@@ -1019,14 +972,14 @@ describe('PUT /applicants/me/state', () => {
         acceptedPrivacy: true,
       })
       .expect(200);
-    const { body: pausedBody } = await request(dummyAuthApp)
+    const { body: pausedBody } = await request(dummyApp)
       .put('/applicants/me/state')
       .send({ pause: true })
       .set('Authorization', `Bearer ${token}`)
       .expect(200);
     expect(pausedBody).toHaveProperty('id');
     expect(pausedBody).toHaveProperty('isPaused', true);
-    const { body: unPausedBody } = await request(dummyAuthApp)
+    const { body: unPausedBody } = await request(dummyApp)
       .put('/applicants/me/state')
       .send({ pause: false })
       .set('Authorization', `Bearer ${token}`)
@@ -1037,7 +990,7 @@ describe('PUT /applicants/me/state', () => {
 
   it('should return 404 for non-existent applicant', async () => {
     const token = await authHelper.getToken('bboberson@gmail.com');
-    await request(dummyAuthApp)
+    await request(dummyApp)
       .put('/applicants/me/state')
       .send({ pause: true })
       .set('Authorization', `Bearer ${token}`)
@@ -1046,20 +999,11 @@ describe('PUT /applicants/me/state', () => {
 });
 
 describe('PUT /applicants/:auth0Id', () => {
-  const dummyAuthApp = getApp(
-    new DummyAuthService(),
-    new DummyMonitoringService(),
-    new DummyEmailService(new DummySESService(), appConfig),
-    appConfig,
-  );
-
   it('should update applicant auth0Id', async () => {
     const token = await authHelper.getToken(undefined, {
       scope: 'another:scope update:tekalo_db_user_auth0_id',
     });
-    const { body }: { body: ApplicantResponseBody } = await request(
-      dummyAuthApp,
-    )
+    const { body }: { body: ApplicantResponseBody } = await request(dummyApp)
       .post('/applicants')
       .send({
         name: 'Bob Boberson',
@@ -1071,9 +1015,7 @@ describe('PUT /applicants/:auth0Id', () => {
         acceptedPrivacy: true,
       })
       .expect(200);
-    const { body: updatedAuthID }: { body: Applicant } = await request(
-      dummyAuthApp,
-    )
+    const { body: updatedAuthID }: { body: Applicant } = await request(dummyApp)
       .put(`/applicants/${body.auth0Id as string}`)
       .send({ auth0Id: 'google-oauth|12345' })
       .set('Authorization', `Bearer ${token}`)
@@ -1082,9 +1024,7 @@ describe('PUT /applicants/:auth0Id', () => {
   });
 
   it('should return 401 for request made without valid JWT', async () => {
-    const { body }: { body: ApplicantResponseBody } = await request(
-      dummyAuthApp,
-    )
+    const { body }: { body: ApplicantResponseBody } = await request(dummyApp)
       .post('/applicants')
       .send({
         name: 'Bob Boberson',
@@ -1096,7 +1036,7 @@ describe('PUT /applicants/:auth0Id', () => {
         acceptedPrivacy: true,
       })
       .expect(200);
-    await request(dummyAuthApp)
+    await request(dummyApp)
       .put(`/applicants/${body.auth0Id as string}`)
       .send({ auth0Id: 'google-oauth|6789' })
       .expect(401);
@@ -1106,7 +1046,7 @@ describe('PUT /applicants/:auth0Id', () => {
     const token = await authHelper.getToken(undefined, {
       scope: 'another:scope update:tekalo_db_user_auth0_id',
     });
-    await request(dummyAuthApp)
+    await request(dummyApp)
       .put('/applicants/999')
       .send({ auth0Id: 'google-oauth|99999' })
       .set('Authorization', `Bearer ${token}`)
@@ -1115,19 +1055,12 @@ describe('PUT /applicants/:auth0Id', () => {
 });
 
 describe('GET /applicants/me', () => {
-  const dummyAuthApp = getApp(
-    new DummyAuthService(),
-    new DummyMonitoringService(),
-    new DummyEmailService(new DummySESService(), appConfig),
-    appConfig,
-  );
-
   it('should return applicant-level information with a JWT', async () => {
     const randomString = getRandomString();
     const token = await authHelper.getToken(
       `bboberson${randomString}@gmail.com`,
     );
-    await request(dummyAuthApp)
+    await request(dummyApp)
       .post('/applicants')
       .send({
         name: 'Bob Boberson',
@@ -1137,7 +1070,7 @@ describe('GET /applicants/me', () => {
         acceptedTerms: true,
         acceptedPrivacy: true,
       });
-    const { body } = await request(dummyAuthApp)
+    const { body } = await request(dummyApp)
       .get('/applicants/me')
       .set('Authorization', `Bearer ${token}`);
     expect(body).toHaveProperty('id');
@@ -1146,7 +1079,7 @@ describe('GET /applicants/me', () => {
   });
 
   it('should return 401 with a cookie but without a JWT', async () => {
-    const agent = request.agent(dummyAuthApp);
+    const agent = request.agent(dummyApp);
     await agent.post('/applicants').send({
       name: 'Bob Boberson',
       auth0Id: 'auth0|123456',
@@ -1161,18 +1094,9 @@ describe('GET /applicants/me', () => {
 });
 
 describe('GET /applicants/:id', () => {
-  const dummyAuthApp = getApp(
-    new DummyAuthService(),
-    new DummyMonitoringService(),
-    new DummyEmailService(new DummySESService(), appConfig),
-    appConfig,
-  );
-
   it('should return 401 without valid JWT', async () => {
     const randomString = getRandomString();
-    const { body }: { body: ApplicantResponseBody } = await request(
-      dummyAuthApp,
-    )
+    const { body }: { body: ApplicantResponseBody } = await request(dummyApp)
       .post('/applicants')
       .send({
         name: 'Bob Boberson',
@@ -1182,23 +1106,14 @@ describe('GET /applicants/:id', () => {
         acceptedTerms: true,
         acceptedPrivacy: true,
       });
-    await request(dummyAuthApp).get(`/applicants/${body.id}`).expect(401);
+    await request(dummyApp).get(`/applicants/${body.id}`).expect(401);
   });
 });
 
 describe('DELETE /applicants/:id', () => {
-  const dummyAuthApp = getApp(
-    new DummyAuthService(),
-    new DummyMonitoringService(),
-    new DummyEmailService(new DummySESService(), appConfig),
-    appConfig,
-  );
-
   it('should return 401 without valid JWT', async () => {
     const randomString = getRandomString();
-    const { body }: { body: ApplicantResponseBody } = await request(
-      dummyAuthApp,
-    )
+    const { body }: { body: ApplicantResponseBody } = await request(dummyApp)
       .post('/applicants')
       .send({
         name: 'Bob Boberson',
@@ -1208,6 +1123,6 @@ describe('DELETE /applicants/:id', () => {
         acceptedTerms: true,
         acceptedPrivacy: true,
       });
-    await request(dummyAuthApp).delete(`/applicants/${body.id}`).expect(401);
+    await request(dummyApp).delete(`/applicants/${body.id}`).expect(401);
   });
 });
