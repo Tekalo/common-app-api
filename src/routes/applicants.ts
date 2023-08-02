@@ -194,24 +194,23 @@ const applicantRoutes = (
   );
 
   // DEV ONLY resume upload
-  console.log(`In router env: ${config.env}`);
-  if (config.env === 'dev') {
-    router.post(
-      '/me/uploads/resume',
-      authenticator.verifyJwtOrCookie.bind(authenticator) as RequestHandler,
-      (req: Request, res: Response, next) => {
-        const appBody = req.body as UploadRequestBody;
-        const applicantID = req.auth?.payload.id || req.session.applicant.id;
-        const validatedBody = UploadRequestBodySchema.parse(appBody);
-        applicantController
-          .getResumeUploadUrl(applicantID, validatedBody)
-          .then((result) => {
-            res.status(200).json(result);
-          })
-          .catch((err) => next(err));
-      },
-    );
-  }
+  // if (config.env === 'dev') {
+  router.post(
+    '/me/uploads/resume',
+    authenticator.verifyJwtOrCookie.bind(authenticator) as RequestHandler,
+    (req: Request, res: Response, next) => {
+      const appBody = req.body as UploadRequestBody;
+      const applicantID = req.auth?.payload.id || req.session.applicant.id;
+      const validatedBody = UploadRequestBodySchema.parse(appBody);
+      applicantController
+        .getResumeUploadUrl(applicantID, validatedBody)
+        .then((result) => {
+          res.status(200).json(result);
+        })
+        .catch((err) => next(err));
+    },
+  );
+  // }
 
   /**
    * ADMIN ENDPOINTS BELOW
