@@ -190,3 +190,8 @@ variable "web_url" {
   type        = string
   nullable    = false
 }
+
+variable "upload_bucket" {
+  type        = string
+  description = "The name of the s3 bucket where user uploads are stored"
+}
