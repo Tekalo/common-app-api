@@ -1,5 +1,5 @@
-import AuthService from '@App/services/AuthService.js';
 import { User } from 'auth0';
+import AuthService from '@App/services/AuthService.js';
 import { getRandomString } from '../util/helpers.js';
 
 class DummyAuthService extends AuthService {

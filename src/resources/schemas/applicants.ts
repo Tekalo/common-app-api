@@ -77,6 +77,7 @@ const ApplicantSubmissionRequestBodySchema = z.object({
   portfolioUrl: z.string().max(500).nullable().optional(),
   portfolioPassword: z.string().max(255).nullable().optional(),
   resumeUrl: z.string().max(500).optional(), // deprecated
+  resumeUploadId: z.number().nullable().optional(),
   resumePassword: z.string().max(255).nullable().optional(),
   hoursPerWeek: z.string().max(255).nullable().optional(),
   interestEmploymentType: z.array(EmploymentType),
@@ -97,7 +98,7 @@ const ApplicantSubmissionRequestBodySchema = z.object({
   referenceAttribution: z.string().nullable().optional(),
   referenceAttributionOther: z.string().nullable().optional(),
 });
-// TOOD: Figure out typesript error on refining interestGovtTypes to ensure it is filled if interestGovt is true
+// TOOD: Figure out typescript error on refining interestGovtTypes to ensure it is filled if interestGovt is true
 
 const ApplicantDraftSubmissionRequestBodySchema =
   ApplicantSubmissionRequestBodySchema.partial();

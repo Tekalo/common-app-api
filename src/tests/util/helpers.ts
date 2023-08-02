@@ -18,11 +18,11 @@ const getMockConfig = (overrides: Partial<BaseConfig> = {}): BaseConfig => ({
       clientSecret: '',
     },
     express: {
-      audience: '',
-      issuerBaseURL: '',
-      issuer: '',
-      tokenSigningAlg: '',
-      secret: '',
+      audience: 'fake-audience',
+      issuerBaseURL: 'fake-issuerURL',
+      issuer: 'fake-issuer',
+      tokenSigningAlg: 'HS256',
+      secret: 'fake-secret',
     },
   },
   aws: {

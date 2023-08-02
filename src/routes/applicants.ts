@@ -1,3 +1,9 @@
+import express, {
+  NextFunction,
+  Request,
+  RequestHandler,
+  Response,
+} from 'express';
 import ApplicantController from '@App/controllers/ApplicantController.js';
 import {
   ApplicantRequestBodySchema,
@@ -12,35 +18,36 @@ import {
   ApplicantStateBody,
   ApplicantUpdateBody,
 } from '@App/resources/types/applicants.js';
+import { UploadRequestBodySchema } from '@App/resources/schemas/uploads.js';
+import { UploadRequestBody } from '@App/resources/types/uploads.js';
 import { setCookie } from '@App/services/cookieService.js';
 
 import AuthService from '@App/services/AuthService.js';
 import prisma from '@App/resources/client.js';
-import express, {
-  NextFunction,
-  Request,
-  RequestHandler,
-  Response,
-} from 'express';
 import Authenticator from '@App/middleware/authenticator.js';
 import { RequestWithJWT } from '@App/resources/types/auth0.js';
 import EmailService from '@App/services/EmailService.js';
 import MonitoringService from '@App/services/MonitoringService.js';
+import UploadService from '@App/services/UploadService.js';
 import { BaseConfig } from '@App/resources/types/shared.js';
 
 const applicantRoutes = (
   authService: AuthService,
   emailService: EmailService,
   monitoringService: MonitoringService,
+  uploadService: UploadService,
   config: BaseConfig,
 ) => {
   const router = express.Router();
+
   const applicantController = new ApplicantController(
     authService,
     prisma,
     emailService,
     monitoringService,
+    uploadService,
   );
+
   const appConfig = config;
   appConfig.auth0.express.cacheMaxAge = 12 * 60 * 60 * 1000; // 12 hours
   const authenticator = new Authenticator(prisma, appConfig);
@@ -185,6 +192,25 @@ const applicantRoutes = (
         .catch((err) => next(err));
     },
   );
+
+  // DEV ONLY resume upload
+  if (config.env === 'dev') {
+    router.post(
+      '/me/uploads/resume',
+      authenticator.verifyJwtOrCookie.bind(authenticator) as RequestHandler,
+      (req: Request, res: Response, next) => {
+        const appBody = req.body as UploadRequestBody;
+        const applicantID = req.auth?.payload.id || req.session.applicant.id;
+        const validatedBody = UploadRequestBodySchema.parse(appBody);
+        applicantController
+          .getResumeUploadUrl(applicantID, validatedBody)
+          .then((result) => {
+            res.status(200).json(result);
+          })
+          .catch((err) => next(err));
+      },
+    );
+  }
 
   /**
    * ADMIN ENDPOINTS BELOW

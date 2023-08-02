@@ -1,16 +1,16 @@
+import { Prisma } from '@prisma/client';
+import { jest } from '@jest/globals';
 import { OpportunityBatchRequestBody } from '@App/resources/types/opportunities.js';
 import {
   MockContext,
   Context,
   createMockContext,
 } from '@App/tests/util/context.js';
-import { getMockConfig } from '@App/tests/util/helpers.js';
-import { Prisma } from '@prisma/client';
 import OpportunityController from '@App/controllers/OpportunityController.js';
 import EmailService from '@App/services/EmailService.js';
 import DummyEmailService from '@App/tests/fixtures/DummyEmailService.js';
 import DummySESService from '@App/tests/fixtures/DummySesService.js';
-import { jest } from '@jest/globals';
+import { getMockConfig } from '../../util/helpers.js';
 
 let mockCtx: MockContext;
 let ctx: Context;
@@ -56,7 +56,7 @@ describe('Opportunity Controller', () => {
           salaryRange: '20-30$/hr',
           desiredHoursPerWeek: '40',
           desiredStartDate: new Date('2023-01-01'),
-          desiredYoe: ['0-2', '2-4'],
+          desiredYoe: ['0-2', '3-5'],
           desiredSkills: ['react', 'sketch'],
           jdUrl: 'comeflipforbob.com/apply',
           desiredOtherSkills: ['flipping burgers', 'flipping houses'],
@@ -183,7 +183,7 @@ describe('Opportunity Controller', () => {
           salaryRange: '20-30$/hr',
           desiredHoursPerWeek: '40',
           desiredStartDate: new Date('2023-01-01'),
-          desiredYoe: ['0-2', '2-4'],
+          desiredYoe: ['0-2', '3-5'],
           desiredSkills: ['react', 'sketch'],
           jdUrl: 'comeflipforbob.com/apply',
           desiredOtherSkills: ['flipping burgers', 'flipping houses'],

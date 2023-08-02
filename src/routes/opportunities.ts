@@ -1,9 +1,9 @@
+import express, { Request, RequestHandler, Response } from 'express';
 import OpportunityController from '@App/controllers/OpportunityController.js';
 import prisma from '@App/resources/client.js';
 import { OpportunityBatchRequestBodySchema } from '@App/resources/schemas/opportunities.js';
 import { OpportunityBatchRequestBody } from '@App/resources/types/opportunities.js';
 import EmailService from '@App/services/EmailService.js';
-import express, { Request, RequestHandler, Response } from 'express';
 import Authenticator from '@App/middleware/authenticator.js';
 import { RequestWithJWT } from '@App/resources/types/auth0.js';
 import { BaseConfig } from '@App/resources/types/shared.js';
