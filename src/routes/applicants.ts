@@ -209,7 +209,10 @@ const applicantRoutes = (
           .then((result) => {
             res.status(200).json(result);
           })
-          .catch((err) => next(err));
+          .catch((err) => {
+            console.log(err);
+            next(err);
+          });
       },
     );
   }
