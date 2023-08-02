@@ -12,12 +12,12 @@ import {
   Context,
   createMockContext,
 } from '@App/tests/util/context.js';
-import { getMockConfig } from '@App/tests/util/helpers.js';
 import DummyMonitoringService from '@App/tests/fixtures/DummyMonitoringService.js';
 import SESService from '@App/services/SESService.js';
 import DummySESService from '@App/tests/fixtures/DummySesService.js';
 import DummyS3Service from '@App/tests/fixtures/DummyS3Service.js';
 import applicantSubmissionGenerator from '@App/tests/fixtures/applicantSubmissionGenerator.js';
+import { getMockConfig } from '../../util/helpers.js';
 
 let mockCtx: MockContext;
 let ctx: Context;
