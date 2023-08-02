@@ -23,6 +23,7 @@ env:
   PORT: 3000
   SENTRY_DSN: ${{ vars.SENTRY_DSN }}
   UPLOAD_BUCKET: ${{ vars.UPLOAD_BUCKET }}
+  AWS_REGION: us-east-1
 
 permissions:
   id-token: write
