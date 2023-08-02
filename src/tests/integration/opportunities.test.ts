@@ -49,7 +49,7 @@ describe('POST /opportunities', () => {
         salaryRange: '20-30$/hr',
         desiredHoursPerWeek: '40',
         desiredStartDate: '2023-01-01',
-        desiredYoe: ['0-2', '2-4'],
+        desiredYoe: ['0-2', '3-5', '6-8', '9-12'],
         desiredSkills: ['react', 'sketch'],
         desiredOtherSkills: ['flipping burgers', 'flipping houses'],
         visaSponsorship: 'no',
