@@ -40,6 +40,7 @@ jobs:
       POSTGRES_HOST: postgres
       POSTGRES_PORT: 5432
       DATABASE_URL: postgresql://capp_admin:password@postgres:5432/testdb
+      UPLOAD_BUCKET: capp-dev-api-uploads
 
     services:
       postgres:
