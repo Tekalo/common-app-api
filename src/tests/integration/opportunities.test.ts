@@ -1,19 +1,8 @@
 import request from 'supertest';
-import getApp from '@App/app.js';
 import prisma from '@App/resources/client.js';
-import configLoader from '@App/services/configLoader.js';
-import DummyAuthService from '../fixtures/DummyAuthService.js';
-import DummyMonitoringService from '../fixtures/DummyMonitoringService.js';
-import DummyEmailService from '../fixtures/DummyEmailService.js';
-import DummySESService from '../fixtures/DummySesService.js';
+import { getDummyApp } from '../fixtures/appGenerator.js';
 
-const appConfig = configLoader.loadConfig();
-const app = getApp(
-  new DummyAuthService(),
-  new DummyMonitoringService(),
-  new DummyEmailService(new DummySESService(), appConfig),
-  appConfig,
-);
+const dummyApp = getDummyApp();
 
 afterEach(async () => {
   await prisma.opportunitySubmission.deleteMany();
@@ -60,7 +49,7 @@ describe('POST /opportunities', () => {
     ],
   };
   it('should create a new batch of opportunities', async () => {
-    const { body } = await request(app)
+    const { body } = await request(dummyApp)
       .post('/opportunities/batch')
       .send(oppBatchPayload)
       .expect(200);
@@ -105,7 +94,7 @@ describe('POST /opportunities', () => {
       desiredImpactExp:
         'A candidate who has experience frying fries in the non-profit space',
     });
-    const { body } = await request(app)
+    const { body } = await request(dummyApp)
       .post('/opportunities/batch')
       .send(secondOppSubmissionPayload)
       .expect(200);
@@ -114,7 +103,7 @@ describe('POST /opportunities', () => {
   it('should throw 400 error if acceptedPrivacy is false', async () => {
     const falseAcceptedPrivacy = { ...oppBatchPayload };
     falseAcceptedPrivacy.acceptedPrivacy = false;
-    const { body } = await request(app)
+    const { body } = await request(dummyApp)
       .post('/opportunities/batch')
       .send([falseAcceptedPrivacy])
       .expect(400);
@@ -125,7 +114,7 @@ describe('POST /opportunities', () => {
       ...oppBatchPayload,
       organization: { ...oppBatchPayload.organization, size: '100' },
     };
-    const { body } = await request(app)
+    const { body } = await request(dummyApp)
       .post('/opportunities/batch')
       .send([invalidOrgSize])
       .expect(400);
@@ -139,7 +128,7 @@ describe('POST /opportunities', () => {
         email: 'bobbobersonhasnoemail',
       },
     };
-    const { body } = await request(app)
+    const { body } = await request(dummyApp)
       .post('/opportunities/batch')
       .send([invalidEmail])
       .expect(400);
@@ -154,7 +143,7 @@ describe('POST /opportunities', () => {
         email,
       },
     };
-    const { body } = await request(app)
+    const { body } = await request(dummyApp)
       .post('/opportunities/batch')
       .send(uppercasedEmail)
       .expect(200);
@@ -166,7 +155,7 @@ describe('POST /opportunities', () => {
     const missingOrgType = { ...oppBatchPayload };
     // @ts-expect-error: Ignore TS error for invalid request body
     delete { ...missingOrgType }.organization.type;
-    const { body } = await request(app)
+    const { body } = await request(dummyApp)
       .post('/opportunities/batch')
       .send([missingOrgType])
       .expect(400);
@@ -176,6 +165,6 @@ describe('POST /opportunities', () => {
 
 describe('DELETE /opportunities/batch/:id', () => {
   it('should return 401 without valid JWT', async () => {
-    await request(app).delete('/opportunities/batch/1').expect(401);
+    await request(dummyApp).delete('/opportunities/batch/1').expect(401);
   });
 });
