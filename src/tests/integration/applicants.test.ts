@@ -1137,7 +1137,7 @@ describe('POST /applicants/me/uploads/resume', () => {
       })
       .expect(401);
   });
-  it('should return an upload url', async () => {
+  itif('CI' in process.env)('should return an upload url', async () => {
     const randomString = getRandomString();
     const token = await authHelper.getToken(
       `bboberson${randomString}@gmail.com`,

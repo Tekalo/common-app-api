@@ -199,20 +199,15 @@ const applicantRoutes = (
       '/me/uploads/resume',
       authenticator.verifyJwtOrCookie.bind(authenticator) as RequestHandler,
       (req: Request, res: Response, next) => {
-        console.log('in /applicants/me/uploads/resume');
         const appBody = req.body as UploadRequestBody;
         const applicantID = req.auth?.payload.id || req.session.applicant.id;
         const validatedBody = UploadRequestBodySchema.parse(appBody);
-        console.log('validated body for resume upload request');
         applicantController
           .getResumeUploadUrl(applicantID, validatedBody)
           .then((result) => {
             res.status(200).json(result);
           })
-          .catch((err) => {
-            console.log(err);
-            next(err);
-          });
+          .catch((err) => next(err));
       },
     );
   }
