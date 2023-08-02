@@ -1163,6 +1163,7 @@ describe('POST /applicants/me/uploads/resume', () => {
         mimeType: 'pdf',
       });
 
+    console.log(body);
     expect(body).toHaveProperty('id');
     expect(body).toHaveProperty('signedLink');
   });
