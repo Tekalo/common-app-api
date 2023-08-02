@@ -194,6 +194,7 @@ const applicantRoutes = (
   );
 
   // DEV ONLY resume upload
+  console.log(`In router env: ${config.env}`);
   if (config.env === 'dev') {
     router.post(
       '/me/uploads/resume',
