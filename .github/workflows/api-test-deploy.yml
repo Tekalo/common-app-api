@@ -23,7 +23,6 @@ env:
   PORT: 3000
   SENTRY_DSN: ${{ vars.SENTRY_DSN }}
   UPLOAD_BUCKET: ${{ vars.UPLOAD_BUCKET }}
-  AWS_REGION: us-east-1
 
 permissions:
   id-token: write
@@ -64,6 +63,14 @@ jobs:
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          aws-region: us-east-1
+          role-to-assume: ${{ vars['DEV_AWS_PLAN_ROLE'] }}
+          role-session-name: GithubActions
+          mask-aws-account-id: false
 
       - name: Install openssl
         run: apt-get update && apt-get install -y openssl
