@@ -4,6 +4,7 @@ import {
   ApplicantSubmission,
   Prisma,
   PrismaClient,
+  UploadStatus,
 } from '@prisma/client';
 import { AuthResult } from 'express-oauth2-jwt-bearer';
 import { AppMetadata, User, UserMetadata } from 'auth0';
@@ -17,6 +18,7 @@ import {
 import {
   UploadResponseBody,
   UploadRequestBody,
+  UploadStateResponseBody,
 } from '@App/resources/types/uploads.js';
 import AuthService from '@App/services/AuthService.js';
 import CAPPError from '@App/resources/shared/CAPPError.js';
@@ -574,17 +576,62 @@ class ApplicantController {
     }
   }
 
+  async updateUploadStatus(
+    applicantId: number,
+    uploadId: number,
+    status: UploadStatus,
+  ): Promise<UploadStateResponseBody> {
+    try {
+      const uploadUpdate = await this.prisma.upload.update({
+        where: {
+          id: uploadId,
+          applicantId,
+          NOT: {
+            status: 'SUCCESS',
+          },
+        },
+        data: { status },
+      });
+      return {
+        id: uploadUpdate.id,
+        originalFilename: uploadUpdate.originalFilename,
+        status: uploadUpdate.status,
+      };
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        throw new CAPPError(
+          {
+            title: 'Resume update error',
+            detail: 'Invalid input',
+            status: 400,
+          },
+          e instanceof Error ? { cause: e } : undefined,
+        );
+      }
+      throw new CAPPError(
+        {
+          title: 'Resume update error',
+          detail: 'Could not update resume status',
+          status: 500,
+        },
+        e instanceof Error ? { cause: e } : undefined,
+      );
+    }
+  }
+
   async getResumeUploadUrl(
     applicantId: number,
     data: UploadRequestBody,
   ): Promise<UploadResponseBody> {
     // create record in db
     // use s3 service to generate a url
-    return this.uploadService.generateSignedResumeUploadUrl(
-      applicantId,
-      data.originalFilename,
-      data.mimeType,
-    );
+    const resumeUrlResponse =
+      await this.uploadService.generateSignedResumeUploadUrl(
+        applicantId,
+        data.originalFilename,
+        data.mimeType,
+      );
+    return resumeUrlResponse;
   }
 }
 

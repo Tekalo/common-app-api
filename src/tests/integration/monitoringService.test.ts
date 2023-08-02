@@ -9,6 +9,9 @@ import MonitoringService from '@App/services/MonitoringService.js';
 import DummyAuthService from '../fixtures/DummyAuthService.js';
 import DummyEmailService from '../fixtures/DummyEmailService.js';
 import DummySESService from '../fixtures/DummySesService.js';
+import DummyUploadService from '../fixtures/DummyUploadService.js';
+import { createMockContext } from '../util/context.js';
+import DummyS3Service from '../fixtures/DummyS3Service.js';
 
 const { testkit, sentryTransport } = sentryTestkit();
 
@@ -27,7 +30,13 @@ afterEach(() => testkit.reset());
 describe('Monitoring Service', () => {
   const appConfig = configLoader.loadConfig();
 
+  const mockPrismaContext = createMockContext();
   const dummyAuthService = new DummyAuthService();
+  const dummyUploadService = new DummyUploadService(
+    mockPrismaContext.prisma,
+    new DummyS3Service(),
+    appConfig,
+  );
   const dummyEmailService = new DummyEmailService(
     new DummySESService(),
     appConfig,
@@ -44,6 +53,7 @@ describe('Monitoring Service', () => {
     dummyAuthService,
     monitoringService,
     dummyEmailService,
+    dummyUploadService,
     appConfig,
   );
 
