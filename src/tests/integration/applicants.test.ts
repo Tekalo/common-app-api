@@ -1155,7 +1155,7 @@ describe('POST /applicants/me/uploads/resume', () => {
         acceptedPrivacy: true,
       });
 
-    const { body } = await request(dummyApp)
+    const { body, error } = await request(dummyApp)
       .post('/applicants/me/uploads/resume')
       .set('Authorization', `Bearer ${token}`)
       .send({
@@ -1164,6 +1164,7 @@ describe('POST /applicants/me/uploads/resume', () => {
       });
 
     console.log(body);
+    console.log(error);
     expect(body).toHaveProperty('id');
     expect(body).toHaveProperty('signedLink');
   });
