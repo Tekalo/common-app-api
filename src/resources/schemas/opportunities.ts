@@ -27,20 +27,7 @@ const Skills = z.enum([
   'project management',
 ]);
 
-// Deprecated: '2-4', '4-8', '8-12', '12-15'
-// TODO: Remove support for deprecated options
-const YOE = z.enum([
-  '0-2',
-  '3-5',
-  '6-8',
-  '9-12',
-  '13-15',
-  '15+',
-  '2-4',
-  '4-8',
-  '8-12',
-  '12-15',
-]);
+const YOE = z.enum(['0-2', '2-4', '4-8', '8-12', '12-15', '15+']);
 
 const OpportunityBatchRequestBodySchema = z.object({
   organization: z.object({
