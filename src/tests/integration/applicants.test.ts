@@ -1165,6 +1165,7 @@ describe('POST /applicants/me/uploads/resume', () => {
 
     console.log(body);
     console.log(error);
+    console.log(`ENV: ${appConfig.env}`);
     expect(body).toHaveProperty('id');
     expect(body).toHaveProperty('signedLink');
   });
