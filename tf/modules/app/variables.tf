@@ -162,16 +162,6 @@ output "sentry_dsn" {
   value       = var.sentry_dsn
 }
 
-variable "upload_bucket" {
-  description = "s3 bucket where applicant files are uploaded"
-  type        = string
-}
-
-output "upload_bucket" {
-  description = "s3 bucket where applicant files are uploaded"
-  value       = var.upload_bucket
-}
-
 variable "load_test" {
   description = "When true, indicates that we are running a load test against the env"
   type        = bool

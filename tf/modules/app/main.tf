@@ -178,7 +178,7 @@ resource "aws_ecs_task_definition" "api" {
         },
         {
           name  = "UPLOAD_BUCKET"
-          value = "${var.upload_bucket}"
+          value = "${module.envconfig.upload_bucket}"
         },
         {
           name  = "LOAD_TEST"

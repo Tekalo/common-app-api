@@ -61,6 +61,9 @@ output "cert_arn" {
   value = data.aws_cloudformation_stack.vpc.outputs["SslCertArn"]
 }
 
+output "upload_bucket" {
+  value = "capp-${var.env}-api-uploads"
+}
 output "env" {
   value = var.env
 }
