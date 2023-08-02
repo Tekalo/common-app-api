@@ -7,34 +7,6 @@ import DummyEmailService from './DummyEmailService.js';
 import DummyMonitoringService from './DummyMonitoringService.js';
 import DummySESService from './DummySesService.js';
 
-const getMockConfig = (overrides: Partial<BaseConfig> = {}): BaseConfig => ({
-  env: '',
-  port: 1,
-  auth0: {
-    api: {
-      domain: '',
-      clientId: '',
-      clientSecret: '',
-    },
-    express: {
-      audience: 'fake-audience',
-      issuerBaseURL: 'fake-issuerURL',
-      issuer: 'fake-issuer',
-      tokenSigningAlg: 'HS256',
-      secret: 'fake-secret',
-    },
-  },
-  aws: {
-    sesFromAddress: '',
-    sesReplyToAddress: '',
-    region: '',
-  },
-  sentryDSN: '',
-  isLoadTest: false,
-  webUrl: '',
-  ...overrides,
-});
-
 const getDummyApp = (
   dummyAuthService?: DummyAuthService,
   dummyMonitoringService?: DummyMonitoringService,
@@ -51,4 +23,4 @@ const getDummyApp = (
   );
 };
 
-export { getMockConfig, getDummyApp };
+export default getDummyApp;

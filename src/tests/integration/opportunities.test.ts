@@ -1,6 +1,6 @@
 import request from 'supertest';
 import prisma from '@App/resources/client.js';
-import { getDummyApp } from '../fixtures/appGenerator.js';
+import getDummyApp from '../fixtures/appGenerator.js';
 
 const dummyApp = getDummyApp();
 

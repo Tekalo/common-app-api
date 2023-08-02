@@ -16,7 +16,7 @@ import {
   ApplicantSubmissionBody,
 } from '@App/resources/types/applicants.js';
 import { itif, getRandomString } from '@App/tests/util/helpers.js';
-import { getDummyApp } from '@App/tests/fixtures/appGenerator.js';
+import getDummyApp from '@App/tests/fixtures/appGenerator.js';
 import prisma from '@App/resources/client.js';
 import AuthService from '@App/services/AuthService.js';
 import configLoader from '@App/services/configLoader.js';

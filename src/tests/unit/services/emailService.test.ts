@@ -5,7 +5,7 @@ import getOrgWelcomeEmail from '@App/resources/emails/orgWelcomeEmail.js';
 import getApplicantWelcomeEmail from '@App/resources/emails/applicantWelcomeEmail.js';
 import EmailService from '@App/services/EmailService.js';
 import DummySESService from '../../fixtures/DummySesService.js';
-import { getMockConfig } from '../../fixtures/appGenerator.js';
+import { getMockConfig } from '../../util/helpers.js';
 
 describe('Email Service', () => {
   test('should successfully generate applicant welcome email', () => {

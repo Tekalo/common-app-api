@@ -10,7 +10,7 @@ import OpportunityController from '@App/controllers/OpportunityController.js';
 import EmailService from '@App/services/EmailService.js';
 import DummyEmailService from '@App/tests/fixtures/DummyEmailService.js';
 import DummySESService from '@App/tests/fixtures/DummySesService.js';
-import { getMockConfig } from '../../fixtures/appGenerator.js';
+import { getMockConfig } from '../../util/helpers.js';
 
 let mockCtx: MockContext;
 let ctx: Context;
