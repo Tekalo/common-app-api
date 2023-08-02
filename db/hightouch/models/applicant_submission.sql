@@ -71,7 +71,11 @@ SELECT
   END "workAuthorization",
   appsub."hoursPerWeek",
   appsub."essayResponse",
-  appsub."referenceAttribution",
+  CASE
+    WHEN appsub."referenceAttribution" IS NULL THEN appsub."referenceAttributionOther"
+    WHEN appsub."referenceAttributionOther" IS NULL THEN appsub."referenceAttribution"
+    ELSE appsub."referenceAttribution" || ' - ' || appsub."referenceAttributionOther"
+  END AS "referenceAttributionAll",
   appsub."interestWorkArrangement"
 FROM
   PUBLIC."ApplicantSubmission" appsub
