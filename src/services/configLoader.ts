@@ -26,6 +26,7 @@ function loadConfig(): BaseConfig {
     sentryDSN: process.env.SENTRY_DSN || '',
     isLoadTest: process.env.LOAD_TEST === 'true',
     webUrl: process.env.WEB_URL || '',
+    uploadBucket: process.env.UPLOAD_BUCKET || 'capp-dev-api-uploads',
   });
   return validatedConfig;
 }

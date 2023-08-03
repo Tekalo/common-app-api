@@ -36,6 +36,7 @@ AWS_SESSION_TOKEN={AWS Session Token}
 
 # NOTE: Only set if you want to actually send events to Sentry
 SENTRY_DSN="https://c38ab9f98fd0404f9d2bfb95d015da8d@o4504962952724480.ingest.sentry.io/4504963428777984"
+UPLOAD_BUCKET="capp-dev-api-uploads"
 ```
 
 The `AUTH0_` prefixed values should come from our dev Auth0 tenant and can be found [here](https://manage.auth0.com/dashboard/us/sf-capp-dev/applications/AzRVLnVmcru9u0hR5dl5VW84c21GLNEM/settings).

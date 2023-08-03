@@ -14,6 +14,7 @@ const BaseConfigSchema = z.object({
     region: z.string(),
   }),
   sentryDSN: z.string(),
+  uploadBucket: z.string(),
   isLoadTest: z.boolean(),
   webUrl: z.string(),
 });

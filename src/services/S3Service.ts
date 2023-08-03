@@ -6,13 +6,17 @@ class S3Service {
     return new S3Client({});
   }
 
-  // https://fourtheorem.com/the-illustrated-guide-to-s3-pre-signed-urls/
   /* eslint-disable class-methods-use-this */
-  async generateSignedUploadUrl(bucket: string, key: string) {
+  async generateSignedUploadUrl(
+    bucket: string,
+    key: string,
+    contentType: string,
+  ) {
     const s3Client = S3Service.getS3Client();
     const command = new PutObjectCommand({
       Bucket: bucket,
       Key: key,
+      ContentType: contentType,
     });
     const url = await getSignedUrl(s3Client, command);
     return url;

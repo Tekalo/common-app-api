@@ -18,20 +18,18 @@ import MonitoringService from './services/MonitoringService.js';
 import UploadService from './services/UploadService.js';
 import { BaseConfig } from './resources/types/shared.js';
 import EmailService from './services/EmailService.js';
-import S3Service from './services/S3Service.js';
 import { AuthRequest } from './resources/types/auth0.js';
-import prisma from './resources/client.js';
 
 const getApp = (
   authService: AuthService,
   monitoringService: MonitoringService,
   emailService: EmailService,
+  uploadService: UploadService,
   config: BaseConfig,
 ): Application => {
   const app: Application = express();
 
   monitoringService.sentryInit(app);
-  const uploadService = new UploadService(prisma, new S3Service());
 
   const router = express.Router();
 

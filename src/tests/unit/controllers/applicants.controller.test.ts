@@ -5,6 +5,7 @@ import CAPPError from '@App/resources/shared/CAPPError.js';
 import EmailService from '@App/services/EmailService.js';
 import DummyEmailService from '@App/tests/fixtures/DummyEmailService.js';
 import DummyAuthService from '@App/tests/fixtures/DummyAuthService.js';
+import UploadService from '@App/services/UploadService.js';
 import DummyUploadService from '@App/tests/fixtures/DummyUploadService.js';
 import {
   MockContext,
@@ -40,7 +41,11 @@ describe('Applicant Controller', () => {
         ctx.prisma,
         new DummyEmailService(new DummySESService(), getMockConfig()),
         new DummyMonitoringService(),
-        new DummyUploadService(ctx.prisma, new DummyS3Service()),
+        new DummyUploadService(
+          ctx.prisma,
+          new DummyS3Service(),
+          getMockConfig(),
+        ),
       );
       await expect(
         applicantController.createApplicant({
@@ -78,7 +83,11 @@ describe('Applicant Controller', () => {
         ctx.prisma,
         mockEmailService,
         new DummyMonitoringService(),
-        new DummyUploadService(ctx.prisma, new DummyS3Service()),
+        new DummyUploadService(
+          ctx.prisma,
+          new DummyS3Service(),
+          getMockConfig(),
+        ),
       );
 
       mockCtx.prisma.applicant.create.mockResolvedValue({
@@ -125,7 +134,11 @@ describe('Applicant Controller', () => {
         ctx.prisma,
         new DummyEmailService(new DummySESService(), getMockConfig()),
         new DummyMonitoringService(),
-        new DummyUploadService(ctx.prisma, new DummyS3Service()),
+        new DummyUploadService(
+          ctx.prisma,
+          new DummyS3Service(),
+          getMockConfig(),
+        ),
       );
       await expect(
         applicantController.createApplicant({
@@ -154,7 +167,11 @@ describe('Applicant Controller', () => {
         ctx.prisma,
         new DummyEmailService(new DummySESService(), getMockConfig()),
         new DummyMonitoringService(),
-        new DummyUploadService(ctx.prisma, new DummyS3Service()),
+        new DummyUploadService(
+          ctx.prisma,
+          new DummyS3Service(),
+          getMockConfig(),
+        ),
       );
       await expect(
         applicantController.createApplicant({
@@ -199,7 +216,11 @@ describe('Applicant Controller', () => {
         ctx.prisma,
         mockEmailService,
         new DummyMonitoringService(),
-        new DummyUploadService(ctx.prisma, new DummyS3Service()),
+        new DummyUploadService(
+          ctx.prisma,
+          new DummyS3Service(),
+          getMockConfig(),
+        ),
       );
 
       const resp = await applicantController.createApplicant({
@@ -247,7 +268,11 @@ describe('Applicant Controller', () => {
         ctx.prisma,
         emailService,
         new DummyMonitoringService(),
-        new DummyUploadService(ctx.prisma, new DummyS3Service()),
+        new DummyUploadService(
+          ctx.prisma,
+          new DummyS3Service(),
+          getMockConfig(),
+        ),
       );
 
       const bobEmail = 'bboberson@schmidtfutures.com';
@@ -294,7 +319,11 @@ describe('Applicant Controller', () => {
         ctx.prisma,
         dummyEmailService,
         new DummyMonitoringService(),
-        new DummyUploadService(ctx.prisma, new DummyS3Service()),
+        new DummyUploadService(
+          ctx.prisma,
+          new DummyS3Service(),
+          getMockConfig(),
+        ),
       );
       const bobEmail = 'bboberson@schmidtfutures.com';
 
@@ -351,7 +380,11 @@ describe('Applicant Controller', () => {
         ctx.prisma,
         new DummyEmailService(new DummySESService(), getMockConfig()),
         new DummyMonitoringService(),
-        new DummyUploadService(ctx.prisma, new DummyS3Service()),
+        new DummyUploadService(
+          ctx.prisma,
+          new DummyS3Service(),
+          getMockConfig(),
+        ),
       );
       await expect(
         applicantController.deleteApplicant(3),
@@ -388,7 +421,11 @@ describe('Applicant Controller', () => {
         ctx.prisma,
         new DummyEmailService(new DummySESService(), getMockConfig()),
         new DummyMonitoringService(),
-        new DummyUploadService(ctx.prisma, new DummyS3Service()),
+        new DummyUploadService(
+          ctx.prisma,
+          new DummyS3Service(),
+          getMockConfig(),
+        ),
       );
       await expect(
         applicantController.deleteApplicant(3),
@@ -422,7 +459,11 @@ describe('Applicant Controller', () => {
         ctx.prisma,
         emailService,
         new DummyMonitoringService(),
-        new DummyUploadService(ctx.prisma, new DummyS3Service()),
+        new DummyUploadService(
+          ctx.prisma,
+          new DummyS3Service(),
+          getMockConfig(),
+        ),
       );
 
       await applicantController.deleteApplicant(1);
@@ -459,7 +500,11 @@ describe('Applicant Controller', () => {
         ctx.prisma,
         new DummyEmailService(new DummySESService(), getMockConfig()),
         new DummyMonitoringService(),
-        new DummyUploadService(ctx.prisma, new DummyS3Service()),
+        new DummyUploadService(
+          ctx.prisma,
+          new DummyS3Service(),
+          getMockConfig(),
+        ),
       );
       await expect(
         applicantController.deleteAuth0OnlyApplicant(auth0Id),
@@ -497,7 +542,11 @@ describe('Applicant Controller', () => {
         ctx.prisma,
         emailService,
         new DummyMonitoringService(),
-        new DummyUploadService(ctx.prisma, new DummyS3Service()),
+        new DummyUploadService(
+          ctx.prisma,
+          new DummyS3Service(),
+          getMockConfig(),
+        ),
       );
 
       await applicantController.deleteAuth0OnlyApplicant('auth|12345');
@@ -583,7 +632,11 @@ describe('Applicant Controller', () => {
         ctx.prisma,
         emailService,
         new DummyMonitoringService(),
-        new DummyUploadService(ctx.prisma, new DummyS3Service()),
+        new DummyUploadService(
+          ctx.prisma,
+          new DummyS3Service(),
+          getMockConfig(),
+        ),
       );
 
       await applicantController.createSubmission(
@@ -600,6 +653,7 @@ describe('Applicant Controller', () => {
       const dummyUploadService = new DummyUploadService(
         ctx.prisma,
         new DummyS3Service(),
+        getMockConfig(),
       );
       dummyUploadService.getApplicantUploadOrThrow = () => {
         throw new CAPPError({ title: 'Upload Error' });
@@ -629,6 +683,7 @@ describe('Applicant Controller', () => {
       const dummyUploadService = new DummyUploadService(
         ctx.prisma,
         new DummyS3Service(),
+        getMockConfig(),
       );
       dummyUploadService.getApplicantUploadOrThrow = () =>
         Promise.resolve({
@@ -658,6 +713,60 @@ describe('Applicant Controller', () => {
           detail: 'Invalid upload provided',
           status: 400,
         }),
+      );
+    });
+  });
+  describe('Applicant Get Resume Upload Url', () => {
+    test('Should call upload service to generate a signed resume upload url', async () => {
+      const applicantId = 666;
+      const uploadBucket = 'upload_bucket';
+      const mockConfig = getMockConfig({ uploadBucket });
+      const uploadService = new UploadService(
+        ctx.prisma,
+        new DummyS3Service(),
+        mockConfig,
+      );
+
+      mockCtx.prisma.upload.create.mockResolvedValue({
+        id: 1,
+        applicantId,
+        type: 'RESUME',
+        originalFilename: 'bobsresume.docx',
+        status: 'REQUESTED',
+        createdAt: new Date(),
+        completedAt: null,
+      });
+
+      const mockUploadSpy = jest.spyOn(
+        uploadService,
+        'generateSignedResumeUploadUrl',
+      );
+
+      const applicantController = new ApplicantController(
+        new DummyAuthService(),
+        ctx.prisma,
+        new DummyEmailService(new DummySESService(), mockConfig),
+        new DummyMonitoringService(),
+        uploadService,
+      );
+
+      const originalFilename = 'originalResumeFilename.png';
+      const mimeType = 'png';
+      const result = await applicantController.getResumeUploadUrl(applicantId, {
+        originalFilename,
+        mimeType,
+      });
+
+      expect(mockUploadSpy).toHaveBeenCalledWith(
+        applicantId,
+        originalFilename,
+        mimeType,
+      );
+      expect(result).toHaveProperty(
+        'signedLink',
+        expect.stringMatching(
+          `https://${uploadBucket}.*/resumes/${applicantId}.*`,
+        ),
       );
     });
   });

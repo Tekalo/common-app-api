@@ -112,6 +112,9 @@ output "service_name" {
 }
 
 data "aws_region" "current" {}
+data "aws_s3_bucket" "upload_files" {
+  bucket      = "capp-${var.env}-api-uploads"
+}
 
 resource "aws_ecs_task_definition" "api" {
   family = "capp-${var.env}-api"
@@ -175,6 +178,10 @@ resource "aws_ecs_task_definition" "api" {
         {
           name  = "SENTRY_DSN"
           value = "${var.sentry_dsn}"
+        },
+        {
+          name  = "UPLOAD_BUCKET"
+          value = "${data.aws_s3_bucket.upload_files.id}"
         },
         {
           name  = "LOAD_TEST"
