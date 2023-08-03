@@ -601,7 +601,7 @@ class ApplicantController {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         throw new CAPPError(
           {
-            title: 'Resume update error',
+            title: 'Upload update error',
             detail: 'Invalid input',
             status: 400,
           },
@@ -610,8 +610,8 @@ class ApplicantController {
       }
       throw new CAPPError(
         {
-          title: 'Resume update error',
-          detail: 'Could not update resume status',
+          title: 'Upload update error',
+          detail: 'Could not update upload status',
           status: 500,
         },
         e instanceof Error ? { cause: e } : undefined,
