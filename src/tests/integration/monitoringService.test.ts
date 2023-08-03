@@ -6,9 +6,12 @@ import { getRandomString } from '@App/tests/util/helpers.js';
 import CAPPError from '@App/resources/shared/CAPPError.js';
 import configLoader from '@App/services/configLoader.js';
 import MonitoringService from '@App/services/MonitoringService.js';
+import prisma from '@App/resources/client.js';
 import DummyAuthService from '../fixtures/DummyAuthService.js';
 import DummyEmailService from '../fixtures/DummyEmailService.js';
 import DummySESService from '../fixtures/DummySesService.js';
+import DummyUploadService from '../fixtures/DummyUploadService.js';
+import DummyS3Service from '../fixtures/DummyS3Service.js';
 
 const { testkit, sentryTransport } = sentryTestkit();
 
@@ -28,6 +31,11 @@ describe('Monitoring Service', () => {
   const appConfig = configLoader.loadConfig();
 
   const dummyAuthService = new DummyAuthService();
+  const dummyUploadService = new DummyUploadService(
+    prisma,
+    new DummyS3Service(),
+    appConfig,
+  );
   const dummyEmailService = new DummyEmailService(
     new DummySESService(),
     appConfig,
@@ -44,6 +52,7 @@ describe('Monitoring Service', () => {
     dummyAuthService,
     monitoringService,
     dummyEmailService,
+    dummyUploadService,
     appConfig,
   );
 

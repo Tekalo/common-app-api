@@ -18,8 +18,14 @@ import {
   ApplicantStateBody,
   ApplicantUpdateBody,
 } from '@App/resources/types/applicants.js';
-import { UploadRequestBodySchema } from '@App/resources/schemas/uploads.js';
-import { UploadRequestBody } from '@App/resources/types/uploads.js';
+import {
+  UploadRequestBodySchema,
+  UploadStateRequestBodySchema,
+} from '@App/resources/schemas/uploads.js';
+import {
+  UploadRequestBody,
+  UploadStateRequestBody,
+} from '@App/resources/types/uploads.js';
 import { setCookie } from '@App/services/cookieService.js';
 
 import AuthService from '@App/services/AuthService.js';
@@ -194,6 +200,7 @@ const applicantRoutes = (
   );
 
   // DEV ONLY resume upload
+  // TODO: Add these routes to spec.json when we turn them on
   if (config.env === 'dev') {
     router.post(
       '/me/uploads/resume',
@@ -204,6 +211,23 @@ const applicantRoutes = (
         const validatedBody = UploadRequestBodySchema.parse(appBody);
         applicantController
           .getResumeUploadUrl(applicantID, validatedBody)
+          .then((result) => {
+            res.status(200).json(result);
+          })
+          .catch((err) => next(err));
+      },
+    );
+
+    router.post(
+      '/me/uploads/:id/complete',
+      authenticator.verifyJwtOrCookie.bind(authenticator) as RequestHandler,
+      (req: Request, res: Response, next) => {
+        const appBody = req.body as UploadStateRequestBody;
+        const applicantID = req.auth?.payload.id || req.session.applicant.id;
+        const { status } = UploadStateRequestBodySchema.parse(appBody);
+        const { id } = req.params;
+        applicantController
+          .updateUploadStatus(applicantID, Number(id), status)
           .then((result) => {
             res.status(200).json(result);
           })
