@@ -1176,3 +1176,176 @@ describe('POST /applicants/me/uploads/resume', () => {
     expect(body).toHaveProperty('signedLink');
   });
 });
+
+describe('POST /applicants/me/uploads/:id/state', () => {
+  const dummyS3Service = new DummyS3Service();
+  dummyS3Service.generateSignedUploadUrl = () =>
+    Promise.resolve('https://bogus-signed-s3-link.com');
+  const dummyUploadService = new DummyUploadService(
+    prisma,
+    dummyS3Service,
+    appConfig,
+  );
+  const dummyUploadApp = getApp(
+    new DummyAuthService(),
+    new DummyMonitoringService(),
+    new DummyEmailService(new DummySESService(), appConfig),
+    dummyUploadService,
+    appConfig,
+  );
+
+  it('should return 401 for request with no cookie or JWT', async () => {
+    await request(dummyUploadApp)
+      .post('/applicants/me/uploads/1/complete')
+      .send({ status: 'SUCCESS' })
+      .expect(401);
+  });
+
+  it('should successfully update upload status', async () => {
+    const randomString = getRandomString();
+    const token = await authHelper.getToken(
+      `bboberson${randomString}@gmail.com`,
+    );
+    const filename = 'myResume.pdf';
+    await request(dummyUploadApp)
+      .post('/applicants')
+      .send({
+        name: 'Bob Boberson',
+        email: `bboberson${randomString}@gmail.com`,
+        preferredContact: 'sms',
+        searchStatus: 'active',
+        acceptedTerms: true,
+        acceptedPrivacy: true,
+      })
+      .set('Authorization', `Bearer ${token}`);
+
+    const { body: uploadBody }: { body: UploadResponseBody } = await request(
+      dummyUploadApp,
+    )
+      .post('/applicants/me/uploads/resume')
+      .send({
+        originalFilename: filename,
+        mimeType: 'pdf',
+      })
+      .set('Authorization', `Bearer ${token}`);
+
+    const { body: uploadCompleteBody }: { body: UploadStateResponseBody } =
+      await request(dummyUploadApp)
+        .post(`/applicants/me/uploads/${uploadBody.id}/complete`)
+        .send({ status: 'SUCCESS' })
+        .set('Authorization', `Bearer ${token}`)
+        .expect(200);
+    expect(uploadCompleteBody).toHaveProperty('id', 1);
+  });
+
+  it('should return 400 if upload does not belong to applicant', async () => {
+    const bobRandomString = getRandomString();
+    const peteRandomString = getRandomString();
+    const bobToken = await authHelper.getToken(
+      `bboberson${bobRandomString}@gmail.com`,
+      { auth0Id: 'auth0|12345' },
+    );
+    const peteToken = await authHelper.getToken(
+      `pdavidson${peteRandomString}@gmail.com`,
+      { auth0Id: 'auth0|678999' },
+    );
+
+    const filename = 'myResume.pdf';
+    // Create Bob
+    await request(dummyUploadApp)
+      .post('/applicants')
+      .send({
+        name: 'Bob Boberson',
+        email: `bboberson${bobRandomString}@gmail.com`,
+        preferredContact: 'sms',
+        searchStatus: 'active',
+        acceptedTerms: true,
+        acceptedPrivacy: true,
+      })
+      .set('Authorization', `Bearer ${bobToken}`)
+      .expect(200);
+
+    // Create Pete
+    await request(dummyUploadApp)
+      .post('/applicants')
+      .send({
+        name: 'Dave Davidson',
+        email: `pdavidson${peteRandomString}@gmail.com`,
+        preferredContact: 'sms',
+        searchStatus: 'active',
+        acceptedTerms: true,
+        acceptedPrivacy: true,
+      })
+      .set('Authorization', `Bearer ${peteToken}`)
+      .expect(200);
+
+    // Bob uploads his resume
+    await request(dummyUploadApp)
+      .post('/applicants/me/uploads/resume')
+      .send({
+        originalFilename: filename,
+        mimeType: 'pdf',
+      })
+      .set('Authorization', `Bearer ${bobToken}`)
+      .expect(200);
+
+    // David uploads his resume
+    const { body: davidUploadBody }: { body: UploadResponseBody } =
+      await request(dummyUploadApp)
+        .post('/applicants/me/uploads/resume')
+        .send({
+          originalFilename: filename,
+          mimeType: 'pdf',
+        })
+        .set('Authorization', `Bearer ${peteToken}`)
+        .expect(200);
+
+    // Bob tries to mark davids resume complete
+    await request(dummyUploadApp)
+      .post(`/applicants/me/uploads/${davidUploadBody.id}/complete`)
+      .send({ status: 'SUCCESS' })
+      .set('Authorization', `Bearer ${bobToken}`)
+      .expect(400);
+  });
+
+  it('should return 400 when attempting to "complete" an already successful upload', async () => {
+    const randomString = getRandomString();
+    const token = await authHelper.getToken(
+      `bboberson${randomString}@gmail.com`,
+    );
+    const filename = 'myResume.pdf';
+    await request(dummyUploadApp)
+      .post('/applicants')
+      .send({
+        name: 'Bob Boberson',
+        email: `bboberson${randomString}@gmail.com`,
+        preferredContact: 'sms',
+        searchStatus: 'active',
+        acceptedTerms: true,
+        acceptedPrivacy: true,
+      })
+      .set('Authorization', `Bearer ${token}`);
+
+    const { body: uploadBody }: { body: UploadResponseBody } = await request(
+      dummyUploadApp,
+    )
+      .post('/applicants/me/uploads/resume')
+      .send({
+        originalFilename: filename,
+        mimeType: 'pdf',
+      })
+      .set('Authorization', `Bearer ${token}`);
+
+    await request(dummyUploadApp)
+      .post(`/applicants/me/uploads/${uploadBody.id}/complete`)
+      .send({ status: 'SUCCESS' })
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200);
+
+    await request(dummyUploadApp)
+      .post(`/applicants/me/uploads/${uploadBody.id}/complete`)
+      .send({ status: 'FAILURE' })
+      .set('Authorization', `Bearer ${token}`)
+      .expect(400);
+  });
+});
