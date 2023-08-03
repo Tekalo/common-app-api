@@ -51,7 +51,6 @@ module "app" {
   cli_image            = var.cli_image
   auth0_domain         = var.auth0_domain
   sentry_dsn           = var.sentry_dsn
-  upload_bucket        = module.envconfig.upload_bucket
   web_url              = var.web_url
   email_from_address   = var.email_from_address
   reply_to_address     = var.reply_to_address
