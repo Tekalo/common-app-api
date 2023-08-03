@@ -1289,7 +1289,7 @@ describe('POST /applicants/me/uploads/:id/state', () => {
       .set('Authorization', `Bearer ${bobToken}`)
       .expect(200);
 
-    // David uploads his resume
+    // Pete uploads his resume
     const { body: davidUploadBody }: { body: UploadResponseBody } =
       await request(dummyUploadApp)
         .post('/applicants/me/uploads/resume')
