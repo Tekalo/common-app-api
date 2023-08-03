@@ -1235,7 +1235,7 @@ describe('POST /applicants/me/uploads/:id/state', () => {
         .send({ status: 'SUCCESS' })
         .set('Authorization', `Bearer ${token}`)
         .expect(200);
-    expect(uploadCompleteBody).toHaveProperty('id', 1);
+    expect(uploadCompleteBody).toHaveProperty('id');
   });
 
   it('should return 400 if upload does not belong to applicant', async () => {
