@@ -1135,3 +1135,44 @@ describe('DELETE /applicants/:id', () => {
     await request(dummyApp).delete(`/applicants/${body.id}`).expect(401);
   });
 });
+
+describe('POST /applicants/me/uploads/resume', () => {
+  it('should return 401 without valid JWT or cookie', async () => {
+    await request(dummyApp)
+      .post('/applicants/me/uploads/resume')
+      .send({
+        originalFilename: 'bob_boberson_resume.pdf',
+        mimeType: 'pdf',
+      })
+      .expect(401);
+  });
+  itif('CI' in process.env)('should return an upload url', async () => {
+    const randomString = getRandomString();
+    const token = await authHelper.getToken(
+      `bboberson${randomString}@gmail.com`,
+    );
+
+    // create an applicant
+    await request(dummyApp)
+      .post('/applicants')
+      .send({
+        name: 'Bob Boberson',
+        email: `bboberson${randomString}@gmail.com`,
+        preferredContact: 'sms',
+        searchStatus: 'active',
+        acceptedTerms: true,
+        acceptedPrivacy: true,
+      });
+
+    const { body } = await request(dummyApp)
+      .post('/applicants/me/uploads/resume')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        originalFilename: 'bob_boberson_resume.pdf',
+        mimeType: 'pdf',
+      });
+
+    expect(body).toHaveProperty('id');
+    expect(body).toHaveProperty('signedLink');
+  });
+});
