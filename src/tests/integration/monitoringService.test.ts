@@ -6,11 +6,11 @@ import { getRandomString } from '@App/tests/util/helpers.js';
 import CAPPError from '@App/resources/shared/CAPPError.js';
 import configLoader from '@App/services/configLoader.js';
 import MonitoringService from '@App/services/MonitoringService.js';
+import prisma from '@App/resources/client.js';
 import DummyAuthService from '../fixtures/DummyAuthService.js';
 import DummyEmailService from '../fixtures/DummyEmailService.js';
 import DummySESService from '../fixtures/DummySesService.js';
 import DummyUploadService from '../fixtures/DummyUploadService.js';
-import { createMockContext } from '../util/context.js';
 import DummyS3Service from '../fixtures/DummyS3Service.js';
 
 const { testkit, sentryTransport } = sentryTestkit();
@@ -30,10 +30,9 @@ afterEach(() => testkit.reset());
 describe('Monitoring Service', () => {
   const appConfig = configLoader.loadConfig();
 
-  const mockPrismaContext = createMockContext();
   const dummyAuthService = new DummyAuthService();
   const dummyUploadService = new DummyUploadService(
-    mockPrismaContext.prisma,
+    prisma,
     new DummyS3Service(),
     appConfig,
   );
