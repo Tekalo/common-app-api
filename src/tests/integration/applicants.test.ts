@@ -38,6 +38,7 @@ let testUserIDs: Array<string> = [];
 const authService = new AuthService();
 
 afterEach(async () => {
+  await prisma.upload.deleteMany();
   await prisma.applicantDraftSubmission.deleteMany();
   await prisma.applicantSubmission.deleteMany();
   await prisma.applicant.deleteMany();
@@ -1196,10 +1197,77 @@ describe('POST /applicants/me/uploads/:id/state', () => {
     expect(uploadCompleteBody).toHaveProperty('id', 1);
   });
 
-  //   // it('should return 401 if upload does not belong to applicant', async () => {
-  //   // });
+  it('should return 400 if upload does not belong to applicant', async () => {
+    const bobRandomString = getRandomString();
+    const peteRandomString = getRandomString();
+    const bobToken = await authHelper.getToken(
+      `bboberson${bobRandomString}@gmail.com`,
+      { auth0Id: 'auth0|12345' },
+    );
+    const peteToken = await authHelper.getToken(
+      `pdavidson${peteRandomString}@gmail.com`,
+      { auth0Id: 'auth0|678999' },
+    );
 
-  it('should return 400 if an already successful upload is being marked successful', async () => {
+    const filename = 'myResume.pdf';
+    // Create Bob
+    await request(dummyUploadApp)
+      .post('/applicants')
+      .send({
+        name: 'Bob Boberson',
+        email: `bboberson${bobRandomString}@gmail.com`,
+        preferredContact: 'sms',
+        searchStatus: 'active',
+        acceptedTerms: true,
+        acceptedPrivacy: true,
+      })
+      .set('Authorization', `Bearer ${bobToken}`)
+      .expect(200);
+
+    // Create Pete
+    await request(dummyUploadApp)
+      .post('/applicants')
+      .send({
+        name: 'Dave Davidson',
+        email: `pdavidson${peteRandomString}@gmail.com`,
+        preferredContact: 'sms',
+        searchStatus: 'active',
+        acceptedTerms: true,
+        acceptedPrivacy: true,
+      })
+      .set('Authorization', `Bearer ${peteToken}`)
+      .expect(200);
+
+    // Bob uploads his resume
+    await request(dummyUploadApp)
+      .post('/applicants/me/uploads/resume')
+      .send({
+        originalFilename: filename,
+        mimeType: 'pdf',
+      })
+      .set('Authorization', `Bearer ${bobToken}`)
+      .expect(200);
+
+    // David uploads his resume
+    const { body: davidUploadBody }: { body: UploadResponseBody } =
+      await request(dummyUploadApp)
+        .post('/applicants/me/uploads/resume')
+        .send({
+          originalFilename: filename,
+          mimeType: 'pdf',
+        })
+        .set('Authorization', `Bearer ${peteToken}`)
+        .expect(200);
+
+    // Bob tries to mark davids resume complete
+    await request(dummyUploadApp)
+      .post(`/applicants/me/uploads/${davidUploadBody.id}/complete`)
+      .send({ status: 'SUCCESS' })
+      .set('Authorization', `Bearer ${bobToken}`)
+      .expect(400);
+  });
+
+  it('should return 400 when attempting to "complete" an already successful upload', async () => {
     const randomString = getRandomString();
     const token = await authHelper.getToken(
       `bboberson${randomString}@gmail.com`,
