@@ -1300,7 +1300,7 @@ describe('POST /applicants/me/uploads/:id/state', () => {
         .set('Authorization', `Bearer ${peteToken}`)
         .expect(200);
 
-    // Bob tries to mark davids resume complete
+    // Bob tries to mark Pete's resume complete
     await request(dummyUploadApp)
       .post(`/applicants/me/uploads/${davidUploadBody.id}/complete`)
       .send({ status: 'SUCCESS' })
