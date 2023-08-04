@@ -53,7 +53,7 @@
     "jest-mock-extended": "^3.0.3",
     "jose": "4.14.4",
     "pino": "8.15.0",
-    "pino-http": "8.3.3",
+    "pino-http": "8.4.0",
     "swagger-ui-express": "5.0.0",
     "zod": "3.21.4"
   },
