@@ -77,16 +77,17 @@ class UploadService {
   async generateSignedResumeUploadUrl(
     applicantId: number,
     originalFilename: string,
-    mimeType: string,
+    contentType: string,
   ) {
     const uploadRecord: Upload = await this.createResumeUploadRecord(
       originalFilename,
       applicantId,
     );
-    const contentType = UploadService.getContentType(mimeType);
+    const fileExtension =
+      UploadService.getFileExtensionFromContentType(contentType);
     const signedLink = await this.s3Service.generateSignedUploadUrl(
       this.config.uploadBucket,
-      `resumes/${applicantId}/${uploadRecord.id}.${mimeType}`,
+      `resumes/${applicantId}/${uploadRecord.id}.${fileExtension}`,
       contentType,
     );
     return {
@@ -95,18 +96,19 @@ class UploadService {
     };
   }
 
-  static getContentType(mimeType: string): string {
-    switch (mimeType) {
-      case 'docx':
-        return 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
-      case 'jpg':
-      case 'jpeg':
-        return 'image/jpeg';
-      case 'png':
-        return 'image/png';
-      case 'pdf':
+  static getFileExtensionFromContentType(contentType: string): string {
+    const mediaType = contentType.split(';')[0];
+    switch (mediaType) {
+      case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+        return 'docx';
+      case 'image/jpeg':
+      case 'image/jpg':
+        return 'jpeg';
+      case 'image/png':
+        return 'png';
+      case 'application/pdf':
       default:
-        return 'application/pdf';
+        return 'pdf';
     }
   }
 }

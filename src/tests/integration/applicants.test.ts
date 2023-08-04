@@ -1142,7 +1142,7 @@ describe('POST /applicants/me/uploads/resume', () => {
       .post('/applicants/me/uploads/resume')
       .send({
         originalFilename: 'bob_boberson_resume.pdf',
-        mimeType: 'pdf',
+        contentType: 'application/pdf',
       })
       .expect(401);
   });
@@ -1169,7 +1169,7 @@ describe('POST /applicants/me/uploads/resume', () => {
       .set('Authorization', `Bearer ${token}`)
       .send({
         originalFilename: 'bob_boberson_resume.pdf',
-        mimeType: 'pdf',
+        contentType: 'application/pdf',
       });
 
     expect(body).toHaveProperty('id');
@@ -1225,7 +1225,7 @@ describe('POST /applicants/me/uploads/:id/state', () => {
       .post('/applicants/me/uploads/resume')
       .send({
         originalFilename: filename,
-        mimeType: 'pdf',
+        contentType: 'application/pdf',
       })
       .set('Authorization', `Bearer ${token}`);
 
@@ -1284,7 +1284,7 @@ describe('POST /applicants/me/uploads/:id/state', () => {
       .post('/applicants/me/uploads/resume')
       .send({
         originalFilename: filename,
-        mimeType: 'pdf',
+        contentType: 'application/pdf',
       })
       .set('Authorization', `Bearer ${bobToken}`)
       .expect(200);
@@ -1295,7 +1295,7 @@ describe('POST /applicants/me/uploads/:id/state', () => {
         .post('/applicants/me/uploads/resume')
         .send({
           originalFilename: filename,
-          mimeType: 'pdf',
+          contentType: 'application/pdf',
         })
         .set('Authorization', `Bearer ${peteToken}`)
         .expect(200);
@@ -1332,7 +1332,7 @@ describe('POST /applicants/me/uploads/:id/state', () => {
       .post('/applicants/me/uploads/resume')
       .send({
         originalFilename: filename,
-        mimeType: 'pdf',
+        contentType: 'application/pdf',
       })
       .set('Authorization', `Bearer ${token}`);
 
