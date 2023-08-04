@@ -1136,10 +1136,10 @@ describe('DELETE /applicants/:id', () => {
   });
 });
 
-describe('POST /applicants/me/uploads/resume', () => {
+describe('POST /applicants/me/resume', () => {
   it('should return 401 without valid JWT or cookie', async () => {
     await request(dummyApp)
-      .post('/applicants/me/uploads/resume')
+      .post('/applicants/me/resume')
       .send({
         originalFilename: 'bob_boberson_resume.pdf',
         contentType: 'application/pdf',
@@ -1165,7 +1165,7 @@ describe('POST /applicants/me/uploads/resume', () => {
       });
 
     const { body } = await request(dummyApp)
-      .post('/applicants/me/uploads/resume')
+      .post('/applicants/me/resume')
       .set('Authorization', `Bearer ${token}`)
       .send({
         originalFilename: 'bob_boberson_resume.pdf',
@@ -1222,7 +1222,7 @@ describe('POST /applicants/me/uploads/:id/state', () => {
     const { body: uploadBody }: { body: UploadResponseBody } = await request(
       dummyUploadApp,
     )
-      .post('/applicants/me/uploads/resume')
+      .post('/applicants/me/resume')
       .send({
         originalFilename: filename,
         contentType: 'application/pdf',
@@ -1281,7 +1281,7 @@ describe('POST /applicants/me/uploads/:id/state', () => {
 
     // Bob uploads his resume
     await request(dummyUploadApp)
-      .post('/applicants/me/uploads/resume')
+      .post('/applicants/me/resume')
       .send({
         originalFilename: filename,
         contentType: 'application/pdf',
@@ -1292,7 +1292,7 @@ describe('POST /applicants/me/uploads/:id/state', () => {
     // Pete uploads his resume
     const { body: davidUploadBody }: { body: UploadResponseBody } =
       await request(dummyUploadApp)
-        .post('/applicants/me/uploads/resume')
+        .post('/applicants/me/resume')
         .send({
           originalFilename: filename,
           contentType: 'application/pdf',
@@ -1329,7 +1329,7 @@ describe('POST /applicants/me/uploads/:id/state', () => {
     const { body: uploadBody }: { body: UploadResponseBody } = await request(
       dummyUploadApp,
     )
-      .post('/applicants/me/uploads/resume')
+      .post('/applicants/me/resume')
       .send({
         originalFilename: filename,
         contentType: 'application/pdf',
