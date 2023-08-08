@@ -1,6 +1,8 @@
 import { Prisma, PrismaClient, Upload } from '@prisma/client';
+import { ACCEPTED_CONTENT_TYPES } from '@App/resources/schemas/uploads.js';
 import CAPPError from '@App/resources/shared/CAPPError.js';
 import { BaseConfig } from '@App/resources/types/shared.js';
+
 import S3Service from './S3Service.js';
 
 class UploadService {
@@ -98,18 +100,7 @@ class UploadService {
 
   static getFileExtensionFromContentType(contentType: string): string {
     const mediaType = contentType.split(';')[0];
-    switch (mediaType) {
-      case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
-        return 'docx';
-      case 'image/jpeg':
-      case 'image/jpg':
-        return 'jpeg';
-      case 'image/png':
-        return 'png';
-      case 'application/pdf':
-      default:
-        return 'pdf';
-    }
+    return ACCEPTED_CONTENT_TYPES.get(mediaType) || 'pdf';
   }
 }
 

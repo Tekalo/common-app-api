@@ -5,19 +5,22 @@ import { z } from 'zod';
  * Zod schemas for file uploads
  */
 const UploadStatus = z.nativeEnum(PrismaUploadStatus);
-const ACCEPTED_CONTENT_TYPES = [
-  'application/pdf',
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-  'image/jpeg',
-  'image/jpg',
-  'image/png',
-];
+const ACCEPTED_CONTENT_TYPES: Map<string, string> = new Map<string, string>([
+  ['application/pdf', 'pdf'],
+  [
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'docx',
+  ],
+  ['image/jpeg', 'jpeg'],
+  ['image/jpg', 'jpeg'],
+  ['image/png', 'png'],
+]);
 
 const UploadRequestBodySchema = z.object({
   originalFilename: z.string(),
   contentType: z.string().refine((contentType: string) => {
     const mediaType = contentType.split(';')[0];
-    return ACCEPTED_CONTENT_TYPES.includes(mediaType);
+    return ACCEPTED_CONTENT_TYPES.has(mediaType);
   }),
 });
 
@@ -37,6 +40,7 @@ const UploadResponseBodySchema = z.object({
 });
 
 export {
+  ACCEPTED_CONTENT_TYPES,
   UploadRequestBodySchema,
   UploadResponseBodySchema,
   UploadStateRequestBodySchema,
