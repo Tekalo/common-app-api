@@ -751,16 +751,16 @@ describe('Applicant Controller', () => {
       );
 
       const originalFilename = 'originalResumeFilename.png';
-      const mimeType = 'png';
+      const contentType = 'application/png';
       const result = await applicantController.getResumeUploadUrl(applicantId, {
         originalFilename,
-        mimeType,
+        contentType,
       });
 
       expect(mockUploadSpy).toHaveBeenCalledWith(
         applicantId,
         originalFilename,
-        mimeType,
+        contentType,
       );
       expect(result).toHaveProperty(
         'signedLink',

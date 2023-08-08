@@ -20,7 +20,7 @@ describe('Upload Service', () => {
     });
     const applicantId = 666;
     const originalFilename = 'myGreatResume.pdf';
-    const mimeType = 'pdf';
+    const contentType = 'application/pdf';
 
     mockCtx.prisma.upload.create.mockResolvedValue({
       id: 1,
@@ -40,7 +40,7 @@ describe('Upload Service', () => {
     const resp = await uploadService.generateSignedResumeUploadUrl(
       applicantId,
       originalFilename,
-      mimeType,
+      contentType,
     );
     expect(resp).toHaveProperty('id', 1);
     expect(resp).toHaveProperty(
@@ -71,13 +71,24 @@ describe('Upload Service', () => {
   });
 
   describe('static Upload Service', () => {
-    test('should return the correct mime type for a docx', () => {
-      expect(UploadService.getContentType('docx')).toBe(
-        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-      );
+    test('should return the correct file extension for a docx content type', () => {
+      expect(
+        UploadService.getFileExtensionFromContentType(
+          'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        ),
+      ).toBe('docx');
     });
-    test('returns pdf mime type by default', () => {
-      expect(UploadService.getContentType('foobar')).toBe('application/pdf');
+    test('returns pdf file extension even when content type includes charset', () => {
+      expect(
+        UploadService.getFileExtensionFromContentType(
+          'application/pdf; charset=utf-8',
+        ),
+      ).toBe('pdf');
+    });
+    test('returns pdf file extension by default', () => {
+      expect(UploadService.getFileExtensionFromContentType('foobar')).toBe(
+        'pdf',
+      );
     });
   });
 });

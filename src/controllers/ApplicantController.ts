@@ -629,7 +629,7 @@ class ApplicantController {
       await this.uploadService.generateSignedResumeUploadUrl(
         applicantId,
         data.originalFilename,
-        data.mimeType,
+        data.contentType,
       );
     return resumeUrlResponse;
   }

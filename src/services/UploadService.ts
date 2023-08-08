@@ -1,6 +1,8 @@
 import { Prisma, PrismaClient, Upload } from '@prisma/client';
+import { ACCEPTED_CONTENT_TYPES } from '@App/resources/schemas/uploads.js';
 import CAPPError from '@App/resources/shared/CAPPError.js';
 import { BaseConfig } from '@App/resources/types/shared.js';
+
 import S3Service from './S3Service.js';
 
 class UploadService {
@@ -77,16 +79,17 @@ class UploadService {
   async generateSignedResumeUploadUrl(
     applicantId: number,
     originalFilename: string,
-    mimeType: string,
+    contentType: string,
   ) {
     const uploadRecord: Upload = await this.createResumeUploadRecord(
       originalFilename,
       applicantId,
     );
-    const contentType = UploadService.getContentType(mimeType);
+    const fileExtension =
+      UploadService.getFileExtensionFromContentType(contentType);
     const signedLink = await this.s3Service.generateSignedUploadUrl(
       this.config.uploadBucket,
-      `resumes/${applicantId}/${uploadRecord.id}.${mimeType}`,
+      `resumes/${applicantId}/${uploadRecord.id}.${fileExtension}`,
       contentType,
     );
     return {
@@ -95,19 +98,9 @@ class UploadService {
     };
   }
 
-  static getContentType(mimeType: string): string {
-    switch (mimeType) {
-      case 'docx':
-        return 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
-      case 'jpg':
-      case 'jpeg':
-        return 'image/jpeg';
-      case 'png':
-        return 'image/png';
-      case 'pdf':
-      default:
-        return 'application/pdf';
-    }
+  static getFileExtensionFromContentType(contentType: string): string {
+    const mediaType = contentType.split(';')[0];
+    return ACCEPTED_CONTENT_TYPES.get(mediaType) || 'pdf';
   }
 }
 
