@@ -1220,6 +1220,60 @@ describe('POST /applicants/me/resume', () => {
     expect(body).toHaveProperty('id');
     expect(body).toHaveProperty('signedLink');
   });
+  it('should reject an upload request that includes a content type that we do not accept', async () => {
+    const dummyS3Service = new DummyS3Service();
+    dummyS3Service.generateSignedUploadUrl = () =>
+      Promise.resolve('https://bogus-signed-s3-link.com');
+    const dummyUploadService = new DummyUploadService(
+      prisma,
+      dummyS3Service,
+      appConfig,
+    );
+    const dummyUploadApp = getApp(
+      new DummyAuthService(),
+      new DummyMonitoringService(),
+      new DummyEmailService(new DummySESService(), appConfig),
+      dummyUploadService,
+      appConfig,
+    );
+
+    const randomString = getRandomString();
+    const token = await authHelper.getToken(
+      `bboberson${randomString}@gmail.com`,
+    );
+
+    // create an applicant
+    await request(dummyUploadApp)
+      .post('/applicants')
+      .send({
+        name: 'Bob Boberson',
+        email: `bboberson${randomString}@gmail.com`,
+        preferredContact: 'sms',
+        searchStatus: 'active',
+        acceptedTerms: true,
+        acceptedPrivacy: true,
+      });
+
+    const { body } = await request(dummyApp)
+      .post('/applicants/me/resume')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        originalFilename: 'bob_boberson_resume.pdf',
+        contentType: 'application/vnd.microsoft.portable-executable',
+      })
+      .expect(400);
+
+    expect(body).toHaveProperty('detail');
+    expect(body).toEqual(
+      expect.objectContaining({
+        detail: {
+          message: 'Invalid input',
+          code: 'custom',
+          path: ['contentType'],
+        },
+      }),
+    );
+  });
 });
 
 describe('POST /applicants/me/uploads/:id/state', () => {
