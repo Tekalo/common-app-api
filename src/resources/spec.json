@@ -460,6 +460,9 @@
                 "roleType": {
                   "type": "string"
                 },
+                "otherRoleType": {
+                  "type": "string"
+                },
                 "positionTitle": {
                   "type": "string"
                 },
