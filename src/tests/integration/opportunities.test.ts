@@ -73,7 +73,8 @@ describe('POST /opportunities', () => {
     const secondOppSubmissionPayload = { ...oppBatchPayload };
     secondOppSubmissionPayload.submissions.push({
       fullyRemote: false,
-      roleType: 'ux researcher',
+      roleType: 'other',
+      otherRoleType: 'thing doer',
       positionTitle: 'French Guy',
       location: 'Fryville',
       paid: true,
