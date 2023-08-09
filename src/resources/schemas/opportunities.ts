@@ -61,6 +61,7 @@ const OpportunityBatchRequestBodySchema = z.object({
   submissions: z.array(
     z.object({
       roleType: z.string(),
+      otherRoleType: z.string().optional(),
       positionTitle: z.string().max(255),
       fullyRemote: z.boolean(),
       location: z.string().optional(),
