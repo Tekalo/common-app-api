@@ -7,6 +7,7 @@ import {
   PutObjectCommand,
 } from '@aws-sdk/client-s3';
 import logger from '@App/services/logger.js';
+import CAPPError from '@App/resources/shared/CAPPError.js';
 
 class S3Service {
   static getS3Client() {
@@ -55,8 +56,12 @@ class S3Service {
         deleted.Errors.map((error) =>
           logger.error(`${error.Key} could not be deleted - ${error.Code}`),
         );
+        throw new CAPPError({
+          title: 'Uploaded file deletion error',
+          detail: `There was a problem deleting uploaded files from ${bucket}/${prefix}`,
+          status: 400,
+        });
       }
-
       logger.info(`${deleted.Deleted?.length} file(s) deleted.`);
     } else {
       logger.info(`No uploads to delete for ${prefix}`);
