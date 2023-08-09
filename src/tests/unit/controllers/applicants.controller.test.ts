@@ -431,7 +431,194 @@ describe('Applicant Controller', () => {
         applicantController.deleteApplicant(3),
       ).rejects.toHaveProperty('problem.detail', 'Mock Auth0 Deletion Error');
     });
+    test('Should delete applicant resumes from s3', async () => {
+      mockCtx.prisma.applicant.findUniqueOrThrow.mockResolvedValue({
+        id: 1,
+        phone: '777-777-7777',
+        name: 'Bob Boberson',
+        email: 'bboberson@schmidtfutures.com',
+        pronoun: 'she/hers',
+        preferredContact: 'email',
+        searchStatus: 'active',
+        acceptedTerms: new Date('2023-02-01'),
+        acceptedPrivacy: new Date('2023-02-01'),
+        auth0Id: 'auth0|1234',
+        isPaused: false,
+        followUpOptIn: false,
+      });
+      mockCtx.prisma.$transaction.mockResolvedValue(true);
+      const mockS3Service = new DummyS3Service();
+      const s3ServiceSpy = jest.spyOn(mockS3Service, 'deleteUploads');
+
+      const uploadBucket = 'upload_bucket';
+      const mockConfig = getMockConfig({ uploadBucket });
+
+      const applicantController = new ApplicantController(
+        new DummyAuthService(),
+        ctx.prisma,
+        new DummyEmailService(new DummySESService(), mockConfig),
+        new DummyMonitoringService(),
+        new DummyUploadService(ctx.prisma, mockS3Service, mockConfig),
+      );
+      await applicantController.deleteApplicant(1);
+      expect(s3ServiceSpy).toHaveBeenCalledWith(uploadBucket, 'resumes/1');
+    });
     test('Should send email after applicant deletion request', async () => {
+      mockCtx.prisma.applicant.findUniqueOrThrow.mockResolvedValue({
+        id: 1,
+        phone: '777-777-7777',
+        name: 'Bob Boberson',
+        email: 'bboberson@schmidtfutures.com',
+        pronoun: 'she/hers',
+        preferredContact: 'email',
+        searchStatus: 'active',
+        acceptedTerms: new Date('2023-02-01'),
+        acceptedPrivacy: new Date('2023-02-01'),
+        auth0Id: 'auth0|1234',
+        isPaused: false,
+        followUpOptIn: false,
+      });
+
+      const emailService = new EmailService(
+        new DummySESService(),
+        getMockConfig(),
+      );
+
+      const mockEmailSpy = jest.spyOn(emailService, 'sendEmail');
+
+      const applicantController = new ApplicantController(
+        new DummyAuthService(),
+        ctx.prisma,
+        emailService,
+        new DummyMonitoringService(),
+        new DummyUploadService(
+          ctx.prisma,
+          new DummyS3Service(),
+          getMockConfig(),
+        ),
+      );
+
+      await applicantController.deleteApplicant(1);
+      const expectedEmail = emailService.generateApplicantDeletionEmail(
+        'bboberson@schmidtfutures.com',
+        'Bob Boberson',
+      );
+      expect(mockEmailSpy).toHaveBeenCalledWith(expectedEmail);
+      mockEmailSpy.mockRestore();
+    });
+  });
+
+  describe('Force Delete Applicant (Admin functionality)', () => {
+    test('Should return error if Prisma fails to delete applicant', async () => {
+      mockCtx.prisma.applicant.findUniqueOrThrow.mockResolvedValue({
+        id: 1,
+        phone: '777-777-7777',
+        name: 'Bob Boberson',
+        email: 'bboberson@schmidtfutures.com',
+        pronoun: 'she/hers',
+        preferredContact: 'email',
+        searchStatus: 'active',
+        acceptedTerms: new Date('2023-02-01'),
+        acceptedPrivacy: new Date('2023-02-01'),
+        auth0Id: 'auth0|1234',
+        isPaused: false,
+        followUpOptIn: false,
+      });
+      mockCtx.prisma.applicant.delete.mockRejectedValue(
+        new Prisma.PrismaClientKnownRequestError('ERROR', {
+          code: '101',
+          clientVersion: '1.0',
+        }),
+      );
+      const applicantController = new ApplicantController(
+        new DummyAuthService(),
+        ctx.prisma,
+        new DummyEmailService(new DummySESService(), getMockConfig()),
+        new DummyMonitoringService(),
+        new DummyUploadService(
+          ctx.prisma,
+          new DummyS3Service(),
+          getMockConfig(),
+        ),
+      );
+      await expect(
+        applicantController.deleteApplicantForce(3),
+      ).rejects.toHaveProperty(
+        'problem.detail',
+        'Database error encountered when deleting applicant',
+      );
+    });
+    test('Should return error if Auth0 fails to delete applicant', async () => {
+      mockCtx.prisma.applicant.findUniqueOrThrow.mockResolvedValue({
+        id: 1,
+        phone: '777-777-7777',
+        name: 'Bob Boberson',
+        email: 'bboberson@schmidtfutures.com',
+        pronoun: 'she/hers',
+        preferredContact: 'email',
+        searchStatus: 'active',
+        acceptedTerms: new Date('2023-02-01'),
+        acceptedPrivacy: new Date('2023-02-01'),
+        auth0Id: 'auth0|1234',
+        isPaused: false,
+        followUpOptIn: false,
+      });
+      mockCtx.prisma.$transaction.mockResolvedValue(true);
+      const dummyAuthService = new DummyAuthService();
+      dummyAuthService.deleteUsers = () => {
+        throw new CAPPError({
+          detail: 'Mock Auth0 Deletion Error',
+          title: 'Mock Error',
+        });
+      };
+      const applicantController = new ApplicantController(
+        dummyAuthService,
+        ctx.prisma,
+        new DummyEmailService(new DummySESService(), getMockConfig()),
+        new DummyMonitoringService(),
+        new DummyUploadService(
+          ctx.prisma,
+          new DummyS3Service(),
+          getMockConfig(),
+        ),
+      );
+      await expect(
+        applicantController.deleteApplicantForce(3),
+      ).rejects.toHaveProperty('problem.detail', 'Mock Auth0 Deletion Error');
+    });
+    test('Should delete applicant resumes from s3', async () => {
+      mockCtx.prisma.applicant.findUniqueOrThrow.mockResolvedValue({
+        id: 1,
+        phone: '777-777-7777',
+        name: 'Bob Boberson',
+        email: 'bboberson@schmidtfutures.com',
+        pronoun: 'she/hers',
+        preferredContact: 'email',
+        searchStatus: 'active',
+        acceptedTerms: new Date('2023-02-01'),
+        acceptedPrivacy: new Date('2023-02-01'),
+        auth0Id: 'auth0|1234',
+        isPaused: false,
+        followUpOptIn: false,
+      });
+      mockCtx.prisma.$transaction.mockResolvedValue(true);
+      const mockS3Service = new DummyS3Service();
+      const s3ServiceSpy = jest.spyOn(mockS3Service, 'deleteUploads');
+
+      const uploadBucket = 'upload_bucket';
+      const mockConfig = getMockConfig({ uploadBucket });
+
+      const applicantController = new ApplicantController(
+        new DummyAuthService(),
+        ctx.prisma,
+        new DummyEmailService(new DummySESService(), mockConfig),
+        new DummyMonitoringService(),
+        new DummyUploadService(ctx.prisma, mockS3Service, mockConfig),
+      );
+      await applicantController.deleteApplicantForce(1);
+      expect(s3ServiceSpy).toHaveBeenCalledWith(uploadBucket, 'resumes/1');
+    });
+    test('Should not send email after applicant deletion request', async () => {
       mockCtx.prisma.applicant.findUniqueOrThrow.mockResolvedValue({
         id: 1,
         phone: '777-777-7777',
