@@ -653,12 +653,8 @@ describe('Applicant Controller', () => {
         ),
       );
 
-      await applicantController.deleteApplicant(1);
-      const expectedEmail = emailService.generateApplicantDeletionEmail(
-        'bboberson@schmidtfutures.com',
-        'Bob Boberson',
-      );
-      expect(mockEmailSpy).toHaveBeenCalledWith(expectedEmail);
+      await applicantController.deleteApplicantForce(1);
+      expect(mockEmailSpy).not.toHaveBeenCalled();
       mockEmailSpy.mockRestore();
     });
   });
