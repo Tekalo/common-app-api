@@ -463,6 +463,40 @@ describe('Applicant Controller', () => {
       await applicantController.deleteApplicant(1);
       expect(s3ServiceSpy).toHaveBeenCalledWith(uploadBucket, 'resumes/1');
     });
+    test('Should return error if there is an error deleting files from s3', async () => {
+      mockCtx.prisma.applicant.findUniqueOrThrow.mockResolvedValue({
+        id: 1,
+        phone: '777-777-7777',
+        name: 'Bob Boberson',
+        email: 'bboberson@schmidtfutures.com',
+        pronoun: 'she/hers',
+        preferredContact: 'email',
+        searchStatus: 'active',
+        acceptedTerms: new Date('2023-02-01'),
+        acceptedPrivacy: new Date('2023-02-01'),
+        auth0Id: 'auth0|1234',
+        isPaused: false,
+        followUpOptIn: false,
+      });
+      mockCtx.prisma.$transaction.mockResolvedValue(true);
+      const dummyS3Service = new DummyS3Service();
+      dummyS3Service.deleteUploads = () => {
+        throw new CAPPError({
+          detail: 'Mock S3 Deletion Error',
+          title: 'Mock Error',
+        });
+      };
+      const applicantController = new ApplicantController(
+        new DummyAuthService(),
+        ctx.prisma,
+        new DummyEmailService(new DummySESService(), getMockConfig()),
+        new DummyMonitoringService(),
+        new DummyUploadService(ctx.prisma, dummyS3Service, getMockConfig()),
+      );
+      await expect(
+        applicantController.deleteApplicant(1),
+      ).rejects.toHaveProperty('problem.detail', 'Mock S3 Deletion Error');
+    });
     test('Should send email after applicant deletion request', async () => {
       mockCtx.prisma.applicant.findUniqueOrThrow.mockResolvedValue({
         id: 1,
@@ -617,6 +651,40 @@ describe('Applicant Controller', () => {
       );
       await applicantController.deleteApplicantForce(1);
       expect(s3ServiceSpy).toHaveBeenCalledWith(uploadBucket, 'resumes/1');
+    });
+    test('Should return error if there is an error deleting files from s3', async () => {
+      mockCtx.prisma.applicant.findUniqueOrThrow.mockResolvedValue({
+        id: 1,
+        phone: '777-777-7777',
+        name: 'Bob Boberson',
+        email: 'bboberson@schmidtfutures.com',
+        pronoun: 'she/hers',
+        preferredContact: 'email',
+        searchStatus: 'active',
+        acceptedTerms: new Date('2023-02-01'),
+        acceptedPrivacy: new Date('2023-02-01'),
+        auth0Id: 'auth0|1234',
+        isPaused: false,
+        followUpOptIn: false,
+      });
+      mockCtx.prisma.$transaction.mockResolvedValue(true);
+      const dummyS3Service = new DummyS3Service();
+      dummyS3Service.deleteUploads = () => {
+        throw new CAPPError({
+          detail: 'Mock S3 Deletion Error',
+          title: 'Mock Error',
+        });
+      };
+      const applicantController = new ApplicantController(
+        new DummyAuthService(),
+        ctx.prisma,
+        new DummyEmailService(new DummySESService(), getMockConfig()),
+        new DummyMonitoringService(),
+        new DummyUploadService(ctx.prisma, dummyS3Service, getMockConfig()),
+      );
+      await expect(
+        applicantController.deleteApplicantForce(1),
+      ).rejects.toHaveProperty('problem.detail', 'Mock S3 Deletion Error');
     });
     test('Should not send email after applicant deletion request', async () => {
       mockCtx.prisma.applicant.findUniqueOrThrow.mockResolvedValue({
