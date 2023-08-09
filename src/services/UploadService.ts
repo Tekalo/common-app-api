@@ -76,6 +76,13 @@ class UploadService {
     return applicantUpload;
   }
 
+  async deleteApplicantResumes(applicantId: number) {
+    await this.s3Service.deleteUploads(
+      this.config.uploadBucket,
+      `resumes/${applicantId}`,
+    );
+  }
+
   async generateSignedResumeUploadUrl(
     applicantId: number,
     originalFilename: string,
