@@ -1,5 +1,6 @@
 import request from 'supertest';
 import prisma from '@App/resources/client.js';
+import { OpportunitySubmission } from '@App/resources/types/opportunities.js';
 import getDummyApp from '../fixtures/appGenerator.js';
 
 const dummyApp = getDummyApp();
@@ -9,6 +10,28 @@ afterEach(async () => {
   await prisma.opportunityBatch.deleteMany();
 });
 describe('POST /opportunities', () => {
+  const submissions: Array<OpportunitySubmission> = [
+    {
+      fullyRemote: false,
+      roleType: 'software engineer - backend',
+      positionTitle: 'Flipper 1',
+      location: 'Burgerville',
+      paid: true,
+      pitchEssay: 'Come flip burgers for Bob',
+      source: 'Commercial',
+      employmentType: 'full-time employee',
+      salaryRange: '20-30$/hr',
+      desiredHoursPerWeek: '40',
+      desiredStartDate: new Date('2023-12-01'),
+      desiredYoe: ['0-2', '3-5', '6-8', '9-12'],
+      desiredSkills: ['react', 'sketch'],
+      desiredOtherSkills: ['flipping burgers', 'flipping houses'],
+      visaSponsorship: 'no',
+      similarStaffed: true,
+      desiredImpactExp:
+        'We would love to find someone who has non-profit fast food experience.',
+    },
+  ];
   const oppBatchPayload = {
     acceptedPrivacy: true,
     referenceAttribution: 'other',
@@ -25,28 +48,7 @@ describe('POST /opportunities', () => {
       email: 'bboberson@gmail.com',
       phone: '+918-867-5309',
     },
-    submissions: [
-      {
-        fullyRemote: false,
-        roleType: 'software engineer - backend',
-        positionTitle: 'Flipper 1',
-        location: 'Burgerville',
-        paid: true,
-        pitchEssay: 'Come flip burgers for Bob',
-        source: 'Commercial',
-        employmentType: 'full-time employee',
-        salaryRange: '20-30$/hr',
-        desiredHoursPerWeek: '40',
-        desiredStartDate: '2023-01-01',
-        desiredYoe: ['0-2', '3-5', '6-8', '9-12'],
-        desiredSkills: ['react', 'sketch'],
-        desiredOtherSkills: ['flipping burgers', 'flipping houses'],
-        visaSponsorship: 'no',
-        similarStaffed: true,
-        desiredImpactExp:
-          'We would love to find someone who has non-profit fast food experience.',
-      },
-    ],
+    submissions,
   };
   it('should create a new batch of opportunities', async () => {
     const { body } = await request(dummyApp)
@@ -74,7 +76,7 @@ describe('POST /opportunities', () => {
     secondOppSubmissionPayload.submissions.push({
       fullyRemote: false,
       roleType: 'other',
-      otherRoleType: 'thing doer',
+      otherRoleType: 'Just a temp',
       positionTitle: 'French Guy',
       location: 'Fryville',
       paid: true,
@@ -83,7 +85,7 @@ describe('POST /opportunities', () => {
       employmentType: 'a gig to get you through grad school',
       salaryRange: '20-30$/hr',
       desiredHoursPerWeek: '30',
-      desiredStartDate: '2023-12-01',
+      desiredStartDate: new Date('2023-12-01'),
       desiredYoe: ['15+'],
       desiredSkills: ['figma', 'project management'],
       desiredOtherSkills: [

@@ -42,6 +42,29 @@ const YOE = z.enum([
   '12-15',
 ]);
 
+const OpportunitySubmissionSchema = z.object({
+  roleType: z.string(),
+  otherRoleType: z.string().optional(),
+  positionTitle: z.string().max(255),
+  fullyRemote: z.boolean(),
+  location: z.string().optional(),
+  paid: z.boolean(),
+  pitchEssay: z.string().max(5000),
+  source: z.string(),
+  employmentType: z.string().max(255), // UI has dropdown, but they have input box for an "other" option
+  salaryRange: z.string().max(255).optional(),
+  desiredHoursPerWeek: z.string().max(255).nullable().optional(),
+  desiredStartDate: z.coerce.date().optional(),
+  desiredEndDate: z.coerce.date().optional(),
+  jdUrl: z.string().max(500).optional(),
+  desiredYoe: z.array(YOE),
+  desiredSkills: z.array(Skills).optional(),
+  desiredOtherSkills: z.array(z.string()).optional(),
+  visaSponsorship: VisaSponsorship.optional(),
+  similarStaffed: z.boolean(),
+  desiredImpactExp: z.string().max(5000).optional(),
+});
+
 const OpportunityBatchRequestBodySchema = z.object({
   organization: z.object({
     name: z.string().max(255),
@@ -58,30 +81,7 @@ const OpportunityBatchRequestBodySchema = z.object({
   acceptedPrivacy: z.literal(true),
   referenceAttribution: z.string().nullable().optional(),
   referenceAttributionOther: z.string().nullable().optional(),
-  submissions: z.array(
-    z.object({
-      roleType: z.string(),
-      otherRoleType: z.string().optional(),
-      positionTitle: z.string().max(255),
-      fullyRemote: z.boolean(),
-      location: z.string().optional(),
-      paid: z.boolean(),
-      pitchEssay: z.string().max(5000),
-      source: z.string(),
-      employmentType: z.string().max(255), // UI has dropdown, but they have input box for an "other" option
-      salaryRange: z.string().max(255).optional(),
-      desiredHoursPerWeek: z.string().max(255).nullable().optional(),
-      desiredStartDate: z.coerce.date().optional(),
-      desiredEndDate: z.coerce.date().optional(),
-      jdUrl: z.string().max(500).optional(),
-      desiredYoe: z.array(YOE),
-      desiredSkills: z.array(Skills).optional(),
-      desiredOtherSkills: z.array(z.string()).optional(),
-      visaSponsorship: VisaSponsorship.optional(),
-      similarStaffed: z.boolean(),
-      desiredImpactExp: z.string().max(5000).optional(),
-    }),
-  ),
+  submissions: z.array(OpportunitySubmissionSchema),
 });
 
 const OpportunityBatchResponseBodySchema = z.object({
@@ -98,5 +98,6 @@ const OpportunityBatchResponseBodySchema = z.object({
 
 export {
   OpportunityBatchRequestBodySchema,
+  OpportunitySubmissionSchema,
   OpportunityBatchResponseBodySchema,
 };
