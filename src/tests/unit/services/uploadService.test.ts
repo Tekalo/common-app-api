@@ -131,5 +131,10 @@ describe('Upload Service', () => {
         'pdf',
       );
     });
+    test('', () => {
+      expect(UploadService.generateS3Filename(1, 2, 'application/pdf')).toEqual(
+        'resumes/1/2.pdf',
+      );
+    });
   });
 });
