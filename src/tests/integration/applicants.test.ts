@@ -1452,7 +1452,6 @@ describe('POST /applicants/me/uploads/:id/state', () => {
 describe('GET /applicants/:id/resume', () => {
   it('should return 401 if JWT does not contain matchmaker role', async () => {
     const randomString = getRandomString();
-    // token doesn't contain matchmaker role
     const bobToken = await authHelper.getToken(
       `bboberson${randomString}@gmail.com`,
       { roles: ['notAMatchmaker'] },
@@ -1537,7 +1536,6 @@ describe('GET /applicants/:id/resume', () => {
       `bboberson${getRandomString()}@gmail.com`,
       { roles: ['matchmaker'] },
     );
-    // Try to get a non-existent resume
     await request(dummyApp)
       .get('/applicants/123456/resume')
       .set('Authorization', `Bearer ${bobToken}`)
