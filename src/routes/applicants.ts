@@ -236,6 +236,7 @@ const applicantRoutes = (
     );
 
     // Get applicant's resume (they can only ever have one)
+    // TODO: Allow resume owners to authenticate
     router.get(
       '/:id/resume',
       authenticator
