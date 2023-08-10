@@ -1567,10 +1567,11 @@ describe('GET /applicants/:id/resume', () => {
       .expect(200);
   });
 
-  itif('CI' in process.env)('should return a download url', async () => {
+  itif('CI' in process.env)('should return a resume download url', async () => {
     const randomString = getRandomString();
     const token = await authHelper.getToken(
       `bboberson${randomString}@gmail.com`,
+      { roles: ['matchmaker'] },
     );
 
     // create an applicant
@@ -1586,13 +1587,21 @@ describe('GET /applicants/:id/resume', () => {
           acceptedPrivacy: true,
         });
 
-    await request(dummyApp)
+    const { body: resume }: { body: UploadResponseBody } = await request(
+      dummyApp,
+    )
       .post('/applicants/me/resume')
       .set('Authorization', `Bearer ${token}`)
       .send({
         originalFilename: 'bob_boberson_resume.pdf',
         contentType: 'application/pdf',
       })
+      .expect(200);
+
+    await request(dummyApp)
+      .post(`/applicants/${resume.id}/resume`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({ status: 'SUCCESS' })
       .expect(200);
 
     const { body } = await request(dummyApp)
