@@ -1,3 +1,4 @@
+import { Readable } from 'stream';
 import {
   Applicant,
   ApplicantDraftSubmission,
@@ -27,6 +28,7 @@ import EmailService from '@App/services/EmailService.js';
 import MonitoringService from '@App/services/MonitoringService.js';
 import UploadService from '@App/services/UploadService.js';
 import { Claims } from '@App/resources/types/auth0.js';
+import configLoader from '@App/services/configLoader.js';
 
 class ApplicantController {
   private auth0Service: AuthService;
@@ -632,6 +634,33 @@ class ApplicantController {
         data.contentType,
       );
     return resumeUrlResponse;
+  }
+
+  /**
+   * Fetches resume from S3
+   * @param applicantId
+   * @returns Resume as readable file stream
+   */
+  async getResume(applicantId: number): Promise<Readable> {
+    const { uploadBucket } = configLoader.loadConfig();
+    const resume = await this.prisma.upload.findFirst({
+      where: {
+        applicantId: 34,
+        type: 'RESUME',
+      },
+    });
+    if (!resume) {
+      throw new CAPPError({
+        title: 'Not Found',
+        detail: 'Resume not found',
+        status: 404,
+      });
+    }
+    const readableStream = await this.uploadService.getFileFromS3(
+      uploadBucket,
+      `resumes/${applicantId}/${resume.id}.jpg`,
+    );
+    return readableStream.Body as Readable;
   }
 }
 

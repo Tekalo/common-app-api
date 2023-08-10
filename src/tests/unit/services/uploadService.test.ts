@@ -30,6 +30,7 @@ describe('Upload Service', () => {
       status: 'REQUESTED',
       createdAt: new Date(),
       completedAt: null,
+      contentType: 'image/jpg',
     });
 
     const uploadService = new UploadService(

@@ -198,4 +198,70 @@ describe('Authenticator', () => {
     );
     expect(mockNext).toBeCalledWith();
   });
+  test('validateJwtRole() should throw error if JWT does not have specified role', () => {
+    const mockRequest = {
+      session: {},
+      auth: {
+        payload: {
+          scope: 'read:foo create:foo delete:bar',
+          'auth0.capp.com/roles': ['fooRole'],
+        },
+      },
+    } as Request;
+    const mockNext: NextFunction = jest.fn();
+    const returnFunction = authenticator.validateJwtRole('admin');
+    returnFunction(mockRequest, {} as Response, mockNext);
+    expect(mockNext).toBeCalledWith(
+      new CAPPError({
+        title: 'Cannot authenticate request',
+        detail: 'Applicant cannot be authenticated',
+        status: 401,
+      }),
+    );
+  });
+  // test('validateRoleOrOwner() should throw error if JWT does not have specified role or authenticated user does not own the targetted resource', async () => {
+  //   const mockCtx = createMockContext();
+  //   mockCtx.prisma.applicant.findFirstOrThrow.mockResolvedValue(
+  //     {
+  //       id: 1, // JWT token has ID 99
+  //       auth0Id: 'auth0|12345',
+  //       email: 'bboberson@gmail.com',
+  //       name: 'Bob Boberson',
+  //       acceptedPrivacy: new Date(),
+  //       acceptedTerms: new Date(),
+  //       pronoun: null,
+  //       phone: null,
+  //       isPaused: false,
+  //       preferredContact: 'email',
+  //       searchStatus: 'active',
+  //       followUpOptIn: false,
+  //     },
+  //   );
+  //   const authenticatorWithMockPrisma = new Authenticator(
+  //     mockCtx.prisma,
+  //     configLoader.loadConfig(),
+  //   );
+
+  //   const mockRequest = {
+  //     session: {},
+  //     params: { id: '99' },
+  //     auth: {
+  //       payload: {
+  //         'auth0.capp.com/roles': ['fooRole'],
+  //       },
+  //     },
+  //   } as MockRequestWithParams;
+  //   const mockNext: NextFunction = jest.fn();
+  //   const returnFunction = authenticatorWithMockPrisma.validateRoleOrOwner('admin');
+  //   await returnFunction(
+  //     mockRequest,
+  //     {} as Response,
+  //     mockNext,
+  //   );
+  //   expect(mockNext).toBeCalledWith(new CAPPError({
+  //     title: 'Cannot authenticate request',
+  //     detail: 'Applicant cannot be authenticated',
+  //     status: 401,
+  //   }));
+  // });
 });

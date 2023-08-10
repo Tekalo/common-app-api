@@ -79,7 +79,7 @@ model ApplicantSubmission {
 
   essayResponse String
 
-  referenceAttribution String? //How did you hear about us  //enum
+  referenceAttribution      String? //How did you hear about us  //enum
   referenceAttributionOther String?
 }
 
@@ -130,7 +130,7 @@ model ApplicantDraftSubmission {
 
   essayResponse String?
 
-  referenceAttribution String? //How did you hear about us  //enum
+  referenceAttribution      String? //How did you hear about us  //enum
   referenceAttributionOther String?
 }
 
@@ -212,6 +212,7 @@ model Upload {
   originalFilename         String
   createdAt                DateTime                  @default(now())
   completedAt              DateTime?
+  contentType              String
   status                   UploadStatus              @default(REQUESTED)
   ApplicantSubmission      ApplicantSubmission?
   ApplicantDraftSubmission ApplicantDraftSubmission?

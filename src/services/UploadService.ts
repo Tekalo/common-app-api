@@ -1,4 +1,5 @@
 import { Prisma, PrismaClient, Upload } from '@prisma/client';
+import { GetObjectCommandOutput } from '@aws-sdk/client-s3';
 import { ACCEPTED_CONTENT_TYPES } from '@App/resources/schemas/uploads.js';
 import CAPPError from '@App/resources/shared/CAPPError.js';
 import { BaseConfig } from '@App/resources/types/shared.js';
@@ -21,6 +22,7 @@ class UploadService {
   async createResumeUploadRecord(
     originalFilename: string,
     applicantId: number,
+    contentType: string,
   ): Promise<Upload> {
     try {
       return await this.prisma.upload.create({
@@ -29,6 +31,7 @@ class UploadService {
           applicantId,
           type: 'RESUME',
           status: 'REQUESTED',
+          contentType,
         },
       });
     } catch (e) {
@@ -84,6 +87,7 @@ class UploadService {
     const uploadRecord: Upload = await this.createResumeUploadRecord(
       originalFilename,
       applicantId,
+      contentType,
     );
     const fileExtension =
       UploadService.getFileExtensionFromContentType(contentType);
@@ -101,6 +105,42 @@ class UploadService {
   static getFileExtensionFromContentType(contentType: string): string {
     const mediaType = contentType.split(';')[0];
     return ACCEPTED_CONTENT_TYPES.get(mediaType) || 'pdf';
+  }
+
+  static getContentType(mimeType: string): string {
+    switch (mimeType) {
+      case 'docx':
+        return 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+      case 'jpg':
+      case 'jpeg':
+        return 'image/jpeg';
+      case 'png':
+        return 'image/png';
+      case 'pdf':
+      default:
+        return 'application/pdf';
+    }
+  }
+
+  async getFileFromS3(
+    uploadBucket: string,
+    filePath: string,
+  ): Promise<GetObjectCommandOutput> {
+    try {
+      const commandOutput: GetObjectCommandOutput =
+        await this.s3Service.getObject(uploadBucket, filePath);
+      return commandOutput;
+    } catch (e) {
+      console.log(e);
+      throw new CAPPError(
+        {
+          title: 'Not Found',
+          detail: 'File not found',
+          status: 404,
+        },
+        e instanceof Error ? { cause: e } : undefined,
+      );
+    }
   }
 }
 

@@ -694,6 +694,7 @@ describe('Applicant Controller', () => {
           type: 'RESUME',
           originalFilename: 'myresume.pdf',
           completedAt: new Date(),
+          contentType: 'application/pdf',
         });
       const applicantController = new ApplicantController(
         new DummyAuthService(),
@@ -735,6 +736,63 @@ describe('Applicant Controller', () => {
         status: 'REQUESTED',
         createdAt: new Date(),
         completedAt: null,
+        contentType: 'application/pdf',
+      });
+
+      const mockUploadSpy = jest.spyOn(
+        uploadService,
+        'generateSignedResumeUploadUrl',
+      );
+
+      const applicantController = new ApplicantController(
+        new DummyAuthService(),
+        ctx.prisma,
+        new DummyEmailService(new DummySESService(), mockConfig),
+        new DummyMonitoringService(),
+        uploadService,
+      );
+
+      const originalFilename = 'originalResumeFilename.png';
+      const contentType = 'application/png';
+      const result = await applicantController.getResumeUploadUrl(applicantId, {
+        originalFilename,
+        contentType,
+      });
+
+      expect(mockUploadSpy).toHaveBeenCalledWith(
+        applicantId,
+        originalFilename,
+        contentType,
+      );
+      expect(result).toHaveProperty(
+        'signedLink',
+        expect.stringMatching(
+          `https://${uploadBucket}.*/resumes/${applicantId}.*`,
+        ),
+      );
+    });
+  });
+
+  describe('Applicant Get Resume File', () => {
+    test('Should return 404 if applicant exists but their resume does not', async () => {
+      const applicantId = 666;
+      const uploadBucket = 'upload_bucket';
+      const mockConfig = getMockConfig({ uploadBucket });
+      const uploadService = new UploadService(
+        ctx.prisma,
+        new DummyS3Service(),
+        mockConfig,
+      );
+
+      mockCtx.prisma.upload.create.mockResolvedValue({
+        id: 1,
+        applicantId,
+        type: 'RESUME',
+        originalFilename: 'bobsresume.docx',
+        status: 'REQUESTED',
+        createdAt: new Date(),
+        completedAt: null,
+        contentType: 'application/pdf',
       });
 
       const mockUploadSpy = jest.spyOn(
