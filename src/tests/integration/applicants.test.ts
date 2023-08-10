@@ -1478,7 +1478,6 @@ describe('GET /applicants/:id/resume', () => {
       })
       .expect(200);
 
-    // Try to get bob's resume without
     await request(dummyApp)
       .get(`/applicants/${resumeBody.id}/resume`)
       .set('Authorization', `Bearer ${bobToken}`)
@@ -1517,6 +1516,7 @@ describe('GET /applicants/:id/resume', () => {
           acceptedTerms: true,
           acceptedPrivacy: true,
         });
+
     await request(dummyS3ServiceApp)
       .post('/applicants/me/resume')
       .set('Authorization', `Bearer ${bobToken}`)
@@ -1525,6 +1525,7 @@ describe('GET /applicants/:id/resume', () => {
         contentType: 'application/pdf',
       })
       .expect(200);
+
     await request(dummyS3ServiceApp)
       .get(`/applicants/${applicantBody.id}/resume`)
       .set('Authorization', `Bearer ${bobToken}`)
