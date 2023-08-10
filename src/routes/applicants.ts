@@ -245,10 +245,9 @@ const applicantRoutes = (
       (req: Request, res: Response, next) => {
         const applicantID = Number(req.params.id);
         applicantController
-          .getResume(applicantID)
+          .getResumeDownloadUrl(applicantID)
           .then((result) => {
-            result.pipe(res);
-            res.status(200);
+            res.status(200).json(result);
           })
           .catch((err) => next(err));
       },

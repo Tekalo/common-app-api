@@ -71,31 +71,31 @@ describe('Upload Service', () => {
     );
   });
 
-  test('should throw error if upload does not exist in S3', async () => {
-    const dummyS3Service = new DummyS3Service();
-    const s3Error = new Error('Key does not exist');
-    dummyS3Service.getObject = () => {
-      throw s3Error;
-    };
+  // test('should throw error if upload does not exist in S3', async () => {
+  //   const dummyS3Service = new DummyS3Service();
+  //   const s3Error = new Error('Key does not exist');
+  //   dummyS3Service.getObject = () => {
+  //     throw s3Error;
+  //   };
 
-    const uploadService = new UploadService(
-      mockCtx.prisma,
-      dummyS3Service,
-      getMockConfig(),
-    );
-    await expect(
-      uploadService.getFileFromS3('bucket', 'resume/1/2/doc.pdf'),
-    ).rejects.toThrowError(
-      new CAPPError(
-        {
-          title: 'Not Found',
-          detail: 'File not found',
-          status: 404,
-        },
-        { cause: s3Error },
-      ),
-    );
-  });
+  //   const uploadService = new UploadService(
+  //     mockCtx.prisma,
+  //     dummyS3Service,
+  //     getMockConfig(),
+  //   );
+  //   await expect(
+  //     uploadService.getFileFromS3('bucket', 'resume/1/2/doc.pdf'),
+  //   ).rejects.toThrowError(
+  //     new CAPPError(
+  //       {
+  //         title: 'Not Found',
+  //         detail: 'File not found',
+  //         status: 404,
+  //       },
+  //       { cause: s3Error },
+  //     ),
+  //   );
+  // });
 
   describe('static Upload Service', () => {
     test('should return the correct file extension for a docx content type', () => {

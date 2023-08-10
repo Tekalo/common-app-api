@@ -1487,33 +1487,34 @@ describe('GET /applicants/:id/resume', () => {
   });
 
   it('should successfully get an applicants resume', async () => {
-    // const randomString = getRandomString();
-    // const bobToken = await authHelper.getToken(
-    //   `bboberson${randomString}@gmail.com`,
-    //   { roles: ['matchmaker'] },
-    // );
-    // const { body: applicantBody }: { body: ApplicantResponseBody } = await request(dummyApp)
-    //   .post('/applicants')
-    //   .send({
-    //     name: 'Bob Boberson',
-    //     email: `bboberson${randomString}@gmail.com`,
-    //     preferredContact: 'sms',
-    //     searchStatus: 'active',
-    //     acceptedTerms: true,
-    //     acceptedPrivacy: true,
-    //   });
-    // await request(dummyApp)
-    //   .post('/applicants/me/resume')
-    //   .set('Authorization', `Bearer ${bobToken}`)
-    //   .send({
-    //     originalFilename: 'bob_boberson_resume.pdf',
-    //     contentType: 'application/pdf',
-    //   })
-    //   .expect(200);
-    // await request(dummyApp)
-    //   .get(`/applicants/${applicantBody.id}/resume`)
-    //   .set('Authorization', `Bearer ${bobToken}`)
-    //   .expect(200);
+    const randomString = getRandomString();
+    const bobToken = await authHelper.getToken(
+      `bboberson${randomString}@gmail.com`,
+      { roles: ['matchmaker'] },
+    );
+    const { body: applicantBody }: { body: ApplicantResponseBody } =
+      await request(dummyApp)
+        .post('/applicants')
+        .send({
+          name: 'Bob Boberson',
+          email: `bboberson${randomString}@gmail.com`,
+          preferredContact: 'sms',
+          searchStatus: 'active',
+          acceptedTerms: true,
+          acceptedPrivacy: true,
+        });
+    await request(dummyApp)
+      .post('/applicants/me/resume')
+      .set('Authorization', `Bearer ${bobToken}`)
+      .send({
+        originalFilename: 'bob_boberson_resume.pdf',
+        contentType: 'application/pdf',
+      })
+      .expect(200);
+    await request(dummyApp)
+      .get(`/applicants/${applicantBody.id}/resume`)
+      .set('Authorization', `Bearer ${bobToken}`)
+      .expect(200);
   });
 
   it('should return 404 for a resume that does not exist', async () => {

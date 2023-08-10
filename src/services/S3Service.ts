@@ -26,14 +26,14 @@ class S3Service {
     return url;
   }
 
-  async getObject(bucket: string, key: string) {
+  async generateSignedDownloadUrl(bucket: string, key: string) {
     const s3Client = S3Service.getS3Client();
     const command = new GetObjectCommand({
       Bucket: bucket,
       Key: key,
     });
-    const commandOutput = await s3Client.send(command);
-    return commandOutput;
+    const url = await getSignedUrl(s3Client, command);
+    return url;
   }
 }
 

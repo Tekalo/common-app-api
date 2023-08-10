@@ -1,5 +1,4 @@
 import { Prisma, PrismaClient, Upload } from '@prisma/client';
-import { GetObjectCommandOutput } from '@aws-sdk/client-s3';
 import { ACCEPTED_CONTENT_TYPES } from '@App/resources/schemas/uploads.js';
 import CAPPError from '@App/resources/shared/CAPPError.js';
 import { BaseConfig } from '@App/resources/types/shared.js';
@@ -122,24 +121,32 @@ class UploadService {
     }
   }
 
-  async getFileFromS3(
-    uploadBucket: string,
-    filePath: string,
-  ): Promise<GetObjectCommandOutput> {
-    try {
-      const commandOutput: GetObjectCommandOutput =
-        await this.s3Service.getObject(uploadBucket, filePath);
-      return commandOutput;
-    } catch (e) {
-      throw new CAPPError(
-        {
-          title: 'Not Found',
-          detail: 'File not found',
-          status: 404,
-        },
-        e instanceof Error ? { cause: e } : undefined,
-      );
+  async generateSignedResumeDownloadUrl(
+    applicantId: number,
+    originalFilename: string,
+    contentType: string,
+  ) {
+    const resume = await this.prisma.upload.findFirst({
+      where: {
+        applicantId,
+        type: 'RESUME',
+      },
+    });
+    if (!resume) {
+      throw new CAPPError({
+        title: 'not found',
+      });
     }
+    const fileExtension =
+      UploadService.getFileExtensionFromContentType(contentType);
+    const signedLink = await this.s3Service.generateSignedDownloadUrl(
+      this.config.uploadBucket,
+      `resumes/${applicantId}/${resume.id}.${fileExtension}`,
+    );
+    return {
+      id: resume.id,
+      signedLink,
+    };
   }
 }
 
