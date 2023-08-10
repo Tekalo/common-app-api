@@ -131,7 +131,6 @@ class UploadService {
         await this.s3Service.getObject(uploadBucket, filePath);
       return commandOutput;
     } catch (e) {
-      console.log(e);
       throw new CAPPError(
         {
           title: 'Not Found',
