@@ -198,4 +198,25 @@ describe('Authenticator', () => {
     );
     expect(mockNext).toBeCalledWith();
   });
+  test('validateJwtRole() should throw error if JWT does not have specified role', () => {
+    const mockRequest = {
+      session: {},
+      auth: {
+        payload: {
+          scope: 'read:foo create:foo delete:bar',
+          'auth0.capp.com/roles': ['fooRole'],
+        },
+      },
+    } as Request;
+    const mockNext: NextFunction = jest.fn();
+    const returnFunction = authenticator.validateJwtRole('admin');
+    returnFunction(mockRequest, {} as Response, mockNext);
+    expect(mockNext).toBeCalledWith(
+      new CAPPError({
+        title: 'Cannot authenticate request',
+        detail: 'Applicant cannot be authenticated',
+        status: 401,
+      }),
+    );
+  });
 });

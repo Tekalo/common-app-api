@@ -30,6 +30,7 @@ describe('Upload Service', () => {
       status: 'REQUESTED',
       createdAt: new Date(),
       completedAt: null,
+      contentType: 'image/jpg',
     });
 
     const uploadService = new UploadService(
@@ -43,6 +44,46 @@ describe('Upload Service', () => {
       contentType,
     );
     expect(resp).toHaveProperty('id', 1);
+    expect(resp).toHaveProperty(
+      'signedLink',
+      expect.stringMatching(
+        `https://${mockConfig.uploadBucket}.*/resumes/${applicantId}.*`,
+      ),
+    );
+  });
+
+  test('should successfully generate a signed resume download url', async () => {
+    const dummyS3Service = new DummyS3Service();
+    const mockConfig = getMockConfig({
+      uploadBucket: 'upload_bucket',
+    });
+    const applicantId = 666;
+    const resumeId = 1;
+    const originalFilename = 'myGreatResume.pdf';
+    const contentType = 'application/pdf';
+
+    mockCtx.prisma.upload.create.mockResolvedValue({
+      id: resumeId,
+      applicantId,
+      type: 'RESUME',
+      originalFilename,
+      status: 'REQUESTED',
+      createdAt: new Date(),
+      completedAt: null,
+      contentType: 'image/jpg',
+    });
+
+    const uploadService = new UploadService(
+      ctx.prisma,
+      dummyS3Service,
+      mockConfig,
+    );
+    const resp = await uploadService.generateSignedResumeDownloadUrl(
+      applicantId,
+      resumeId,
+      contentType,
+    );
+    expect(resp).toHaveProperty('id', resumeId);
     expect(resp).toHaveProperty(
       'signedLink',
       expect.stringMatching(
@@ -88,6 +129,11 @@ describe('Upload Service', () => {
     test('returns pdf file extension by default', () => {
       expect(UploadService.getFileExtensionFromContentType('foobar')).toBe(
         'pdf',
+      );
+    });
+    test('', () => {
+      expect(UploadService.generateS3Filename(1, 2, 'application/pdf')).toEqual(
+        'resumes/1/2.pdf',
       );
     });
   });

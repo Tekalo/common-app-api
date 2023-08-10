@@ -636,6 +636,29 @@ class ApplicantController {
       );
     return resumeUrlResponse;
   }
+
+  async getResumeDownloadUrl(applicantId: number): Promise<UploadResponseBody> {
+    const resume = await this.prisma.upload.findFirst({
+      where: {
+        applicantId,
+        type: 'RESUME',
+        status: 'SUCCESS',
+      },
+    });
+    if (!resume) {
+      throw new CAPPError({
+        title: 'Not Found',
+        detail: 'Resume not found',
+        status: 404,
+      });
+    }
+    const url = await this.uploadService.generateSignedResumeDownloadUrl(
+      applicantId,
+      resume.id,
+      resume.contentType,
+    );
+    return url;
+  }
 }
 
 export default ApplicantController;

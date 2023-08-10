@@ -234,6 +234,24 @@ const applicantRoutes = (
           .catch((err) => next(err));
       },
     );
+
+    // Get applicant's resume (they can only ever have one)
+    // TODO: Allow resume owners to authenticate
+    router.get(
+      '/:id/resume',
+      authenticator
+        .validateJwtRole('matchmaker')
+        .bind(authenticator) as RequestHandler,
+      (req: Request, res: Response, next) => {
+        const applicantID = Number(req.params.id);
+        applicantController
+          .getResumeDownloadUrl(applicantID)
+          .then((result) => {
+            res.status(200).json(result);
+          })
+          .catch((err) => next(err));
+      },
+    );
   }
 
   /**
@@ -243,7 +261,9 @@ const applicantRoutes = (
    * */
   router.get(
     '/:id',
-    authenticator.validateJwtAdmin.bind(authenticator) as RequestHandler,
+    authenticator
+      .validateJwtRole('admin')
+      .bind(authenticator) as RequestHandler,
     (req: Request, res: Response, next: NextFunction) => {
       const reqWithAuth = req as RequestWithJWT;
       const { id } = reqWithAuth.params;
@@ -258,7 +278,9 @@ const applicantRoutes = (
 
   router.delete(
     '/:id',
-    authenticator.validateJwtAdmin.bind(authenticator) as RequestHandler,
+    authenticator
+      .validateJwtRole('admin')
+      .bind(authenticator) as RequestHandler,
     (req: Request, res: Response, next: NextFunction) => {
       const reqWithAuth = req as RequestWithJWT;
       const { id } = reqWithAuth.params;

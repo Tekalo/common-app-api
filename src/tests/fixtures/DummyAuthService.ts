@@ -1,4 +1,4 @@
-import { User } from 'auth0';
+import { AppMetadata, User, UserMetadata } from 'auth0';
 import AuthService from '@App/services/AuthService.js';
 import { getRandomString } from '../util/helpers.js';
 
@@ -14,7 +14,10 @@ class DummyAuthService extends AuthService {
   }
 
   // eslint-disable-next-line
-  async createUser() {
+  async createUser(data: {
+    name: string;
+    email: string;
+  }): Promise<User<AppMetadata, UserMetadata>> {
     const mockUser = {
       user_id: `auth0|${getRandomString()}`,
     } as User;
@@ -22,12 +25,12 @@ class DummyAuthService extends AuthService {
   }
 
   // eslint-disable-next-line
-  async userExists() {
+  async userExists(email: string): Promise<boolean> {
     return false;
   }
 
   // eslint-disable-next-line
-  async getUser(auth0Id: string) {
+  async getUser(auth0Id: string): Promise<User<AppMetadata, UserMetadata>> {
     const mockUser = {
       id: auth0Id,
       email: 'mockemail@schmidtfutures.com',

@@ -32,7 +32,9 @@ const opportunitiesRoutes = (
   // Admin endpoints
   router.delete(
     '/batch/:id',
-    authenticator.validateJwtAdmin.bind(authenticator) as RequestHandler,
+    authenticator
+      .validateJwtRole('admin')
+      .bind(authenticator) as RequestHandler,
     (req: Request, res: Response, next) => {
       const reqWithAuth = req as RequestWithJWT;
       const { id } = reqWithAuth.params;

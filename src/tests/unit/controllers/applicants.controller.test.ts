@@ -945,6 +945,7 @@ describe('Applicant Controller', () => {
           type: 'RESUME',
           originalFilename: 'myresume.pdf',
           completedAt: new Date(),
+          contentType: 'application/pdf',
         });
       const applicantController = new ApplicantController(
         new DummyAuthService(),
@@ -986,6 +987,7 @@ describe('Applicant Controller', () => {
         status: 'REQUESTED',
         createdAt: new Date(),
         completedAt: null,
+        contentType: 'application/pdf',
       });
 
       const mockUploadSpy = jest.spyOn(
@@ -1018,6 +1020,39 @@ describe('Applicant Controller', () => {
         expect.stringMatching(
           `https://${uploadBucket}.*/resumes/${applicantId}.*`,
         ),
+      );
+    });
+  });
+
+  describe('Applicant Get Resume File', () => {
+    test('Should return 404 if applicant does not have a resume', async () => {
+      const applicantId = 666;
+      const uploadBucket = 'upload_bucket';
+      const mockConfig = getMockConfig({ uploadBucket });
+      const uploadService = new UploadService(
+        ctx.prisma,
+        new DummyS3Service(),
+        mockConfig,
+      );
+
+      mockCtx.prisma.upload.findFirst.mockResolvedValue(null);
+
+      const applicantController = new ApplicantController(
+        new DummyAuthService(),
+        ctx.prisma,
+        new DummyEmailService(new DummySESService(), mockConfig),
+        new DummyMonitoringService(),
+        uploadService,
+      );
+
+      await expect(
+        applicantController.getResumeDownloadUrl(applicantId),
+      ).rejects.toEqual(
+        new CAPPError({
+          title: 'Not Found',
+          detail: 'Resume not found',
+          status: 404,
+        }),
       );
     });
   });

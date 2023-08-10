@@ -11,6 +11,11 @@ class DummyS3Service extends S3Service {
     return Promise.resolve(url);
   }
 
+  async generateSignedDownloadUrl(bucket: string, key: string) {
+    const url = `https://${bucket}.s3.us-east-1.amazonaws.com/${key}?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&Content-Type=application/pdf&X-Amz-Credential=XXXX%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20230724T211311Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&x-id=GetObject`;
+    return Promise.resolve(url);
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async deleteUploads(bucket: string, prefix: string): Promise<void> {
     return Promise.resolve();

@@ -5,6 +5,7 @@ import { BaseConfig } from '@App/resources/types/shared.js';
 
 import S3Service from './S3Service.js';
 
+// TODO: Rename this class as its not just doing uploads anymore
 class UploadService {
   private s3Service: S3Service;
 
@@ -21,6 +22,7 @@ class UploadService {
   async createResumeUploadRecord(
     originalFilename: string,
     applicantId: number,
+    contentType: string,
   ): Promise<Upload> {
     try {
       return await this.prisma.upload.create({
@@ -29,6 +31,7 @@ class UploadService {
           applicantId,
           type: 'RESUME',
           status: 'REQUESTED',
+          contentType,
         },
       });
     } catch (e) {
@@ -83,6 +86,16 @@ class UploadService {
     );
   }
 
+  static generateS3Filename(
+    applicantId: number,
+    uploadId: number,
+    contentType: string,
+  ) {
+    const fileExtension =
+      UploadService.getFileExtensionFromContentType(contentType);
+    return `resumes/${applicantId}/${uploadId}.${fileExtension}`;
+  }
+
   async generateSignedResumeUploadUrl(
     applicantId: number,
     originalFilename: string,
@@ -91,12 +104,15 @@ class UploadService {
     const uploadRecord: Upload = await this.createResumeUploadRecord(
       originalFilename,
       applicantId,
+      contentType,
     );
-    const fileExtension =
-      UploadService.getFileExtensionFromContentType(contentType);
     const signedLink = await this.s3Service.generateSignedUploadUrl(
       this.config.uploadBucket,
-      `resumes/${applicantId}/${uploadRecord.id}.${fileExtension}`,
+      UploadService.generateS3Filename(
+        applicantId,
+        uploadRecord.id,
+        contentType,
+      ),
       contentType,
     );
     return {
@@ -108,6 +124,21 @@ class UploadService {
   static getFileExtensionFromContentType(contentType: string): string {
     const mediaType = contentType.split(';')[0];
     return ACCEPTED_CONTENT_TYPES.get(mediaType) || 'pdf';
+  }
+
+  async generateSignedResumeDownloadUrl(
+    applicantId: number,
+    resumeId: number,
+    contentType: string,
+  ) {
+    const signedLink = await this.s3Service.generateSignedDownloadUrl(
+      this.config.uploadBucket,
+      UploadService.generateS3Filename(applicantId, resumeId, contentType),
+    );
+    return {
+      id: resumeId,
+      signedLink,
+    };
   }
 }
 

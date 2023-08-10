@@ -5,6 +5,7 @@ import {
   ListObjectsV2CommandOutput,
   S3Client,
   PutObjectCommand,
+  GetObjectCommand,
 } from '@aws-sdk/client-s3';
 import logger from '@App/services/logger.js';
 import CAPPError from '@App/resources/shared/CAPPError.js';
@@ -66,6 +67,16 @@ class S3Service {
     } else {
       logger.info(`No uploads to delete for ${prefix}`);
     }
+  }
+
+  async generateSignedDownloadUrl(bucket: string, key: string) {
+    const s3Client = S3Service.getS3Client();
+    const command = new GetObjectCommand({
+      Bucket: bucket,
+      Key: key,
+    });
+    const url = await getSignedUrl(s3Client, command);
+    return url;
   }
 }
 

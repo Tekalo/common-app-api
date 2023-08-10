@@ -9,8 +9,6 @@ import {
 import CAPPError from '@App/resources/shared/CAPPError.js';
 import { BaseConfig } from '@App/resources/types/shared.js';
 
-const adminRole = 'admin';
-
 class Authenticator {
   private prisma: PrismaClient;
 
@@ -64,25 +62,26 @@ class Authenticator {
     }
   }
 
-  // Attach to requests that can only authenticate with a JWT and are verified as test/admin accounts
   // eslint-disable-next-line class-methods-use-this
-  validateJwtAdmin(req: AuthRequest, res: Response, next: NextFunction) {
-    if (
-      !req.auth ||
-      !req.auth.payload['auth0.capp.com/roles'] ||
-      !req.auth.payload['auth0.capp.com/roles'].includes(adminRole)
-    ) {
-      next(
-        req.authError ||
-          new CAPPError({
-            title: 'Cannot authenticate request',
-            detail: 'Applicant cannot be authenticated',
-            status: 401,
-          }),
-      );
-      return;
-    }
-    next();
+  validateJwtRole(role: string) {
+    return (req: AuthRequest, res: Response, next: NextFunction) => {
+      if (
+        !req.auth ||
+        !req.auth.payload['auth0.capp.com/roles'] ||
+        !req.auth.payload['auth0.capp.com/roles'].includes(role)
+      ) {
+        next(
+          req.authError ||
+            new CAPPError({
+              title: 'Cannot authenticate request',
+              detail: 'Applicant cannot be authenticated',
+              status: 401,
+            }),
+        );
+        return;
+      }
+      next();
+    };
   }
 
   // Used for applications to authenticate with the API.
