@@ -27,7 +27,6 @@ import EmailService from '@App/services/EmailService.js';
 import MonitoringService from '@App/services/MonitoringService.js';
 import UploadService from '@App/services/UploadService.js';
 import { Claims } from '@App/resources/types/auth0.js';
-// import configLoader from '@App/services/configLoader.js';
 
 class ApplicantController {
   private auth0Service: AuthService;
@@ -651,7 +650,7 @@ class ApplicantController {
     }
     const url = await this.uploadService.generateSignedResumeDownloadUrl(
       applicantId,
-      resume.originalFilename,
+      resume.id,
       resume.contentType,
     );
     return url;

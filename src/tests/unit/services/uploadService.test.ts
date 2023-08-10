@@ -52,6 +52,46 @@ describe('Upload Service', () => {
     );
   });
 
+  test('should successfully generate a signed resume download url', async () => {
+    const dummyS3Service = new DummyS3Service();
+    const mockConfig = getMockConfig({
+      uploadBucket: 'upload_bucket',
+    });
+    const applicantId = 666;
+    const resumeId = 1;
+    const originalFilename = 'myGreatResume.pdf';
+    const contentType = 'application/pdf';
+
+    mockCtx.prisma.upload.create.mockResolvedValue({
+      id: resumeId,
+      applicantId,
+      type: 'RESUME',
+      originalFilename,
+      status: 'REQUESTED',
+      createdAt: new Date(),
+      completedAt: null,
+      contentType: 'image/jpg',
+    });
+
+    const uploadService = new UploadService(
+      ctx.prisma,
+      dummyS3Service,
+      mockConfig,
+    );
+    const resp = await uploadService.generateSignedResumeDownloadUrl(
+      applicantId,
+      resumeId,
+      contentType,
+    );
+    expect(resp).toHaveProperty('id', resumeId);
+    expect(resp).toHaveProperty(
+      'signedLink',
+      expect.stringMatching(
+        `https://${mockConfig.uploadBucket}.*/resumes/${applicantId}.*`,
+      ),
+    );
+  });
+
   test('should throw error if upload belonging to the specified applicant does not exist', async () => {
     const uploadService = new UploadService(
       mockCtx.prisma,
@@ -70,32 +110,6 @@ describe('Upload Service', () => {
       }),
     );
   });
-
-  // test('should throw error if upload does not exist in S3', async () => {
-  //   const dummyS3Service = new DummyS3Service();
-  //   const s3Error = new Error('Key does not exist');
-  //   dummyS3Service.getObject = () => {
-  //     throw s3Error;
-  //   };
-
-  //   const uploadService = new UploadService(
-  //     mockCtx.prisma,
-  //     dummyS3Service,
-  //     getMockConfig(),
-  //   );
-  //   await expect(
-  //     uploadService.getFileFromS3('bucket', 'resume/1/2/doc.pdf'),
-  //   ).rejects.toThrowError(
-  //     new CAPPError(
-  //       {
-  //         title: 'Not Found',
-  //         detail: 'File not found',
-  //         status: 404,
-  //       },
-  //       { cause: s3Error },
-  //     ),
-  //   );
-  // });
 
   describe('static Upload Service', () => {
     test('should return the correct file extension for a docx content type', () => {

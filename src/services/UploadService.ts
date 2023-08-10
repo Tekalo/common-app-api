@@ -106,45 +106,19 @@ class UploadService {
     return ACCEPTED_CONTENT_TYPES.get(mediaType) || 'pdf';
   }
 
-  static getContentType(mimeType: string): string {
-    switch (mimeType) {
-      case 'docx':
-        return 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
-      case 'jpg':
-      case 'jpeg':
-        return 'image/jpeg';
-      case 'png':
-        return 'image/png';
-      case 'pdf':
-      default:
-        return 'application/pdf';
-    }
-  }
-
   async generateSignedResumeDownloadUrl(
     applicantId: number,
-    originalFilename: string,
+    resumeId: number,
     contentType: string,
   ) {
-    const resume = await this.prisma.upload.findFirst({
-      where: {
-        applicantId,
-        type: 'RESUME',
-      },
-    });
-    if (!resume) {
-      throw new CAPPError({
-        title: 'not found',
-      });
-    }
     const fileExtension =
       UploadService.getFileExtensionFromContentType(contentType);
     const signedLink = await this.s3Service.generateSignedDownloadUrl(
       this.config.uploadBucket,
-      `resumes/${applicantId}/${resume.id}.${fileExtension}`,
+      `resumes/${applicantId}/${resumeId}.${fileExtension}`,
     );
     return {
-      id: resume.id,
+      id: resumeId,
       signedLink,
     };
   }

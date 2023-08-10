@@ -1486,14 +1486,29 @@ describe('GET /applicants/:id/resume', () => {
       .expect(401);
   });
 
-  it('should successfully get an applicants resume', async () => {
+  it('should successfully get an applicants presigned resume url', async () => {
+    const dummyS3Service = new DummyS3Service();
+    dummyS3Service.generateSignedDownloadUrl = () =>
+      Promise.resolve('https://bogus-signed-s3-link.com');
+    const dummyUploadService = new DummyUploadService(
+      prisma,
+      dummyS3Service,
+      appConfig,
+    );
+    const dummyS3ServiceApp = getDummyApp(
+      undefined,
+      undefined,
+      undefined,
+      dummyUploadService,
+    );
+
     const randomString = getRandomString();
     const bobToken = await authHelper.getToken(
       `bboberson${randomString}@gmail.com`,
       { roles: ['matchmaker'] },
     );
     const { body: applicantBody }: { body: ApplicantResponseBody } =
-      await request(dummyApp)
+      await request(dummyS3ServiceApp)
         .post('/applicants')
         .send({
           name: 'Bob Boberson',
@@ -1503,7 +1518,7 @@ describe('GET /applicants/:id/resume', () => {
           acceptedTerms: true,
           acceptedPrivacy: true,
         });
-    await request(dummyApp)
+    await request(dummyS3ServiceApp)
       .post('/applicants/me/resume')
       .set('Authorization', `Bearer ${bobToken}`)
       .send({
@@ -1511,7 +1526,7 @@ describe('GET /applicants/:id/resume', () => {
         contentType: 'application/pdf',
       })
       .expect(200);
-    await request(dummyApp)
+    await request(dummyS3ServiceApp)
       .get(`/applicants/${applicantBody.id}/resume`)
       .set('Authorization', `Bearer ${bobToken}`)
       .expect(200);
