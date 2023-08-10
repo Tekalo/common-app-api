@@ -639,6 +639,7 @@ class ApplicantController {
       where: {
         applicantId,
         type: 'RESUME',
+        status: 'SUCCESS',
       },
     });
     if (!resume) {

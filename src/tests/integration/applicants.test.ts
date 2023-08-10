@@ -468,9 +468,34 @@ describe('POST /applicants/me/submissions', () => {
       expect(body).toHaveProperty('title', 'Validation Error');
     });
 
-    // TODO
-    // it('should return 400 error resumeUploadId is not a valid upload id', async () => {
-    // });
+    it('should return 400 error resumeUploadId is not a valid upload id', async () => {
+      const randomString = getRandomString();
+      const testSubmission = applicantSubmissionGenerator.getAPIRequestBody();
+      const token = await authHelper.getToken(
+        `bboberson${randomString}@gmail.com`,
+      );
+      await request(dummyApp)
+        .post('/applicants')
+        .send({
+          name: 'Bob Boberson',
+          auth0Id: 'auth0|123456',
+          email: `bboberson${randomString}@gmail.com`,
+          preferredContact: 'email',
+          searchStatus: 'active',
+          acceptedTerms: true,
+          acceptedPrivacy: true,
+        });
+      const { body } = await request(dummyApp)
+        .post('/applicants/me/submissions')
+        .send({ ...testSubmission, resumeUploadId: 9876432 })
+        .set('Authorization', `Bearer ${token}`)
+        .expect(400);
+      expect(body).toEqual({
+        title: 'Applicant Submission Creation Error',
+        detail: 'Invalid upload provided',
+        status: 400,
+      });
+    });
   });
 
   describe('Cookie authentication', () => {
@@ -1484,10 +1509,12 @@ describe('GET /applicants/:id/resume', () => {
       .expect(401);
   });
 
-  it('should successfully get an applicants presigned resume url', async () => {
+  it('should successfully get an applicants presigned resume download url', async () => {
     const dummyS3Service = new DummyS3Service();
     dummyS3Service.generateSignedDownloadUrl = () =>
-      Promise.resolve('https://bogus-signed-s3-link.com');
+      Promise.resolve('https://bogus-upload-signed-s3-link.com');
+    dummyS3Service.generateSignedUploadUrl = () =>
+      Promise.resolve('https://bogus-download-signed-s3-link.com');
     const dummyUploadService = new DummyUploadService(
       prisma,
       dummyS3Service,
@@ -1517,7 +1544,9 @@ describe('GET /applicants/:id/resume', () => {
           acceptedPrivacy: true,
         });
 
-    await request(dummyS3ServiceApp)
+    const { body: uploadBody }: { body: UploadResponseBody } = await request(
+      dummyS3ServiceApp,
+    )
       .post('/applicants/me/resume')
       .set('Authorization', `Bearer ${bobToken}`)
       .send({
@@ -1527,9 +1556,55 @@ describe('GET /applicants/:id/resume', () => {
       .expect(200);
 
     await request(dummyS3ServiceApp)
+      .post(`/applicants/me/uploads/${uploadBody.id}/complete`)
+      .set('Authorization', `Bearer ${bobToken}`)
+      .send({ status: 'SUCCESS' })
+      .expect(200);
+
+    await request(dummyS3ServiceApp)
       .get(`/applicants/${applicantBody.id}/resume`)
       .set('Authorization', `Bearer ${bobToken}`)
       .expect(200);
+  });
+
+  itif('CI' in process.env)('should return a download url', async () => {
+    const randomString = getRandomString();
+    const token = await authHelper.getToken(
+      `bboberson${randomString}@gmail.com`,
+    );
+
+    // create an applicant
+    const { body: applicantBody }: { body: ApplicantResponseBody } =
+      await request(dummyApp)
+        .post('/applicants')
+        .send({
+          name: 'Bob Boberson',
+          email: `bboberson${randomString}@gmail.com`,
+          preferredContact: 'sms',
+          searchStatus: 'active',
+          acceptedTerms: true,
+          acceptedPrivacy: true,
+        });
+
+    await request(dummyApp)
+      .post('/applicants/me/resume')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        originalFilename: 'bob_boberson_resume.pdf',
+        contentType: 'application/pdf',
+      })
+      .expect(200);
+
+    const { body } = await request(dummyApp)
+      .get(`/applicants/${applicantBody.id}/resume`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        originalFilename: 'bob_boberson_resume.pdf',
+        contentType: 'application/pdf',
+      });
+
+    expect(body).toHaveProperty('id');
+    expect(body).toHaveProperty('signedLink');
   });
 
   it('should return 404 for a resume that does not exist', async () => {
