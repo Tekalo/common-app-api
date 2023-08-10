@@ -1599,7 +1599,7 @@ describe('GET /applicants/:id/resume', () => {
       .expect(200);
 
     await request(dummyApp)
-      .post(`/applicants/${resume.id}/resume`)
+      .post(`/applicants/me/uploads/${resume.id}/complete`)
       .set('Authorization', `Bearer ${token}`)
       .send({ status: 'SUCCESS' })
       .expect(200);
