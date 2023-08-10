@@ -352,6 +352,8 @@ class ApplicantController {
     }
     const { email, auth0Id } = applicantToDelete;
     await this.auth0Service.deleteUsers(email, auth0Id);
+
+    await this.uploadService.deleteApplicantResumes(applicantId);
     const deletionEmail = this.emailService.generateApplicantDeletionEmail(
       applicantToDelete.email,
       applicantToDelete.name,
@@ -431,6 +433,7 @@ class ApplicantController {
     }
     const { email, auth0Id } = applicantToDelete;
     await this.auth0Service.deleteUsers(email, auth0Id);
+    await this.uploadService.deleteApplicantResumes(applicantId);
     return { id: applicantId };
   }
 
