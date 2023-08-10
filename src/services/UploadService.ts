@@ -5,6 +5,7 @@ import { BaseConfig } from '@App/resources/types/shared.js';
 
 import S3Service from './S3Service.js';
 
+// TODO: Rename this class as its not just doing uploads anymore
 class UploadService {
   private s3Service: S3Service;
 
