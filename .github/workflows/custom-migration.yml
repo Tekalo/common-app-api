@@ -58,7 +58,7 @@ jobs:
           run_result=$(aws ecs run-task \
             --cluster "$ECS_CLUSTER" \
             --task-definition "$ECS_CLI_TASK" \
-            --overrides "{\"containerOverrides\": [{\"name\": \"capp-cli\", \"command\": [ \"prisma\", \"migrate\", \"resolve\", ${formatted_command} ]}]}")
+            --overrides "{\"containerOverrides\": [{\"name\": \"capp-cli\", \"command\": [ \"prisma\", \"migrate\", \"resolve\" ${formatted_command} ]}]}")
           echo ${run_result}
           container_arn=$(echo $run_result | jq -r '.tasks[0].taskArn')
           aws ecs wait tasks-stopped \
