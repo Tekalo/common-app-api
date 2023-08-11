@@ -15,7 +15,7 @@ on:
         type: environment
         required: true
       command:
-        description: "Custom command/options to execute after 'prisma migrate deploy'"
+        description: "Custom command/options to execute after 'prisma migrate resolve'"
         type: string
         required: true
 
@@ -30,7 +30,7 @@ permissions:
   contents: read
 
 jobs:
-  migrate-deploy:
+  migrate-resolve:
     name: Run custom prisma migration in ${{ inputs.env }}
     if: ${{ inputs.env == 'dev' }}
     concurrency: ${{ inputs.env }}
@@ -58,7 +58,7 @@ jobs:
           run_result=$(aws ecs run-task \
             --cluster "$ECS_CLUSTER" \
             --task-definition "$ECS_CLI_TASK" \
-            --overrides "{\"containerOverrides\": [{\"name\": \"capp-cli\", \"command\": [ \"prisma\", \"migrate\", \"deploy\", ${formatted_command} ]}]}")
+            --overrides "{\"containerOverrides\": [{\"name\": \"capp-cli\", \"command\": [ \"prisma\", \"migrate\", \"resolve\", ${formatted_command} ]}]}")
           echo ${run_result}
           container_arn=$(echo $run_result | jq -r '.tasks[0].taskArn')
           aws ecs wait tasks-stopped \
