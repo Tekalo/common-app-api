@@ -190,3 +190,9 @@ variable "web_url" {
   type        = string
   nullable    = false
 }
+
+variable "uploads_cors_allowed_origins" {
+  description = "CORS origins to allow for the upload bucket (use full URL, e.g., https://tekalo.org. Wildcards allowed.)"
+  type        = list(string)
+  nullable    = true
+}

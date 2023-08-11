@@ -67,3 +67,7 @@ variable "reply_to_address" {
   description = "Address to use in the Reply-To field of all emails sent by Tekalo"
   type        = string
 }
+
+variable "uploads_cors_allowed_origins" {
+  type = list(string)
+}
