@@ -17,7 +17,7 @@ on:
       command:
         description: "Custom command/options to execute after 'prisma migrate resolve'"
         type: string
-        required: false
+        required: true
 
 env:
   AWS_REGION: us-east-1
