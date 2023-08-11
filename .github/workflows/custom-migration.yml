@@ -15,7 +15,7 @@ on:
         type: environment
         required: true
       command:
-        description: custom command to execute as a prisma migration
+        description: "Custom command/options to execute after 'prisma migrate deploy'"
         type: string
         required: true
 
@@ -31,7 +31,7 @@ permissions:
 
 jobs:
   seed:
-    name: Run seed script in ${{ inputs.env }}
+    name: Run custom prisma migration in ${{ inputs.env }}
     if: ${{ inputs.env == 'dev' }}
     concurrency: ${{ inputs.env }}
     runs-on: ubuntu-latest
@@ -50,14 +50,15 @@ jobs:
           role-session-name: GithubActions
 
       - name: Run custom prisma migration
-        id: seed-db
+        id: custom-prisma-migrate
         run: |
           set -euo pipefail
-          command_array=(${{inputs.command}})
+          formatted_string=$(echo "${{ inputs.command }}" | sed 's/ /", "/g')
+          eval "command_arrary=($formatted_string)"
           run_result=$(aws ecs run-task \
             --cluster "$ECS_CLUSTER" \
-            --task-definition "$ECS_CLI_TASK" \
-            --overrides '{"containerOverrides": [{"name": "capp-cli", "command": ${command_array[@]} }]}')
+            --task-definition "$ECS_CLI_TASK" \ 
+            --overrides '{"containerOverrides": [{"name": "capp-cli", "command": "["prisma", "migrate", "deploy", ${command_arrary[@]}]" }]}')
           echo ${run_result}
           container_arn=$(echo $run_result | jq -r '.tasks[0].taskArn')
           aws ecs wait tasks-stopped \
