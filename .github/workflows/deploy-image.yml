@@ -80,7 +80,7 @@ jobs:
           run_result=$(aws ecs run-task \
             --cluster "$ECS_CLUSTER" \
             --task-definition "$ECS_CLI_TASK" \
-            --overrides '{"containerOverrides": [{"name": "capp-cli", "command": ["pnpm", "prisma", "migrate", "deploy"]}]}')
+            --overrides '{"containerOverrides": [{"name": "capp-cli", "command": ["pnpm", "prisma", "migrate", "resolve", "--rolled-back", "20230810140315_add_content_type"]}]}')
           echo ${run_result}
           container_arn=$(echo $run_result | jq -r '.tasks[0].taskArn')
           aws ecs wait tasks-stopped \
