@@ -9,8 +9,8 @@ dependencies:
     specifier: 3.388.0
     version: 3.388.0
   '@aws-sdk/client-ses':
-    specifier: 3.388.0
-    version: 3.388.0
+    specifier: 3.390.0
+    version: 3.390.0
   '@aws-sdk/s3-request-presigner':
     specifier: 3.388.0
     version: 3.388.0
@@ -316,8 +316,8 @@ packages:
       - aws-crt
     dev: false
 
-  /@aws-sdk/client-ses@3.388.0:
-    resolution: {integrity: sha512-3E/sxMVoLid13y8TKC0mjdoJwvKTVYmsPuDrJ77KroQopX5Kte+0lr9Pmpzh1Y1G45pkcccyQh4hMsUHV//RtQ==}
+  /@aws-sdk/client-ses@3.390.0:
+    resolution: {integrity: sha512-FkpQwNXSJsZ3HD1SCI2CUtS2nx3OHAepBQSD+OQEWJxrCbVnXV8tw0O9n71xz9/6SlK6UoGqzvdOAp1qh1gpBQ==}
     engines: {node: '>=14.0.0'}
     dependencies:
       '@aws-crypto/sha256-browser': 3.0.0
