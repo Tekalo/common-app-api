@@ -1,5 +1,7 @@
 resource "aws_s3_bucket" "upload_files" {
-    bucket = "capp-${var.env}-api-uploads"
+  bucket = "capp-${var.env}-api-uploads"
+
+
 }
 
 resource "aws_s3_bucket_lifecycle_configuration" "upload_files_lifecycle" {
@@ -9,11 +11,11 @@ resource "aws_s3_bucket_lifecycle_configuration" "upload_files_lifecycle" {
     status = "Enabled"
 
     transition {
-        storage_class = "INTELLIGENT_TIERING"
+      storage_class = "INTELLIGENT_TIERING"
     }
   }
   rule {
-    id     = "abort-incomplete-multipart-uploads"
+    id = "abort-incomplete-multipart-uploads"
     abort_incomplete_multipart_upload {
       days_after_initiation = 5
     }
@@ -62,6 +64,24 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "upload_files_encr
     }
   }
 }
+
+resource "aws_s3_bucket_cors_configuration" "upload" {
+  count  = var.uploads_cors_allowed_origins == null ? 0 : 1
+  bucket = aws_s3_bucket.upload_files.id
+
+  cors_rule {
+    allowed_headers = ["*"]
+    allowed_methods = ["PUT", "POST"]
+    allowed_origins = var.uploads_cors_allowed_origins
+    expose_headers  = ["ETag", "Content-Type", "Content-Length"]
+  }
+
+  cors_rule {
+    allowed_methods = ["GET"]
+    allowed_origins = ["*"]
+  }
+}
+
 
 output "upload_files_bucket" {
   value = {

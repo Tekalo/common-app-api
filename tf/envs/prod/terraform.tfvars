@@ -10,3 +10,5 @@ email_from_address       = "info@updates.tekalo.org"
 reply_to_address         = "support@tekalo.org"
 auth0_from_email_address = "support@futuresengine.com"
 alarms_enabled           = true
+
+uploads_cors_allowed_origins = ["https://*.tekalo.org"]

@@ -7,3 +7,5 @@ web_url      = "https://head.common-app-frontend.pages.dev"
 email_from_address       = "tekalo@dev.apps.futurestech.cloud"
 reply_to_address         = "tekalo@dev.apps.futurestech.cloud"
 auth0_from_email_address = "futuresengine-auth0@dev.apps.futurestech.cloud"
+
+uploads_cors_allowed_origins = ["*"]
