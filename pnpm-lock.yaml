@@ -137,8 +137,8 @@ devDependencies:
     specifier: 2.28.0
     version: 2.28.0(@typescript-eslint/parser@6.3.0)(eslint-import-resolver-typescript@3.6.0)(eslint@8.47.0)
   eslint-plugin-markdownlint:
-    specifier: 0.4.1
-    version: 0.4.1(eslint@8.47.0)
+    specifier: 0.5.0
+    version: 0.5.0(eslint@8.47.0)
   eslint-plugin-prettier:
     specifier: 5.0.0
     version: 5.0.0(eslint-config-prettier@9.0.0)(eslint@8.47.0)(prettier@3.0.1)
@@ -3628,14 +3628,14 @@ packages:
       - supports-color
     dev: true
 
-  /eslint-plugin-markdownlint@0.4.1(eslint@8.47.0):
-    resolution: {integrity: sha512-X8Ovprt2COSwmZAlY1RNsuxI1QdFmf1sAtATQkibB4l+5SCrm5crj/lO9YsR+Dnn0dFel4hr0GK5tgzVzx0fpQ==}
+  /eslint-plugin-markdownlint@0.5.0(eslint@8.47.0):
+    resolution: {integrity: sha512-1wkjRz9hNgdM6kLLaxnFxfWf5e/y8lFjptN9aGj3Jfa8o3dC0lYgEkHOHWDEkuMBKYlHGShJlvIsaUs0JIFg5g==}
     engines: {node: '>=10'}
     peerDependencies:
       eslint: '>=7.5.0'
     dependencies:
       eslint: 8.47.0
-      markdownlint: 0.27.0
+      markdownlint: 0.29.0
     dev: true
 
   /eslint-plugin-prettier@5.0.0(eslint-config-prettier@9.0.0)(eslint@8.47.0)(prettier@3.0.1):
@@ -5308,11 +5308,17 @@ packages:
       uc.micro: 1.0.6
     dev: true
 
-  /markdownlint@0.27.0:
-    resolution: {integrity: sha512-HtfVr/hzJJmE0C198F99JLaeada+646B5SaG2pVoEakLFI6iRGsvMqrnnrflq8hm1zQgwskEgqSnhDW11JBp0w==}
-    engines: {node: '>=14.18.0'}
+  /markdownlint-micromark@0.1.5:
+    resolution: {integrity: sha512-HvofNU4QCvfUCWnocQP1IAWaqop5wpWrB0mKB6SSh0fcpV0PdmQNS6tdUuFew1utpYlUvYYzz84oDkrD76GB9A==}
+    engines: {node: '>=16'}
+    dev: true
+
+  /markdownlint@0.29.0:
+    resolution: {integrity: sha512-ASAzqpODstu/Qsk0xW5BPgWnK/qjpBQ4e7IpsSvvFXcfYIjanLTdwFRJK1SIEEh0fGSMKXcJf/qhaZYHyME0wA==}
+    engines: {node: '>=16'}
     dependencies:
       markdown-it: 13.0.1
+      markdownlint-micromark: 0.1.5
     dev: true
 
   /mdurl@1.0.1:
