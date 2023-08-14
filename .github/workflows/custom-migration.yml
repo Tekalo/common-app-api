@@ -1,0 +1,69 @@
+---
+name: Run custom prisma migration
+
+run-name: Custom prisma migration in ${{ inputs.env }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      image:
+        description: 'Docker image to deploy'
+        type: string
+        required: true
+      env:
+        description: 'Environment to deploy to'
+        type: environment
+        required: true
+      command:
+        description: "Custom command/options to execute after 'prisma migrate resolve'"
+        type: string
+        required: true
+
+env:
+  AWS_REGION: us-east-1
+  ECS_CLI_TASK: capp-${{ inputs.env }}-cli
+  ECS_API_TASK: capp-${{ inputs.env }}-api
+  ECS_CLUSTER: ${{ inputs.env }}
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  migrate-resolve:
+    name: Run custom prisma migration in ${{ inputs.env }}
+    if: ${{ inputs.env == 'dev' }}
+    concurrency: ${{ inputs.env }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: tf/envs/${{ inputs.env }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          aws-region: us-east-1
+          role-to-assume: "${{ vars[format('{0}_AWS_PLAN_ROLE', inputs.env)] }}"
+          role-session-name: GithubActions
+
+      - name: Run custom prisma migration
+        id: custom-prisma-migrate
+        run: |
+          set -euo pipefail
+          raw_command=(${{ inputs.command }})
+          printf -v formatted_command ', "%s"' "${raw_command[@]}"
+          run_result=$(aws ecs run-task \
+            --cluster "$ECS_CLUSTER" \
+            --task-definition "$ECS_CLI_TASK" \
+            --overrides "{\"containerOverrides\": [{\"name\": \"capp-cli\", \"command\": [ \"pnpm\", \"prisma\", \"migrate\", \"resolve\" ${formatted_command} ]}]}")
+          echo ${run_result}
+          container_arn=$(echo $run_result | jq -r '.tasks[0].taskArn')
+          aws ecs wait tasks-stopped \
+              --cluster "$ECS_CLUSTER" \
+              --tasks "${container_arn}"
+          exit $(aws ecs describe-tasks \
+            --cluster "$ECS_CLUSTER" \
+            --tasks "${container_arn}" | jq -r .tasks[0].containers[0].exitCode)
