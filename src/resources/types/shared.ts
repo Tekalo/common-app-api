@@ -1,5 +1,5 @@
 import { z, ZodIssue } from 'zod';
-import BaseConfigSchema from '../schemas/shared.js';
+import { config as BaseConfigSchema } from 'schemas';
 
 export type Problem = {
   title?: string; // HTTP error name e.g. "Unauthorized"

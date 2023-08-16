@@ -1,34 +1,30 @@
 import { z } from 'zod';
-import {
-  ApplicantRequestBodySchema,
-  ApplicantResponseBodySchema,
-  ApplicantSubmissionRequestBodySchema,
-  ApplicantDraftSubmissionRequestBodySchema,
-  ApplicantStateRequestBodySchema,
-  ApplicantDraftSubmissionResponseBodySchema,
-  ApplicantUpdateRequestBodySchema,
-} from '../schemas/applicants.js';
+import { applicants } from 'schemas';
 
-export type ApplicantRequestBody = z.infer<typeof ApplicantRequestBodySchema>;
+export type ApplicantRequestBody = z.infer<
+  typeof applicants.ApplicantRequestBodySchema
+>;
 
 export type ApplicantDraftSubmissionBody = z.infer<
-  typeof ApplicantDraftSubmissionRequestBodySchema
+  typeof applicants.ApplicantDraftSubmissionRequestBodySchema
 >;
 
 export type ApplicantDraftSubmissionResponseBody = z.infer<
-  typeof ApplicantDraftSubmissionResponseBodySchema
+  typeof applicants.ApplicantDraftSubmissionResponseBodySchema
 >;
 
 export type ApplicantSubmissionBody = z.infer<
-  typeof ApplicantSubmissionRequestBodySchema
+  typeof applicants.ApplicantSubmissionRequestBodySchema
 >;
 
 export type ApplicantUpdateBody = z.infer<
-  typeof ApplicantUpdateRequestBodySchema
+  typeof applicants.ApplicantUpdateRequestBodySchema
 >;
 
-export type ApplicantResponseBody = z.infer<typeof ApplicantResponseBodySchema>;
+export type ApplicantResponseBody = z.infer<
+  typeof applicants.ApplicantResponseBodySchema
+>;
 
 export type ApplicantStateBody = z.infer<
-  typeof ApplicantStateRequestBodySchema
+  typeof applicants.ApplicantStateRequestBodySchema
 >;

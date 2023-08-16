@@ -1,16 +1,13 @@
 import { z } from 'zod';
-import {
-  UploadRequestBodySchema,
-  UploadResponseBodySchema,
-  UploadStateRequestBodySchema,
-  UploadStateResponseBodySchema,
-} from '../schemas/uploads.js';
+import { uploads } from 'schemas';
 
-export type UploadRequestBody = z.infer<typeof UploadRequestBodySchema>;
-export type UploadResponseBody = z.infer<typeof UploadResponseBodySchema>;
+export type UploadRequestBody = z.infer<typeof uploads.UploadRequestBodySchema>;
+export type UploadResponseBody = z.infer<
+  typeof uploads.UploadResponseBodySchema
+>;
 export type UploadStateRequestBody = z.infer<
-  typeof UploadStateRequestBodySchema
+  typeof uploads.UploadStateRequestBodySchema
 >;
 export type UploadStateResponseBody = z.infer<
-  typeof UploadStateResponseBodySchema
+  typeof uploads.UploadStateResponseBodySchema
 >;

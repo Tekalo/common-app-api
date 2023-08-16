@@ -1,17 +1,13 @@
 import { Request } from 'express';
 import { AuthResult } from 'express-oauth2-jwt-bearer';
 import { z } from 'zod';
-import {
-  Auth0ApiConfigSchema,
-  Auth0ExpressConfigSchema,
-  ShellUserPayloadSchema,
-} from '../schemas/auth0.js';
+import { auth0 } from 'schemas';
 
-export type Auth0UserBody = z.infer<typeof ShellUserPayloadSchema>;
+export type Auth0UserBody = z.infer<typeof auth0.ShellUserPayloadSchema>;
 
-export type Auth0ApiConfig = z.infer<typeof Auth0ApiConfigSchema>;
+export type Auth0ApiConfig = z.infer<typeof auth0.Auth0ApiConfigSchema>;
 
-export type Auth0ExpressConfig = z.infer<typeof Auth0ExpressConfigSchema>;
+export type Auth0ExpressConfig = z.infer<typeof auth0.Auth0ExpressConfigSchema>;
 
 export const Claims = {
   email: 'auth0.capp.com/email',
