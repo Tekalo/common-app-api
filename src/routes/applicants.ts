@@ -7,9 +7,9 @@ import express, {
 import ApplicantController from '@App/controllers/ApplicantController.js';
 import {
   ApplicantRequestBodySchema,
-  ApplicantSubmissionRequestBodySchema,
   ApplicantDraftSubmissionRequestBodySchema,
   ApplicantStateRequestBodySchema,
+  ApplicantCreateSubmissionRequestBodySchema,
 } from '@App/resources/schemas/applicants.js';
 import {
   ApplicantRequestBody,
@@ -75,7 +75,8 @@ const applicantRoutes = (
     authenticator.verifyJwtOrCookie.bind(authenticator) as RequestHandler,
     (req: Request, res: Response, next) => {
       const appBody = req.body as ApplicantSubmissionBody;
-      const validatedBody = ApplicantSubmissionRequestBodySchema.parse(appBody);
+      const validatedBody: ApplicantSubmissionBody =
+        ApplicantCreateSubmissionRequestBodySchema.parse(appBody);
       const applicantID = req.auth?.payload.id || req.session.applicant.id;
       applicantController
         .createSubmission(applicantID, validatedBody)

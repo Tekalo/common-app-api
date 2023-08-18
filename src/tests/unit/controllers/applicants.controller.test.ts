@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import { ApplicantSubmission, Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import ApplicantController from '@App/controllers/ApplicantController.js';
 import CAPPError from '@App/resources/shared/CAPPError.js';
 import EmailService from '@App/services/EmailService.js';
@@ -17,6 +17,10 @@ import SESService from '@App/services/SESService.js';
 import DummySESService from '@App/tests/fixtures/DummySesService.js';
 import DummyS3Service from '@App/tests/fixtures/DummyS3Service.js';
 import applicantSubmissionGenerator from '@App/tests/fixtures/applicantSubmissionGenerator.js';
+import {
+  PrismaApplicantSubmissionWithResume,
+  ApplicantSubmissionBody,
+} from '@App/resources/types/applicants.js';
 import { getMockConfig } from '../../util/helpers.js';
 
 let mockCtx: MockContext;
@@ -813,7 +817,7 @@ describe('Applicant Controller', () => {
   describe('Applicant Create Submission', () => {
     test('Should send post-submission email after applicant submits application', async () => {
       const applicantId = 666;
-      const resolvedValue: ApplicantSubmission = {
+      const resolvedValue: PrismaApplicantSubmissionWithResume = {
         id: 445566,
         createdAt: new Date(),
         applicantId,
@@ -827,7 +831,11 @@ describe('Applicant Controller', () => {
         githubUrl: 'https://github.com/bboberson',
         portfolioUrl: null,
         portfolioPassword: '',
-        resumeUploadId: null,
+        resumeUploadId: 1,
+        resumeUpload: {
+          id: 1,
+          originalFilename: 'My_Tekalo_Resume.pdf',
+        },
         resumeUrl: 'myportfolio.com',
         resumePassword: null,
         hoursPerWeek: null,
@@ -916,7 +924,8 @@ describe('Applicant Controller', () => {
         new DummyMonitoringService(),
         dummyUploadService,
       );
-      const requestBody = applicantSubmissionGenerator.getAPIRequestBody();
+      const requestBody: ApplicantSubmissionBody =
+        applicantSubmissionGenerator.getAPIRequestBody();
       requestBody.resumeUploadId = 1;
 
       await expect(

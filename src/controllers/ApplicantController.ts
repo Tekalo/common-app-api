@@ -1,7 +1,6 @@
 import {
   Applicant,
   ApplicantDraftSubmission,
-  ApplicantSubmission,
   Prisma,
   PrismaClient,
   UploadStatus,
@@ -14,6 +13,9 @@ import {
   ApplicantSubmissionBody,
   ApplicantDraftSubmissionBody,
   ApplicantUpdateBody,
+  PrismaApplicantSubmissionWithResume,
+  PrismaApplicantDraftSubmissionWithResume,
+  ApplicantCreateSubmissionResponse,
 } from '@App/resources/types/applicants.js';
 import {
   UploadResponseBody,
@@ -181,7 +183,8 @@ class ApplicantController {
   async createSubmission(
     applicantId: number,
     data: ApplicantSubmissionBody,
-  ): Promise<ApplicantSubmission> {
+    // ): Promise<ApplicantSubmission> {
+  ): Promise<ApplicantCreateSubmissionResponse> {
     const {
       openToRemote,
       openToRemoteMulti,
@@ -200,7 +203,13 @@ class ApplicantController {
           otherCauses: otherCauses || [],
           applicantId,
         },
+        include: {
+          resumeUpload: { select: { id: true, originalFilename: true } },
+        },
       });
+      const { resumeUploadId, ...submissionVals } = applicantSubmission;
+      const returnApplicantSubmission: ApplicantCreateSubmissionResponse =
+        submissionVals;
 
       try {
         const applicant = await this.prisma.applicant.findUniqueOrThrow({
@@ -217,7 +226,7 @@ class ApplicantController {
           ),
         );
       }
-      return applicantSubmission;
+      return returnApplicantSubmission;
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         throw new CAPPError(
@@ -515,11 +524,17 @@ class ApplicantController {
   }
 
   async getMySubmissions(id: number) {
-    let submission: ApplicantDraftSubmission | ApplicantSubmission | null;
+    let submission:
+      | PrismaApplicantSubmissionWithResume
+      | PrismaApplicantDraftSubmissionWithResume
+      | null;
     let isFinal = false;
     try {
       submission = await this.prisma.applicantSubmission.findFirst({
         where: { applicantId: id },
+        include: {
+          resumeUpload: { select: { id: true, originalFilename: true } },
+        },
       });
 
       if (submission) {
@@ -527,9 +542,16 @@ class ApplicantController {
       } else {
         submission = await this.prisma.applicantDraftSubmission.findFirst({
           where: { applicantId: id },
+          include: {
+            resumeUpload: { select: { id: true, originalFilename: true } },
+          },
         });
       }
-      return { isFinal, submission };
+
+      return {
+        isFinal,
+        submission,
+      };
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         throw new CAPPError(
