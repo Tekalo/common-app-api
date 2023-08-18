@@ -4,6 +4,12 @@
   "description": "",
   "main": "index.js",
   "type": "module",
+  "_scriptsComment": {
+    "debug": "run all debug:* and watch* scripts",
+    "debug:watch": "After 2 seconds of nodemon noticing changes to .js files in the build/ folder, start the server",
+    "watch:build": "swc watches the src folder, if there's any changes, create .js files and source maps and copy them to build dir",
+    "watch:check": "nodemon watches the src folder, if any changes made to .ts files, re-compile the files but dont save them anywhere"
+  },
   "scripts": {
     "check": "tsc --noEmit",
     "build": "pnpm check && swc src --copy-files --out-dir build",
