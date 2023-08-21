@@ -10,6 +10,7 @@ import {
   ApplicantDraftSubmissionResponseBodySchema,
   ApplicantUpdateRequestBodySchema,
   ApplicantCreateSubmissionResponseBodySchema,
+  ApplicantGetSubmissionsResponseBodySchema,
 } from '../schemas/applicants.js';
 
 export type ApplicantRequestBody = z.infer<typeof ApplicantRequestBodySchema>;
@@ -45,6 +46,10 @@ export type ResumeUpload = {
 
 export type ApplicantCreateSubmissionResponse = z.infer<
   typeof ApplicantCreateSubmissionResponseBodySchema
+>;
+
+export type ApplicantGetSubmissionResponse = z.infer<
+  typeof ApplicantGetSubmissionsResponseBodySchema
 >;
 
 // Custom type to represent Prisma query on ApplicantSubmission with a JOIN on Upload table

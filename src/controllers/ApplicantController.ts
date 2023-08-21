@@ -16,6 +16,7 @@ import {
   PrismaApplicantSubmissionWithResume,
   PrismaApplicantDraftSubmissionWithResume,
   ApplicantCreateSubmissionResponse,
+  ApplicantGetSubmissionResponse,
 } from '@App/resources/types/applicants.js';
 import {
   UploadResponseBody,
@@ -183,7 +184,6 @@ class ApplicantController {
   async createSubmission(
     applicantId: number,
     data: ApplicantSubmissionBody,
-    // ): Promise<ApplicantSubmission> {
   ): Promise<ApplicantCreateSubmissionResponse> {
     const {
       openToRemote,
@@ -523,7 +523,7 @@ class ApplicantController {
     }
   }
 
-  async getMySubmissions(id: number) {
+  async getMySubmissions(id: number): Promise<ApplicantGetSubmissionResponse> {
     let submission:
       | PrismaApplicantSubmissionWithResume
       | PrismaApplicantDraftSubmissionWithResume
@@ -548,9 +548,14 @@ class ApplicantController {
         });
       }
 
+      if (!submission) {
+        return { isFinal, submission };
+      }
+
+      const { resumeUploadId, ...submissionVals } = submission;
       return {
         isFinal,
-        submission,
+        submission: submissionVals,
       };
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
