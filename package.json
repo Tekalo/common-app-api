@@ -8,7 +8,7 @@
     "debug": "run all debug:* and watch* scripts",
     "debug:watch": "2 seconds after nodemon notices changes to .js files in the build/ folder, start the server",
     "watch:build": "swc watches the src folder, if there's any changes at all, build our .js files + source maps and save them to /build dir",
-    "watch:check": "nodemon watches the src folder, if any changes detected on .ts files, re-build the files but dont save them anywhere"
+    "watch:check": "nodemon watches the src folder, if any changes detected on .ts files, re-running the type checker to detect errors (but not generating output files)"
   },
   "scripts": {
     "check": "tsc --noEmit",
