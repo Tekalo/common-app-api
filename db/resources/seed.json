@@ -111,7 +111,7 @@
       "application": {
         "originTag": "SF",
         "resumeUrl": null,
-        "resumeId": null,
+        "resumeUploadId": null,
         "lastOrg": "",
         "lastRole": "Just some guy",
         "yoe": ">11",
