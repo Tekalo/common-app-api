@@ -564,8 +564,16 @@
             "type": "string",
             "deprecated": true
           },
-          "resumeUploadId": {
-            "type": "number"
+          "resumeUpload": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "number"
+              },
+              "originalFilename": {
+                "type": "string"
+              }
+            }
           },
           "resumePassword": {
             "type": "string"
@@ -705,8 +713,16 @@
             "type": "string",
             "deprecated": true
           },
-          "resumeUploadId": {
-            "type": "number"
+          "resumeUpload": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "number"
+              },
+              "originalFilename": {
+                "type": "string"
+              }
+            }
           },
           "resumePassword": {
             "type": "string"

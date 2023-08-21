@@ -42,8 +42,8 @@ model ApplicantSubmission {
   createdAt DateTime @default(now())
   originTag String // Whose link did they click, data attribution  // enum
 
-  resumeUpload   Upload? @relation(fields: [resumeUploadId], references: [id])
-  resumeUploadId Int?    @unique
+  resumeUpload   Upload? @relation(fields: [resumeId], references: [id])
+  resumeId Int?    @unique
   resumeUrl      String? // TODO: Deprecate
   resumePassword String?
 
@@ -93,8 +93,8 @@ model ApplicantDraftSubmission {
   updatedAt DateTime @updatedAt
   originTag String? // Whose link did they click, data attribution  // enum
 
-  resumeUpload   Upload? @relation(fields: [resumeUploadId], references: [id])
-  resumeUploadId Int?    @unique
+  resumeUpload   Upload? @relation(fields: [resumeId], references: [id])
+  resumeId Int?    @unique
   resumeUrl      String? // TODO: Deprecate
   resumePassword String?
 

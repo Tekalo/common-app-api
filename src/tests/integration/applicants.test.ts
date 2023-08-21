@@ -466,7 +466,7 @@ describe('POST /applicants/me/submissions', () => {
       expect(body).toHaveProperty('title', 'Validation Error');
     });
 
-    it('should return 400 error resumeUploadId is not a valid upload id', async () => {
+    it('should return 400 error resumeId is not a valid upload id', async () => {
       const randomString = getRandomString();
       const testSubmission = applicantSubmissionGenerator.getAPIRequestBody();
       const token = await authHelper.getToken(
@@ -485,7 +485,7 @@ describe('POST /applicants/me/submissions', () => {
         });
       const { body } = await request(dummyApp)
         .post('/applicants/me/submissions')
-        .send({ ...testSubmission, resumeUploadId: 9876432 })
+        .send({ ...testSubmission, resumeId: 9876432 })
         .set('Authorization', `Bearer ${token}`)
         .expect(400);
       expect(body).toEqual({
@@ -531,7 +531,7 @@ describe('POST /applicants/me/submissions', () => {
         .send({ status: 'SUCCESS' })
         .set('Authorization', `Bearer ${token}`)
         .expect(200);
-      testBody.resumeUploadId = resumeBody.id;
+      testBody.resumeId = resumeBody.id;
       const { body }: { body: ApplicantCreateSubmissionResponse } =
         await request(dummyApp)
           .post('/applicants/me/submissions')
@@ -539,7 +539,7 @@ describe('POST /applicants/me/submissions', () => {
           .set('Authorization', `Bearer ${token}`)
           .expect(200);
       expect(Object.keys(body).length).toEqual(34);
-      delete testBody.resumeUploadId;
+      delete testBody.resumeId;
       expect(body).toEqual({
         id: expect.any(Number),
         applicantId: applicantBody.id,
