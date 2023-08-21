@@ -564,16 +564,8 @@
             "type": "string",
             "deprecated": true
           },
-          "resumeUpload": {
-            "type": "object",
-            "properties": {
-              "id": {
-                "type": "number"
-              },
-              "originalFilename": {
-                "type": "string"
-              }
-            }
+          "resumeUploadId": {
+            "type": "number"
           },
           "resumePassword": {
             "type": "string"
