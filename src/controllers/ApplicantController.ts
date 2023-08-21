@@ -189,11 +189,12 @@ class ApplicantController {
       openToRemote,
       openToRemoteMulti,
       otherCauses,
+      resumeUpload,
       ...restOfSubmission
     } = data;
     // Make sure the specified resume upload belongs to the authed user. If not, throw CAPPError.
-    if (data.resumeUploadId) {
-      await this.validateResumeUpload(applicantId, data.resumeUploadId);
+    if (resumeUpload) {
+      await this.validateResumeUpload(applicantId, resumeUpload.id);
     }
     try {
       const applicantSubmission = await this.prisma.applicantSubmission.create({
@@ -201,6 +202,7 @@ class ApplicantController {
           ...restOfSubmission,
           openToRemoteMulti: openToRemoteMulti || openToRemote,
           otherCauses: otherCauses || [],
+          resumeUploadId: resumeUpload?.id,
           applicantId,
         },
         include: {
@@ -480,10 +482,11 @@ class ApplicantController {
       openToRemote,
       openToRemoteMulti,
       otherCauses,
+      resumeUpload,
       ...restOfSubmission
     } = data;
-    if (data.resumeUploadId) {
-      await this.validateResumeUpload(applicantId, data.resumeUploadId);
+    if (resumeUpload) {
+      await this.validateResumeUpload(applicantId, resumeUpload.id);
     }
     try {
       // TODO: Remove support for openToRemote
@@ -492,6 +495,7 @@ class ApplicantController {
           ...restOfSubmission,
           openToRemoteMulti: openToRemoteMulti || openToRemote || undefined,
           otherCauses: otherCauses || [],
+          resumeUploadId: resumeUpload?.id,
           applicantId,
         },
         update: {
@@ -555,8 +559,8 @@ class ApplicantController {
       if (!submission) {
         return { isFinal: false, submission: null };
       }
-
       const { resumeUploadId, ...submissionVals } = submission;
+
       return {
         isFinal,
         submission: submissionVals,

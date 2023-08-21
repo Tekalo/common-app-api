@@ -926,7 +926,7 @@ describe('Applicant Controller', () => {
       );
       const requestBody: ApplicantSubmissionBody =
         applicantSubmissionGenerator.getAPIRequestBody();
-      requestBody.resumeUploadId = 1;
+      requestBody.resumeUpload = { id: 1 };
 
       await expect(
         applicantController.createSubmission(1, requestBody),
@@ -964,7 +964,7 @@ describe('Applicant Controller', () => {
         dummyUploadService,
       );
       const requestBody = applicantSubmissionGenerator.getAPIRequestBody();
-      requestBody.resumeUploadId = 1;
+      requestBody.resumeUpload = { id: 1 };
 
       await expect(
         applicantController.createSubmission(1, requestBody),
