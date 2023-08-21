@@ -4,6 +4,13 @@
   "description": "",
   "main": "index.js",
   "type": "module",
+  "_scriptsComment": {
+    "nodemon quirks": "nodemon only signals and waits on the immediate child process to terminate before restarting, so if the nodemon exec command spawns children, old processes may be left running when new processes start, causing errors like EADDRINUSE. This is why, for example, we don't call 'pnpm build' from nodemon, but instead specify the full command.",
+    "debug": "run all debug:* and watch* scripts",
+    "debug:watch": "2 seconds after nodemon notices changes to .js files in the build/ folder, start the server",
+    "watch:build": "swc watches the src folder, if there's any changes at all, build our .js files + source maps and save them to /build dir",
+    "watch:check": "nodemon watches the src folder, if any changes detected on .ts files, re-running the type checker to detect errors (but not generating output files)"
+  },
   "scripts": {
     "check": "tsc --noEmit",
     "build": "pnpm check && swc src --copy-files --out-dir build",
