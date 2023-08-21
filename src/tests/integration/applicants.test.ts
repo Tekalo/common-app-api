@@ -15,6 +15,7 @@ import {
   ApplicantResponseBody,
   ApplicantSubmissionBody,
   ApplicantCreateSubmissionResponse,
+  ApplicantGetSubmissionResponse,
 } from '@App/resources/types/applicants.js';
 import getDummyApp from '@App/tests/fixtures/appGenerator.js';
 import { itif, getRandomString } from '@App/tests/util/helpers.js';
@@ -1059,11 +1060,12 @@ describe('GET /applicants/me/submissions', () => {
         .send(testBody)
         .set('Authorization', `Bearer ${token}`)
         .expect(200);
-      const { body }: { body: ApplicantDraftSubmissionResponseBody } =
-        await request(dummyApp)
-          .get('/applicants/me/submissions')
-          .set('Authorization', `Bearer ${token}`)
-          .expect(200);
+      const { body }: { body: ApplicantGetSubmissionResponse } = await request(
+        dummyApp,
+      )
+        .get('/applicants/me/submissions')
+        .set('Authorization', `Bearer ${token}`)
+        .expect(200);
       expect(body).toHaveProperty('isFinal', true);
       expect(body).toHaveProperty('submission');
       expect(body.submission).toHaveProperty('id');
