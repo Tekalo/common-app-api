@@ -553,7 +553,7 @@ class ApplicantController {
       }
 
       if (!submission) {
-        return { isFinal, submission };
+        return { isFinal: false, submission: null };
       }
 
       const { resumeUploadId, ...submissionVals } = submission;
