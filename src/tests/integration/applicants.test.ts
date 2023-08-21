@@ -2,7 +2,12 @@ import request from 'supertest';
 import { jest } from '@jest/globals';
 import cookie from 'cookie';
 import cookieParser from 'cookie-parser';
-import { Applicant, ApplicantSession, Prisma } from '@prisma/client';
+import {
+  Applicant,
+  ApplicantSession,
+  ApplicantDraftSubmission,
+  Prisma,
+} from '@prisma/client';
 import getApp from '@App/app.js';
 import {
   ApplicantDraftSubmissionBody,
@@ -370,15 +375,18 @@ describe('POST /applicants/me/submissions', () => {
           .send(testBody)
           .set('Authorization', `Bearer ${token}`)
           .expect(200);
-      expect(Object.keys(body).length).toEqual(34);
+      expect(Object.keys(body.submission).length).toEqual(34);
       expect(body).toEqual({
-        id: expect.any(Number),
-        applicantId: applicantBody.id,
-        createdAt: expect.any(String),
-        ...testBody,
-        openToRemote: null,
-        resumeUpload: null,
-        openToRemoteMulti: ['in-person', 'hybrid'],
+        submission: {
+          id: expect.any(Number),
+          applicantId: applicantBody.id,
+          createdAt: expect.any(String),
+          ...testBody,
+          openToRemote: null,
+          resumeUpload: null,
+          openToRemoteMulti: ['in-person', 'hybrid'],
+        },
+        isFinal: true,
       });
     });
 
@@ -438,7 +446,7 @@ describe('POST /applicants/me/submissions', () => {
           .send({ ...testSubmission })
           .set('Authorization', `Bearer ${token}`)
           .expect(200);
-      expect(body.openToRemoteMulti).toEqual(['hybrid']);
+      expect(body.submission.openToRemoteMulti).toEqual(['hybrid']);
     });
 
     it('should return 400 error if request body has invalid openToRelocate value', async () => {
@@ -540,19 +548,22 @@ describe('POST /applicants/me/submissions', () => {
           .send(testBody)
           .set('Authorization', `Bearer ${token}`)
           .expect(200);
-      expect(Object.keys(body).length).toEqual(34);
+      expect(Object.keys(body.submission).length).toEqual(34);
       delete testBody.resumeUpload;
       expect(body).toEqual({
-        id: expect.any(Number),
-        applicantId: applicantBody.id,
-        createdAt: expect.any(String),
-        ...testBody,
-        openToRemote: null,
-        openToRemoteMulti: ['in-person', 'hybrid'],
-        resumeUpload: {
-          id: 1,
-          originalFilename: 'BobbyBobsBeautifulResume.pdf',
+        submission: {
+          id: expect.any(Number),
+          applicantId: applicantBody.id,
+          createdAt: expect.any(String),
+          ...testBody,
+          openToRemote: null,
+          openToRemoteMulti: ['in-person', 'hybrid'],
+          resumeUpload: {
+            id: 1,
+            originalFilename: 'BobbyBobsBeautifulResume.pdf',
+          },
         },
+        isFinal: true,
       });
     });
   });
@@ -571,11 +582,11 @@ describe('POST /applicants/me/submissions', () => {
       });
       const testBody: ApplicantSubmissionBody =
         applicantSubmissionGenerator.getAPIRequestBody();
-      const { body } = await agent
+      const { body }: { body: ApplicantCreateSubmissionResponse } = await agent
         .post('/applicants/me/submissions')
         .send(testBody)
         .expect(200);
-      expect(body).toHaveProperty('id');
+      expect(body.submission).toHaveProperty('id');
     });
   });
 });
@@ -852,7 +863,7 @@ describe('POST /applicants/me/submissions/draft', () => {
         'https://bobcanREALLYbuild.com/resume',
       );
     });
-    it('should accept openToRemote value', async () => {
+    it('should accept openToRemote value on draft submission', async () => {
       const randomString = getRandomString();
       const testSubmission = applicantSubmissionGenerator.getAPIRequestBody();
       const token = await authHelper.getToken(
@@ -873,12 +884,13 @@ describe('POST /applicants/me/submissions/draft', () => {
       // @ts-ignore
       delete testSubmission.openToRemoteMulti;
       testSubmission.openToRemote = ['in-person'];
-      const { body }: { body: ApplicantCreateSubmissionResponse } =
-        await request(dummyApp)
-          .post('/applicants/me/submissions/draft')
-          .send({ ...testSubmission })
-          .set('Authorization', `Bearer ${token}`)
-          .expect(200);
+      const { body }: { body: ApplicantDraftSubmission } = await request(
+        dummyApp,
+      )
+        .post('/applicants/me/submissions/draft')
+        .send({ ...testSubmission })
+        .set('Authorization', `Bearer ${token}`)
+        .expect(200);
       expect(body.openToRemoteMulti).toEqual(['in-person']);
     });
   });
