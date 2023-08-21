@@ -30,6 +30,7 @@ import EmailService from '@App/services/EmailService.js';
 import MonitoringService from '@App/services/MonitoringService.js';
 import UploadService from '@App/services/UploadService.js';
 import { Claims } from '@App/resources/types/auth0.js';
+import { ApplicantCreateSubmissionResponseBodySchema } from '@App/resources/schemas/applicants.js';
 
 class ApplicantController {
   private auth0Service: AuthService;
@@ -227,10 +228,10 @@ class ApplicantController {
           ),
         );
       }
-      return {
+      return ApplicantCreateSubmissionResponseBodySchema.parse({
         submission: submissionVals,
         isFinal: true,
-      };
+      });
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         throw new CAPPError(
