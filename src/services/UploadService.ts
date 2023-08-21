@@ -128,15 +128,19 @@ class UploadService {
 
   async generateSignedResumeDownloadUrl(
     applicantId: number,
-    resumeId: number,
+    resumeUploadId: number,
     contentType: string,
   ) {
     const signedLink = await this.s3Service.generateSignedDownloadUrl(
       this.config.uploadBucket,
-      UploadService.generateS3Filename(applicantId, resumeId, contentType),
+      UploadService.generateS3Filename(
+        applicantId,
+        resumeUploadId,
+        contentType,
+      ),
     );
     return {
-      id: resumeId,
+      id: resumeUploadId,
       signedLink,
     };
   }

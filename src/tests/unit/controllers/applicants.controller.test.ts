@@ -831,7 +831,7 @@ describe('Applicant Controller', () => {
         githubUrl: 'https://github.com/bboberson',
         portfolioUrl: null,
         portfolioPassword: '',
-        resumeId: 1,
+        resumeUploadId: 1,
         resumeUpload: {
           id: 1,
           originalFilename: 'My_Tekalo_Resume.pdf',
@@ -926,7 +926,7 @@ describe('Applicant Controller', () => {
       );
       const requestBody: ApplicantSubmissionBody =
         applicantSubmissionGenerator.getAPIRequestBody();
-      requestBody.resumeId = 1;
+      requestBody.resumeUploadId = 1;
 
       await expect(
         applicantController.createSubmission(1, requestBody),
@@ -964,7 +964,7 @@ describe('Applicant Controller', () => {
         dummyUploadService,
       );
       const requestBody = applicantSubmissionGenerator.getAPIRequestBody();
-      requestBody.resumeId = 1;
+      requestBody.resumeUploadId = 1;
 
       await expect(
         applicantController.createSubmission(1, requestBody),

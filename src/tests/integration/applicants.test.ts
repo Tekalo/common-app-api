@@ -485,7 +485,7 @@ describe('POST /applicants/me/submissions', () => {
         });
       const { body } = await request(dummyApp)
         .post('/applicants/me/submissions')
-        .send({ ...testSubmission, resumeId: 9876432 })
+        .send({ ...testSubmission, resumeUploadId: 9876432 })
         .set('Authorization', `Bearer ${token}`)
         .expect(400);
       expect(body).toEqual({
@@ -531,7 +531,7 @@ describe('POST /applicants/me/submissions', () => {
         .send({ status: 'SUCCESS' })
         .set('Authorization', `Bearer ${token}`)
         .expect(200);
-      testBody.resumeId = resumeBody.id;
+      testBody.resumeUploadId = resumeBody.id;
       const { body }: { body: ApplicantCreateSubmissionResponse } =
         await request(dummyApp)
           .post('/applicants/me/submissions')
@@ -539,7 +539,7 @@ describe('POST /applicants/me/submissions', () => {
           .set('Authorization', `Bearer ${token}`)
           .expect(200);
       expect(Object.keys(body).length).toEqual(34);
-      delete testBody.resumeId;
+      delete testBody.resumeUploadId;
       expect(body).toEqual({
         id: expect.any(Number),
         applicantId: applicantBody.id,

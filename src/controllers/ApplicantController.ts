@@ -192,8 +192,8 @@ class ApplicantController {
       ...restOfSubmission
     } = data;
     // Make sure the specified resume upload belongs to the authed user. If not, throw CAPPError.
-    if (data.resumeId) {
-      await this.validateResumeUpload(applicantId, data.resumeId);
+    if (data.resumeUploadId) {
+      await this.validateResumeUpload(applicantId, data.resumeUploadId);
     }
     try {
       const applicantSubmission = await this.prisma.applicantSubmission.create({
@@ -447,11 +447,11 @@ class ApplicantController {
     return { id: applicantId };
   }
 
-  async validateResumeUpload(applicantId: number, resumeId: number) {
+  async validateResumeUpload(applicantId: number, resumeUploadId: number) {
     try {
       const resume = await this.uploadService.getApplicantUploadOrThrow(
         applicantId,
-        resumeId,
+        resumeUploadId,
       );
       if (resume.status !== 'SUCCESS') {
         throw new CAPPError({
@@ -482,8 +482,8 @@ class ApplicantController {
       otherCauses,
       ...restOfSubmission
     } = data;
-    if (data.resumeId) {
-      await this.validateResumeUpload(applicantId, data.resumeId);
+    if (data.resumeUploadId) {
+      await this.validateResumeUpload(applicantId, data.resumeUploadId);
     }
     try {
       // TODO: Remove support for openToRemote
@@ -553,7 +553,7 @@ class ApplicantController {
         return { isFinal, submission };
       }
 
-      const { resumeId, ...submissionVals } = submission;
+      const { resumeUploadId, ...submissionVals } = submission;
       return {
         isFinal,
         submission: submissionVals,
