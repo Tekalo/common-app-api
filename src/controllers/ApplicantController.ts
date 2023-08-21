@@ -207,7 +207,8 @@ class ApplicantController {
           resumeUpload: { select: { id: true, originalFilename: true } },
         },
       });
-      const { resumeId, ...submissionVals } = applicantSubmission;
+      // remove resumeUploadId from response
+      const { resumeUploadId, ...submissionVals } = applicantSubmission;
       const returnApplicantSubmission: ApplicantCreateSubmissionResponse =
         submissionVals;
 
