@@ -211,8 +211,6 @@ class ApplicantController {
       });
       // remove resumeUploadId from response
       const { resumeUploadId, ...submissionVals } = applicantSubmission;
-      const returnApplicantSubmission: ApplicantCreateSubmissionResponse =
-        submissionVals;
 
       try {
         const applicant = await this.prisma.applicant.findUniqueOrThrow({
@@ -229,7 +227,10 @@ class ApplicantController {
           ),
         );
       }
-      return returnApplicantSubmission;
+      return {
+        submission: submissionVals,
+        isFinal: true,
+      };
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         throw new CAPPError(
