@@ -5,7 +5,7 @@ import cookieParser from 'cookie-parser';
 import {
   Applicant,
   ApplicantSession,
-  ApplicantSubmission,
+  ApplicantDraftSubmission,
   Prisma,
 } from '@prisma/client';
 import getApp from '@App/app.js';
@@ -14,6 +14,8 @@ import {
   ApplicantDraftSubmissionResponseBody,
   ApplicantResponseBody,
   ApplicantSubmissionBody,
+  ApplicantCreateSubmissionResponse,
+  ApplicantGetSubmissionResponse,
 } from '@App/resources/types/applicants.js';
 import getDummyApp from '@App/tests/fixtures/appGenerator.js';
 import { itif, getRandomString } from '@App/tests/util/helpers.js';
@@ -368,20 +370,24 @@ describe('POST /applicants/me/submissions', () => {
           });
       const testBody: ApplicantSubmissionBody =
         applicantSubmissionGenerator.getAPIRequestBody();
-      const { body }: { body: ApplicantSubmission } = await request(dummyApp)
-        .post('/applicants/me/submissions')
-        .send(testBody)
-        .set('Authorization', `Bearer ${token}`)
-        .expect(200);
-      expect(Object.keys(body).length).toEqual(34);
+      const { body }: { body: ApplicantCreateSubmissionResponse } =
+        await request(dummyApp)
+          .post('/applicants/me/submissions')
+          .send(testBody)
+          .set('Authorization', `Bearer ${token}`)
+          .expect(200);
+      expect(Object.keys(body.submission).length).toEqual(34);
       expect(body).toEqual({
-        id: expect.any(Number),
-        applicantId: applicantBody.id,
-        createdAt: expect.any(String),
-        ...testBody,
-        openToRemote: null,
-        resumeUploadId: null,
-        openToRemoteMulti: ['in-person', 'hybrid'],
+        submission: {
+          id: expect.any(Number),
+          applicantId: applicantBody.id,
+          createdAt: expect.any(String),
+          ...testBody,
+          openToRemote: null,
+          resumeUpload: null,
+          openToRemoteMulti: ['in-person', 'hybrid'],
+        },
+        isFinal: true,
       });
     });
 
@@ -435,12 +441,13 @@ describe('POST /applicants/me/submissions', () => {
       // @ts-ignore
       delete testSubmission.openToRemoteMulti;
       testSubmission.openToRemote = ['hybrid'];
-      const { body }: { body: ApplicantSubmission } = await request(dummyApp)
-        .post('/applicants/me/submissions')
-        .send({ ...testSubmission })
-        .set('Authorization', `Bearer ${token}`)
-        .expect(200);
-      expect(body.openToRemoteMulti).toEqual(['hybrid']);
+      const { body }: { body: ApplicantCreateSubmissionResponse } =
+        await request(dummyApp)
+          .post('/applicants/me/submissions')
+          .send({ ...testSubmission })
+          .set('Authorization', `Bearer ${token}`)
+          .expect(200);
+      expect(body.submission.openToRemoteMulti).toEqual(['hybrid']);
     });
 
     it('should return 400 error if request body has invalid openToRelocate value', async () => {
@@ -468,7 +475,7 @@ describe('POST /applicants/me/submissions', () => {
       expect(body).toHaveProperty('title', 'Validation Error');
     });
 
-    it('should return 400 error resumeUploadId is not a valid upload id', async () => {
+    it('should return 400 error resumeId is not a valid upload id', async () => {
       const randomString = getRandomString();
       const testSubmission = applicantSubmissionGenerator.getAPIRequestBody();
       const token = await authHelper.getToken(
@@ -487,13 +494,77 @@ describe('POST /applicants/me/submissions', () => {
         });
       const { body } = await request(dummyApp)
         .post('/applicants/me/submissions')
-        .send({ ...testSubmission, resumeUploadId: 9876432 })
+        .send({ ...testSubmission, resumeUpload: { id: 9876432 } })
         .set('Authorization', `Bearer ${token}`)
         .expect(400);
       expect(body).toEqual({
         title: 'Applicant Submission Creation Error',
         detail: 'Invalid upload provided',
         status: 400,
+      });
+    });
+
+    it('should create a new applicant submission with a resume included', async () => {
+      const randomString = getRandomString();
+      const token = await authHelper.getToken(
+        `bboberson${randomString}@gmail.com`,
+      );
+      const { body: applicantBody }: { body: ApplicantResponseBody } =
+        await request(dummyApp)
+          .post('/applicants')
+          .send({
+            name: 'Bob Boberson',
+            auth0Id: 'auth0|123456',
+            email: `bboberson${randomString}@gmail.com`,
+            preferredContact: 'email',
+            searchStatus: 'active',
+            acceptedTerms: true,
+            acceptedPrivacy: true,
+          });
+      const testBody: ApplicantSubmissionBody =
+        applicantSubmissionGenerator.getAPIRequestBody();
+      // Bob uploads his resume
+      const { body: resumeBody }: { body: UploadResponseBody } = await request(
+        dummyApp,
+      )
+        .post('/applicants/me/resume')
+        .send({
+          originalFilename: 'BobbyBobsBeautifulResume.pdf',
+          contentType: 'application/pdf',
+        })
+        .set('Authorization', `Bearer ${token}`)
+        .expect(200);
+      // Resume upload marked successfully completed
+      await request(dummyApp)
+        .post(`/applicants/me/uploads/${resumeBody.id}/complete`)
+        .send({ status: 'SUCCESS' })
+        .set('Authorization', `Bearer ${token}`)
+        .expect(200);
+      testBody.resumeUpload = {
+        id: resumeBody.id,
+      };
+      const { body }: { body: ApplicantCreateSubmissionResponse } =
+        await request(dummyApp)
+          .post('/applicants/me/submissions')
+          .send(testBody)
+          .set('Authorization', `Bearer ${token}`)
+          .expect(200);
+      expect(Object.keys(body.submission).length).toEqual(34);
+      delete testBody.resumeUpload;
+      expect(body).toEqual({
+        submission: {
+          id: expect.any(Number),
+          applicantId: applicantBody.id,
+          createdAt: expect.any(String),
+          ...testBody,
+          openToRemote: null,
+          openToRemoteMulti: ['in-person', 'hybrid'],
+          resumeUpload: {
+            id: 1,
+            originalFilename: 'BobbyBobsBeautifulResume.pdf',
+          },
+        },
+        isFinal: true,
       });
     });
   });
@@ -512,11 +583,11 @@ describe('POST /applicants/me/submissions', () => {
       });
       const testBody: ApplicantSubmissionBody =
         applicantSubmissionGenerator.getAPIRequestBody();
-      const { body } = await agent
+      const { body }: { body: ApplicantCreateSubmissionResponse } = await agent
         .post('/applicants/me/submissions')
         .send(testBody)
         .expect(200);
-      expect(body).toHaveProperty('id');
+      expect(body.submission).toHaveProperty('id');
     });
   });
 });
@@ -793,7 +864,7 @@ describe('POST /applicants/me/submissions/draft', () => {
         'https://bobcanREALLYbuild.com/resume',
       );
     });
-    it('should accept openToRemote value', async () => {
+    it('should accept openToRemote value on draft submission', async () => {
       const randomString = getRandomString();
       const testSubmission = applicantSubmissionGenerator.getAPIRequestBody();
       const token = await authHelper.getToken(
@@ -814,7 +885,9 @@ describe('POST /applicants/me/submissions/draft', () => {
       // @ts-ignore
       delete testSubmission.openToRemoteMulti;
       testSubmission.openToRemote = ['in-person'];
-      const { body }: { body: ApplicantSubmission } = await request(dummyApp)
+      const { body }: { body: ApplicantDraftSubmission } = await request(
+        dummyApp,
+      )
         .post('/applicants/me/submissions/draft')
         .send({ ...testSubmission })
         .set('Authorization', `Bearer ${token}`)
@@ -843,6 +916,53 @@ describe('POST /applicants/me/submissions/draft', () => {
         .send(testBody)
         .expect(200);
       expect(body).toHaveProperty('id');
+    });
+
+    it('should create a new applicant draft submission with a resume included', async () => {
+      const randomString = getRandomString();
+      const token = await authHelper.getToken(
+        `bboberson${randomString}@gmail.com`,
+      );
+      await request(dummyApp)
+        .post('/applicants')
+        .send({
+          name: 'Bob Boberson',
+          auth0Id: 'auth0|123456',
+          email: `bboberson${randomString}@gmail.com`,
+          preferredContact: 'email',
+          searchStatus: 'active',
+          acceptedTerms: true,
+          acceptedPrivacy: true,
+        });
+      // Bob uploads his resume
+      const { body: resumeBody }: { body: UploadResponseBody } = await request(
+        dummyApp,
+      )
+        .post('/applicants/me/resume')
+        .send({
+          originalFilename: 'BobbyBobsBeautifulResume.pdf',
+          contentType: 'application/pdf',
+        })
+        .set('Authorization', `Bearer ${token}`)
+        .expect(200);
+      // Resume upload marked successfully completed
+      await request(dummyApp)
+        .post(`/applicants/me/uploads/${resumeBody.id}/complete`)
+        .send({ status: 'SUCCESS' })
+        .set('Authorization', `Bearer ${token}`)
+        .expect(200);
+      const draftBody = { resumeUpload: { id: resumeBody.id } };
+      const { body }: { body: ApplicantCreateSubmissionResponse } =
+        await request(dummyApp)
+          .post('/applicants/me/submissions/draft')
+          .send(draftBody)
+          .set('Authorization', `Bearer ${token}`)
+          .expect(200);
+      expect(body).toHaveProperty('id');
+      expect(body).toHaveProperty('resumeUpload', {
+        id: resumeBody.id,
+        originalFilename: 'BobbyBobsBeautifulResume.pdf',
+      });
     });
 
     it('should not allow applicant to save draft submission of a non-existent user', async () => {
@@ -940,11 +1060,12 @@ describe('GET /applicants/me/submissions', () => {
         .send(testBody)
         .set('Authorization', `Bearer ${token}`)
         .expect(200);
-      const { body }: { body: ApplicantDraftSubmissionResponseBody } =
-        await request(dummyApp)
-          .get('/applicants/me/submissions')
-          .set('Authorization', `Bearer ${token}`)
-          .expect(200);
+      const { body }: { body: ApplicantGetSubmissionResponse } = await request(
+        dummyApp,
+      )
+        .get('/applicants/me/submissions')
+        .set('Authorization', `Bearer ${token}`)
+        .expect(200);
       expect(body).toHaveProperty('isFinal', true);
       expect(body).toHaveProperty('submission');
       expect(body.submission).toHaveProperty('id');
@@ -1209,6 +1330,7 @@ describe('POST /applicants/me/resume', () => {
       dummyS3Service,
       appConfig,
     );
+
     const dummyUploadApp = getApp(
       new DummyAuthService(),
       new DummyMonitoringService(),
