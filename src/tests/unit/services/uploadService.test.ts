@@ -58,12 +58,12 @@ describe('Upload Service', () => {
       uploadBucket: 'upload_bucket',
     });
     const applicantId = 666;
-    const resumeUploadId = 1;
+    const resumeId = 1;
     const originalFilename = 'myGreatResume.pdf';
     const contentType = 'application/pdf';
 
     mockCtx.prisma.upload.create.mockResolvedValue({
-      id: resumeUploadId,
+      id: resumeId,
       applicantId,
       type: 'RESUME',
       originalFilename,
@@ -80,10 +80,10 @@ describe('Upload Service', () => {
     );
     const resp = await uploadService.generateSignedResumeDownloadUrl(
       applicantId,
-      resumeUploadId,
+      resumeId,
       contentType,
     );
-    expect(resp).toHaveProperty('id', resumeUploadId);
+    expect(resp).toHaveProperty('id', resumeId);
     expect(resp).toHaveProperty(
       'signedLink',
       expect.stringMatching(
