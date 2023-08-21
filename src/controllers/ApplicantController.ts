@@ -499,6 +499,9 @@ class ApplicantController {
           openToRemoteMulti: openToRemoteMulti || openToRemote || undefined,
           otherCauses: otherCauses || [],
         },
+        include: {
+          resumeUpload: { select: { id: true, originalFilename: true } },
+        },
         where: { applicantId },
       });
     } catch (e) {

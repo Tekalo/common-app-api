@@ -903,6 +903,53 @@ describe('POST /applicants/me/submissions/draft', () => {
       expect(body).toHaveProperty('id');
     });
 
+    it('should create a new applicant draft submission with a resume included', async () => {
+      const randomString = getRandomString();
+      const token = await authHelper.getToken(
+        `bboberson${randomString}@gmail.com`,
+      );
+      await request(dummyApp)
+        .post('/applicants')
+        .send({
+          name: 'Bob Boberson',
+          auth0Id: 'auth0|123456',
+          email: `bboberson${randomString}@gmail.com`,
+          preferredContact: 'email',
+          searchStatus: 'active',
+          acceptedTerms: true,
+          acceptedPrivacy: true,
+        });
+      // Bob uploads his resume
+      const { body: resumeBody }: { body: UploadResponseBody } = await request(
+        dummyApp,
+      )
+        .post('/applicants/me/resume')
+        .send({
+          originalFilename: 'BobbyBobsBeautifulResume.pdf',
+          contentType: 'application/pdf',
+        })
+        .set('Authorization', `Bearer ${token}`)
+        .expect(200);
+      // Resume upload marked successfully completed
+      await request(dummyApp)
+        .post(`/applicants/me/uploads/${resumeBody.id}/complete`)
+        .send({ status: 'SUCCESS' })
+        .set('Authorization', `Bearer ${token}`)
+        .expect(200);
+      const draftBody = { resumeUploadId: resumeBody.id };
+      const { body }: { body: ApplicantCreateSubmissionResponse } =
+        await request(dummyApp)
+          .post('/applicants/me/submissions/draft')
+          .send(draftBody)
+          .set('Authorization', `Bearer ${token}`)
+          .expect(200);
+      expect(body).toHaveProperty('id');
+      expect(body).toHaveProperty('resumeUpload', {
+        id: resumeBody.id,
+        originalFilename: 'BobbyBobsBeautifulResume.pdf',
+      });
+    });
+
     it('should not allow applicant to save draft submission of a non-existent user', async () => {
       const token = await authHelper.getToken('bibbitybobbityboo@gmail.com');
       await request(dummyApp).post('/applicants').send({
