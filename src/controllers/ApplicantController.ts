@@ -500,7 +500,7 @@ class ApplicantController {
             ...restOfSubmission,
             openToRemoteMulti: openToRemoteMulti || openToRemote || undefined,
             otherCauses: otherCauses || [],
-            resumeUploadId: resumeUpload?.id,
+            resumeUploadId: resumeUpload?.id || null,
           },
           include: {
             resumeUpload: { select: { id: true, originalFilename: true } },
