@@ -37,7 +37,8 @@ data "aws_iam_policy_document" "task_s3_policy" {
       "s3:PutObject",
       "s3:AbortMultipartUpload",
       "s3:ListMultipartUploadParts",
-      "s3:ListBucketMultipartUploads"
+      "s3:ListBucketMultipartUploads",
+      "s3:DeleteObject",
     ]
     resources = [
       aws_s3_bucket.upload_files.arn,
