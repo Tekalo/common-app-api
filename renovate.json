@@ -1,6 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:base", "schedule:daily"],
+  "extends": ["config:base", "schedule:daily", ":enableVulnerabilityAlerts"],
   "enabled": true,
   "ignorePaths": ["**/auth0/local/**"],
   "packageRules": [
