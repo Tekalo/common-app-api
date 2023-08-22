@@ -2,12 +2,7 @@ import request from 'supertest';
 import { jest } from '@jest/globals';
 import cookie from 'cookie';
 import cookieParser from 'cookie-parser';
-import {
-  Applicant,
-  ApplicantSession,
-  ApplicantDraftSubmission,
-  Prisma,
-} from '@prisma/client';
+import { Applicant, ApplicantSession, Prisma } from '@prisma/client';
 import getApp from '@App/app.js';
 import {
   ApplicantDraftSubmissionBody,
@@ -824,11 +819,12 @@ describe('POST /applicants/me/submissions/draft', () => {
       const testBody: ApplicantDraftSubmissionBody = {
         resumeUrl: 'https://bobcanbuild.com',
       };
-      const { body } = await agent
-        .post('/applicants/me/submissions/draft')
-        .send(testBody)
-        .expect(200);
-      expect(body).toHaveProperty('id');
+      const { body }: { body: ApplicantDraftSubmissionResponseBody } =
+        await agent
+          .post('/applicants/me/submissions/draft')
+          .send(testBody)
+          .expect(200);
+      expect(body.submission).toHaveProperty('id');
     });
 
     it('should update an existing draft applicant submission', async () => {
@@ -847,19 +843,22 @@ describe('POST /applicants/me/submissions/draft', () => {
       const draftUpdateBody: ApplicantDraftSubmissionBody = {
         resumeUrl: 'https://bobcanREALLYbuild.com/resume',
       };
-      const { body: draftResp } = await agent
+      const {
+        body: draftResp,
+      }: { body: ApplicantDraftSubmissionResponseBody } = await agent
         .post('/applicants/me/submissions/draft')
         .send(draftBody)
         .expect(200);
-      expect(draftResp).toHaveProperty(
+      expect(draftResp.submission).toHaveProperty(
         'resumeUrl',
         'https://bobcanbuild.com/resume',
       );
-      const { body } = await agent
-        .post('/applicants/me/submissions/draft')
-        .send(draftUpdateBody)
-        .expect(200);
-      expect(body).toHaveProperty(
+      const { body }: { body: ApplicantDraftSubmissionResponseBody } =
+        await agent
+          .post('/applicants/me/submissions/draft')
+          .send(draftUpdateBody)
+          .expect(200);
+      expect(body.submission).toHaveProperty(
         'resumeUrl',
         'https://bobcanREALLYbuild.com/resume',
       );
@@ -885,14 +884,15 @@ describe('POST /applicants/me/submissions/draft', () => {
       // @ts-ignore
       delete testSubmission.openToRemoteMulti;
       testSubmission.openToRemote = ['in-person'];
-      const { body }: { body: ApplicantDraftSubmission } = await request(
-        dummyApp,
-      )
-        .post('/applicants/me/submissions/draft')
-        .send({ ...testSubmission })
-        .set('Authorization', `Bearer ${token}`)
-        .expect(200);
-      expect(body.openToRemoteMulti).toEqual(['in-person']);
+      const { body }: { body: ApplicantDraftSubmissionResponseBody } =
+        await request(dummyApp)
+          .post('/applicants/me/submissions/draft')
+          .send({ ...testSubmission })
+          .set('Authorization', `Bearer ${token}`)
+          .expect(200);
+      expect(body.submission).toHaveProperty('openToRemoteMulti', [
+        'in-person',
+      ]);
     });
   });
 
@@ -910,12 +910,13 @@ describe('POST /applicants/me/submissions/draft', () => {
       const testBody: ApplicantDraftSubmissionBody = {
         resumeUrl: 'https://bobcanbuild.com',
       };
-      const { body } = await request(dummyApp)
-        .post('/applicants/me/submissions/draft')
-        .set('Authorization', `Bearer ${token}`)
-        .send(testBody)
-        .expect(200);
-      expect(body).toHaveProperty('id');
+      const { body }: { body: ApplicantDraftSubmissionResponseBody } =
+        await request(dummyApp)
+          .post('/applicants/me/submissions/draft')
+          .set('Authorization', `Bearer ${token}`)
+          .send(testBody)
+          .expect(200);
+      expect(body.submission).toHaveProperty('id');
     });
 
     it('should create a new applicant draft submission with a resume included', async () => {
@@ -952,14 +953,15 @@ describe('POST /applicants/me/submissions/draft', () => {
         .set('Authorization', `Bearer ${token}`)
         .expect(200);
       const draftBody = { resumeUpload: { id: resumeBody.id } };
-      const { body }: { body: ApplicantCreateSubmissionResponse } =
+      const { body }: { body: ApplicantDraftSubmissionResponseBody } =
         await request(dummyApp)
           .post('/applicants/me/submissions/draft')
           .send(draftBody)
           .set('Authorization', `Bearer ${token}`)
           .expect(200);
-      expect(body).toHaveProperty('id');
-      expect(body).toHaveProperty('resumeUpload', {
+
+      expect(body.submission).toHaveProperty('id');
+      expect(body.submission).toHaveProperty('resumeUpload', {
         id: resumeBody.id,
         originalFilename: 'BobbyBobsBeautifulResume.pdf',
       });
@@ -978,11 +980,12 @@ describe('POST /applicants/me/submissions/draft', () => {
       const testBody: ApplicantDraftSubmissionBody = {
         resumeUrl: 'https://bobcanbuild.com',
       };
-      const { body } = await request(dummyApp)
-        .post('/applicants/me/submissions/draft')
-        .set('Authorization', `Bearer ${token}`)
-        .send(testBody)
-        .expect(404);
+      const { body }: { body: ApplicantDraftSubmissionResponseBody } =
+        await request(dummyApp)
+          .post('/applicants/me/submissions/draft')
+          .set('Authorization', `Bearer ${token}`)
+          .send(testBody)
+          .expect(404);
       expect(body).toHaveProperty('title', 'Not Found');
     });
   });
