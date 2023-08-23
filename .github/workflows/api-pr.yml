@@ -11,7 +11,7 @@ on:
   pull_request:
     paths-ignore:
       - 'tf/**'
-      - '.github/**'
+      #- '.github/**'
     branches-ignore:
       - 'renovate/**'
 
