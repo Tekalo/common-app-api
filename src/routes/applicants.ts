@@ -200,60 +200,56 @@ const applicantRoutes = (
     },
   );
 
-  // DEV ONLY resume upload
-  // TODO: Add these routes to spec.json when we turn them on
-  if (config.env === 'dev') {
-    router.post(
-      '/me/resume',
-      authenticator.verifyJwtOrCookie.bind(authenticator) as RequestHandler,
-      (req: Request, res: Response, next) => {
-        const appBody = req.body as UploadRequestBody;
-        const applicantID = req.auth?.payload.id || req.session.applicant.id;
-        const validatedBody = UploadRequestBodySchema.parse(appBody);
-        applicantController
-          .getResumeUploadUrl(applicantID, validatedBody)
-          .then((result) => {
-            res.status(200).json(result);
-          })
-          .catch((err) => next(err));
-      },
-    );
+  router.post(
+    '/me/resume',
+    authenticator.verifyJwtOrCookie.bind(authenticator) as RequestHandler,
+    (req: Request, res: Response, next) => {
+      const appBody = req.body as UploadRequestBody;
+      const applicantID = req.auth?.payload.id || req.session.applicant.id;
+      const validatedBody = UploadRequestBodySchema.parse(appBody);
+      applicantController
+        .getResumeUploadUrl(applicantID, validatedBody)
+        .then((result) => {
+          res.status(200).json(result);
+        })
+        .catch((err) => next(err));
+    },
+  );
 
-    router.post(
-      '/me/uploads/:id/complete',
-      authenticator.verifyJwtOrCookie.bind(authenticator) as RequestHandler,
-      (req: Request, res: Response, next) => {
-        const appBody = req.body as UploadStateRequestBody;
-        const applicantID = req.auth?.payload.id || req.session.applicant.id;
-        const { status } = UploadStateRequestBodySchema.parse(appBody);
-        const { id } = req.params;
-        applicantController
-          .updateUploadStatus(applicantID, Number(id), status)
-          .then((result) => {
-            res.status(200).json(result);
-          })
-          .catch((err) => next(err));
-      },
-    );
+  router.post(
+    '/me/uploads/:id/complete',
+    authenticator.verifyJwtOrCookie.bind(authenticator) as RequestHandler,
+    (req: Request, res: Response, next) => {
+      const appBody = req.body as UploadStateRequestBody;
+      const applicantID = req.auth?.payload.id || req.session.applicant.id;
+      const { status } = UploadStateRequestBodySchema.parse(appBody);
+      const { id } = req.params;
+      applicantController
+        .updateUploadStatus(applicantID, Number(id), status)
+        .then((result) => {
+          res.status(200).json(result);
+        })
+        .catch((err) => next(err));
+    },
+  );
 
-    // Get applicant's resume (they can only ever have one)
-    // TODO: Allow resume owners to authenticate
-    router.get(
-      '/:id/resume',
-      authenticator
-        .validateJwtRole('matchmaker')
-        .bind(authenticator) as RequestHandler,
-      (req: Request, res: Response, next) => {
-        const applicantID = Number(req.params.id);
-        applicantController
-          .getResumeDownloadUrl(applicantID)
-          .then((result) => {
-            res.status(200).json(result);
-          })
-          .catch((err) => next(err));
-      },
-    );
-  }
+  // Get applicant's resume (they can only ever have one)
+  // TODO: Allow resume owners to authenticate
+  router.get(
+    '/:id/resume',
+    authenticator
+      .validateJwtRole('matchmaker')
+      .bind(authenticator) as RequestHandler,
+    (req: Request, res: Response, next) => {
+      const applicantID = Number(req.params.id);
+      applicantController
+        .getResumeDownloadUrl(applicantID)
+        .then((result) => {
+          res.status(200).json(result);
+        })
+        .catch((err) => next(err));
+    },
+  );
 
   /**
    * ADMIN ENDPOINTS BELOW
