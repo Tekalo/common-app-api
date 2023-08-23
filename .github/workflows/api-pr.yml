@@ -1,0 +1,29 @@
+---
+name: Build and test
+
+on:
+  push:
+    branches:
+      - 'renovate/**'
+    paths-ignore:
+      - 'tf/**'
+      - '.github/**'
+  pull_request:
+    paths-ignore:
+      - 'tf/**'
+      - '.github/**'
+    branches-ignore:
+      - 'renovate/**'
+
+permissions:
+  id-token: write
+  contents: read
+
+concurrency:
+  group: '${github.workflow}-${github.ref}'
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Run tests
+    uses: ./.github/workflows/test.yml

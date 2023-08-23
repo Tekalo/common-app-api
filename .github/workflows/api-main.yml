@@ -1,0 +1,41 @@
+---
+name: Test and Deploy Dev
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'tf/**'
+      - '.github/**'
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+concurrency:
+  group: dev
+
+jobs:
+  test:
+    name: Run tests
+    uses: ./.github/workflows/test.yml
+
+  build_and_push:
+    name: Build and push image
+    uses: ./.github/workflows/build-workflow.yml
+    needs:
+      - test
+    with:
+      env: 'dev'
+
+  deploy:
+    name: 'Deploy to dev'
+    uses: ./.github/workflows/deploy-image.yml
+    needs:
+      - build_and_push
+    with:
+      env: 'dev'
+      image: ${{ needs.build_and_push.outputs.image }}
+    secrets: inherit
