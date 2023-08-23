@@ -30,7 +30,7 @@ import EmailService from '@App/services/EmailService.js';
 import MonitoringService from '@App/services/MonitoringService.js';
 import UploadService from '@App/services/UploadService.js';
 import { Claims } from '@App/resources/types/auth0.js';
-import { ApplicantCreateSubmissionResponseBodySchema } from '@App/resources/schemas/applicants.js';
+import { Applicants } from 'schemas';
 
 class ApplicantController {
   private auth0Service: AuthService;
@@ -228,7 +228,7 @@ class ApplicantController {
           ),
         );
       }
-      return ApplicantCreateSubmissionResponseBodySchema.parse({
+      return Applicants.ApplicantCreateSubmissionResponseBodySchema.parse({
         submission: submissionVals,
         isFinal: true,
       });

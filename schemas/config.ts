@@ -1,12 +1,12 @@
 import { z } from 'zod';
-import { Auth0ApiConfigSchema, Auth0ExpressConfigSchema } from './auth0.js';
+import { Auth0 } from '@Schemas/index.js';
 
 const BaseConfigSchema = z.object({
   env: z.string(),
   port: z.number(),
   auth0: z.object({
-    api: Auth0ApiConfigSchema,
-    express: Auth0ExpressConfigSchema,
+    api: Auth0.Auth0ApiConfigSchema,
+    express: Auth0.Auth0ExpressConfigSchema,
   }),
   aws: z.object({
     sesFromAddress: z.string(),

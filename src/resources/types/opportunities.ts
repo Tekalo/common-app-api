@@ -1,16 +1,14 @@
 import { z } from 'zod';
-import {
-  OpportunityBatchRequestBodySchema,
-  OpportunityBatchResponseBodySchema,
-  OpportunitySubmissionSchema,
-} from '../schemas/opportunities.js';
+import { Opportunities } from 'schemas';
 
 export type OpportunityBatchRequestBody = z.infer<
-  typeof OpportunityBatchRequestBodySchema
+  typeof Opportunities.OpportunityBatchRequestBodySchema
 >;
 
 export type OpportunityBatchResponseBody = z.infer<
-  typeof OpportunityBatchResponseBodySchema
+  typeof Opportunities.OpportunityBatchResponseBodySchema
 >;
 
-export type OpportunitySubmission = z.infer<typeof OpportunitySubmissionSchema>;
+export type OpportunitySubmission = z.infer<
+  typeof Opportunities.OpportunitySubmissionSchema
+>;

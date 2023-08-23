@@ -1,5 +1,5 @@
 import { Prisma, PrismaClient, Upload } from '@prisma/client';
-import { ACCEPTED_CONTENT_TYPES } from '@App/resources/schemas/uploads.js';
+import { Uploads } from '@Schemas/index.js';
 import CAPPError from '@App/resources/shared/CAPPError.js';
 import { BaseConfig } from '@App/resources/types/shared.js';
 
@@ -123,7 +123,7 @@ class UploadService {
 
   static getFileExtensionFromContentType(contentType: string): string {
     const mediaType = contentType.split(';')[0];
-    return ACCEPTED_CONTENT_TYPES.get(mediaType) || 'pdf';
+    return Uploads.ACCEPTED_CONTENT_TYPES.get(mediaType) || 'pdf';
   }
 
   async generateSignedResumeDownloadUrl(

@@ -1,7 +1,7 @@
-import applicants from './applicants.js';
-import auth0 from './auth0.js';
-import opportunities from './opportunities.js';
-import uploads from './uploads.js';
-import config from './config.js';
+import { Applicants } from './Applicants.js';
+import Auth0 from './Auth0.js';
+import Opportunities from './Opportunities.js';
+import Config from './Config.js';
+import Uploads from './Uploads.js';
 
-export { applicants, auth0, opportunities, config, uploads };
+export { Applicants, Auth0, Opportunities, Config, Uploads };

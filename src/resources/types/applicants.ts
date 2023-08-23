@@ -1,40 +1,33 @@
-// import { ApplicantDraftSubmission, ApplicantSubmission } from '@prisma/client';
 import { ApplicantSubmission, ApplicantDraftSubmission } from '@prisma/client';
 import { z } from 'zod';
-import {
-  ApplicantRequestBodySchema,
-  ApplicantResponseBodySchema,
-  ApplicantCreateSubmissionRequestBodySchema,
-  ApplicantDraftSubmissionRequestBodySchema,
-  ApplicantStateRequestBodySchema,
-  ApplicantDraftSubmissionResponseBodySchema,
-  ApplicantUpdateRequestBodySchema,
-  ApplicantCreateSubmissionResponseBodySchema,
-  ApplicantGetSubmissionsResponseBodySchema,
-} from '../schemas/applicants.js';
+import { Applicants } from 'schemas';
 
-export type ApplicantRequestBody = z.infer<typeof ApplicantRequestBodySchema>;
+export type ApplicantRequestBody = z.infer<
+  typeof Applicants.ApplicantRequestBodySchema
+>;
 
 export type ApplicantDraftSubmissionBody = z.infer<
-  typeof ApplicantDraftSubmissionRequestBodySchema
+  typeof Applicants.ApplicantDraftSubmissionRequestBodySchema
 >;
 
 export type ApplicantDraftSubmissionResponseBody = z.infer<
-  typeof ApplicantDraftSubmissionResponseBodySchema
+  typeof Applicants.ApplicantDraftSubmissionResponseBodySchema
 >;
 
 export type ApplicantSubmissionBody = z.infer<
-  typeof ApplicantCreateSubmissionRequestBodySchema
+  typeof Applicants.ApplicantCreateSubmissionRequestBodySchema
 >;
 
 export type ApplicantUpdateBody = z.infer<
-  typeof ApplicantUpdateRequestBodySchema
+  typeof Applicants.ApplicantUpdateRequestBodySchema
 >;
 
-export type ApplicantResponseBody = z.infer<typeof ApplicantResponseBodySchema>;
+export type ApplicantResponseBody = z.infer<
+  typeof Applicants.ApplicantResponseBodySchema
+>;
 
 export type ApplicantStateBody = z.infer<
-  typeof ApplicantStateRequestBodySchema
+  typeof Applicants.ApplicantStateRequestBodySchema
 >;
 
 export type ResumeUpload = {
@@ -45,11 +38,11 @@ export type ResumeUpload = {
 };
 
 export type ApplicantCreateSubmissionResponse = z.infer<
-  typeof ApplicantCreateSubmissionResponseBodySchema
+  typeof Applicants.ApplicantCreateSubmissionResponseBodySchema
 >;
 
 export type ApplicantGetSubmissionResponse = z.infer<
-  typeof ApplicantGetSubmissionsResponseBodySchema
+  typeof Applicants.ApplicantGetSubmissionsResponseBodySchema
 >;
 
 // Custom type to represent Prisma query on ApplicantSubmission with a JOIN on Upload table

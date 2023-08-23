@@ -1,5 +1,5 @@
 import { z, ZodIssue } from 'zod';
-import BaseConfigSchema from '../schemas/shared.js';
+import { Config } from 'schemas';
 
 export type Problem = {
   title?: string; // HTTP error name e.g. "Unauthorized"
@@ -13,7 +13,7 @@ export type SessionCookie = {
   id: number;
 };
 
-export type BaseConfig = z.infer<typeof BaseConfigSchema>;
+export type BaseConfig = z.infer<typeof Config>;
 
 declare module 'express-session' {
   interface Session {
