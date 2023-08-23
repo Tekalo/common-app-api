@@ -867,7 +867,7 @@ describe('Applicant Controller', () => {
 
       const bobEmail = 'bboberson@schmidtfutures.com';
       mockCtx.prisma.applicant.findUniqueOrThrow.mockResolvedValue({
-        id: 666,
+        id: applicantId,
         phone: '777-777-7777',
         name: 'Bob Boberson',
         email: bobEmail,
@@ -879,6 +879,17 @@ describe('Applicant Controller', () => {
         auth0Id: 'auth0|1234',
         isPaused: false,
         followUpOptIn: false,
+      });
+
+      mockCtx.prisma.upload.findFirst.mockResolvedValue({
+        id: 1,
+        applicantId,
+        originalFilename: 'myresume.pdf',
+        type: 'RESUME',
+        status: 'SUCCESS',
+        createdAt: new Date('2023-02-01'),
+        completedAt: new Date('2023-02-01'),
+        contentType: 'application/pdf',
       });
 
       const emailService = new EmailService(new SESService(), getMockConfig());
@@ -899,7 +910,7 @@ describe('Applicant Controller', () => {
 
       await applicantController.createSubmission(
         applicantId,
-        applicantSubmissionGenerator.getAPIRequestBody(),
+        applicantSubmissionGenerator.getAPIRequestBody(applicantId),
       );
 
       const expectedEmail =
@@ -907,7 +918,7 @@ describe('Applicant Controller', () => {
       expect(mockEmailSpy).toHaveBeenCalledWith(expectedEmail);
       mockEmailSpy.mockRestore();
     });
-    test('Should throw error if verifyUploadOwner() does not return successfully', async () => {
+    test('Should throw error if getApplicantUploadOrThrow() does not return successfully', async () => {
       const dummyUploadService = new DummyUploadService(
         ctx.prisma,
         new DummyS3Service(),
@@ -924,8 +935,7 @@ describe('Applicant Controller', () => {
         dummyUploadService,
       );
       const requestBody: ApplicantSubmissionBody =
-        applicantSubmissionGenerator.getAPIRequestBody();
-      requestBody.resumeUpload = { id: 1 };
+        applicantSubmissionGenerator.getAPIRequestBody(1);
 
       await expect(
         applicantController.createSubmission(1, requestBody),
@@ -939,6 +949,7 @@ describe('Applicant Controller', () => {
     });
 
     test('should throw error if upload belonging to the specified applicant does not have the status "SUCCESS"', async () => {
+      const applicantId = 1;
       const dummyUploadService = new DummyUploadService(
         ctx.prisma,
         new DummyS3Service(),
@@ -947,7 +958,7 @@ describe('Applicant Controller', () => {
       dummyUploadService.getApplicantUploadOrThrow = () =>
         Promise.resolve({
           id: 1,
-          applicantId: 1,
+          applicantId,
           status: 'FAILURE',
           createdAt: new Date(),
           type: 'RESUME',
@@ -962,11 +973,11 @@ describe('Applicant Controller', () => {
         new DummyMonitoringService(),
         dummyUploadService,
       );
-      const requestBody = applicantSubmissionGenerator.getAPIRequestBody();
-      requestBody.resumeUpload = { id: 1 };
+      const requestBody =
+        applicantSubmissionGenerator.getAPIRequestBody(applicantId);
 
       await expect(
-        applicantController.createSubmission(1, requestBody),
+        applicantController.createSubmission(applicantId, requestBody),
       ).rejects.toEqual(
         new CAPPError({
           title: 'Applicant Submission Creation Error',

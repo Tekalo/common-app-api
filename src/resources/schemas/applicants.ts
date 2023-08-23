@@ -77,12 +77,9 @@ const ApplicantCreateSubmissionRequestBodySchema = z.object({
   portfolioUrl: z.string().max(500).nullable().optional(),
   portfolioPassword: z.string().max(255).nullable().optional(),
   resumeUrl: z.string().max(500).optional(), // deprecated
-  resumeUpload: z
-    .object({
-      id: z.number(),
-    })
-    .nullable()
-    .optional(),
+  resumeUpload: z.object({
+    id: z.number(),
+  }),
   resumePassword: z.string().max(255).nullable().optional(),
   hoursPerWeek: z.string().max(255).nullable().optional(),
   interestEmploymentType: z.array(EmploymentType),
