@@ -182,7 +182,6 @@ class ApplicantController {
     data: ApplicantSubmissionBody,
   ): Promise<ApplicantCreateSubmissionResponse> {
     const {
-      openToRemote,
       openToRemoteMulti,
       otherCauses,
       resumeUpload,
@@ -196,7 +195,7 @@ class ApplicantController {
       const applicantSubmission = await this.prisma.applicantSubmission.create({
         data: {
           ...restOfSubmission,
-          openToRemoteMulti: openToRemoteMulti || openToRemote,
+          openToRemoteMulti: openToRemoteMulti || [],
           otherCauses: otherCauses || [],
           resumeUploadId: resumeUpload?.id,
           applicantId,
@@ -476,7 +475,6 @@ class ApplicantController {
     data: ApplicantDraftSubmissionBody,
   ): Promise<ApplicantDraftSubmissionResponseBody> {
     const {
-      openToRemote,
       openToRemoteMulti,
       otherCauses,
       resumeUpload,
@@ -486,19 +484,18 @@ class ApplicantController {
       await this.validateResumeUpload(applicantId, resumeUpload.id);
     }
     try {
-      // TODO: Remove support for openToRemote
       const draftSubmission = await this.prisma.applicantDraftSubmission.upsert(
         {
           create: {
             ...restOfSubmission,
-            openToRemoteMulti: openToRemoteMulti || openToRemote || undefined,
+            openToRemoteMulti: openToRemoteMulti || undefined,
             otherCauses: otherCauses || [],
             resumeUploadId: resumeUpload?.id,
             applicantId,
           },
           update: {
             ...restOfSubmission,
-            openToRemoteMulti: openToRemoteMulti || openToRemote || undefined,
+            openToRemoteMulti: openToRemoteMulti || undefined,
             otherCauses: otherCauses || [],
             resumeUploadId: resumeUpload?.id || null,
           },
