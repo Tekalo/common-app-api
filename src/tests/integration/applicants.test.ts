@@ -386,7 +386,6 @@ describe('POST /applicants/me/submissions', () => {
           applicantId: applicantBody.id,
           createdAt: expect.any(String),
           ...testBody,
-          openToRemote: null,
           resumeUpload: { id: resumeId, originalFilename: expect.any(String) },
           openToRemoteMulti: ['in-person', 'hybrid'],
         },
