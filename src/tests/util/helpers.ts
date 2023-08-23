@@ -1,6 +1,6 @@
+import { Upload } from '@prisma/client';
 import prisma from '@App/resources/client.js';
 import { BaseConfig } from '@App/resources/types/shared.js';
-import { Upload } from '@prisma/client';
 
 /**
  * Prepend this function to tests that you want to conditionally run

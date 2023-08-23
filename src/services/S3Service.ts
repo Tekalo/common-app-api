@@ -37,8 +37,9 @@ class S3Service {
       Bucket: bucket,
       Prefix: prefix,
     });
-    const uploadsToDelete: ListObjectsV2CommandOutput =
-      await s3Client.send(listUploadsCommand);
+    const uploadsToDelete: ListObjectsV2CommandOutput = await s3Client.send(
+      listUploadsCommand,
+    );
     if (uploadsToDelete && uploadsToDelete.KeyCount) {
       // if items to delete
       // delete the files
