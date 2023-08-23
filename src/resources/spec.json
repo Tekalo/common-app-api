@@ -736,13 +736,6 @@
           "openToRelocate": {
             "type": "string"
           },
-          "openToRemote": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "deprecated": true
-          },
           "openToRemoteMulti": {
             "type": "array",
             "items": {
@@ -878,13 +871,6 @@
           },
           "openToRelocate": {
             "type": "string"
-          },
-          "openToRemote": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "deprecated": true
           },
           "openToRemoteMulti": {
             "type": "array",
