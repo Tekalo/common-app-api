@@ -57,10 +57,7 @@ SELECT
   ) AS "allSkills",
   appsub."currentLocation",
   appsub."openToRelocate",
-  COALESCE(
-    appsub."openToRemoteMulti",
-    string_to_array(appsub."openToRemote", '')
-  ) AS "openToRemote",
+  appsub."openToRemoteMulti" AS "openToRemote",
   appsub."desiredSalary",
   appsub."previousImpactExperience",
   CASE
