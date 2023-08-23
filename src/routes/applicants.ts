@@ -200,7 +200,6 @@ const applicantRoutes = (
     },
   );
 
-  // DEV ONLY resume upload
   // TODO: Add these routes to spec.json when we turn them on
   router.post(
     '/me/resume',
