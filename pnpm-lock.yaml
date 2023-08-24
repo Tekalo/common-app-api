@@ -14,8 +14,8 @@ dependencies:
     specifier: 5.2.0
     version: 5.2.0(prisma@5.2.0)
   '@quixo3/prisma-session-store':
-    specifier: ^3.1.13
-    version: 3.1.13(@prisma/client@5.1.1)(express-session@1.17.3)
+    specifier: 3.1.13
+    version: 3.1.13(@prisma/client@5.2.0)(express-session@1.17.3)
   '@sentry/node':
     specifier: 7.57.0
     version: 7.57.0
@@ -1514,7 +1514,7 @@ packages:
     resolution: {integrity: sha512-dT7FOLUCdZmq+AunLqB1Iz+ZH/IIS1Fz2THmKZQ6aFONrQD/BQ5ecJ7g2wGS2OgyUFf4OaLam6/bxmgdOBDqig==}
     requiresBuild: true
 
-  /@quixo3/prisma-session-store@3.1.13(@prisma/client@5.1.1)(express-session@1.17.3):
+  /@quixo3/prisma-session-store@3.1.13(@prisma/client@5.2.0)(express-session@1.17.3):
     resolution: {integrity: sha512-EAuOvYAaAsQ0OqxkdJG/Qs3cxlT4VV8SFHjtsA3G01uB1b6r7xftX3oeg7mcG0HN/DI1qOqwvy3YFoJ38ls0iA==}
     engines: {node: '>=12.0'}
     peerDependencies:
@@ -1522,7 +1522,7 @@ packages:
       express-session: '>=1.17.1'
     dependencies:
       '@paralleldrive/cuid2': 2.2.2
-      '@prisma/client': 5.1.1(prisma@5.1.1)
+      '@prisma/client': 5.2.0(prisma@5.2.0)
       express-session: 1.17.3
       ts-dedent: 2.2.0
       type-fest: 2.19.0
