@@ -847,7 +847,6 @@ describe('Applicant Controller', () => {
         ],
         currentLocation: 'Boston, MA',
         openToRelocate: 'not sure',
-        openToRemote: null,
         openToRemoteMulti: ['not sure'],
         desiredSalary: '100,000',
         interestCauses: ['climate change', 'responsible AI'],
