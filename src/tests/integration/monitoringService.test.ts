@@ -1,4 +1,3 @@
-import request from 'supertest';
 import sentryTestkit from 'sentry-testkit';
 import { Transport } from '@sentry/types';
 import getApp from '@App/app.js';
@@ -7,6 +6,7 @@ import CAPPError from '@App/resources/shared/CAPPError.js';
 import configLoader from '@App/services/configLoader.js';
 import MonitoringService from '@App/services/MonitoringService.js';
 import { prisma, sessionStore } from '@App/resources/client.js';
+import request from 'supertest';
 import DummyAuthService from '../fixtures/DummyAuthService.js';
 import DummyEmailService from '../fixtures/DummyEmailService.js';
 import DummySESService from '../fixtures/DummySesService.js';
@@ -54,6 +54,7 @@ describe('Monitoring Service', () => {
   afterAll(async () => {
     await MonitoringService.exitHandler();
     await sessionStore.shutdown();
+    await prisma.$disconnect();
     server.close();
   });
 
