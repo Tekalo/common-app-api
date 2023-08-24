@@ -354,6 +354,9 @@
           },
           "isPaused": {
             "type": "boolean"
+          },
+          "phone": {
+            "type": "string"
           }
         }
       },

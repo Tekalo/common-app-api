@@ -6,7 +6,7 @@ import CAPPError from '@App/resources/shared/CAPPError.js';
 import { BaseConfig } from '@App/resources/types/shared.js';
 import { Claims } from '@App/resources/types/auth0.js';
 
-type TokenOptions = {
+export type TokenOptions = {
   auth0Id?: string;
   roles?: Array<string>;
   scope?: string;
