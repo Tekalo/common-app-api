@@ -26,6 +26,5 @@ const app = getApp(
 const port = +app.get('port');
 
 app.listen(port, () => {
-  // eslint-disable-next-line no-console
   logger.info(`server running at http://localhost:${port}`);
 });

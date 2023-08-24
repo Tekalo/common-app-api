@@ -6,7 +6,7 @@ import { getRandomString } from '@App/tests/util/helpers.js';
 import CAPPError from '@App/resources/shared/CAPPError.js';
 import configLoader from '@App/services/configLoader.js';
 import MonitoringService from '@App/services/MonitoringService.js';
-import { prisma } from '@App/resources/client.js';
+import { prisma, sessionStore } from '@App/resources/client.js';
 import DummyAuthService from '../fixtures/DummyAuthService.js';
 import DummyEmailService from '../fixtures/DummyEmailService.js';
 import DummySESService from '../fixtures/DummySesService.js';
@@ -20,12 +20,6 @@ function sleep(timeMillis: number) {
   // eslint-disable-next-line no-promise-executor-return
   return new Promise((resolve) => setTimeout(resolve, timeMillis));
 }
-
-afterAll(async () => {
-  await MonitoringService.exitHandler();
-});
-
-afterEach(() => testkit.reset());
 
 describe('Monitoring Service', () => {
   const appConfig = configLoader.loadConfig();
@@ -55,6 +49,15 @@ describe('Monitoring Service', () => {
     dummyUploadService,
     appConfig,
   );
+  const server = dummyAuthApp.listen();
+
+  afterAll(async () => {
+    await MonitoringService.exitHandler();
+    await sessionStore.shutdown();
+    server.close();
+  });
+
+  afterEach(() => testkit.reset());
 
   it('should collect performance events', async () => {
     await request(dummyAuthApp)
@@ -69,9 +72,7 @@ describe('Monitoring Service', () => {
         acceptedPrivacy: true,
       })
       .expect(200);
-
     await sleep(100);
-
     expect(testkit.reports()).toHaveLength(0);
     expect(testkit.transactions()).toHaveLength(1);
     const transaction = testkit.transactions()[0];
