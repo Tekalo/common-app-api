@@ -2,7 +2,7 @@ import request from 'supertest';
 import { jest } from '@jest/globals';
 import cookie from 'cookie';
 import cookieParser from 'cookie-parser';
-import { Applicant, ApplicantSession, Prisma } from '@prisma/client';
+import { Applicant, Session } from '@prisma/client';
 import getApp from '@App/app.js';
 import {
   ApplicantDraftSubmissionBody,
@@ -18,7 +18,7 @@ import {
   getRandomString,
   seedResumeUpload,
 } from '@App/tests/util/helpers.js';
-import prisma from '@App/resources/client.js';
+import { prisma, sessionStore } from '@App/resources/client.js';
 import AuthService from '@App/services/AuthService.js';
 import configLoader from '@App/services/configLoader.js';
 
@@ -47,6 +47,12 @@ afterEach(async () => {
   jest.restoreAllMocks();
 });
 
+afterAll(async () => {
+  await sessionStore.shutdown();
+});
+
+const dummyApp = getDummyApp();
+
 const deleteAuth0Users = async () => {
   if (testUserIDs.length) {
     const deletionRequests = Array<Promise<void>>();
@@ -60,7 +66,6 @@ const deleteAuth0Users = async () => {
 };
 
 const appConfig = configLoader.loadConfig();
-const dummyApp = getDummyApp();
 
 describe('POST /applicants', () => {
   describe('No Auth0', () => {
@@ -216,12 +221,11 @@ describe('POST /applicants', () => {
         bobParsedCookie['connect.sid'],
         clientSecret,
       );
-      const bobSavedSession: ApplicantSession =
-        await prisma.applicantSession.findFirstOrThrow({
-          where: { sid: bobSessionId as string },
-        });
+      const bobSavedSession: Session = await prisma.session.findFirstOrThrow({
+        where: { sid: bobSessionId as string },
+      });
 
-      expect(bobSavedSession.sess as Prisma.JsonObject).toHaveProperty(
+      expect(JSON.parse(bobSavedSession.data)).toHaveProperty(
         'applicant',
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         { id: bobBody.id },
@@ -249,12 +253,11 @@ describe('POST /applicants', () => {
         timParsedCookie['connect.sid'],
         clientSecret,
       );
-      const timSavedSession: ApplicantSession =
-        await prisma.applicantSession.findFirstOrThrow({
-          where: { sid: timSessionId as string },
-        });
+      const timSavedSession: Session = await prisma.session.findFirstOrThrow({
+        where: { sid: timSessionId as string },
+      });
 
-      expect(timSavedSession.sess as Prisma.JsonObject).toHaveProperty(
+      expect(JSON.parse(timSavedSession.data)).toHaveProperty(
         'applicant',
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         { id: timBody.id },

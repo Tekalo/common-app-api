@@ -15,6 +15,13 @@ model ApplicantSession {
   expire DateTime
 }
 
+model Session {
+  id        String   @id
+  sid       String   @unique
+  data      String
+  expiresAt   DateTime
+}
+
 model Applicant {
   id                Int                        @id @default(autoincrement())
   auth0Id           String                     @unique

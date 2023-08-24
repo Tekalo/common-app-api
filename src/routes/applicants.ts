@@ -29,7 +29,7 @@ import {
 import { setCookie } from '@App/services/cookieService.js';
 
 import AuthService from '@App/services/AuthService.js';
-import prisma from '@App/resources/client.js';
+import { prisma } from '@App/resources/client.js';
 import Authenticator from '@App/middleware/authenticator.js';
 import { RequestWithJWT } from '@App/resources/types/auth0.js';
 import EmailService from '@App/services/EmailService.js';

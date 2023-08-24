@@ -1,4 +1,4 @@
-import prisma from '@App/resources/client.js';
+import { prisma } from '@App/resources/client.js';
 import { BaseConfig } from '@App/resources/types/shared.js';
 import { Upload } from '@prisma/client';
 

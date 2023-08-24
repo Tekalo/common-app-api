@@ -1,5 +1,5 @@
 import request from 'supertest';
-import prisma from '@App/resources/client.js';
+import { prisma } from '@App/resources/client.js';
 import { OpportunitySubmission } from '@App/resources/types/opportunities.js';
 import getDummyApp from '../fixtures/appGenerator.js';
 

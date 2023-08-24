@@ -3,7 +3,6 @@ import express, { Application, Handler, NextFunction, Response } from 'express';
 import * as swaggerUi from 'swagger-ui-express';
 import { pinoHttp } from 'pino-http';
 import session from 'express-session';
-import ConnectPg from 'connect-pg-simple';
 import { auth } from 'express-oauth2-jwt-bearer';
 import logger from '@App/services/logger.js';
 import spec from '@App/resources/spec.json' assert { type: 'json' };
@@ -12,6 +11,7 @@ import {
   healthRoutes,
   opportunitiesRoutes,
 } from '@App/routes/index.js';
+import { sessionStore } from './resources/client.js';
 import errorHandler from './middleware/errorHandler.js';
 import AuthService from './services/AuthService.js';
 import MonitoringService from './services/MonitoringService.js';
@@ -47,18 +47,17 @@ const getApp = (
   );
 
   app.use(express.json());
+  // mount health check early
+  app.use('/health', healthRoutes());
 
   /**
    * Setup cookie session middleware
    * for authenticating new applicants who have not yet created an account
    */
-  const PgClient = ConnectPg(session);
   const { clientSecret } = config.auth0.api;
   app.use(
     session({
-      store: new PgClient({
-        tableName: 'ApplicantSession',
-      }),
+      store: sessionStore,
       secret: clientSecret,
       resave: false,
       saveUninitialized: true,
@@ -94,7 +93,6 @@ const getApp = (
     ),
   );
   app.use('/opportunities', opportunitiesRoutes(emailService, config));
-  app.use('/health', healthRoutes());
 
   /**
    * Swagger UI documentation endpoint
@@ -105,13 +103,12 @@ const getApp = (
     router.get('/docs', swaggerUi.setup(spec));
   }
 
-  router.get('/health', healthRoutes());
-
   // The error handler must be before any other error middleware and after all controllers
   MonitoringService.addSentryErrorHandler(app);
 
   app.use(errorHandler);
   app.set('port', config.port);
+
   return app;
 };
 

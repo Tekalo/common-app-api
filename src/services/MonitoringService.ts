@@ -2,7 +2,7 @@ import { Application } from 'express';
 import * as Sentry from '@sentry/node';
 import { ErrorEvent, TransactionEvent, Transport } from '@sentry/types';
 import logger from '@App/services/logger.js';
-import prisma from '@App/resources/client.js';
+import { prisma } from '@App/resources/client.js';
 import configLoader from './configLoader.js';
 
 class MonitoringService {
