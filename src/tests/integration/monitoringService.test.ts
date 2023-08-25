@@ -23,7 +23,6 @@ function sleep(timeMillis: number) {
 }
 
 describe('Monitoring Service', () => {
-  jest.setTimeout(3000);
   const appConfig = configLoader.loadConfig();
 
   const dummyAuthService = new DummyAuthService();
@@ -60,6 +59,7 @@ describe('Monitoring Service', () => {
   afterEach(() => testkit.reset());
 
   it('should collect performance events', async () => {
+    jest.setTimeout(1000);
     await request(dummyAuthApp)
       .post('/applicants')
       .send({
