@@ -2,7 +2,7 @@ import { Application } from 'express';
 import * as Sentry from '@sentry/node';
 import { ErrorEvent, TransactionEvent, Transport } from '@sentry/types';
 import logger from '@App/services/logger.js';
-import { prisma } from '@App/resources/client.js';
+import { PrismaClient } from '@prisma/client';
 import configLoader from './configLoader.js';
 
 class MonitoringService {
@@ -14,7 +14,14 @@ class MonitoringService {
 
   private sentryErrorHandler = Sentry.Handlers.errorHandler();
 
-  constructor(sentryTransport?: () => Transport, tracesSampleRate?: number) {
+  private prisma: PrismaClient;
+
+  constructor(
+    prisma: PrismaClient,
+    sentryTransport?: () => Transport,
+    tracesSampleRate?: number,
+  ) {
+    this.prisma = prisma;
     if (sentryTransport) {
       this.sentryTransport = sentryTransport;
     }
@@ -46,7 +53,7 @@ class MonitoringService {
         // Automatically instrument Node.js libraries and frameworks
         ...Sentry.autoDiscoverNodePerformanceMonitoringIntegrations(),
         // enable Prisma tracing
-        new Sentry.Integrations.Prisma({ client: prisma }),
+        new Sentry.Integrations.Prisma({ client: this.prisma }),
       ],
       beforeSend: (event: ErrorEvent) => {
         // don't send health check errors to Sentry

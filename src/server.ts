@@ -17,7 +17,7 @@ const authService = config.isLoadTest
 
 const app = getApp(
   authService,
-  new MonitoringService(),
+  new MonitoringService(prisma),
   new EmailService(new SESService(), config),
   new UploadService(prisma, new S3Service(), config),
   config,

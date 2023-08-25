@@ -6,5 +6,4 @@ export default {
   transform: {
     '^.+\\.(t|j)sx?$': '@swc/jest', // loads .swcrc config by default
   },
-  openHandlesTimeout: 2 * 1000,
 };

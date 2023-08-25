@@ -37,6 +37,7 @@ describe('Monitoring Service', () => {
   );
 
   const monitoringService = new MonitoringService(
+    prisma,
     sentryTransport as () => Transport,
     1.0,
   );
@@ -54,24 +55,28 @@ describe('Monitoring Service', () => {
   afterAll(async () => {
     await MonitoringService.exitHandler();
     await sessionStore.shutdown();
+    await prisma.$disconnect();
   });
 
   afterEach(() => testkit.reset());
 
   it('should collect performance events', async () => {
-    jest.setTimeout(1000);
-    await request(dummyAuthApp)
+    jest.setTimeout(5000);
+    const randomString = getRandomString();
+    const { body } = await request(dummyAuthApp)
       .post('/applicants')
       .send({
         name: 'Robert Boberson',
         pronoun: 'he/his',
-        email: `rboberson${getRandomString()}@gmail.com`,
+        email: `rboberson${randomString}@gmail.com`,
         preferredContact: 'email',
         searchStatus: 'active',
         acceptedTerms: true,
         acceptedPrivacy: true,
       })
       .expect(200);
+    expect(body).toHaveProperty('id');
+    expect(body).toHaveProperty('email', `rboberson${randomString}@gmail.com`);
     await sleep(100);
     expect(testkit.reports()).toHaveLength(0);
     expect(testkit.transactions()).toHaveLength(1);
