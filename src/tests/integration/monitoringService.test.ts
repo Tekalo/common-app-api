@@ -49,12 +49,10 @@ describe('Monitoring Service', () => {
     dummyUploadService,
     appConfig,
   );
-  const server = dummyAuthApp.listen();
 
   afterAll(async () => {
     await MonitoringService.exitHandler();
     await sessionStore.shutdown();
-    server.close();
   });
 
   afterEach(() => testkit.reset());
