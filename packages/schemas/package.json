@@ -6,7 +6,6 @@
   "types": "src/index.d.ts",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "check": "tsc --noEmit",
     "build": "swc src --copy-files --out-dir build"
   },
