@@ -1,5 +1,5 @@
 ---
-name: Build and test
+name: API test
 
 on:
   push:
@@ -11,7 +11,7 @@ on:
   pull_request:
     paths-ignore:
       - 'tf/**'
-      #- '.github/**'
+      - '.github/**'
     branches-ignore:
       - 'renovate/**'
 
@@ -19,6 +19,8 @@ permissions:
   id-token: write
   contents: read
 
+# This concurrency setting means that we'll never run more than one build per PR branch, even
+# with rapid-fire commits.
 concurrency:
   group: '${github.workflow}-${github.ref}'
   cancel-in-progress: true
@@ -28,15 +30,14 @@ jobs:
     uses: ./.github/workflows/test.yml
     secrets: inherit
 
+  # Github required checks are based on the JOB name, and reusable workflows always muck with
+  # job names, so we create a consistent job name here.
   status:
     name: Run tests
     needs: [test]
     if: ${{ always() }}
     runs-on: ubuntu-latest
     steps:
-      - run: echo "Success"
-        if: needs.test.result == 'success'
-      - run: |
-          echo "${{ needs.test.result }}"
-          exit 1
+      - run: echo "${{ needs.test.result }}"
+      - run: exit 1
         if: needs.test.result != 'success'
