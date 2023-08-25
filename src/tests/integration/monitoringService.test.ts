@@ -52,10 +52,13 @@ describe('Monitoring Service', () => {
     appConfig,
   );
 
+  // const server = dummyAuthApp.listen();
+
   afterAll(async () => {
     await MonitoringService.exitHandler();
     await sessionStore.shutdown();
     await prisma.$disconnect();
+    // server.close();
   });
 
   afterEach(() => testkit.reset());

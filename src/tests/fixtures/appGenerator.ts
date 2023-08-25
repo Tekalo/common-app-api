@@ -20,7 +20,7 @@ const getDummyApp = (
   const appConfig = configLoader.loadConfig();
   return getApp(
     dummyAuthService || new DummyAuthService(),
-    dummyMonitoringService || new DummyMonitoringService(),
+    dummyMonitoringService || new DummyMonitoringService(prisma),
     dummyEmailService ||
       new DummyEmailService(new DummySESService(), appConfig),
     dummyUploadService ||

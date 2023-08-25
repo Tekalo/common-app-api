@@ -268,7 +268,7 @@ describe('POST /applicants', () => {
   describe('Auth0 Integration', () => {
     const app = getApp(
       authService,
-      new DummyMonitoringService(),
+      new DummyMonitoringService(prisma),
       new DummyEmailService(new DummySESService(), appConfig),
       new DummyUploadService(prisma, new DummyS3Service(), appConfig),
       appConfig,
@@ -522,7 +522,7 @@ describe('DELETE /applicants/me', () => {
     });
     const app = getApp(
       authService,
-      new DummyMonitoringService(),
+      new DummyMonitoringService(prisma),
       new DummyEmailService(new DummySESService(), appConfig),
       new DummyUploadService(prisma, new DummyS3Service(), appConfig),
       appConfig,
@@ -1235,7 +1235,7 @@ describe('POST /applicants/me/resume', () => {
 
     const dummyUploadApp = getApp(
       new DummyAuthService(),
-      new DummyMonitoringService(),
+      new DummyMonitoringService(prisma),
       new DummyEmailService(new DummySESService(), appConfig),
       dummyUploadService,
       appConfig,
@@ -1280,7 +1280,7 @@ describe('POST /applicants/me/resume', () => {
     );
     const dummyUploadApp = getApp(
       new DummyAuthService(),
-      new DummyMonitoringService(),
+      new DummyMonitoringService(prisma),
       new DummyEmailService(new DummySESService(), appConfig),
       dummyUploadService,
       appConfig,
@@ -1336,7 +1336,7 @@ describe('POST /applicants/me/uploads/:id/state', () => {
   );
   const dummyUploadApp = getApp(
     new DummyAuthService(),
-    new DummyMonitoringService(),
+    new DummyMonitoringService(prisma),
     new DummyEmailService(new DummySESService(), appConfig),
     dummyUploadService,
     appConfig,
