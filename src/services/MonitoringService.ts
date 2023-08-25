@@ -12,6 +12,8 @@ class MonitoringService {
 
   private tracesSampleRate;
 
+  private sentryErrorHandler = Sentry.Handlers.errorHandler();
+
   constructor(sentryTransport?: () => Transport, tracesSampleRate?: number) {
     if (sentryTransport) {
       this.sentryTransport = sentryTransport;
@@ -82,8 +84,8 @@ class MonitoringService {
     app.use(Sentry.Handlers.tracingHandler());
   }
 
-  static addSentryErrorHandler(app: Application) {
-    app.use(Sentry.Handlers.errorHandler());
+  addSentryErrorHandler(app: Application) {
+    app.use(this.sentryErrorHandler);
   }
 
   static async exitHandler() {

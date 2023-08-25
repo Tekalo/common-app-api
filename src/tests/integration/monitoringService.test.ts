@@ -54,7 +54,6 @@ describe('Monitoring Service', () => {
   afterAll(async () => {
     await MonitoringService.exitHandler();
     await sessionStore.shutdown();
-    await prisma.$disconnect();
     server.close();
   });
 

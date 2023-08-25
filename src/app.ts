@@ -104,7 +104,7 @@ const getApp = (
   }
 
   // The error handler must be before any other error middleware and after all controllers
-  MonitoringService.addSentryErrorHandler(app);
+  monitoringService.addSentryErrorHandler(app);
 
   app.use(errorHandler);
   app.set('port', config.port);
