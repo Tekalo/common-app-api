@@ -25,6 +25,18 @@ concurrency:
 
 jobs:
   test:
-    name: Run tests
     uses: ./.github/workflows/test.yml
     secrets: inherit
+
+  status:
+    name: Run tests
+    needs: [test]
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Success"
+        if: needs.test.result == 'success'
+      - run: |
+          echo "${{ needs.test.result }}"
+          exit 1
+        if: needs.test.result != 'success'

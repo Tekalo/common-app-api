@@ -1,11 +1,11 @@
-name: Test
+name: Test (reusable)
 
 on:
   workflow_call:
 
 jobs:
   test:
-    name: Run tests
+    name: Test
     runs-on: ubuntu-latest
 
     container:
