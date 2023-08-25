@@ -78,3 +78,6 @@ jobs:
 
       - name: Run tests
         run: ./scripts/test-command.sh
+
+      - name: Fail
+        run: exit 1
