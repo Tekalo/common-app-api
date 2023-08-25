@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { Uploads } from 'schemas';
+import { Uploads } from '@capp/schemas';
 
 export type UploadRequestBody = z.infer<typeof Uploads.UploadRequestBodySchema>;
 export type UploadResponseBody = z.infer<

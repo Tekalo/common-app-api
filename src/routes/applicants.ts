@@ -5,7 +5,7 @@ import express, {
   Response,
 } from 'express';
 import ApplicantController from '@App/controllers/ApplicantController.js';
-import { Applicants, Uploads } from '@Schemas/index.js';
+import { Applicants, Uploads } from '@capp/schemas';
 import {
   ApplicantRequestBody,
   ApplicantSubmissionBody,

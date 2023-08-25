@@ -1,7 +1,7 @@
 import { Request } from 'express';
 import { AuthResult } from 'express-oauth2-jwt-bearer';
 import { z } from 'zod';
-import { Auth0 } from 'schemas';
+import { Auth0 } from '@capp/schemas';
 
 export type Auth0UserBody = z.infer<typeof Auth0.ShellUserPayloadSchema>;
 

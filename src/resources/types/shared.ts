@@ -1,5 +1,5 @@
 import { z, ZodIssue } from 'zod';
-import { Config } from 'schemas';
+import { Config } from '@capp/schemas';
 
 export type Problem = {
   title?: string; // HTTP error name e.g. "Unauthorized"

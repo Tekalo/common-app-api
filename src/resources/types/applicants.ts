@@ -1,6 +1,6 @@
 import { ApplicantSubmission, ApplicantDraftSubmission } from '@prisma/client';
 import { z } from 'zod';
-import { Applicants } from 'schemas';
+import { Applicants } from '@capp/schemas';
 
 export type ApplicantRequestBody = z.infer<
   typeof Applicants.ApplicantRequestBodySchema

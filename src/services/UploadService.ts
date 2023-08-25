@@ -1,5 +1,5 @@
 import { Prisma, PrismaClient, Upload } from '@prisma/client';
-import { Uploads } from '@Schemas/index.js';
+import { Uploads } from '@capp/schemas';
 import CAPPError from '@App/resources/shared/CAPPError.js';
 import { BaseConfig } from '@App/resources/types/shared.js';
 

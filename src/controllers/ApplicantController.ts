@@ -30,7 +30,7 @@ import EmailService from '@App/services/EmailService.js';
 import MonitoringService from '@App/services/MonitoringService.js';
 import UploadService from '@App/services/UploadService.js';
 import { Claims } from '@App/resources/types/auth0.js';
-import { Applicants } from 'schemas';
+import { Applicants } from '@capp/schemas';
 
 class ApplicantController {
   private auth0Service: AuthService;

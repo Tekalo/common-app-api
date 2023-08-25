@@ -1,4 +1,4 @@
-import { Config } from 'schemas';
+import { Config } from '@capp/schemas';
 import {
   Auth0ApiConfig,
   Auth0ExpressConfig,

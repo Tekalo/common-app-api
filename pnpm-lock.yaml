@@ -17,6 +17,9 @@ importers:
       '@aws-sdk/s3-request-presigner':
         specifier: 3.395.0
         version: 3.395.0
+      '@capp/schemas':
+        specifier: workspace:*
+        version: link:packages/schemas
       '@prisma/client':
         specifier: 5.1.1
         version: 5.1.1(prisma@5.1.1)
@@ -65,9 +68,6 @@ importers:
       pino-http:
         specifier: 8.4.0
         version: 8.4.0
-      schemas:
-        specifier: workspace:1.0.0
-        version: link:schemas
       swagger-ui-express:
         specifier: 5.0.0
         version: 5.0.0(express@4.18.2)
@@ -175,18 +175,18 @@ importers:
         specifier: 5.1.6
         version: 5.1.6
 
-  schemas:
+  packages/schemas:
     dependencies:
-      '@prisma/client':
-        specifier: 5.1.1
-        version: 5.1.1(prisma@5.1.1)
       zod:
         specifier: ^3.22.1
-        version: 3.22.2
+        version: 3.22.1
     devDependencies:
-      prisma:
-        specifier: 5.1.1
-        version: 5.1.1
+      swc:
+        specifier: 1.0.11
+        version: 1.0.11
+      typescript:
+        specifier: 5.1.6
+        version: 5.1.6
 
 packages:
 
@@ -6698,6 +6698,16 @@ packages:
       upper-case: 1.1.3
     dev: false
 
+  /swc@1.0.11:
+    resolution: {integrity: sha512-YbG4eija7g/ajQ0lu4P2WPgKt5zCm743VgKn+buBrXXo1IETftO2r/8VdBPhv8wpTyg3CO+VU1z2wHuL4iohmw==}
+    dependencies:
+      '@swc/cli': 0.1.62(@swc/core@1.3.78)
+      '@swc/core': 1.3.78
+    transitivePeerDependencies:
+      - '@swc/helpers'
+      - chokidar
+    dev: true
+
   /synckit@0.8.5:
     resolution: {integrity: sha512-L1dapNV6vu2s/4Sputv8xGsCdAVlb5nRDMFU/E27D44l5U6cw1g0dGd45uLc+OXjNMmF4ntiMdCimzcjFKQI8Q==}
     engines: {node: ^14.18.0 || >=16.0.0}
@@ -7104,6 +7114,10 @@ packages:
   /yocto-queue@0.1.0:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
+
+  /zod@3.22.1:
+    resolution: {integrity: sha512-+qUhAMl414+Elh+fRNtpU+byrwjDFOS1N7NioLY+tSlcADTx4TkCUua/hxJvxwDXcV4397/nZ420jy4n4+3WUg==}
+    dev: false
 
   /zod@3.22.2:
     resolution: {integrity: sha512-wvWkphh5WQsJbVk1tbx1l1Ly4yg+XecD+Mq280uBGt9wa5BKSWf4Mhp6GmrkPixhMxmabYY7RbzlwVP32pbGCg==}

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { Auth0 } from '@Schemas/index.js';
+import Auth0 from './auth0.js';
 
 const BaseConfigSchema = z.object({
   env: z.string(),

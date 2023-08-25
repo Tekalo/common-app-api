@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { Opportunities } from 'schemas';
+import { Opportunities } from '@capp/schemas';
 
 export type OpportunityBatchRequestBody = z.infer<
   typeof Opportunities.OpportunityBatchRequestBodySchema
