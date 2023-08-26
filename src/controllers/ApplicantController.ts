@@ -1,10 +1,4 @@
-import {
-  Applicant,
-  ApplicantDraftSubmission,
-  Prisma,
-  PrismaClient,
-  UploadStatus,
-} from '@prisma/client';
+import { Applicant, Prisma, PrismaClient, UploadStatus } from '@prisma/client';
 import { AuthResult } from 'express-oauth2-jwt-bearer';
 import { AppMetadata, User, UserMetadata } from 'auth0';
 import {
@@ -17,6 +11,7 @@ import {
   PrismaApplicantDraftSubmissionWithResume,
   ApplicantCreateSubmissionResponse,
   ApplicantGetSubmissionResponse,
+  ApplicantDraftSubmissionResponseBody,
 } from '@App/resources/types/applicants.js';
 import {
   UploadResponseBody,
@@ -187,7 +182,6 @@ class ApplicantController {
     data: ApplicantSubmissionBody,
   ): Promise<ApplicantCreateSubmissionResponse> {
     const {
-      openToRemote,
       openToRemoteMulti,
       otherCauses,
       resumeUpload,
@@ -201,7 +195,7 @@ class ApplicantController {
       const applicantSubmission = await this.prisma.applicantSubmission.create({
         data: {
           ...restOfSubmission,
-          openToRemoteMulti: openToRemoteMulti || openToRemote,
+          openToRemoteMulti: openToRemoteMulti || [],
           otherCauses: otherCauses || [],
           resumeUploadId: resumeUpload?.id,
           applicantId,
@@ -479,9 +473,8 @@ class ApplicantController {
   async createOrUpdateDraftSubmission(
     applicantId: number,
     data: ApplicantDraftSubmissionBody,
-  ): Promise<ApplicantDraftSubmission> {
+  ): Promise<ApplicantDraftSubmissionResponseBody> {
     const {
-      openToRemote,
       openToRemoteMulti,
       otherCauses,
       resumeUpload,
@@ -491,25 +484,30 @@ class ApplicantController {
       await this.validateResumeUpload(applicantId, resumeUpload.id);
     }
     try {
-      // TODO: Remove support for openToRemote
-      return await this.prisma.applicantDraftSubmission.upsert({
-        create: {
-          ...restOfSubmission,
-          openToRemoteMulti: openToRemoteMulti || openToRemote || undefined,
-          otherCauses: otherCauses || [],
-          resumeUploadId: resumeUpload?.id,
-          applicantId,
+      const draftSubmission = await this.prisma.applicantDraftSubmission.upsert(
+        {
+          create: {
+            ...restOfSubmission,
+            openToRemoteMulti: openToRemoteMulti || undefined,
+            otherCauses: otherCauses || [],
+            resumeUploadId: resumeUpload?.id,
+            applicantId,
+          },
+          update: {
+            ...restOfSubmission,
+            openToRemoteMulti: openToRemoteMulti || undefined,
+            otherCauses: otherCauses || [],
+            resumeUploadId: resumeUpload?.id || null,
+          },
+          include: {
+            resumeUpload: { select: { id: true, originalFilename: true } },
+          },
+          where: { applicantId },
         },
-        update: {
-          ...restOfSubmission,
-          openToRemoteMulti: openToRemoteMulti || openToRemote || undefined,
-          otherCauses: otherCauses || [],
-        },
-        include: {
-          resumeUpload: { select: { id: true, originalFilename: true } },
-        },
-        where: { applicantId },
-      });
+      );
+      // remove resumeUploadId from response
+      const { resumeUploadId, ...draftSubmissionVals } = draftSubmission;
+      return { submission: draftSubmissionVals, isFinal: false };
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         throw new CAPPError(
