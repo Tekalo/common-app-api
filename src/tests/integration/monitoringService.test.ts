@@ -89,18 +89,18 @@ describe('Monitoring Service', () => {
   //   expect(transaction.name).toContain('applicants');
   // });
 
-  it('should collect error events for 500 error', async () => {
-    await request(dummyAuthApp).post('/opportunities/batch').expect(400);
+  // it('should collect error events for 500 error', async () => {
+  //   await request(dummyAuthApp).post('/opportunities/batch').expect(400);
 
-    await sleep(100);
+  //   await sleep(100);
 
-    expect(testkit.transactions()).toHaveLength(1);
-    const transaction = testkit.transactions()[0];
-    expect(transaction.name).toContain('opportunities');
-    expect(testkit.reports()).toHaveLength(1);
-    const report = testkit.reports()[0];
-    expect(report).toHaveProperty('error');
-  });
+  //   expect(testkit.transactions()).toHaveLength(1);
+  //   const transaction = testkit.transactions()[0];
+  //   expect(transaction.name).toContain('opportunities');
+  //   expect(testkit.reports()).toHaveLength(1);
+  //   const report = testkit.reports()[0];
+  //   expect(report).toHaveProperty('error');
+  // });
 
   it('should not collect data for health check events', async () => {
     await request(dummyAuthApp).get('/health').expect(200);

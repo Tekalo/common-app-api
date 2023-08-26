@@ -1,5 +1,5 @@
 import request from 'supertest';
-import { prisma } from '@App/resources/client.js';
+import { prisma, sessionStore } from '@App/resources/client.js';
 import { OpportunitySubmission } from '@App/resources/types/opportunities.js';
 import getDummyApp from '../fixtures/appGenerator.js';
 
@@ -8,6 +8,7 @@ const dummyApp = getDummyApp();
 afterEach(async () => {
   await prisma.opportunitySubmission.deleteMany();
   await prisma.opportunityBatch.deleteMany();
+  await sessionStore.shutdown();
 });
 describe('POST /opportunities', () => {
   const submissions: Array<OpportunitySubmission> = [
