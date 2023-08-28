@@ -7,7 +7,7 @@ import configLoader from '@App/services/configLoader.js';
 import MonitoringService from '@App/services/MonitoringService.js';
 import { prisma, sessionStore } from '@App/resources/client.js';
 import request from 'supertest';
-// import { jest } from '@jest/globals';
+import { jest } from '@jest/globals';
 import DummyAuthService from '../fixtures/DummyAuthService.js';
 import DummyEmailService from '../fixtures/DummyEmailService.js';
 import DummySESService from '../fixtures/DummySesService.js';
@@ -23,6 +23,7 @@ function sleep(timeMillis: number) {
 }
 
 describe('Monitoring Service', () => {
+  jest.setTimeout(5000);
   const appConfig = configLoader.loadConfig();
 
   const dummyAuthService = new DummyAuthService();

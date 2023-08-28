@@ -8,8 +8,12 @@ const dummyApp = getDummyApp();
 afterEach(async () => {
   await prisma.opportunitySubmission.deleteMany();
   await prisma.opportunityBatch.deleteMany();
+});
+
+afterAll(async () => {
   await sessionStore.shutdown();
 });
+
 describe('POST /opportunities', () => {
   const submissions: Array<OpportunitySubmission> = [
     {
