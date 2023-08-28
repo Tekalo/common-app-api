@@ -52,55 +52,51 @@ describe('Monitoring Service', () => {
     appConfig,
   );
 
-  const server = dummyAuthApp.listen();
-
   afterAll(async () => {
     await MonitoringService.exitHandler();
     await sessionStore.shutdown();
-    await prisma.$disconnect();
-    server.close();
   });
 
   afterEach(() => testkit.reset());
 
   // commenting out this test for now, it causes jest to hang after tests complete
   // the problem seems related to prisma, since the following tests are ok when there is no db interaction involved
-  // it('should collect performance events', async () => {
-  //   jest.setTimeout(5000);
-  //   const randomString = getRandomString();
-  //   const { body } = await request(dummyAuthApp)
-  //     .post('/applicants')
-  //     .send({
-  //       name: 'Robert Boberson',
-  //       pronoun: 'he/his',
-  //       email: `rboberson${randomString}@gmail.com`,
-  //       preferredContact: 'email',
-  //       searchStatus: 'active',
-  //       acceptedTerms: true,
-  //       acceptedPrivacy: true,
-  //     })
-  //     .expect(200);
-  //   expect(body).toHaveProperty('id');
-  //   expect(body).toHaveProperty('email', `rboberson${randomString}@gmail.com`);
-  //   await sleep(100);
-  //   expect(testkit.reports()).toHaveLength(0);
-  //   expect(testkit.transactions()).toHaveLength(1);
-  //   const transaction = testkit.transactions()[0];
-  //   expect(transaction.name).toContain('applicants');
-  // });
+  it('should collect performance events', async () => {
+    // jest.setTimeout(5000);
+    // const randomString = getRandomString();
+    // const { body } = await request(dummyAuthApp)
+    //   .post('/applicants')
+    //   .send({
+    //     name: 'Robert Boberson',
+    //     pronoun: 'he/his',
+    //     email: `rboberson${randomString}@gmail.com`,
+    //     preferredContact: 'email',
+    //     searchStatus: 'active',
+    //     acceptedTerms: true,
+    //     acceptedPrivacy: true,
+    //   })
+    //   .expect(200);
+    // expect(body).toHaveProperty('id');
+    // expect(body).toHaveProperty('email', `rboberson${randomString}@gmail.com`);
+    // await sleep(100);
+    // expect(testkit.reports()).toHaveLength(0);
+    // expect(testkit.transactions()).toHaveLength(1);
+    // const transaction = testkit.transactions()[0];
+    // expect(transaction.name).toContain('applicants');
+  });
 
-  // it('should collect error events for 500 error', async () => {
-  //   await request(dummyAuthApp).post('/opportunities/batch').expect(400);
+  it('should collect error events for 500 error', async () => {
+    await request(dummyAuthApp).post('/opportunities/batch').expect(400);
 
-  //   await sleep(100);
+    await sleep(100);
 
-  //   expect(testkit.transactions()).toHaveLength(1);
-  //   const transaction = testkit.transactions()[0];
-  //   expect(transaction.name).toContain('opportunities');
-  //   expect(testkit.reports()).toHaveLength(1);
-  //   const report = testkit.reports()[0];
-  //   expect(report).toHaveProperty('error');
-  // });
+    expect(testkit.transactions()).toHaveLength(1);
+    const transaction = testkit.transactions()[0];
+    expect(transaction.name).toContain('opportunities');
+    expect(testkit.reports()).toHaveLength(1);
+    const report = testkit.reports()[0];
+    expect(report).toHaveProperty('error');
+  });
 
   it('should not collect data for health check events', async () => {
     await request(dummyAuthApp).get('/health').expect(200);
