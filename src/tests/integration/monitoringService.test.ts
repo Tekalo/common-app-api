@@ -58,8 +58,6 @@ describe('Monitoring Service', () => {
 
   afterEach(() => testkit.reset());
 
-  // commenting out this test for now, it causes jest to hang after tests complete
-  // the problem seems related to prisma, since the following tests are ok when there is no db interaction involved
   it('should collect performance events', async () => {
     const randomString = getRandomString();
     const { body } = await request(dummyAuthApp)
