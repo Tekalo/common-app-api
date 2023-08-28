@@ -84,13 +84,7 @@ const getApp = (
 
   app.use(
     '/applicants',
-    applicantRoutes(
-      authService,
-      emailService,
-      monitoringService,
-      uploadService,
-      config,
-    ),
+    applicantRoutes(authService, emailService, uploadService, config),
   );
   app.use('/opportunities', opportunitiesRoutes(emailService, config));
 

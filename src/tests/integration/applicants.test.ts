@@ -2,7 +2,7 @@ import request from 'supertest';
 import { jest } from '@jest/globals';
 import cookie from 'cookie';
 import cookieParser from 'cookie-parser';
-import { Applicant, Session } from '@prisma/client';
+import { Applicant, Session, Upload } from '@prisma/client';
 import getApp from '@App/app.js';
 import {
   ApplicantDraftSubmissionBody,
@@ -13,11 +13,7 @@ import {
   ApplicantGetSubmissionResponse,
 } from '@App/resources/types/applicants.js';
 import getDummyApp from '@App/tests/fixtures/appGenerator.js';
-import {
-  itif,
-  getRandomString,
-  seedResumeUpload,
-} from '@App/tests/util/helpers.js';
+import { itif, getRandomString } from '@App/tests/util/helpers.js';
 import { prisma, sessionStore } from '@App/resources/client.js';
 import AuthService from '@App/services/AuthService.js';
 import configLoader from '@App/services/configLoader.js';
@@ -37,6 +33,17 @@ import DummyS3Service from '../fixtures/DummyS3Service.js';
 
 let testUserIDs: Array<string> = [];
 const authService = new AuthService();
+
+const seedResumeUpload = async (applicantId: number): Promise<Upload> =>
+  prisma.upload.create({
+    data: {
+      type: 'RESUME',
+      status: 'SUCCESS',
+      applicantId,
+      originalFilename: 'myresume.pdf',
+      contentType: 'application/pdf',
+    },
+  });
 
 afterEach(async () => {
   await prisma.upload.deleteMany();

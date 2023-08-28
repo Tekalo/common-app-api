@@ -34,21 +34,17 @@ class ApplicantController {
 
   private emailService: EmailService;
 
-  private monitoringService: MonitoringService;
-
   private uploadService: UploadService;
 
   constructor(
     auth0Service: AuthService,
     prisma: PrismaClient,
     emailService: EmailService,
-    monitoringService: MonitoringService,
     uploadService: UploadService,
   ) {
     this.auth0Service = auth0Service;
     this.prisma = prisma;
     this.emailService = emailService;
-    this.monitoringService = monitoringService;
     this.uploadService = uploadService;
   }
 
