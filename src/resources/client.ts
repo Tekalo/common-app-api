@@ -2,6 +2,9 @@ import { PrismaClient } from '@prisma/client';
 import { PrismaSessionStore } from '@quixo3/prisma-session-store';
 import logger from '@App/services/logger.js';
 
+const PASSWORD_AUTH_ERROR: string =
+  'Authentication failed against database server at , the provided database credentials for  are not valid.';
+
 const prisma = new PrismaClient({
   log: [
     {
@@ -12,13 +15,7 @@ const prisma = new PrismaClient({
 });
 
 prisma.$on('error', (err) => {
-  if (
-    err.message
-      .replaceAll(/`.*?`/g, '')
-      .includes(
-        'Authentication failed against database server at , the provided database credentials for  are not valid.',
-      )
-  ) {
+  if (err.message.replaceAll(/`.*?`/g, '').includes(PASSWORD_AUTH_ERROR)) {
     logger.error('Password auth failed; shutting down');
     process.kill(process.pid, 'SIGTERM');
   }
