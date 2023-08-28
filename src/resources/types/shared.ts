@@ -12,8 +12,7 @@ export type Problem = {
 export type SessionCookie = {
   id: number;
 };
-
-export type BaseConfig = z.infer<typeof Config>;
+export type BaseConfig = z.infer<typeof Config.ConfigSchema>;
 
 declare module 'express-session' {
   interface Session {

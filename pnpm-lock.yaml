@@ -178,7 +178,7 @@ importers:
   packages/schemas:
     dependencies:
       zod:
-        specifier: ^3.22.1
+        specifier: 3.22.2
         version: 3.22.2
     devDependencies:
       swc:

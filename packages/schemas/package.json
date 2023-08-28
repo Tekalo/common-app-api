@@ -7,7 +7,8 @@
   "type": "module",
   "scripts": {
     "check": "tsc --noEmit",
-    "build": "swc src --copy-files --out-dir build"
+    "build": "swc src --copy-files --out-dir build",
+    "container-build": "docker compose run -w /api/packages/schemas --rm api pnpm build"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +18,6 @@
     "typescript": "5.1.6"
   },
   "dependencies": {
-    "zod": "^3.22.1"
+    "zod": "3.22.2"
   }
 }

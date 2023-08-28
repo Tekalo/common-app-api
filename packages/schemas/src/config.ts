@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import Auth0 from './auth0.js';
 
-const BaseConfigSchema = z.object({
+const ConfigSchema = z.object({
   env: z.string(),
   port: z.number(),
   auth0: z.object({
@@ -19,4 +19,4 @@ const BaseConfigSchema = z.object({
   webUrl: z.string(),
 });
 
-export default BaseConfigSchema;
+export default { ConfigSchema };

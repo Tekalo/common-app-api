@@ -5,7 +5,7 @@
     "type": "es6"
   },
   "jsc": {
-    "baseUrl": "./",
+    // "baseUrl": ".",
     // All of the code that is transpiled EXCEPT for the import/export statements
     "target": "es2022",
     // These options ensure that our transpiler emits JS that is compatible with the
