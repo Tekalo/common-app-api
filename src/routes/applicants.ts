@@ -29,18 +29,16 @@ import {
 import { setCookie } from '@App/services/cookieService.js';
 
 import AuthService from '@App/services/AuthService.js';
-import prisma from '@App/resources/client.js';
+import { prisma } from '@App/resources/client.js';
 import Authenticator from '@App/middleware/authenticator.js';
 import { RequestWithJWT } from '@App/resources/types/auth0.js';
 import EmailService from '@App/services/EmailService.js';
-import MonitoringService from '@App/services/MonitoringService.js';
 import UploadService from '@App/services/UploadService.js';
 import { BaseConfig } from '@App/resources/types/shared.js';
 
 const applicantRoutes = (
   authService: AuthService,
   emailService: EmailService,
-  monitoringService: MonitoringService,
   uploadService: UploadService,
   config: BaseConfig,
 ) => {
@@ -50,7 +48,6 @@ const applicantRoutes = (
     authService,
     prisma,
     emailService,
-    monitoringService,
     uploadService,
   );
 
