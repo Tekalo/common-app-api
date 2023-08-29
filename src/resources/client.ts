@@ -14,10 +14,16 @@ const prisma = new PrismaClient({
   ],
 });
 
+const authErrorHandler = {
+  handleError: () => {
+    logger.error('Password auth failed; shutting down');
+    process.exit(1);
+  },
+};
+
 prisma.$on('error', (err) => {
   if (err.message.replaceAll(/`.*?`/g, '').includes(PASSWORD_AUTH_ERROR)) {
-    logger.error('Password auth failed; shutting down');
-    process.kill(process.pid, 'SIGTERM');
+    authErrorHandler.handleError();
   }
 });
 
@@ -25,4 +31,4 @@ const sessionStore = new PrismaSessionStore(prisma, {
   checkPeriod: 2 * 60 * 1000, // 2 minutes
 });
 
-export { prisma, sessionStore };
+export { authErrorHandler, prisma, sessionStore };
