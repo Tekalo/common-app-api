@@ -88,8 +88,8 @@ jobs:
       - name: Install Node.js dependencies
         run: pnpm install
 
-      - name: Build src and packages directory
-        run: pnpm build
+      - name: Build packages directory
+        run: pnpm -r --filter ./packages/schemas run build
 
       - name: Run linters
         run: ./scripts/lint-command.sh
