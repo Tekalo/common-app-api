@@ -16,8 +16,6 @@ export default class HealthService {
 
   async getHealth(): Promise<HealthCheckResult> {
     try {
-      // TODO: remove before merge -- this is being used for testing locally
-      await this.prisma.$disconnect();
       const result: number[] = await this.prisma.$queryRaw<number[]>`SELECT 1`;
       this.overallHealth =
         result?.length === 1
