@@ -2,7 +2,7 @@ import request from 'supertest';
 import { jest } from '@jest/globals';
 import cookie from 'cookie';
 import cookieParser from 'cookie-parser';
-import { Applicant, ApplicantSession, Prisma } from '@prisma/client';
+import { Applicant, Session, Upload } from '@prisma/client';
 import getApp from '@App/app.js';
 import {
   ApplicantDraftSubmissionBody,
@@ -13,12 +13,8 @@ import {
   ApplicantGetSubmissionResponse,
 } from '@App/resources/types/applicants.js';
 import getDummyApp from '@App/tests/fixtures/appGenerator.js';
-import {
-  itif,
-  getRandomString,
-  seedResumeUpload,
-} from '@App/tests/util/helpers.js';
-import prisma from '@App/resources/client.js';
+import { itif, getRandomString } from '@App/tests/util/helpers.js';
+import { prisma, sessionStore } from '@App/resources/client.js';
 import AuthService from '@App/services/AuthService.js';
 import configLoader from '@App/services/configLoader.js';
 
@@ -38,6 +34,17 @@ import DummyS3Service from '../fixtures/DummyS3Service.js';
 let testUserIDs: Array<string> = [];
 const authService = new AuthService();
 
+const seedResumeUpload = async (applicantId: number): Promise<Upload> =>
+  prisma.upload.create({
+    data: {
+      type: 'RESUME',
+      status: 'SUCCESS',
+      applicantId,
+      originalFilename: 'myresume.pdf',
+      contentType: 'application/pdf',
+    },
+  });
+
 afterEach(async () => {
   await prisma.upload.deleteMany();
   await prisma.applicantDraftSubmission.deleteMany();
@@ -46,6 +53,12 @@ afterEach(async () => {
   await prisma.applicantDeletionRequests.deleteMany();
   jest.restoreAllMocks();
 });
+
+afterAll(async () => {
+  await sessionStore.shutdown();
+});
+
+const dummyApp = getDummyApp();
 
 const deleteAuth0Users = async () => {
   if (testUserIDs.length) {
@@ -60,7 +73,6 @@ const deleteAuth0Users = async () => {
 };
 
 const appConfig = configLoader.loadConfig();
-const dummyApp = getDummyApp();
 
 describe('POST /applicants', () => {
   describe('No Auth0', () => {
@@ -216,12 +228,11 @@ describe('POST /applicants', () => {
         bobParsedCookie['connect.sid'],
         clientSecret,
       );
-      const bobSavedSession: ApplicantSession =
-        await prisma.applicantSession.findFirstOrThrow({
-          where: { sid: bobSessionId as string },
-        });
+      const bobSavedSession: Session = await prisma.session.findFirstOrThrow({
+        where: { sid: bobSessionId as string },
+      });
 
-      expect(bobSavedSession.sess as Prisma.JsonObject).toHaveProperty(
+      expect(JSON.parse(bobSavedSession.data)).toHaveProperty(
         'applicant',
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         { id: bobBody.id },
@@ -249,12 +260,11 @@ describe('POST /applicants', () => {
         timParsedCookie['connect.sid'],
         clientSecret,
       );
-      const timSavedSession: ApplicantSession =
-        await prisma.applicantSession.findFirstOrThrow({
-          where: { sid: timSessionId as string },
-        });
+      const timSavedSession: Session = await prisma.session.findFirstOrThrow({
+        where: { sid: timSessionId as string },
+      });
 
-      expect(timSavedSession.sess as Prisma.JsonObject).toHaveProperty(
+      expect(JSON.parse(timSavedSession.data)).toHaveProperty(
         'applicant',
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         { id: timBody.id },
@@ -265,7 +275,7 @@ describe('POST /applicants', () => {
   describe('Auth0 Integration', () => {
     const app = getApp(
       authService,
-      new DummyMonitoringService(),
+      new DummyMonitoringService(prisma),
       new DummyEmailService(new DummySESService(), appConfig),
       new DummyUploadService(prisma, new DummyS3Service(), appConfig),
       appConfig,
@@ -519,7 +529,7 @@ describe('DELETE /applicants/me', () => {
     });
     const app = getApp(
       authService,
-      new DummyMonitoringService(),
+      new DummyMonitoringService(prisma),
       new DummyEmailService(new DummySESService(), appConfig),
       new DummyUploadService(prisma, new DummyS3Service(), appConfig),
       appConfig,
@@ -1232,7 +1242,7 @@ describe('POST /applicants/me/resume', () => {
 
     const dummyUploadApp = getApp(
       new DummyAuthService(),
-      new DummyMonitoringService(),
+      new DummyMonitoringService(prisma),
       new DummyEmailService(new DummySESService(), appConfig),
       dummyUploadService,
       appConfig,
@@ -1277,7 +1287,7 @@ describe('POST /applicants/me/resume', () => {
     );
     const dummyUploadApp = getApp(
       new DummyAuthService(),
-      new DummyMonitoringService(),
+      new DummyMonitoringService(prisma),
       new DummyEmailService(new DummySESService(), appConfig),
       dummyUploadService,
       appConfig,
@@ -1333,7 +1343,7 @@ describe('POST /applicants/me/uploads/:id/state', () => {
   );
   const dummyUploadApp = getApp(
     new DummyAuthService(),
-    new DummyMonitoringService(),
+    new DummyMonitoringService(prisma),
     new DummyEmailService(new DummySESService(), appConfig),
     dummyUploadService,
     appConfig,
