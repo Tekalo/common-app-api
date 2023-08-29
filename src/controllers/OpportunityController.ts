@@ -28,6 +28,7 @@ class OpportunityController {
         pitchEssay: submission.pitchEssay,
         employmentType: submission.employmentType,
         roleType: submission.roleType,
+        otherRoleType: submission.otherRoleType,
         positionTitle: submission.positionTitle,
         fullyRemote: submission.fullyRemote,
         salaryRange: submission.salaryRange,
