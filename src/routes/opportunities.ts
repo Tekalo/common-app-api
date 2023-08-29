@@ -1,6 +1,6 @@
 import express, { Request, RequestHandler, Response } from 'express';
 import OpportunityController from '@App/controllers/OpportunityController.js';
-import prisma from '@App/resources/client.js';
+import { prisma } from '@App/resources/client.js';
 import { OpportunityBatchRequestBodySchema } from '@App/resources/schemas/opportunities.js';
 import { OpportunityBatchRequestBody } from '@App/resources/types/opportunities.js';
 import EmailService from '@App/services/EmailService.js';
