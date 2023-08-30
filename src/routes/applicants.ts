@@ -7,9 +7,9 @@ import express, {
 import ApplicantController from '@App/controllers/ApplicantController.js';
 import {
   ApplicantRequestBodySchema,
-  ApplicantSubmissionRequestBodySchema,
   ApplicantDraftSubmissionRequestBodySchema,
   ApplicantStateRequestBodySchema,
+  ApplicantCreateSubmissionRequestBodySchema,
 } from '@App/resources/schemas/applicants.js';
 import {
   ApplicantRequestBody,
@@ -29,18 +29,16 @@ import {
 import { setCookie } from '@App/services/cookieService.js';
 
 import AuthService from '@App/services/AuthService.js';
-import prisma from '@App/resources/client.js';
+import { prisma } from '@App/resources/client.js';
 import Authenticator from '@App/middleware/authenticator.js';
 import { RequestWithJWT } from '@App/resources/types/auth0.js';
 import EmailService from '@App/services/EmailService.js';
-import MonitoringService from '@App/services/MonitoringService.js';
 import UploadService from '@App/services/UploadService.js';
 import { BaseConfig } from '@App/resources/types/shared.js';
 
 const applicantRoutes = (
   authService: AuthService,
   emailService: EmailService,
-  monitoringService: MonitoringService,
   uploadService: UploadService,
   config: BaseConfig,
 ) => {
@@ -50,7 +48,6 @@ const applicantRoutes = (
     authService,
     prisma,
     emailService,
-    monitoringService,
     uploadService,
   );
 
@@ -75,7 +72,8 @@ const applicantRoutes = (
     authenticator.verifyJwtOrCookie.bind(authenticator) as RequestHandler,
     (req: Request, res: Response, next) => {
       const appBody = req.body as ApplicantSubmissionBody;
-      const validatedBody = ApplicantSubmissionRequestBodySchema.parse(appBody);
+      const validatedBody: ApplicantSubmissionBody =
+        ApplicantCreateSubmissionRequestBodySchema.parse(appBody);
       const applicantID = req.auth?.payload.id || req.session.applicant.id;
       applicantController
         .createSubmission(applicantID, validatedBody)
@@ -199,60 +197,56 @@ const applicantRoutes = (
     },
   );
 
-  // DEV ONLY resume upload
-  // TODO: Add these routes to spec.json when we turn them on
-  if (config.env === 'dev') {
-    router.post(
-      '/me/resume',
-      authenticator.verifyJwtOrCookie.bind(authenticator) as RequestHandler,
-      (req: Request, res: Response, next) => {
-        const appBody = req.body as UploadRequestBody;
-        const applicantID = req.auth?.payload.id || req.session.applicant.id;
-        const validatedBody = UploadRequestBodySchema.parse(appBody);
-        applicantController
-          .getResumeUploadUrl(applicantID, validatedBody)
-          .then((result) => {
-            res.status(200).json(result);
-          })
-          .catch((err) => next(err));
-      },
-    );
+  router.post(
+    '/me/resume',
+    authenticator.verifyJwtOrCookie.bind(authenticator) as RequestHandler,
+    (req: Request, res: Response, next) => {
+      const appBody = req.body as UploadRequestBody;
+      const applicantID = req.auth?.payload.id || req.session.applicant.id;
+      const validatedBody = UploadRequestBodySchema.parse(appBody);
+      applicantController
+        .getResumeUploadUrl(applicantID, validatedBody)
+        .then((result) => {
+          res.status(200).json(result);
+        })
+        .catch((err) => next(err));
+    },
+  );
 
-    router.post(
-      '/me/uploads/:id/complete',
-      authenticator.verifyJwtOrCookie.bind(authenticator) as RequestHandler,
-      (req: Request, res: Response, next) => {
-        const appBody = req.body as UploadStateRequestBody;
-        const applicantID = req.auth?.payload.id || req.session.applicant.id;
-        const { status } = UploadStateRequestBodySchema.parse(appBody);
-        const { id } = req.params;
-        applicantController
-          .updateUploadStatus(applicantID, Number(id), status)
-          .then((result) => {
-            res.status(200).json(result);
-          })
-          .catch((err) => next(err));
-      },
-    );
+  router.post(
+    '/me/uploads/:id/complete',
+    authenticator.verifyJwtOrCookie.bind(authenticator) as RequestHandler,
+    (req: Request, res: Response, next) => {
+      const appBody = req.body as UploadStateRequestBody;
+      const applicantID = req.auth?.payload.id || req.session.applicant.id;
+      const { status } = UploadStateRequestBodySchema.parse(appBody);
+      const { id } = req.params;
+      applicantController
+        .updateUploadStatus(applicantID, Number(id), status)
+        .then((result) => {
+          res.status(200).json(result);
+        })
+        .catch((err) => next(err));
+    },
+  );
 
-    // Get applicant's resume (they can only ever have one)
-    // TODO: Allow resume owners to authenticate
-    router.get(
-      '/:id/resume',
-      authenticator
-        .validateJwtRole('matchmaker')
-        .bind(authenticator) as RequestHandler,
-      (req: Request, res: Response, next) => {
-        const applicantID = Number(req.params.id);
-        applicantController
-          .getResumeDownloadUrl(applicantID)
-          .then((result) => {
-            res.status(200).json(result);
-          })
-          .catch((err) => next(err));
-      },
-    );
-  }
+  // Get applicant's resume (they can only ever have one)
+  // TODO: Allow resume owners to authenticate
+  router.get(
+    '/:id/resume',
+    authenticator
+      .validateJwtRole('matchmaker')
+      .bind(authenticator) as RequestHandler,
+    (req: Request, res: Response, next) => {
+      const applicantID = Number(req.params.id);
+      applicantController
+        .getResumeDownloadUrl(applicantID)
+        .then((result) => {
+          res.status(200).json(result);
+        })
+        .catch((err) => next(err));
+    },
+  );
 
   /**
    * ADMIN ENDPOINTS BELOW

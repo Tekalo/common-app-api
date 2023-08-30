@@ -15,6 +15,13 @@ model ApplicantSession {
   expire DateTime
 }
 
+model Session {
+  id        String   @id
+  sid       String   @unique
+  data      String
+  expiresAt   DateTime
+}
+
 model Applicant {
   id                Int                        @id @default(autoincrement())
   auth0Id           String                     @unique
@@ -69,7 +76,6 @@ model ApplicantSubmission {
 
   currentLocation   String
   openToRelocate    String // enum
-  openToRemote      String? // enum // TODO: Remove this field entirely after CAPP-920 is in production
   openToRemoteMulti String[] // enum
 
   desiredSalary            String?
@@ -120,7 +126,6 @@ model ApplicantDraftSubmission {
 
   currentLocation   String?
   openToRelocate    String? // enum
-  openToRemote      String? // enum // TODO: Remove this field entirely after CAPP-920 is in production
   openToRemoteMulti String[] // enum
 
   desiredSalary            String?

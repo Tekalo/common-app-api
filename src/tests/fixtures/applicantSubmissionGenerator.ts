@@ -6,7 +6,8 @@ import { ApplicantSubmissionBody } from '@App/resources/types/applicants.js';
  * @returns
  */
 const getAPIRequestBody = (
-  overrides: Partial<ApplicantSubmissionBody> = {},
+  resumeId: number,
+  overrides?: Partial<ApplicantSubmissionBody>,
 ): ApplicantSubmissionBody => ({
   originTag: '',
   lastRole: 'senior software engineer',
@@ -18,6 +19,7 @@ const getAPIRequestBody = (
   githubUrl: 'https://github.com/bboberson',
   portfolioUrl: 'https://bobsportfolio.com',
   portfolioPassword: 'bobsTheWord',
+  resumeUpload: { id: resumeId },
   resumeUrl: 'myresume.com',
   resumePassword: 'bobsTheWord',
   hoursPerWeek: '40 ish',

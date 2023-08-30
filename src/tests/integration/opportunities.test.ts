@@ -1,9 +1,9 @@
 import request from 'supertest';
-import prisma from '@App/resources/client.js';
 import {
   OpportunitySubmission,
   OpportunityBatchResponseBody,
 } from '@App/resources/types/opportunities.js';
+import { prisma, sessionStore } from '@App/resources/client.js';
 import getDummyApp from '../fixtures/appGenerator.js';
 import { getRandomString } from '../util/helpers.js';
 import authHelper, { TokenOptions } from '../util/auth.js';
@@ -14,6 +14,11 @@ afterEach(async () => {
   await prisma.opportunitySubmission.deleteMany();
   await prisma.opportunityBatch.deleteMany();
 });
+
+afterAll(async () => {
+  await sessionStore.shutdown();
+});
+
 describe('POST /opportunities', () => {
   const submissions: Array<OpportunitySubmission> = [
     {

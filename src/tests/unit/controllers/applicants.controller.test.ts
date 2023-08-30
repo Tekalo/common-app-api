@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import { ApplicantSubmission, Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import ApplicantController from '@App/controllers/ApplicantController.js';
 import CAPPError from '@App/resources/shared/CAPPError.js';
 import EmailService from '@App/services/EmailService.js';
@@ -12,11 +12,14 @@ import {
   Context,
   createMockContext,
 } from '@App/tests/util/context.js';
-import DummyMonitoringService from '@App/tests/fixtures/DummyMonitoringService.js';
 import SESService from '@App/services/SESService.js';
 import DummySESService from '@App/tests/fixtures/DummySesService.js';
 import DummyS3Service from '@App/tests/fixtures/DummyS3Service.js';
 import applicantSubmissionGenerator from '@App/tests/fixtures/applicantSubmissionGenerator.js';
+import {
+  PrismaApplicantSubmissionWithResume,
+  ApplicantSubmissionBody,
+} from '@App/resources/types/applicants.js';
 import { getMockConfig } from '../../util/helpers.js';
 
 let mockCtx: MockContext;
@@ -40,7 +43,6 @@ describe('Applicant Controller', () => {
         new DummyAuthService(),
         ctx.prisma,
         new DummyEmailService(new DummySESService(), getMockConfig()),
-        new DummyMonitoringService(),
         new DummyUploadService(
           ctx.prisma,
           new DummyS3Service(),
@@ -82,7 +84,6 @@ describe('Applicant Controller', () => {
         dummyAuthService,
         ctx.prisma,
         mockEmailService,
-        new DummyMonitoringService(),
         new DummyUploadService(
           ctx.prisma,
           new DummyS3Service(),
@@ -133,7 +134,6 @@ describe('Applicant Controller', () => {
         new DummyAuthService(),
         ctx.prisma,
         new DummyEmailService(new DummySESService(), getMockConfig()),
-        new DummyMonitoringService(),
         new DummyUploadService(
           ctx.prisma,
           new DummyS3Service(),
@@ -166,7 +166,6 @@ describe('Applicant Controller', () => {
         new DummyAuthService(),
         ctx.prisma,
         new DummyEmailService(new DummySESService(), getMockConfig()),
-        new DummyMonitoringService(),
         new DummyUploadService(
           ctx.prisma,
           new DummyS3Service(),
@@ -215,7 +214,6 @@ describe('Applicant Controller', () => {
         new DummyAuthService(),
         ctx.prisma,
         mockEmailService,
-        new DummyMonitoringService(),
         new DummyUploadService(
           ctx.prisma,
           new DummyS3Service(),
@@ -267,7 +265,6 @@ describe('Applicant Controller', () => {
         new DummyAuthService(),
         ctx.prisma,
         emailService,
-        new DummyMonitoringService(),
         new DummyUploadService(
           ctx.prisma,
           new DummyS3Service(),
@@ -318,7 +315,6 @@ describe('Applicant Controller', () => {
         new DummyAuthService(),
         ctx.prisma,
         dummyEmailService,
-        new DummyMonitoringService(),
         new DummyUploadService(
           ctx.prisma,
           new DummyS3Service(),
@@ -379,7 +375,6 @@ describe('Applicant Controller', () => {
         new DummyAuthService(),
         ctx.prisma,
         new DummyEmailService(new DummySESService(), getMockConfig()),
-        new DummyMonitoringService(),
         new DummyUploadService(
           ctx.prisma,
           new DummyS3Service(),
@@ -420,7 +415,6 @@ describe('Applicant Controller', () => {
         dummyAuthService,
         ctx.prisma,
         new DummyEmailService(new DummySESService(), getMockConfig()),
-        new DummyMonitoringService(),
         new DummyUploadService(
           ctx.prisma,
           new DummyS3Service(),
@@ -457,7 +451,6 @@ describe('Applicant Controller', () => {
         new DummyAuthService(),
         ctx.prisma,
         new DummyEmailService(new DummySESService(), mockConfig),
-        new DummyMonitoringService(),
         new DummyUploadService(ctx.prisma, mockS3Service, mockConfig),
       );
       await applicantController.deleteApplicant(1);
@@ -490,7 +483,6 @@ describe('Applicant Controller', () => {
         new DummyAuthService(),
         ctx.prisma,
         new DummyEmailService(new DummySESService(), getMockConfig()),
-        new DummyMonitoringService(),
         new DummyUploadService(ctx.prisma, dummyS3Service, getMockConfig()),
       );
       await expect(
@@ -524,7 +516,6 @@ describe('Applicant Controller', () => {
         new DummyAuthService(),
         ctx.prisma,
         emailService,
-        new DummyMonitoringService(),
         new DummyUploadService(
           ctx.prisma,
           new DummyS3Service(),
@@ -568,7 +559,6 @@ describe('Applicant Controller', () => {
         new DummyAuthService(),
         ctx.prisma,
         new DummyEmailService(new DummySESService(), getMockConfig()),
-        new DummyMonitoringService(),
         new DummyUploadService(
           ctx.prisma,
           new DummyS3Service(),
@@ -609,7 +599,6 @@ describe('Applicant Controller', () => {
         dummyAuthService,
         ctx.prisma,
         new DummyEmailService(new DummySESService(), getMockConfig()),
-        new DummyMonitoringService(),
         new DummyUploadService(
           ctx.prisma,
           new DummyS3Service(),
@@ -646,7 +635,6 @@ describe('Applicant Controller', () => {
         new DummyAuthService(),
         ctx.prisma,
         new DummyEmailService(new DummySESService(), mockConfig),
-        new DummyMonitoringService(),
         new DummyUploadService(ctx.prisma, mockS3Service, mockConfig),
       );
       await applicantController.deleteApplicantForce(1);
@@ -679,7 +667,6 @@ describe('Applicant Controller', () => {
         new DummyAuthService(),
         ctx.prisma,
         new DummyEmailService(new DummySESService(), getMockConfig()),
-        new DummyMonitoringService(),
         new DummyUploadService(ctx.prisma, dummyS3Service, getMockConfig()),
       );
       await expect(
@@ -713,7 +700,6 @@ describe('Applicant Controller', () => {
         new DummyAuthService(),
         ctx.prisma,
         emailService,
-        new DummyMonitoringService(),
         new DummyUploadService(
           ctx.prisma,
           new DummyS3Service(),
@@ -750,7 +736,6 @@ describe('Applicant Controller', () => {
         dummyAuthService,
         ctx.prisma,
         new DummyEmailService(new DummySESService(), getMockConfig()),
-        new DummyMonitoringService(),
         new DummyUploadService(
           ctx.prisma,
           new DummyS3Service(),
@@ -792,7 +777,6 @@ describe('Applicant Controller', () => {
         dummyAuthService,
         ctx.prisma,
         emailService,
-        new DummyMonitoringService(),
         new DummyUploadService(
           ctx.prisma,
           new DummyS3Service(),
@@ -813,7 +797,7 @@ describe('Applicant Controller', () => {
   describe('Applicant Create Submission', () => {
     test('Should send post-submission email after applicant submits application', async () => {
       const applicantId = 666;
-      const resolvedValue: ApplicantSubmission = {
+      const resolvedValue: PrismaApplicantSubmissionWithResume = {
         id: 445566,
         createdAt: new Date(),
         applicantId,
@@ -827,7 +811,11 @@ describe('Applicant Controller', () => {
         githubUrl: 'https://github.com/bboberson',
         portfolioUrl: null,
         portfolioPassword: '',
-        resumeUploadId: null,
+        resumeUploadId: 1,
+        resumeUpload: {
+          id: 1,
+          originalFilename: 'My_Tekalo_Resume.pdf',
+        },
         resumeUrl: 'myportfolio.com',
         resumePassword: null,
         hoursPerWeek: null,
@@ -839,7 +827,6 @@ describe('Applicant Controller', () => {
         ],
         currentLocation: 'Boston, MA',
         openToRelocate: 'not sure',
-        openToRemote: null,
         openToRemoteMulti: ['not sure'],
         desiredSalary: '100,000',
         interestCauses: ['climate change', 'responsible AI'],
@@ -860,7 +847,7 @@ describe('Applicant Controller', () => {
 
       const bobEmail = 'bboberson@schmidtfutures.com';
       mockCtx.prisma.applicant.findUniqueOrThrow.mockResolvedValue({
-        id: 666,
+        id: applicantId,
         phone: '777-777-7777',
         name: 'Bob Boberson',
         email: bobEmail,
@@ -874,6 +861,17 @@ describe('Applicant Controller', () => {
         followUpOptIn: false,
       });
 
+      mockCtx.prisma.upload.findFirst.mockResolvedValue({
+        id: 1,
+        applicantId,
+        originalFilename: 'myresume.pdf',
+        type: 'RESUME',
+        status: 'SUCCESS',
+        createdAt: new Date('2023-02-01'),
+        completedAt: new Date('2023-02-01'),
+        contentType: 'application/pdf',
+      });
+
       const emailService = new EmailService(new SESService(), getMockConfig());
 
       const mockEmailSpy = jest.spyOn(emailService, 'sendEmail');
@@ -882,7 +880,6 @@ describe('Applicant Controller', () => {
         new DummyAuthService(),
         ctx.prisma,
         emailService,
-        new DummyMonitoringService(),
         new DummyUploadService(
           ctx.prisma,
           new DummyS3Service(),
@@ -892,7 +889,7 @@ describe('Applicant Controller', () => {
 
       await applicantController.createSubmission(
         applicantId,
-        applicantSubmissionGenerator.getAPIRequestBody(),
+        applicantSubmissionGenerator.getAPIRequestBody(applicantId),
       );
 
       const expectedEmail =
@@ -900,7 +897,7 @@ describe('Applicant Controller', () => {
       expect(mockEmailSpy).toHaveBeenCalledWith(expectedEmail);
       mockEmailSpy.mockRestore();
     });
-    test('Should throw error if verifyUploadOwner() does not return successfully', async () => {
+    test('Should throw error if getApplicantUploadOrThrow() does not return successfully', async () => {
       const dummyUploadService = new DummyUploadService(
         ctx.prisma,
         new DummyS3Service(),
@@ -913,11 +910,10 @@ describe('Applicant Controller', () => {
         new DummyAuthService(),
         ctx.prisma,
         new DummyEmailService(new DummySESService(), getMockConfig()),
-        new DummyMonitoringService(),
         dummyUploadService,
       );
-      const requestBody = applicantSubmissionGenerator.getAPIRequestBody();
-      requestBody.resumeUploadId = 1;
+      const requestBody: ApplicantSubmissionBody =
+        applicantSubmissionGenerator.getAPIRequestBody(1);
 
       await expect(
         applicantController.createSubmission(1, requestBody),
@@ -931,6 +927,7 @@ describe('Applicant Controller', () => {
     });
 
     test('should throw error if upload belonging to the specified applicant does not have the status "SUCCESS"', async () => {
+      const applicantId = 1;
       const dummyUploadService = new DummyUploadService(
         ctx.prisma,
         new DummyS3Service(),
@@ -939,7 +936,7 @@ describe('Applicant Controller', () => {
       dummyUploadService.getApplicantUploadOrThrow = () =>
         Promise.resolve({
           id: 1,
-          applicantId: 1,
+          applicantId,
           status: 'FAILURE',
           createdAt: new Date(),
           type: 'RESUME',
@@ -951,14 +948,13 @@ describe('Applicant Controller', () => {
         new DummyAuthService(),
         ctx.prisma,
         new DummyEmailService(new DummySESService(), getMockConfig()),
-        new DummyMonitoringService(),
         dummyUploadService,
       );
-      const requestBody = applicantSubmissionGenerator.getAPIRequestBody();
-      requestBody.resumeUploadId = 1;
+      const requestBody =
+        applicantSubmissionGenerator.getAPIRequestBody(applicantId);
 
       await expect(
-        applicantController.createSubmission(1, requestBody),
+        applicantController.createSubmission(applicantId, requestBody),
       ).rejects.toEqual(
         new CAPPError({
           title: 'Applicant Submission Creation Error',
@@ -999,7 +995,6 @@ describe('Applicant Controller', () => {
         new DummyAuthService(),
         ctx.prisma,
         new DummyEmailService(new DummySESService(), mockConfig),
-        new DummyMonitoringService(),
         uploadService,
       );
 
@@ -1041,7 +1036,6 @@ describe('Applicant Controller', () => {
         new DummyAuthService(),
         ctx.prisma,
         new DummyEmailService(new DummySESService(), mockConfig),
-        new DummyMonitoringService(),
         uploadService,
       );
 

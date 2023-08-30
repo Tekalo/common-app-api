@@ -1,5 +1,10 @@
 import { BaseConfig } from '@App/resources/types/shared.js';
 
+/** These are helpers for unit tests as well as integration tests.
+ * Functions added here should not rely on integrations or shared context (like prisma)
+ * that are not desired in unit tests.
+ */
+
 /**
  * Prepend this function to tests that you want to conditionally run
  * Example: itif(1 == 1)('should run test',() => {});

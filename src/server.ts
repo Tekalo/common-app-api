@@ -6,7 +6,7 @@ import EmailService from './services/EmailService.js';
 import MonitoringService from './services/MonitoringService.js';
 import SESService from './services/SESService.js';
 import DummyAuthService from './tests/fixtures/DummyAuthService.js';
-import prisma from './resources/client.js';
+import { prisma } from './resources/client.js';
 import S3Service from './services/S3Service.js';
 import UploadService from './services/UploadService.js';
 
@@ -17,7 +17,7 @@ const authService = config.isLoadTest
 
 const app = getApp(
   authService,
-  new MonitoringService(),
+  new MonitoringService(prisma),
   new EmailService(new SESService(), config),
   new UploadService(prisma, new S3Service(), config),
   config,
@@ -25,7 +25,11 @@ const app = getApp(
 
 const port = +app.get('port');
 
-app.listen(port, () => {
-  // eslint-disable-next-line no-console
+const server = app.listen(port, () => {
   logger.info(`server running at http://localhost:${port}`);
+});
+
+server.on('SIGTERM', () => {
+  logger.info('SIGTERM signal received. Closing server.');
+  server.close();
 });
