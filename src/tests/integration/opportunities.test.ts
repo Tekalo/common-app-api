@@ -1,10 +1,12 @@
 import request from 'supertest';
 import prisma from '@App/resources/client.js';
-import { OpportunityBatchRequestBody, OpportunitySubmission, OpportunityBatchResponseBody } from '@App/resources/types/opportunities.js';
+import {
+  OpportunitySubmission,
+  OpportunityBatchResponseBody,
+} from '@App/resources/types/opportunities.js';
 import getDummyApp from '../fixtures/appGenerator.js';
 import { getRandomString } from '../util/helpers.js';
-import { TokenOptions } from '../util/auth.js';
-import authHelper from '../util/auth.js';
+import authHelper, { TokenOptions } from '../util/auth.js';
 
 const dummyApp = getDummyApp();
 
@@ -211,44 +213,35 @@ describe('DELETE /opportunities/batch/:id', () => {
     submissions,
   };
 
-
   it('should return 401 without valid JWT', async () => {
-    await request(dummyApp).delete('/opportunities/batch/1').expect(401);
+    const { body: body1 }: { body: OpportunityBatchResponseBody } =
+      await request(dummyApp)
+        .post('/opportunities/batch')
+        .send(oppBatchPayload)
+        .expect(200);
+    await request(dummyApp)
+      .delete(`/opportunities/batch/${body1.id}`)
+      .expect(401);
   });
 
-  it('JWT authentication with admin role',async () => {
+  it('JWT authentication with admin role', async () => {
     const randomString = getRandomString();
     const partialTokenOptions: TokenOptions = {
       roles: ['admin'],
     };
     const token = await authHelper.getToken(
       `bboberson${randomString}@gmail.com`,
-      partialTokenOptions
+      partialTokenOptions,
     );
 
-    const { body: body1 }: { body: OpportunityBatchResponseBody } = await request(dummyApp)
-      .post('/opportunities/batch')
-      .send(oppBatchPayload)
-      .expect(200);
+    const { body: body1 }: { body: OpportunityBatchResponseBody } =
+      await request(dummyApp)
+        .post('/opportunities/batch')
+        .send(oppBatchPayload)
+        .expect(200);
     await request(dummyApp)
       .delete(`/opportunities/batch/${body1.id}`)
       .set('Authorization', `Bearer ${token}`)
       .expect(200);
-  });
-
-  it('JWT authentication without admin role',async () => {
-    const randomString = getRandomString();
-    const token = await authHelper.getToken(
-      `bboberson${randomString}@gmail.com`,
-    );
-
-    const { body: body1 }: { body: OpportunityBatchResponseBody } = await request(dummyApp)
-      .post('/opportunities/batch')
-      .send(oppBatchPayload)
-      .expect(200);
-    await request(dummyApp)
-      .delete(`/opportunities/batch/${body1.id}`)
-      .set('Authorization', `Bearer ${token}`)
-      .expect(401);
   });
 });

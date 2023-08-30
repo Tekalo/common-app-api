@@ -28,13 +28,11 @@ import {
 import applicantSubmissionGenerator from '../fixtures/applicantSubmissionGenerator.js';
 import DummyAuthService from '../fixtures/DummyAuthService.js';
 import DummyMonitoringService from '../fixtures/DummyMonitoringService.js';
-import authHelper from '../util/auth.js';
+import authHelper, { TokenOptions } from '../util/auth.js';
 import DummyEmailService from '../fixtures/DummyEmailService.js';
 import DummySESService from '../fixtures/DummySesService.js';
 import DummyUploadService from '../fixtures/DummyUploadService.js';
 import DummyS3Service from '../fixtures/DummyS3Service.js';
-
-import { TokenOptions } from '../util/auth.js';
 
 let testUserIDs: Array<string> = [];
 const authService = new AuthService();
@@ -1130,16 +1128,18 @@ describe('GET /applicants/me', () => {
 });
 
 describe('GET /applicants/:id', () => {
-  it('JWT authentication with admin role',async () => {
+  it('JWT authentication with admin role', async () => {
     const randomString = getRandomString();
     const partialTokenOptions: TokenOptions = {
       roles: ['admin'],
     };
     const token = await authHelper.getToken(
       `bboberson${randomString}@gmail.com`,
-      partialTokenOptions
+      partialTokenOptions,
     );
-    const { body: body1 }: { body: ApplicantResponseBody } = await request(dummyApp)
+    const { body: body1 }: { body: ApplicantResponseBody } = await request(
+      dummyApp,
+    )
       .post('/applicants')
       .send({
         name: 'Bob Boberson',
@@ -1149,40 +1149,17 @@ describe('GET /applicants/:id', () => {
         acceptedTerms: true,
         acceptedPrivacy: true,
       });
-      const { body: body2 } = await request(dummyApp)
-        .get(`/applicants/${body1.id}`)
-        .set('Authorization', `Bearer ${token}`)
-        .expect(200);
-      // refer to ApplicantResponseBodySchema
-      expect(body2).toHaveProperty('id');
-      expect(body2).toHaveProperty('name');
-      expect(body2).toHaveProperty('email');
-      expect(body2).toHaveProperty('isPaused');
+    const { body: body2 } = await request(dummyApp)
+      .get(`/applicants/${body1.id}`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200);
+    // refer to ApplicantResponseBodySchema
+    expect(body2).toHaveProperty('id');
+    expect(body2).toHaveProperty('name');
+    expect(body2).toHaveProperty('email');
+    expect(body2).toHaveProperty('isPaused');
   });
 
-  it('JWT authentication without admin role',async () => {
-    const randomString = getRandomString();
-    const token = await authHelper.getToken(
-      `bboberson${randomString}@gmail.com`,
-    );
-    const { body }: { body: ApplicantResponseBody } = await request(dummyApp)
-      .post('/applicants')
-      .send({
-        name: 'Bob Boberson',
-        email: `bboberson${randomString}@gmail.com`,
-        preferredContact: 'email',
-        searchStatus: 'active',
-        acceptedTerms: true,
-        acceptedPrivacy: true,
-      });
-      await request(dummyApp)
-        .get(`/applicants/${body.id}`)
-        .set('Authorization', `Bearer ${token}`)
-        .expect(401);
-  });
-});
-
-describe('GET /applicants/:id', () => {
   it('should return 401 without valid JWT', async () => {
     const randomString = getRandomString();
     const { body }: { body: ApplicantResponseBody } = await request(dummyApp)
@@ -1200,16 +1177,18 @@ describe('GET /applicants/:id', () => {
 });
 
 describe('DELETE /applicants/:id', () => {
-  it('JWT authentication with admin role',async () => {
+  it('JWT authentication with admin role', async () => {
     const randomString = getRandomString();
     const partialTokenOptions: TokenOptions = {
       roles: ['admin'],
     };
     const token = await authHelper.getToken(
       `bboberson${randomString}@gmail.com`,
-      partialTokenOptions
+      partialTokenOptions,
     );
-    const { body: body1 }: { body: ApplicantResponseBody } = await request(dummyApp)
+    const { body: body1 }: { body: ApplicantResponseBody } = await request(
+      dummyApp,
+    )
       .post('/applicants')
       .send({
         name: 'Bob Boberson',
@@ -1219,35 +1198,12 @@ describe('DELETE /applicants/:id', () => {
         acceptedTerms: true,
         acceptedPrivacy: true,
       });
-      await request(dummyApp)
-        .delete(`/applicants/${body1.id}`)
-        .set('Authorization', `Bearer ${token}`)
-        .expect(200);
+    await request(dummyApp)
+      .delete(`/applicants/${body1.id}`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200);
   });
 
-  it('JWT authentication without admin role',async () => {
-    const randomString = getRandomString();
-    const token = await authHelper.getToken(
-      `bboberson${randomString}@gmail.com`,
-    );
-    const { body }: { body: ApplicantResponseBody } = await request(dummyApp)
-      .post('/applicants')
-      .send({
-        name: 'Bob Boberson',
-        email: `bboberson${randomString}@gmail.com`,
-        preferredContact: 'email',
-        searchStatus: 'active',
-        acceptedTerms: true,
-        acceptedPrivacy: true,
-      });
-      await request(dummyApp)
-        .delete(`/applicants/${body.id}`)
-        .set('Authorization', `Bearer ${token}`)
-        .expect(401);
-  });
-});
-
-describe('DELETE /applicants/:id', () => {
   it('should return 401 without valid JWT', async () => {
     const randomString = getRandomString();
     const { body }: { body: ApplicantResponseBody } = await request(dummyApp)
