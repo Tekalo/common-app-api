@@ -22,7 +22,7 @@ concurrency:
 jobs:
   test:
     name: Run tests
-    uses: ./.github/workflows/test.yml
+    uses: ./.github/workflows/job-test.yml
     secrets: inherit
 
   build_and_push:

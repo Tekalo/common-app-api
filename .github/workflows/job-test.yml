@@ -1,4 +1,4 @@
-name: Test (reusable)
+name: Job - Test
 
 on:
   workflow_call:
