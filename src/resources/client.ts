@@ -17,7 +17,7 @@ const prisma = new PrismaClient({
 const authErrorHandler = {
   handleError: () => {
     logger.error('Password auth failed; shutting down');
-    process.exit(1);
+    process.kill(process.pid, 'SIGTERM');
   },
 };
 
