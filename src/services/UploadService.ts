@@ -1,6 +1,5 @@
-import { Prisma, PrismaClient, Upload } from '@prisma/client';
+import { PrismaClient, Upload } from '@prisma/client';
 import { ACCEPTED_CONTENT_TYPES } from '@App/resources/schemas/uploads.js';
-import CAPPError from '@App/resources/shared/CAPPError.js';
 import { BaseConfig } from '@App/resources/types/shared.js';
 
 import S3Service from './S3Service.js';
@@ -24,35 +23,16 @@ class UploadService {
     applicantId: number,
     contentType: string,
   ): Promise<Upload> {
-    try {
-      return await this.prisma.upload.create({
-        data: {
-          originalFilename,
-          applicantId,
-          type: 'RESUME',
-          status: 'REQUESTED',
-          contentType,
-        },
-      });
-    } catch (e) {
-      if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        throw new CAPPError(
-          {
-            title: 'Upload Error',
-            detail: 'Failed to save resume to database',
-            status: 400,
-          },
-          e instanceof Error ? { cause: e } : undefined,
-        );
-      }
-      throw new CAPPError(
-        {
-          title: 'Upload Error',
-          detail: 'Failed to upload resume',
-        },
-        e instanceof Error ? { cause: e } : undefined,
-      );
-    }
+    const upload = await this.prisma.upload.create({
+      data: {
+        originalFilename,
+        applicantId,
+        type: 'RESUME',
+        status: 'REQUESTED',
+        contentType,
+      },
+    });
+    return upload;
   }
 
   /**
