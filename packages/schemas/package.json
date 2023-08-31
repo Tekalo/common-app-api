@@ -1,0 +1,23 @@
+{
+  "name": "@capp/schemas",
+  "version": "1.0.0",
+  "description": "",
+  "main": "build/index.js",
+  "types": "src/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "check": "tsc --noEmit",
+    "build": "swc src --copy-files --out-dir build",
+    "container-build": "docker compose run -w /api/packages/schemas --rm api pnpm build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "swc": "1.0.11",
+    "typescript": "5.1.6"
+  },
+  "dependencies": {
+    "zod": "3.22.2"
+  }
+}

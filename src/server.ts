@@ -25,6 +25,11 @@ const app = getApp(
 
 const port = +app.get('port');
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
   logger.info(`server running at http://localhost:${port}`);
+});
+
+server.on('SIGTERM', () => {
+  logger.info('SIGTERM signal received. Closing server.');
+  server.close();
 });

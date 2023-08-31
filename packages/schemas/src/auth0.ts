@@ -25,7 +25,7 @@ const Auth0ExpressConfigSchema = z.object({
   cacheMaxAge: z.number().optional(),
 });
 
-export {
+export default {
   ShellUserPayloadSchema,
   Auth0ApiConfigSchema,
   Auth0ExpressConfigSchema,
