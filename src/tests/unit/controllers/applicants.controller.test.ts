@@ -37,10 +37,10 @@ describe('Applicant Controller', () => {
     test('Should return error if Auth0 fails to create user', async () => {
       const dummyAuthService = new DummyAuthService();
       dummyAuthService.createUser = () => {
-        throw new Error('Auth0 Creation Error');
+        throw new Error('RuhRoh! failed to create Auth0 user');
       };
       const applicantController = new ApplicantController(
-        new DummyAuthService(),
+        dummyAuthService,
         ctx.prisma,
         new DummyEmailService(new DummySESService(), getMockConfig()),
         new DummyUploadService(
@@ -59,8 +59,8 @@ describe('Applicant Controller', () => {
           acceptedPrivacy: true,
         }),
       ).rejects.toHaveProperty(
-        'problem.detail',
-        'Unknown error in creating applicant',
+        'message',
+        'RuhRoh! failed to create Auth0 user',
       );
     });
     test('Should return 401 if user with email already exists in Auth0 but not in database', async () => {
@@ -123,13 +123,13 @@ describe('Applicant Controller', () => {
         }),
       );
     });
+
     test('Should return 500 error if Prisma fails with unknown error', async () => {
-      mockCtx.prisma.applicant.create.mockRejectedValue(
-        new Prisma.PrismaClientKnownRequestError('ERROR', {
-          code: '101',
-          clientVersion: '1.0',
-        }),
-      );
+      const mockError = new Prisma.PrismaClientKnownRequestError('ERROR', {
+        code: '101',
+        clientVersion: '1.0',
+      });
+      mockCtx.prisma.applicant.create.mockRejectedValue(mockError);
       const applicantController = new ApplicantController(
         new DummyAuthService(),
         ctx.prisma,
@@ -150,10 +150,7 @@ describe('Applicant Controller', () => {
           acceptedTerms: true,
           acceptedPrivacy: true,
         }),
-      ).rejects.toHaveProperty(
-        'problem.detail',
-        'Database error encountered when creating new user',
-      );
+      ).rejects.toEqual(mockError);
     });
     test('Should return 409 error if Prisma fails because applicant with email already exists in database', async () => {
       mockCtx.prisma.applicant.create.mockRejectedValue(
@@ -291,6 +288,7 @@ describe('Applicant Controller', () => {
       expect(mockEmailSpy).toHaveBeenCalledWith(expectedEmail);
       mockEmailSpy.mockRestore();
     });
+
     test('Should not send welcome email after applicant registration users authenticated via social-provider', async () => {
       mockCtx.prisma.applicant.create.mockResolvedValue({
         id: 1,
@@ -365,12 +363,11 @@ describe('Applicant Controller', () => {
         isPaused: false,
         followUpOptIn: false,
       });
-      mockCtx.prisma.$transaction.mockRejectedValue(
-        new Prisma.PrismaClientKnownRequestError('ERROR', {
-          code: '101',
-          clientVersion: '1.0',
-        }),
-      );
+      const mockError = new Prisma.PrismaClientKnownRequestError('ERROR', {
+        code: '101',
+        clientVersion: '1.0',
+      });
+      mockCtx.prisma.$transaction.mockRejectedValue(mockError);
       const applicantController = new ApplicantController(
         new DummyAuthService(),
         ctx.prisma,
@@ -381,11 +378,8 @@ describe('Applicant Controller', () => {
           getMockConfig(),
         ),
       );
-      await expect(
-        applicantController.deleteApplicant(3),
-      ).rejects.toHaveProperty(
-        'problem.detail',
-        'Database error encountered when deleting applicant',
+      await expect(applicantController.deleteApplicant(3)).rejects.toEqual(
+        mockError,
       );
     });
     test('Should return error if Auth0 fails to delete applicant', async () => {
@@ -549,12 +543,11 @@ describe('Applicant Controller', () => {
         isPaused: false,
         followUpOptIn: false,
       });
-      mockCtx.prisma.applicant.delete.mockRejectedValue(
-        new Prisma.PrismaClientKnownRequestError('ERROR', {
-          code: '101',
-          clientVersion: '1.0',
-        }),
-      );
+      const mockError = new Prisma.PrismaClientKnownRequestError('ERROR', {
+        code: '101',
+        clientVersion: '1.0',
+      });
+      mockCtx.prisma.applicant.delete.mockRejectedValue(mockError);
       const applicantController = new ApplicantController(
         new DummyAuthService(),
         ctx.prisma,
@@ -565,11 +558,8 @@ describe('Applicant Controller', () => {
           getMockConfig(),
         ),
       );
-      await expect(
-        applicantController.deleteApplicantForce(3),
-      ).rejects.toHaveProperty(
-        'problem.detail',
-        'Database error encountered when deleting applicant',
+      await expect(applicantController.deleteApplicantForce(3)).rejects.toEqual(
+        mockError,
       );
     });
     test('Should return error if Auth0 fails to delete applicant', async () => {
@@ -861,7 +851,7 @@ describe('Applicant Controller', () => {
         followUpOptIn: false,
       });
 
-      mockCtx.prisma.upload.findFirst.mockResolvedValue({
+      mockCtx.prisma.upload.findFirstOrThrow.mockResolvedValue({
         id: 1,
         applicantId,
         originalFilename: 'myresume.pdf',
@@ -903,8 +893,12 @@ describe('Applicant Controller', () => {
         new DummyS3Service(),
         getMockConfig(),
       );
+      const mockError = new Prisma.PrismaClientKnownRequestError(
+        'Upload not found',
+        { code: 'P123', clientVersion: '123' },
+      );
       dummyUploadService.getApplicantUploadOrThrow = () => {
-        throw new CAPPError({ title: 'Upload Error' });
+        throw mockError;
       };
       const applicantController = new ApplicantController(
         new DummyAuthService(),
@@ -917,13 +911,7 @@ describe('Applicant Controller', () => {
 
       await expect(
         applicantController.createSubmission(1, requestBody),
-      ).rejects.toEqual(
-        new CAPPError({
-          title: 'Applicant Submission Creation Error',
-          detail: 'Invalid upload provided',
-          status: 400,
-        }),
-      );
+      ).rejects.toEqual(mockError);
     });
 
     test('should throw error if upload belonging to the specified applicant does not have the status "SUCCESS"', async () => {
@@ -957,8 +945,8 @@ describe('Applicant Controller', () => {
         applicantController.createSubmission(applicantId, requestBody),
       ).rejects.toEqual(
         new CAPPError({
-          title: 'Applicant Submission Creation Error',
-          detail: 'Invalid upload provided',
+          title: 'Upload Error',
+          detail: 'Upload status must be SUCCESS',
           status: 400,
         }),
       );

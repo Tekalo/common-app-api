@@ -12,8 +12,11 @@ const errorHandler = (
   if (res.headersSent) {
     return next(err);
   }
-
-  const problem: Problem = err.problem || {};
+  const problem: Problem = err.problem || {
+    title: 'Error',
+    detail: 'Error encountered during request',
+    status: 500,
+  };
   if (err.message === 'Unauthorized' || err.status === 401) {
     problem.title = 'Unauthorized';
     problem.status = 401;

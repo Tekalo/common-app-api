@@ -20,7 +20,6 @@ import {
 } from '@App/resources/types/uploads.js';
 import AuthService from '@App/services/AuthService.js';
 import CAPPError from '@App/resources/shared/CAPPError.js';
-import { Problem } from '@App/resources/types/shared.js';
 import EmailService from '@App/services/EmailService.js';
 import MonitoringService from '@App/services/MonitoringService.js';
 import UploadService from '@App/services/UploadService.js';
@@ -77,21 +76,11 @@ class ApplicantController {
           status: 409,
         });
       }
-      try {
-        auth0User = await this.auth0Service.createUser({
-          name: data.name,
-          email: data.email,
-        });
-      } catch (e) {
-        throw new CAPPError(
-          {
-            title: 'Auth0 User Exists',
-            detail: 'Something went wrong in creating user',
-            status: 500,
-          },
-          e instanceof Error ? { cause: e } : undefined,
-        );
-      }
+      // try {
+      auth0User = await this.auth0Service.createUser({
+        name: data.name,
+        email: data.email,
+      });
       auth0UserId = auth0User?.user_id;
     }
     if (!auth0UserId) {
@@ -142,7 +131,7 @@ class ApplicantController {
       };
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        // P2002 indicates unique constraint failed (in our case, either email or auth0id)
+        // P2002 indicates unique constraint failed(in our case, either email or auth0id)
         if (e.code === 'P2002') {
           throw new CAPPError(
             {
@@ -153,23 +142,8 @@ class ApplicantController {
             e instanceof Error ? { cause: e } : undefined,
           );
         }
-        throw new CAPPError(
-          {
-            title: 'User Creation Error',
-            detail: 'Database error encountered when creating new user',
-            status: 400,
-          },
-          e instanceof Error ? { cause: e } : undefined,
-        );
       }
-      throw new CAPPError(
-        {
-          title: 'User Creation Error',
-          detail: 'Unknown error in creating applicant',
-          status: 500,
-        },
-        e instanceof Error ? { cause: e } : undefined,
-      );
+      throw e;
     }
   }
 
@@ -187,62 +161,40 @@ class ApplicantController {
     if (resumeUpload) {
       await this.validateResumeUpload(applicantId, resumeUpload.id);
     }
-    try {
-      const applicantSubmission = await this.prisma.applicantSubmission.create({
-        data: {
-          ...restOfSubmission,
-          openToRemoteMulti: openToRemoteMulti || [],
-          otherCauses: otherCauses || [],
-          resumeUploadId: resumeUpload?.id,
-          applicantId,
-        },
-        include: {
-          resumeUpload: { select: { id: true, originalFilename: true } },
-        },
-      });
-      // remove resumeUploadId from response
-      const { resumeUploadId, ...submissionVals } = applicantSubmission;
+    const applicantSubmission = await this.prisma.applicantSubmission.create({
+      data: {
+        ...restOfSubmission,
+        openToRemoteMulti: openToRemoteMulti || [],
+        otherCauses: otherCauses || [],
+        resumeUploadId: resumeUpload?.id,
+        applicantId,
+      },
+      include: {
+        resumeUpload: { select: { id: true, originalFilename: true } },
+      },
+    });
+    // remove resumeUploadId from response
+    const { resumeUploadId, ...submissionVals } = applicantSubmission;
 
-      try {
-        const applicant = await this.prisma.applicant.findUniqueOrThrow({
-          where: { id: applicantId },
-        });
-        const submissionEmail =
-          this.emailService.generateApplicantPostSubmitEmail(applicant.email);
-        await this.emailService.sendEmail(submissionEmail);
-      } catch (e) {
-        MonitoringService.logError(
-          new CAPPError(
-            { title: 'Failed to send applicant post-submission email' },
-            e instanceof Error ? { cause: e } : undefined,
-          ),
-        );
-      }
-      return ApplicantCreateSubmissionResponseBodySchema.parse({
-        submission: submissionVals,
-        isFinal: true,
+    try {
+      const applicant = await this.prisma.applicant.findUniqueOrThrow({
+        where: { id: applicantId },
       });
+      const submissionEmail =
+        this.emailService.generateApplicantPostSubmitEmail(applicant.email);
+      await this.emailService.sendEmail(submissionEmail);
     } catch (e) {
-      if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        throw new CAPPError(
-          {
-            title: 'Applicant Submission Creation Error',
-            detail:
-              'Database error encountered when creating applicant submission',
-            status: 400,
-          },
+      MonitoringService.logError(
+        new CAPPError(
+          { title: 'Failed to send applicant post-submission email' },
           e instanceof Error ? { cause: e } : undefined,
-        );
-      }
-      throw new CAPPError(
-        {
-          title: 'Applicant Submission Creation Error',
-          detail: 'Unknown error in creating applicant submission',
-          status: 500,
-        },
-        e instanceof Error ? { cause: e } : undefined,
+        ),
       );
     }
+    return ApplicantCreateSubmissionResponseBodySchema.parse({
+      submission: submissionVals,
+      isFinal: true,
+    });
   }
 
   async pauseApplicant(applicantId: number, pauseStatus: boolean) {
@@ -253,28 +205,20 @@ class ApplicantController {
       });
       return { id, isPaused };
     } catch (e) {
-      if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        const problem: Problem = {
-          title: 'Applicant Pause Error',
-          detail: 'Database error encountered when pausing applicant status',
-          status: 400,
-        };
-        if (e.code === 'P2025') {
-          problem.detail = 'Applicant not found';
-          problem.status = 404;
-        }
+      if (
+        e instanceof Prisma.PrismaClientKnownRequestError &&
+        e.code === 'P2025'
+      ) {
         throw new CAPPError(
-          problem,
+          {
+            title: 'Applicant not found',
+            detail: 'Database error encountered when pausing applicant status',
+            status: 404,
+          },
           e instanceof Error ? { cause: e } : undefined,
         );
       }
-      throw new CAPPError(
-        {
-          title: 'Applicant Pause Error',
-          detail: 'Error when pausing applicant status',
-        },
-        e instanceof Error ? { cause: e } : undefined,
-      );
+      throw e;
     }
   }
 
@@ -290,73 +234,43 @@ class ApplicantController {
       });
       return applicant;
     } catch (e) {
-      if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        const problem: Problem = {
-          title: 'Applicant Update Error',
-          detail: 'Database error encountered when updating applicant',
-          status: 400,
-        };
-        if (e.code === 'P2025') {
-          problem.detail = 'Applicant not found';
-          problem.status = 404;
-        }
+      if (
+        e instanceof Prisma.PrismaClientKnownRequestError &&
+        e.code === 'P2025'
+      ) {
         throw new CAPPError(
-          problem,
+          {
+            title: 'Applicant Update Error',
+            detail: 'Applicant not found',
+            status: 404,
+          },
           e instanceof Error ? { cause: e } : undefined,
         );
       }
-      throw new CAPPError(
-        {
-          title: 'Applicant Update Error',
-          detail: 'Error when updating applicant',
-        },
-        e instanceof Error ? { cause: e } : undefined,
-      );
+      throw e;
     }
   }
 
   async deleteApplicant(applicantId: number) {
-    let applicantToDelete;
-    try {
-      applicantToDelete = await this.prisma.applicant.findUniqueOrThrow({
-        where: { id: applicantId },
-      });
-      await this.prisma.$transaction([
-        // Create deletion request
-        this.prisma.applicantDeletionRequests.create({
-          data: {
-            email: applicantToDelete.email,
-            applicantId: applicantToDelete.id,
-            acceptedTerms: applicantToDelete.acceptedTerms,
-            acceptedPrivacy: applicantToDelete.acceptedPrivacy,
-            followUpOptIn: applicantToDelete.followUpOptIn,
-          },
-        }),
-        // Delete from applicant table
-        this.prisma.applicant.delete({ where: { id: applicantId } }),
-      ]);
-    } catch (e) {
-      if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        throw new CAPPError(
-          {
-            title: 'Applicant Deletion Error',
-            detail: 'Database error encountered when deleting applicant',
-            status: 400,
-          },
-          e instanceof Error ? { cause: e } : undefined,
-        );
-      }
-      throw new CAPPError(
-        {
-          title: 'Applicant Deletion Error',
-          detail: 'Error when deleting applicant',
+    const applicantToDelete = await this.prisma.applicant.findUniqueOrThrow({
+      where: { id: applicantId },
+    });
+    await this.prisma.$transaction([
+      // Create deletion request
+      this.prisma.applicantDeletionRequests.create({
+        data: {
+          email: applicantToDelete.email,
+          applicantId: applicantToDelete.id,
+          acceptedTerms: applicantToDelete.acceptedTerms,
+          acceptedPrivacy: applicantToDelete.acceptedPrivacy,
+          followUpOptIn: applicantToDelete.followUpOptIn,
         },
-        e instanceof Error ? { cause: e } : undefined,
-      );
-    }
+      }),
+      // Delete from applicant table
+      this.prisma.applicant.delete({ where: { id: applicantId } }),
+    ]);
     const { email, auth0Id } = applicantToDelete;
     await this.auth0Service.deleteUsers(email, auth0Id);
-
     await this.uploadService.deleteApplicantResumes(applicantId);
     const deletionEmail = this.emailService.generateApplicantDeletionEmail(
       applicantToDelete.email,
@@ -370,29 +284,17 @@ class ApplicantController {
   // and sends deletion complete email
   async deleteAuth0OnlyApplicant(auth0Id: string) {
     const applicantToDelete = await this.auth0Service.getUser(auth0Id);
-
     // Create deletion request
-    try {
-      const neverDate = new Date('2000-01-01');
-      await this.prisma.applicantDeletionRequests.create({
-        data: {
-          email: applicantToDelete.email || auth0Id,
-          applicantId: 0,
-          acceptedTerms: neverDate,
-          acceptedPrivacy: neverDate,
-          followUpOptIn: false,
-        },
-      });
-    } catch (e) {
-      throw new CAPPError(
-        {
-          title: 'Applicant Deletion Error',
-          detail: `Unable to create applicant deletion request for Auth0 User ${auth0Id}`,
-        },
-        e instanceof Error ? { cause: e } : undefined,
-      );
-    }
-
+    const neverDate = new Date('2000-01-01');
+    await this.prisma.applicantDeletionRequests.create({
+      data: {
+        email: applicantToDelete.email || auth0Id,
+        applicantId: 0,
+        acceptedTerms: neverDate,
+        acceptedPrivacy: neverDate,
+        followUpOptIn: false,
+      },
+    });
     if (applicantToDelete?.email) {
       const { email } = applicantToDelete;
       await this.auth0Service.deleteUsers(email, auth0Id);
@@ -409,32 +311,11 @@ class ApplicantController {
   // Deletes specified applicant without making deletion request entry or sending emails
   // Meant to be used by E2E tests and admins
   async deleteApplicantForce(applicantId: number) {
-    let applicantToDelete;
-    try {
-      applicantToDelete = await this.prisma.applicant.findUniqueOrThrow({
-        where: { id: applicantId },
-      });
-      // Delete from applicant table
-      await this.prisma.applicant.delete({ where: { id: applicantId } });
-    } catch (e) {
-      if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        throw new CAPPError(
-          {
-            title: 'Applicant Deletion Error',
-            detail: 'Database error encountered when deleting applicant',
-            status: 400,
-          },
-          e instanceof Error ? { cause: e } : undefined,
-        );
-      }
-      throw new CAPPError(
-        {
-          title: 'Applicant Deletion Error',
-          detail: 'Error when deleting applicant',
-        },
-        e instanceof Error ? { cause: e } : undefined,
-      );
-    }
+    const applicantToDelete = await this.prisma.applicant.findUniqueOrThrow({
+      where: { id: applicantId },
+    });
+    // Delete from applicant table
+    await this.prisma.applicant.delete({ where: { id: applicantId } });
     const { email, auth0Id } = applicantToDelete;
     await this.auth0Service.deleteUsers(email, auth0Id);
     await this.uploadService.deleteApplicantResumes(applicantId);
@@ -442,27 +323,16 @@ class ApplicantController {
   }
 
   async validateResumeUpload(applicantId: number, resumeUploadId: number) {
-    try {
-      const resume = await this.uploadService.getApplicantUploadOrThrow(
-        applicantId,
-        resumeUploadId,
-      );
-      if (resume.status !== 'SUCCESS') {
-        throw new CAPPError({
-          title: 'Upload Error',
-          detail: "Upload status must be 'SUCCESS'",
-          status: 400,
-        });
-      }
-    } catch (e) {
-      throw new CAPPError(
-        {
-          title: 'Applicant Submission Creation Error',
-          detail: 'Invalid upload provided',
-          status: 400,
-        },
-        e instanceof Error ? { cause: e } : undefined,
-      );
+    const resume = await this.uploadService.getApplicantUploadOrThrow(
+      applicantId,
+      resumeUploadId,
+    );
+    if (resume.status !== 'SUCCESS') {
+      throw new CAPPError({
+        title: 'Upload Error',
+        detail: "Upload status must be 'SUCCESS'",
+        status: 400,
+      });
     }
   }
 
@@ -479,52 +349,29 @@ class ApplicantController {
     if (resumeUpload) {
       await this.validateResumeUpload(applicantId, resumeUpload.id);
     }
-    try {
-      const draftSubmission = await this.prisma.applicantDraftSubmission.upsert(
-        {
-          create: {
-            ...restOfSubmission,
-            openToRemoteMulti: openToRemoteMulti || undefined,
-            otherCauses: otherCauses || [],
-            resumeUploadId: resumeUpload?.id,
-            applicantId,
-          },
-          update: {
-            ...restOfSubmission,
-            openToRemoteMulti: openToRemoteMulti || undefined,
-            otherCauses: otherCauses || [],
-            resumeUploadId: resumeUpload?.id || null,
-          },
-          include: {
-            resumeUpload: { select: { id: true, originalFilename: true } },
-          },
-          where: { applicantId },
-        },
-      );
-      // remove resumeUploadId from response
-      const { resumeUploadId, ...draftSubmissionVals } = draftSubmission;
-      return { submission: draftSubmissionVals, isFinal: false };
-    } catch (e) {
-      if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        throw new CAPPError(
-          {
-            title: 'Applicant Draft Submission Creation Error',
-            detail:
-              'Database error encountered when creating applicant draft submission',
-            status: 400,
-          },
-          e instanceof Error ? { cause: e } : undefined,
-        );
-      }
-      throw new CAPPError(
-        {
-          title: 'Applicant Draft Submission Creation Error',
-          detail: 'Unknown error in creating applicant draft submission',
-          status: 500,
-        },
-        e instanceof Error ? { cause: e } : undefined,
-      );
-    }
+    // try {
+    const draftSubmission = await this.prisma.applicantDraftSubmission.upsert({
+      create: {
+        ...restOfSubmission,
+        openToRemoteMulti: openToRemoteMulti || undefined,
+        otherCauses: otherCauses || [],
+        resumeUploadId: resumeUpload?.id,
+        applicantId,
+      },
+      update: {
+        ...restOfSubmission,
+        openToRemoteMulti: openToRemoteMulti || undefined,
+        otherCauses: otherCauses || [],
+        resumeUploadId: resumeUpload?.id || null,
+      },
+      include: {
+        resumeUpload: { select: { id: true, originalFilename: true } },
+      },
+      where: { applicantId },
+    });
+    // remove resumeUploadId from response
+    const { resumeUploadId, ...draftSubmissionVals } = draftSubmission;
+    return { submission: draftSubmissionVals, isFinal: false };
   }
 
   async getMySubmissions(id: number): Promise<ApplicantGetSubmissionResponse> {

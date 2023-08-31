@@ -65,17 +65,9 @@ class UploadService {
     applicantId: number,
     uploadId: number,
   ): Promise<Upload> {
-    const applicantUpload = await this.prisma.upload.findFirst({
+    const applicantUpload = await this.prisma.upload.findFirstOrThrow({
       where: { id: uploadId, applicantId },
     });
-    if (!applicantUpload) {
-      throw new CAPPError({
-        title: 'Upload Error',
-        detail:
-          'Upload does not exist or does not belong to authenticated applicant',
-        status: 400,
-      });
-    }
     return applicantUpload;
   }
 

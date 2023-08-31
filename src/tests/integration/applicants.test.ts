@@ -464,7 +464,7 @@ describe('POST /applicants/me/submissions', () => {
       expect(body).toHaveProperty('title', 'Validation Error');
     });
 
-    it('should return 400 error resumeId is not a valid upload id', async () => {
+    it('should return 500 error resumeId is not a valid upload id', async () => {
       const randomString = getRandomString();
       const token = await authHelper.getToken(
         `bboberson${randomString}@gmail.com`,
@@ -488,11 +488,11 @@ describe('POST /applicants/me/submissions', () => {
         .post('/applicants/me/submissions')
         .send({ ...testSubmission, resumeUpload: { id: 9876432 } })
         .set('Authorization', `Bearer ${token}`)
-        .expect(400);
+        .expect(500);
       expect(body).toEqual({
-        title: 'Applicant Submission Creation Error',
-        detail: 'Invalid upload provided',
-        status: 400,
+        title: 'Error',
+        detail: 'Error encountered during request',
+        status: 500,
       });
     });
   });
