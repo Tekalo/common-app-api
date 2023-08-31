@@ -1,5 +1,5 @@
+import { Auth0 } from '@capp/schemas';
 import { z } from 'zod';
-import Auth0 from './auth0.js';
 
 const ConfigSchema = z.object({
   env: z.string(),
@@ -19,4 +19,4 @@ const ConfigSchema = z.object({
   webUrl: z.string(),
 });
 
-export default { ConfigSchema };
+export default ConfigSchema;

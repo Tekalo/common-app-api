@@ -1,4 +1,4 @@
-import { Config } from '@capp/schemas';
+import ConfigSchema from '@App/resources/schemas/shared.js';
 import {
   Auth0ApiConfig,
   Auth0ExpressConfig,
@@ -6,7 +6,7 @@ import {
 import { BaseConfig } from '@App/resources/types/shared.js';
 
 function loadConfig(): BaseConfig {
-  const validatedConfig = Config.ConfigSchema.parse({
+  const validatedConfig = ConfigSchema.parse({
     env: process.env.APP_ENV || 'dev',
     port: Number(process.env.PORT) || 3000,
     auth0: {
