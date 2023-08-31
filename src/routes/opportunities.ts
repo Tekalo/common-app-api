@@ -1,7 +1,7 @@
 import express, { Request, RequestHandler, Response } from 'express';
 import OpportunityController from '@App/controllers/OpportunityController.js';
+import { Opportunities } from '@capp/schemas';
 import { prisma } from '@App/resources/client.js';
-import { OpportunityBatchRequestBodySchema } from '@App/resources/schemas/opportunities.js';
 import { OpportunityBatchRequestBody } from '@App/resources/types/opportunities.js';
 import EmailService from '@App/services/EmailService.js';
 import Authenticator from '@App/middleware/authenticator.js';
@@ -20,7 +20,8 @@ const opportunitiesRoutes = (
 
   router.post('/batch', (req: Request, res: Response, next) => {
     const appBody = req.body as OpportunityBatchRequestBody;
-    const validatedBody = OpportunityBatchRequestBodySchema.parse(appBody);
+    const validatedBody =
+      Opportunities.OpportunityBatchRequestBodySchema.parse(appBody);
     opportunityController
       .createOpportunityBatch(validatedBody)
       .then((result) => {
