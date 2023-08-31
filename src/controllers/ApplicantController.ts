@@ -329,8 +329,8 @@ class ApplicantController {
     );
     if (resume.status !== 'SUCCESS') {
       throw new CAPPError({
-        title: 'Upload Error',
-        detail: "Upload status must be 'SUCCESS'",
+        title: 'Resume Upload Error',
+        detail: "Resume upload status must be 'SUCCESS'",
         status: 400,
       });
     }

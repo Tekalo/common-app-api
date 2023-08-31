@@ -945,8 +945,8 @@ describe('Applicant Controller', () => {
         applicantController.createSubmission(applicantId, requestBody),
       ).rejects.toEqual(
         new CAPPError({
-          title: 'Upload Error',
-          detail: 'Upload status must be SUCCESS',
+          title: 'Resume Upload Error',
+          detail: 'Resume upload status must be SUCCESS',
           status: 400,
         }),
       );
