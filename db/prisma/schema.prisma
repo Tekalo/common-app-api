@@ -9,12 +9,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model ApplicantSession {
-  sid    String   @id
-  sess   Json
-  expire DateTime
-}
-
 model Session {
   id        String   @id
   sid       String   @unique
