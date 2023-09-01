@@ -3,3 +3,4 @@ build
 .pnpm-store
 scripts/auth0/*
 auth0
+packages/**/*.d.ts

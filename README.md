@@ -104,6 +104,14 @@ If you want to merge changes to `schema.prisma` into main, you must create a new
 pnpm prisma:migrate
 ```
 
+### Packages
+
+The `/packages` directory is where any additional modules will be stored that are not meant to be part of the larger API module.
+
+All packages within this directory will also be included in the build when `pnpm build` is executed.
+
+When developing within this directory, it may be useful to use [`pnpm link`](https://pnpm.io/cli/link) to link the local version of this directory to the parent-level API.
+
 ### Testing
 
 We use `Jest` and `Supertest` as our testing frameworks. `Supertest` is used for

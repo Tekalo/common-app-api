@@ -5,12 +5,7 @@ import express, {
   Response,
 } from 'express';
 import ApplicantController from '@App/controllers/ApplicantController.js';
-import {
-  ApplicantRequestBodySchema,
-  ApplicantDraftSubmissionRequestBodySchema,
-  ApplicantStateRequestBodySchema,
-  ApplicantCreateSubmissionRequestBodySchema,
-} from '@App/resources/schemas/applicants.js';
+import { Applicants, Uploads } from '@capp/schemas';
 import {
   ApplicantRequestBody,
   ApplicantSubmissionBody,
@@ -18,10 +13,6 @@ import {
   ApplicantStateBody,
   ApplicantUpdateBody,
 } from '@App/resources/types/applicants.js';
-import {
-  UploadRequestBodySchema,
-  UploadStateRequestBodySchema,
-} from '@App/resources/schemas/uploads.js';
 import {
   UploadRequestBody,
   UploadStateRequestBody,
@@ -43,7 +34,6 @@ const applicantRoutes = (
   config: BaseConfig,
 ) => {
   const router = express.Router();
-
   const applicantController = new ApplicantController(
     authService,
     prisma,
@@ -57,7 +47,7 @@ const applicantRoutes = (
 
   router.post('/', (req: Request, res: Response, next) => {
     const appBody = req.body as ApplicantRequestBody;
-    const validatedBody = ApplicantRequestBodySchema.parse(appBody);
+    const validatedBody = Applicants.ApplicantRequestBodySchema.parse(appBody);
     applicantController
       .createApplicant(validatedBody, req.auth)
       .then((result) => {
@@ -73,7 +63,7 @@ const applicantRoutes = (
     (req: Request, res: Response, next) => {
       const appBody = req.body as ApplicantSubmissionBody;
       const validatedBody: ApplicantSubmissionBody =
-        ApplicantCreateSubmissionRequestBodySchema.parse(appBody);
+        Applicants.ApplicantCreateSubmissionRequestBodySchema.parse(appBody);
       const applicantID = req.auth?.payload.id || req.session.applicant.id;
       applicantController
         .createSubmission(applicantID, validatedBody)
@@ -91,7 +81,8 @@ const applicantRoutes = (
       const appBody = req.body as ApplicantStateBody;
       const reqWithAuth = req as RequestWithJWT;
       const applicantID = reqWithAuth.auth.payload.id;
-      const { pause } = ApplicantStateRequestBodySchema.parse(appBody);
+      const { pause } =
+        Applicants.ApplicantStateRequestBodySchema.parse(appBody);
       applicantController
         // applicantID type assertion because our middlware setApplicantId() guarantees an applicant ID is set
         .pauseApplicant(applicantID as number, pause)
@@ -156,7 +147,7 @@ const applicantRoutes = (
       const appBody = req.body as ApplicantDraftSubmissionBody;
       const applicantID = req.auth?.payload.id || req.session.applicant.id; // token applicant ID
       const validatedBody =
-        ApplicantDraftSubmissionRequestBodySchema.parse(appBody);
+        Applicants.ApplicantDraftSubmissionRequestBodySchema.parse(appBody);
       applicantController
         .createOrUpdateDraftSubmission(applicantID, validatedBody)
         .then((result) => {
@@ -203,7 +194,7 @@ const applicantRoutes = (
     (req: Request, res: Response, next) => {
       const appBody = req.body as UploadRequestBody;
       const applicantID = req.auth?.payload.id || req.session.applicant.id;
-      const validatedBody = UploadRequestBodySchema.parse(appBody);
+      const validatedBody = Uploads.UploadRequestBodySchema.parse(appBody);
       applicantController
         .getResumeUploadUrl(applicantID, validatedBody)
         .then((result) => {
@@ -219,7 +210,7 @@ const applicantRoutes = (
     (req: Request, res: Response, next) => {
       const appBody = req.body as UploadStateRequestBody;
       const applicantID = req.auth?.payload.id || req.session.applicant.id;
-      const { status } = UploadStateRequestBodySchema.parse(appBody);
+      const { status } = Uploads.UploadStateRequestBodySchema.parse(appBody);
       const { id } = req.params;
       applicantController
         .updateUploadStatus(applicantID, Number(id), status)
