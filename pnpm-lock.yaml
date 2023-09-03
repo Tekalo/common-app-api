@@ -60,8 +60,8 @@ importers:
         specifier: ^3.0.3
         version: 3.0.3(jest@29.6.4)(typescript@5.2.2)
       jose:
-        specifier: 4.14.4
-        version: 4.14.4
+        specifier: 4.14.5
+        version: 4.14.5
       pino:
         specifier: 8.15.0
         version: 8.15.0
@@ -3905,7 +3905,7 @@ packages:
     resolution: {integrity: sha512-C8avk1VfopX3zjqfTLg9EuYFjNRdmXdYncBoZGmjxQzGx7cQRiupeWV5r3G2SYGzx0gDw1uyu1cdJrmILOvd3g==}
     engines: {node: ^12.19.0 || ^14.15.0 || ^16.13.0 || ^18.12.0 || ^20.2.0}
     dependencies:
-      jose: 4.14.4
+      jose: 4.14.5
     dev: false
 
   /express-session@1.17.3:
@@ -5170,8 +5170,8 @@ packages:
       - supports-color
       - ts-node
 
-  /jose@4.14.4:
-    resolution: {integrity: sha512-j8GhLiKmUAh+dsFXlX1aJCbt5KMibuKb+d7j1JaOJG6s2UjX1PQlW+OKB/sD4a/5ZYF4RcmYmLSndOoU3Lt/3g==}
+  /jose@4.14.5:
+    resolution: {integrity: sha512-56ns1XlSI8d5V0t7hilPu8dMbE4YIwrTJU6e7bV1Abyu6oel4tSc4YmD742MoWV3U+vn7O0WlKpinzu2DP0HWw==}
     dev: false
 
   /joycon@3.1.1:
@@ -5257,7 +5257,7 @@ packages:
       '@types/express': 4.17.17
       '@types/jsonwebtoken': 9.0.2
       debug: 4.3.4
-      jose: 4.14.4
+      jose: 4.14.5
       limiter: 1.1.5
       lru-memoizer: 2.2.0
     transitivePeerDependencies:
