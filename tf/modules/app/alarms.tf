@@ -1,4 +1,5 @@
 # RDS
+# Alerts when the average CPU Utilization for the DB is over 85% for 10 minutes
 resource "aws_cloudwatch_metric_alarm" "rds_instance0_cpu" {
   alarm_name          = "capp-${var.env}-rds-instance0-cpu"
   alarm_description   = "Average CPU for ${var.env} DB: ${aws_rds_cluster_instance.instance0.identifier}"
@@ -18,6 +19,7 @@ resource "aws_cloudwatch_metric_alarm" "rds_instance0_cpu" {
   insufficient_data_actions = [aws_sns_topic.capp_api_alerts.arn]
 }
 
+# Alerts when the average read latency for the DB is over 250ms for 5 minutes
 resource "aws_cloudwatch_metric_alarm" "rds_read_latency" {
   alarm_name                = "capp-${var.env}-rds-read-latency"
   comparison_operator       = "GreaterThanOrEqualToThreshold"
@@ -38,7 +40,7 @@ resource "aws_cloudwatch_metric_alarm" "rds_read_latency" {
   treat_missing_data        = "notBreaching"
   
 }
-
+# Alerts when the average write latency for the DB is over 250ms for 5 minutes
 resource "aws_cloudwatch_metric_alarm" "rds_write_latency" {
   alarm_name                = "capp-${var.env}-rds-write-latency"
   comparison_operator       = "GreaterThanOrEqualToThreshold"
@@ -62,6 +64,7 @@ resource "aws_cloudwatch_metric_alarm" "rds_write_latency" {
 }
 
 # Application ELB Target Group
+# Alerts when there are no healthy hosts in the load balancer target group
 resource "aws_cloudwatch_metric_alarm" "api_targetgroup_healthy_hosts_count" {
   alarm_name          = "capp-${var.env}-api-healthy-hosts"
   alarm_description   = "Ensures at least 1 healthy host in the TargetGroup"
@@ -82,6 +85,7 @@ resource "aws_cloudwatch_metric_alarm" "api_targetgroup_healthy_hosts_count" {
   insufficient_data_actions = [aws_sns_topic.capp_api_alerts.arn]
 }
 
+# Alerts when the sum of 5xx responses is greater than 10 for 5 minutes
 resource "aws_cloudwatch_metric_alarm" "api_targetgroup_500_errors" {
   alarm_name          = "capp-${var.env}-api-500-errors"
   alarm_description   = "Checks for the sum of HTTP 500 responses"
@@ -103,6 +107,7 @@ resource "aws_cloudwatch_metric_alarm" "api_targetgroup_500_errors" {
   treat_missing_data        = "notBreaching"
 }
 
+# Sends a slack message when there are either unusually high or unusually low requests coming in to the ELB
 resource "aws_cloudwatch_metric_alarm" "api_targetgroup_requests_anomaly" {
   alarm_name                = "capp-${var.env}-application-lb-requests"
   comparison_operator       = "LessThanLowerOrGreaterThanUpperThreshold"
@@ -138,6 +143,7 @@ resource "aws_cloudwatch_metric_alarm" "api_targetgroup_requests_anomaly" {
   actions_enabled           = var.alarms_enabled
 }
 
+# Alerts when the average response time of the ELB is over 1 second for 5 minutes
 resource "aws_cloudwatch_metric_alarm" "api_targetgroup_latency" {
   alarm_name                = "capp-${var.env}-application-lb-latency"
   comparison_operator       = "GreaterThanOrEqualToThreshold"
@@ -159,7 +165,7 @@ resource "aws_cloudwatch_metric_alarm" "api_targetgroup_latency" {
   insufficient_data_actions = [aws_sns_topic.capp_api_alerts.arn]
   treat_missing_data        = "notBreaching"
 }
-
+# Sends a message to slack when there are on average more than 50 4xx errors over 5 minutes
 resource "aws_cloudwatch_metric_alarm" "api_targetgroup_4XX_errors" {
   alarm_name                = "capp-${var.env}-api-4XX-errors"
   alarm_description         = "API 4xx errors are elevated"
