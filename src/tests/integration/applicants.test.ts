@@ -1158,7 +1158,7 @@ describe('GET /applicants/me', () => {
 });
 
 describe('GET /applicants/:id', () => {
-  it('should NOT allow a user without an admin JWT to retrieve applicant information', async () => {
+  it('should return a 401 status code and NOT allow a user without an admin JWT to retrieve applicant information', async () => {
     const randomString = getRandomString();
     const { body }: { body: ApplicantResponseBody } = await request(dummyApp)
       .post('/applicants')
@@ -1173,7 +1173,7 @@ describe('GET /applicants/:id', () => {
     await request(dummyApp).get(`/applicants/${body.id}`).expect(401);
   });
 
-  it('should allow a user with an admin JWT to retrieve applicant information', async () => {
+  it('should return a 200 status code and allow a user with an admin JWT to retrieve applicant information', async () => {
     const randomString = getRandomString();
     const partialTokenOptions: TokenOptions = {
       roles: ['admin'],
@@ -1207,7 +1207,7 @@ describe('GET /applicants/:id', () => {
 });
 
 describe('DELETE /applicants/:id', () => {
-  it('should NOT allow a user without an admin JWT to delete applicant information', async () => {
+  it('should return a 401 status code and NOT allow a user without an admin JWT to delete applicant information', async () => {
     const randomString = getRandomString();
     const { body }: { body: ApplicantResponseBody } = await request(dummyApp)
       .post('/applicants')
@@ -1222,7 +1222,7 @@ describe('DELETE /applicants/:id', () => {
     await request(dummyApp).delete(`/applicants/${body.id}`).expect(401);
   });
 
-  it('should allow a user with an admin JWT to delete applicant information', async () => {
+  it('should return a 200 status code and allow a user with an admin JWT to delete applicant information', async () => {
     const randomString = getRandomString();
     const partialTokenOptions: TokenOptions = {
       roles: ['admin'],

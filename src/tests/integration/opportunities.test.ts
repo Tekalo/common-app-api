@@ -19,11 +19,11 @@ afterAll(async () => {
 });
 
 describe('DELETE /opportunities/batch/:id', () => {
-  it('should NOT allow a user without an admin JWT to delete opportunity batch information', async () => {
+  it('should return a 401 status code and NOT allow a user without an admin JWT to delete opportunity batch information', async () => {
     await request(dummyApp).delete('/opportunities/batch/1').expect(401);
   });
 
-  it('should allow a user with an admin JWT to delete opportunity batch information', async () => {
+  it('should return a 200 status code and allow a user with an admin JWT to delete opportunity batch information', async () => {
     const randomString = getRandomString();
     const partialTokenOptions: TokenOptions = {
       roles: ['admin'],
