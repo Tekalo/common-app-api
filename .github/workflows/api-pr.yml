@@ -22,7 +22,7 @@ permissions:
 # This concurrency setting means that we'll never run more than one build per PR branch, even
 # with rapid-fire commits.
 concurrency:
-  group: '${github.workflow}-${github.ref}'
+  group: '${{ github.workflow }}-${{ github.ref }}'
   cancel-in-progress: true
 
 jobs:
