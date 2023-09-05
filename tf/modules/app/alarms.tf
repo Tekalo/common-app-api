@@ -100,6 +100,7 @@ resource "aws_cloudwatch_metric_alarm" "api_targetgroup_500_errors" {
   alarm_actions             = [aws_sns_topic.capp_api_alerts.arn]
   ok_actions                = [aws_sns_topic.capp_api_alerts.arn]
   insufficient_data_actions = [aws_sns_topic.capp_api_alerts.arn]
+  treat_missing_data        = "notBreaching"
 }
 
 resource "aws_cloudwatch_metric_alarm" "api_targetgroup_requests_anomaly" {
