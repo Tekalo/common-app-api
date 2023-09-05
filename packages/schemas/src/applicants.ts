@@ -162,7 +162,7 @@ const ApplicantDraftSubmissionResponseBodySchema = z.object({
   isFinal: z.boolean(),
 });
 
-export {
+export default {
   ApplicantRequestBodySchema,
   ApplicantResponseBodySchema,
   ApplicantCreateSubmissionRequestBodySchema,

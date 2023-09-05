@@ -1,10 +1,9 @@
-import { UploadStatus as PrismaUploadStatus } from '@prisma/client';
 import { z } from 'zod';
 
 /**
  * Zod schemas for file uploads
  */
-const UploadStatus = z.nativeEnum(PrismaUploadStatus);
+const UploadStatus = z.enum(['REQUESTED', 'SUCCESS', 'FAILURE']);
 const ACCEPTED_CONTENT_TYPES: Map<string, string> = new Map<string, string>([
   ['application/pdf', 'pdf'],
   [
@@ -39,7 +38,7 @@ const UploadResponseBodySchema = z.object({
   signedLink: z.string(),
 });
 
-export {
+export default {
   ACCEPTED_CONTENT_TYPES,
   UploadRequestBodySchema,
   UploadResponseBodySchema,

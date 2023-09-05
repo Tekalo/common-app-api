@@ -1,0 +1,23 @@
+{
+  // how our import statements are transpiled from TS to JS
+  // EX: using commonJS will add Object.defineProperty(exports, "__esModule".. to our compiled JS
+  "module": {
+    "type": "es6"
+  },
+  "jsc": {
+    // All of the code that is transpiled EXCEPT for the import/export statements
+    "target": "es2022",
+    // These options ensure that our transpiler emits JS that is compatible with the
+    // node runtime we are expecting. At time of writing, node 18.
+    // This should have all the NodeNext features in it, since we are using
+    // NodeNext in our tsconfig, which at time of writing points to Node v18
+    "experimental": {
+      "keepImportAssertions": true
+    },
+    "parser": {
+      "syntax": "typescript",
+      "dynamicImport": false
+    }
+  },
+  "isModule": true
+}

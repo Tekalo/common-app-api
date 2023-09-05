@@ -96,7 +96,7 @@ const OpportunityBatchResponseBodySchema = z.object({
   orgType: z.string(),
 });
 
-export {
+export default {
   OpportunityBatchRequestBodySchema,
   OpportunitySubmissionSchema,
   OpportunityBatchResponseBodySchema,
