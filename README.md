@@ -58,6 +58,12 @@ We also make use of a `.env` file to hold local environment variables.
 pnpm prisma:update
 ```
 
+4\. Build the additional modules in the packages directory
+
+```bash
+pnpm container-build
+```
+
 ### Running the dev server
 
 Run the following command to launch the API (and a dev postgres instance) in Docker containers in dev mode:
