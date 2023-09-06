@@ -90,7 +90,7 @@ pnpm container-install pino # same as: pnpm install pino
 pnpm container-install --save-dev pino-pretty # same as: pnpm install --save-dev pino-pretty
 ```
 
-If you do run the default install command by accident, deleting your `.pnpm-store` and `node_modules` folders should bring you back to a good state.
+If you do accidentally run `pnpm install`, deleting your `.pnpm-store` and `node_modules` folders should bring you back to a good state.
 
 ## Database
 
