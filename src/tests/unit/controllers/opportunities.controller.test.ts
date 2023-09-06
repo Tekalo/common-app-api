@@ -107,7 +107,6 @@ describe('Opportunity Controller', () => {
         type: 'other',
         size: '500+',
         impactAreas: ['Clean Energy'],
-        impactAreasOther: ['Making Food'],
         eoe: false,
       },
       contact: {
