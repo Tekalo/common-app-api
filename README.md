@@ -11,11 +11,13 @@ The Common App API is used to support the Common App Application, a tool for mat
 
 ### Setting up a dev environment
 
-1\. To install dependencies, instead of running `pnpm install` (see [important note on node_modules](#important-note-on-node_modules) below), run:
+1\. To install dependencies run:
 
 ```bash
 pnpm container-install
 ```
+
+For why we use this instead of the default install command, see [important note on node_modules](#important-note-on-node_modules) below.
 
 2\. Create a root level `.env` file, and in it put:
 
@@ -76,7 +78,7 @@ You can now access the API at <http://localhost:3000>. The API container uses `n
 
 ### Important note on node_modules
 
-The node_modules directory is mounted into the container and all node commands should be run in the container. As far as possible, the pnpm scripts will use docker to run linting, beautification, build, etc in the container. **Never run `pnpm install` outside the container, as it could result in incorrect architecture packages being installed and logged to pnpm-lock. Use `pnpm container-install` instead, which runs the install in the container**
+The node_modules directory is mounted into the container and all node commands should be run in the container. As far as possible, the pnpm scripts will use docker to run linting, beautification, build, etc in the container. **Never run `pnpm install` outside the container, as it could result in incorrect architecture packages being installed and logged to pnpm-lock. Use `pnpm container-install` instead, which runs the install in the container.**
 
 To add new packages, you can use:
 
@@ -87,6 +89,8 @@ pnpm container-install -- args to pnpm install
 pnpm container-install pino # same as: pnpm install pino
 pnpm container-install --save-dev pino-pretty # same as: pnpm install --save-dev pino-pretty
 ```
+
+If you do accidentally run `pnpm install` or otherwise mess up your node modules, deleting your `.pnpm-store` and `node_modules` folders should bring you back to a good state.
 
 ## Database
 
