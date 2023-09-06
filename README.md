@@ -11,7 +11,7 @@ The Common App API is used to support the Common App Application, a tool for mat
 
 ### Setting up a dev environment
 
-1\. To install dependencies, instead of running `pnpm install` (see [important note on node_modules](#important-note-on-node_modules) below), run:
+1\. To install dependencies, instead of running the default install command (see [important note on node_modules](#important-note-on-node_modules) below), run:
 
 ```bash
 pnpm container-install
@@ -76,7 +76,7 @@ You can now access the API at <http://localhost:3000>. The API container uses `n
 
 ### Important note on node_modules
 
-The node_modules directory is mounted into the container and all node commands should be run in the container. As far as possible, the pnpm scripts will use docker to run linting, beautification, build, etc in the container. **Never run `pnpm install` outside the container, as it could result in incorrect architecture packages being installed and logged to pnpm-lock. Use `pnpm container-install` instead, which runs the install in the container**
+The node_modules directory is mounted into the container and all node commands should be run in the container. As far as possible, the pnpm scripts will use docker to run linting, beautification, build, etc in the container. **Never run `pnpm install` outside the container, as it could result in incorrect architecture packages being installed and logged to pnpm-lock. Use `pnpm container-install` instead, which runs the install in the container.** If you do run the default install command by accident, deleting your `.pnpm-store` and `node_modules` folders should bring you back to a good state.
 
 To add new packages, you can use:
 
