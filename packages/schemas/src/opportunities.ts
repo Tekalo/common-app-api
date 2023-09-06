@@ -71,6 +71,7 @@ const OpportunityBatchRequestBodySchema = z.object({
     type: OrgType,
     size: OrgSize,
     impactAreas: z.array(z.string().max(255)),
+    impactAreasOther: z.array(z.string().max(255)).optional(),
     eoe: z.boolean(),
   }),
   contact: z.object({
@@ -91,6 +92,7 @@ const OpportunityBatchResponseBodySchema = z.object({
   contactName: z.string(),
   contactPhone: z.string().nullable(),
   impactAreas: z.array(z.string()),
+  impactAreasOther: z.array(z.string()).optional(),
   orgName: z.string(),
   orgSize: z.string(),
   orgType: z.string(),
