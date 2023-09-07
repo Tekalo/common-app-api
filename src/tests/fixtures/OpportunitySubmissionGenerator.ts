@@ -36,6 +36,7 @@ const oppBatchPayload = {
     type: '501(c)(3)',
     size: '<20',
     impactAreas: ['Clean Energy', 'Education'],
+    impactAreasOther: ['Feeding the Community', 'Space for Socializing'],
     eoe: true,
   },
   contact: {
