@@ -34,7 +34,6 @@ jobs:
     environment:
       name: ${{ inputs.env }}
       url: https://capp-api.${{ inputs.env }}.apps.futurestech.cloud
-    # concurrency: ${{ inputs.env }}
     runs-on: ubuntu-latest
     defaults:
       run:
