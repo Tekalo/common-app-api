@@ -76,7 +76,6 @@ class ApplicantController {
           status: 409,
         });
       }
-      // try {
       auth0User = await this.auth0Service.createUser({
         name: data.name,
         email: data.email,
@@ -349,7 +348,6 @@ class ApplicantController {
     if (resumeUpload) {
       await this.validateResumeUpload(applicantId, resumeUpload.id);
     }
-    // try {
     const draftSubmission = await this.prisma.applicantDraftSubmission.upsert({
       create: {
         ...restOfSubmission,
