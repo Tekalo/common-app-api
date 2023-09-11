@@ -1,9 +1,13 @@
 import request from 'supertest';
 import { prisma, sessionStore } from '@App/resources/client.js';
-import { OpportunitySubmission } from '@App/resources/types/opportunities.js';
+import { OpportunityBatchResponseBody } from '@App/resources/types/opportunities.js';
+import opportunitySubmissionGenerator from '../fixtures/OpportunitySubmissionGenerator.js';
 import getDummyApp from '../fixtures/appGenerator.js';
+import { getRandomString } from '../util/helpers.js';
+import authHelper, { TokenOptions } from '../util/auth.js';
 
 const dummyApp = getDummyApp();
+const { oppBatchPayload } = opportunitySubmissionGenerator;
 
 afterEach(async () => {
   await prisma.opportunitySubmission.deleteMany();
@@ -14,47 +18,34 @@ afterAll(async () => {
   await sessionStore.shutdown();
 });
 
+describe('DELETE /opportunities/batch/:id', () => {
+  it('should return a 401 status code and NOT allow a user without an admin JWT to delete opportunity batch information', async () => {
+    await request(dummyApp).delete('/opportunities/batch/1').expect(401);
+  });
+
+  it('should return a 200 status code and allow a user with an admin JWT to delete opportunity batch information', async () => {
+    const randomString = getRandomString();
+    const partialTokenOptions: TokenOptions = {
+      roles: ['admin'],
+    };
+    const token = await authHelper.getToken(
+      `bboberson${randomString}@gmail.com`,
+      partialTokenOptions,
+    );
+
+    const { body: body1 }: { body: OpportunityBatchResponseBody } =
+      await request(dummyApp)
+        .post('/opportunities/batch')
+        .send(oppBatchPayload)
+        .expect(200);
+    await request(dummyApp)
+      .delete(`/opportunities/batch/${body1.id}`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200);
+  });
+});
+
 describe('POST /opportunities', () => {
-  const submissions: Array<OpportunitySubmission> = [
-    {
-      fullyRemote: false,
-      roleType: 'software engineer - backend',
-      positionTitle: 'Flipper 1',
-      location: 'Burgerville',
-      paid: true,
-      pitchEssay: 'Come flip burgers for Bob',
-      source: 'Commercial',
-      employmentType: 'full-time employee',
-      salaryRange: '20-30$/hr',
-      desiredHoursPerWeek: '40',
-      desiredStartDate: new Date('2023-12-01'),
-      desiredYoe: ['0-2', '3-5', '6-8', '9-12'],
-      desiredSkills: ['react', 'sketch'],
-      desiredOtherSkills: ['flipping burgers', 'flipping houses'],
-      visaSponsorship: 'no',
-      similarStaffed: true,
-      desiredImpactExp:
-        'We would love to find someone who has non-profit fast food experience.',
-    },
-  ];
-  const oppBatchPayload = {
-    acceptedPrivacy: true,
-    referenceAttribution: 'other',
-    referenceAttributionOther: 'reddit',
-    organization: {
-      name: 'Bobs Burgers Foundation',
-      type: '501(c)(3)',
-      size: '<20',
-      impactAreas: ['Clean Energy', 'Education'],
-      eoe: true,
-    },
-    contact: {
-      name: 'Bob Boberson',
-      email: 'bboberson@gmail.com',
-      phone: '+918-867-5309',
-    },
-    submissions,
-  };
   it('should create a new batch of opportunities', async () => {
     const { body } = await request(dummyApp)
       .post('/opportunities/batch')
@@ -69,6 +60,7 @@ describe('POST /opportunities', () => {
       contactPhone: '+918-867-5309',
       equalOpportunityEmployer: true,
       impactAreas: ['Clean Energy', 'Education'],
+      impactAreasOther: ['Feeding the Community', 'Space for Socializing'],
       orgName: 'Bobs Burgers Foundation',
       orgSize: '<20',
       orgType: '501(c)(3)',
@@ -168,11 +160,5 @@ describe('POST /opportunities', () => {
       .send([missingOrgType])
       .expect(400);
     expect(body).toHaveProperty('title', 'Validation Error');
-  });
-});
-
-describe('DELETE /opportunities/batch/:id', () => {
-  it('should return 401 without valid JWT', async () => {
-    await request(dummyApp).delete('/opportunities/batch/1').expect(401);
   });
 });

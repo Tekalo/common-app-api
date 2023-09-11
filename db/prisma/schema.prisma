@@ -13,7 +13,7 @@ model Session {
   id        String   @id
   sid       String   @unique
   data      String
-  expiresAt   DateTime
+  expiresAt DateTime
 }
 
 model Applicant {
@@ -140,6 +140,7 @@ model OpportunityBatch {
   orgType                   String // enum
   orgSize                   String // enum
   impactAreas               String[] // enum
+  impactAreasOther          String[]
   contactName               String
   contactEmail              String
   contactPhone              String?
