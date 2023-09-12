@@ -90,12 +90,11 @@ describe('Opportunity Controller', () => {
     expect(response).toEqual(mockResolved);
   });
   test('Should return error when Prisma throws an invalid input error', async () => {
-    mockCtx.prisma.opportunityBatch.create.mockRejectedValue(
-      new Prisma.PrismaClientKnownRequestError('ERROR', {
-        code: '101',
-        clientVersion: '1.0',
-      }),
-    );
+    const mockError = new Prisma.PrismaClientKnownRequestError('ERROR', {
+      code: '101',
+      clientVersion: '1.0',
+    });
+    mockCtx.prisma.opportunityBatch.create.mockRejectedValue(mockError);
     const opportunityController = new OpportunityController(
       ctx.prisma,
       new DummyEmailService(new DummySESService(), getMockConfig()),
@@ -141,10 +140,7 @@ describe('Opportunity Controller', () => {
     };
     await expect(
       opportunityController.createOpportunityBatch(reqPayload),
-    ).rejects.toHaveProperty(
-      'problem.detail',
-      'Database error encountered when creating new opportunity batch',
-    );
+    ).rejects.toEqual(mockError);
   });
 
   test('Should send org welcome email after organization submits a batch of opportunities', async () => {
@@ -154,7 +150,6 @@ describe('Opportunity Controller', () => {
     );
 
     const mockEmailSpy = jest.spyOn(emailService, 'sendEmail');
-
     const orgEmail = 'bboberson@gmail.com';
     const reqPayload: OpportunityBatchRequestBody = {
       acceptedPrivacy: true,

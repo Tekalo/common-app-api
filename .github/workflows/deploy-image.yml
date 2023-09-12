@@ -34,14 +34,13 @@ jobs:
     environment:
       name: ${{ inputs.env }}
       url: https://capp-api.${{ inputs.env }}.apps.futurestech.cloud
-    # concurrency: ${{ inputs.env }}
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: tf/envs/${{ inputs.env }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2

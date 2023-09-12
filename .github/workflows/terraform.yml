@@ -26,7 +26,7 @@ jobs:
       staging: ${{ steps.filter.outputs.staging || inputs.environment == 'staging' }}
       prod: ${{ steps.filter.outputs.prod || inputs.environment == 'prod' }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: dorny/paths-filter@v2
         id: filter
         with:
