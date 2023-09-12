@@ -42,8 +42,8 @@ importers:
         specifier: ^0.5.1
         version: 0.5.1
       auth0:
-        specifier: 3.7.0
-        version: 3.7.0
+        specifier: 3.7.1
+        version: 3.7.1
       express:
         specifier: 4.18.2
         version: 4.18.2
@@ -2860,8 +2860,8 @@ packages:
     resolution: {integrity: sha512-kNOjDqAh7px0XWNI+4QbzoiR/nTkHAWNud2uvnJquD1/x5a7EQZMJT0AczqK0Qn67oY/TTQ1LbUKajZpp3I9tQ==}
     engines: {node: '>=8.0.0'}
 
-  /auth0@3.7.0:
-    resolution: {integrity: sha512-Ai1T+ltEvcoZdIKbZ5TnLHMkioKxU/j01ZsDWKx55/toqFJXOWypw37kQNdqvHgteFGE142k4MjSt5u1wlOi3A==}
+  /auth0@3.7.1:
+    resolution: {integrity: sha512-nPHtKtQT5tsXu/2DPFQvdz1Z/Z9Ask9HdlOmECstd5oOuNdTh6n8ZqtzmsRXk67qAqrKeCP3ahR+xYsKNX4pvw==}
     engines: {node: '>=14'}
     dependencies:
       axios: 0.27.2
