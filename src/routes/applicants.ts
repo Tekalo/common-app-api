@@ -12,6 +12,7 @@ import {
   ApplicantDraftSubmissionBody,
   ApplicantStateBody,
   ApplicantUpdateBody,
+  ApplicantUpdateSubmissionBody,
 } from '@App/resources/types/applicants.js';
 import {
   UploadRequestBody,
@@ -67,6 +68,23 @@ const applicantRoutes = (
       const applicantID = req.auth?.payload.id || req.session.applicant.id;
       applicantController
         .createSubmission(applicantID, validatedBody)
+        .then((result) => {
+          res.status(200).json(result);
+        })
+        .catch((err) => next(err));
+    },
+  );
+
+  router.put(
+    '/me/submissions',
+    authenticator.validateJwt.bind(authenticator) as RequestHandler,
+    (req: Request, res: Response, next) => {
+      const appBody = req.body as ApplicantUpdateSubmissionBody;
+      const validatedBody =
+        Applicants.ApplicantUpdateSubmissionRequestBodySchema.parse(appBody);
+      const applicantID = req.auth?.payload.id || req.session.applicant.id;
+      applicantController
+        .updateSubmission(applicantID, validatedBody)
         .then((result) => {
           res.status(200).json(result);
         })

@@ -12,6 +12,7 @@ import {
   ApplicantCreateSubmissionResponse,
   ApplicantGetSubmissionResponse,
   ApplicantDraftSubmissionResponseBody,
+  ApplicantUpdateSubmissionBody,
 } from '@App/resources/types/applicants.js';
 import {
   UploadResponseBody,
@@ -101,28 +102,28 @@ class ApplicantController {
       });
       // Do not sent a welcome email if our user has a valid JWT.
       // A valid JWT at this stage means they are authenticated with social login.
-      if (!auth) {
-        try {
-          const { ticket } = await this.auth0Service.generatePasswordReset(
-            returnApplicant.auth0Id,
-          );
-          const signInLink: string = AuthService.getSignInLink();
+      // if (!auth) {
+      try {
+        const { ticket } = await this.auth0Service.generatePasswordReset(
+          returnApplicant.auth0Id,
+        );
+        const signInLink: string = AuthService.getSignInLink();
 
-          const welcomeEmail = this.emailService.generateApplicantWelcomeEmail(
-            returnApplicant.email,
-            ticket,
-            signInLink,
-          );
-          await this.emailService.sendEmail(welcomeEmail);
-        } catch (e) {
-          MonitoringService.logError(
-            new CAPPError(
-              { title: 'Failed to send post sign-up set password email' },
-              e instanceof Error ? { cause: e } : undefined,
-            ),
-          );
-        }
+        const welcomeEmail = this.emailService.generateApplicantWelcomeEmail(
+          returnApplicant.email,
+          ticket,
+          signInLink,
+        );
+        await this.emailService.sendEmail(welcomeEmail);
+      } catch (e) {
+        MonitoringService.logError(
+          new CAPPError(
+            { title: 'Failed to send post sign-up set password email' },
+            e instanceof Error ? { cause: e } : undefined,
+          ),
+        );
       }
+      // }
       return {
         id: returnApplicant.id,
         auth0Id: auth0UserId || null,
@@ -191,6 +192,43 @@ class ApplicantController {
       );
     }
     return Applicants.ApplicantCreateSubmissionResponseBodySchema.parse({
+      submission: submissionVals,
+      isFinal: true,
+    });
+  }
+
+  async updateSubmission(
+    applicantId: number,
+    data: ApplicantUpdateSubmissionBody,
+  ): Promise<ApplicantCreateSubmissionResponse> {
+    const {
+      openToRemoteMulti,
+      otherCauses,
+      resumeUpload,
+      ...restOfSubmission
+    } = data;
+    // If we're updating the resume, make sure the specified resume upload belongs to the authed user. If not, throw CAPPError.
+    if (resumeUpload) {
+      await this.validateResumeUpload(applicantId, resumeUpload.id);
+    }
+    // TODO: throw error/check what happens if applicantID doesnt exist
+    const applicantSubmission = await this.prisma.applicantSubmission.update({
+      data: {
+        ...restOfSubmission,
+        openToRemoteMulti: openToRemoteMulti || [],
+        otherCauses: otherCauses || [],
+        resumeUploadId: resumeUpload?.id,
+        applicantId,
+      },
+      include: {
+        resumeUpload: { select: { id: true, originalFilename: true } },
+      },
+      where: { applicantId },
+    });
+    // remove resumeUploadId from response
+    const { resumeUploadId, ...submissionVals } = applicantSubmission;
+    return Applicants.ApplicantCreateSubmissionResponseBodySchema.parse({
+      /// create response body zod schema
       submission: submissionVals,
       isFinal: true,
     });
