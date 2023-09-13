@@ -1634,6 +1634,7 @@ describe('GET /applicants/:id/resume', () => {
           acceptedPrivacy: true,
         });
 
+    // Bob uploads his resume
     const { body: uploadBodyV1 }: { body: UploadResponseBody } = await request(
       dummyS3ServiceApp,
     )
@@ -1645,6 +1646,14 @@ describe('GET /applicants/:id/resume', () => {
       })
       .expect(200);
 
+    // Bob's first resume is marked successfully uploaded
+    await request(dummyS3ServiceApp)
+      .post(`/applicants/me/uploads/${uploadBodyV1.id}/complete`)
+      .set('Authorization', `Bearer ${bobToken}`)
+      .send({ status: 'SUCCESS' })
+      .expect(200);
+
+    // Bob realizes it was the wrong file, and uploads another resume
     const { body: uploadBodyV2 }: { body: UploadResponseBody } = await request(
       dummyS3ServiceApp,
     )
@@ -1656,16 +1665,21 @@ describe('GET /applicants/:id/resume', () => {
       })
       .expect(200);
 
-    await request(dummyS3ServiceApp)
-      .post(`/applicants/me/uploads/${uploadBodyV1.id}/complete`)
-      .set('Authorization', `Bearer ${bobToken}`)
-      .send({ status: 'SUCCESS' })
-      .expect(200);
-
+    // Bob's second resume is marked successfully uploaded
     await request(dummyS3ServiceApp)
       .post(`/applicants/me/uploads/${uploadBodyV2.id}/complete`)
       .set('Authorization', `Bearer ${bobToken}`)
       .send({ status: 'SUCCESS' })
+      .expect(200);
+
+    // Bob submits submission with V2 resume
+    const testSubmission = applicantSubmissionGenerator.getAPIRequestBody(
+      uploadBodyV2.id,
+    );
+    await request(dummyS3ServiceApp)
+      .post('/applicants/me/submissions')
+      .set('Authorization', `Bearer ${bobToken}`)
+      .send(testSubmission)
       .expect(200);
 
     const { body: resumeBody } = await request(dummyS3ServiceApp)
