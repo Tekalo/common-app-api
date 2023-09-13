@@ -515,7 +515,12 @@ class ApplicantController {
 
   async getResumeDownloadUrl(applicantId: number): Promise<UploadResponseBody> {
     const resume = await this.prisma.applicantSubmission.findFirst({
-      where: { applicantId },
+      where: {
+        applicantId,
+        resumeUpload: {
+          status: 'SUCCESS',
+        },
+      },
       select: { resumeUpload: true },
     });
     if (!resume || !resume.resumeUpload) {
