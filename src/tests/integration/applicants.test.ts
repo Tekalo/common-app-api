@@ -628,6 +628,28 @@ describe('PUT /applicants/me/submissions', () => {
       .set('Authorization', `Bearer ${token}`)
       .expect(500);
   });
+  it('should return 500 error if applicant does not have existing final submission', async () => {
+    const randomString = getRandomString();
+    const token = await authHelper.getToken(
+      `bboberson${randomString}@gmail.com`,
+    );
+    await request(dummyApp)
+      .post('/applicants')
+      .send({
+        name: 'Bob Boberson',
+        auth0Id: 'auth0|123456',
+        email: `bboberson${randomString}@gmail.com`,
+        preferredContact: 'email',
+        searchStatus: 'active',
+        acceptedTerms: true,
+        acceptedPrivacy: true,
+      });
+    await request(dummyApp)
+      .put('/applicants/me/submissions')
+      .send({ openToRemoteMulti: ['hybrid'] })
+      .set('Authorization', `Bearer ${token}`)
+      .expect(500);
+  });
 });
 
 describe('DELETE /applicants/me', () => {
