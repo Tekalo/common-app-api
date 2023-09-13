@@ -22,7 +22,13 @@ SELECT
   appsub."applicantId",
   appsub."createdAt",
   appsub."originTag",
-  appsub."resumeUrl",
+  CASE
+    WHEN appsub."resumeUploadId" IS NULL THEN appsub."resumeUrl"
+    ELSE CONCAT(
+      'https://www.tekalo.org/view-resume?applicantId=',
+      appsub."applicantId"
+    )
+  END "resumeUrl",
   appsub."resumePassword",
   appsub."lastOrg",
   appsub."lastRole",
