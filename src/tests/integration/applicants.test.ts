@@ -1726,6 +1726,15 @@ describe('GET /applicants/:id/resume', () => {
       .send({ status: 'SUCCESS' })
       .expect(200);
 
+    const testSubmission = applicantSubmissionGenerator.getAPIRequestBody(
+      resume.id,
+    );
+    await request(dummyApp)
+      .post('/applicants/me/submissions')
+      .set('Authorization', `Bearer ${token}`)
+      .send(testSubmission)
+      .expect(200);
+
     const { body } = await request(dummyApp)
       .get(`/applicants/${applicantBody.id}/resume`)
       .set('Authorization', `Bearer ${token}`)
