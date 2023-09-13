@@ -526,7 +526,7 @@ describe('PUT /applicants/me/submissions', () => {
   it('should return 401 for request with no JWT', async () => {
     const randomString = getRandomString();
     await request(dummyApp)
-      .post('/applicants/me/submissions')
+      .put('/applicants/me/submissions')
       .send({
         name: 'Bob Boberson',
         pronoun: 'he/his',
@@ -598,7 +598,7 @@ describe('PUT /applicants/me/submissions', () => {
       .expect(500);
   });
 
-  it('should return 500 error resumeId is not a valid upload id', async () => {
+  it('should return 500 error if resumeId is not a valid upload id', async () => {
     const randomString = getRandomString();
     const token = await authHelper.getToken(
       `bboberson${randomString}@gmail.com`,
