@@ -102,28 +102,28 @@ class ApplicantController {
       });
       // Do not sent a welcome email if our user has a valid JWT.
       // A valid JWT at this stage means they are authenticated with social login.
-      // if (!auth) {
-      try {
-        const { ticket } = await this.auth0Service.generatePasswordReset(
-          returnApplicant.auth0Id,
-        );
-        const signInLink: string = AuthService.getSignInLink();
+      if (!auth) {
+        try {
+          const { ticket } = await this.auth0Service.generatePasswordReset(
+            returnApplicant.auth0Id,
+          );
+          const signInLink: string = AuthService.getSignInLink();
 
-        const welcomeEmail = this.emailService.generateApplicantWelcomeEmail(
-          returnApplicant.email,
-          ticket,
-          signInLink,
-        );
-        await this.emailService.sendEmail(welcomeEmail);
-      } catch (e) {
-        MonitoringService.logError(
-          new CAPPError(
-            { title: 'Failed to send post sign-up set password email' },
-            e instanceof Error ? { cause: e } : undefined,
-          ),
-        );
+          const welcomeEmail = this.emailService.generateApplicantWelcomeEmail(
+            returnApplicant.email,
+            ticket,
+            signInLink,
+          );
+          await this.emailService.sendEmail(welcomeEmail);
+        } catch (e) {
+          MonitoringService.logError(
+            new CAPPError(
+              { title: 'Failed to send post sign-up set password email' },
+              e instanceof Error ? { cause: e } : undefined,
+            ),
+          );
+        }
       }
-      // }
       return {
         id: returnApplicant.id,
         auth0Id: auth0UserId || null,

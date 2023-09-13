@@ -557,85 +557,76 @@ describe('PUT /applicants/me/submissions', () => {
           acceptedTerms: true,
           acceptedPrivacy: true,
         });
+    const { id: resumeId } = await seedResumeUpload(applicantBody.id);
+    const testSubmission =
+      applicantSubmissionGenerator.getAPIRequestBody(resumeId);
+    await request(dummyApp)
+      .post('/applicants/me/submissions')
+      .send(testSubmission)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200);
     const { body }: { body: ApplicantCreateSubmissionResponse } = await request(
       dummyApp,
     )
       .put('/applicants/me/submissions')
-      .send({ openToRemote: ['hybrid'] })
+      .send({ openToRemoteMulti: ['hybrid', 'remote'] })
       .set('Authorization', `Bearer ${token}`)
       .expect(200);
-    expect(body.submission.openToRemoteMulti).toEqual(['hybrid']);
-    // expect(body).toEqual({
-    //   submission: {
-    //     id: expect.any(Number),
-    //     applicantId: applicantBody.id,
-    //     createdAt: expect.any(String),
-    //     ...testBody,
-    //     resumeUpload: { id: resumeId, originalFilename: expect.any(String) },
-    //     openToRemoteMulti: ['in-person', 'hybrid'],
-    //   },
-    //   isFinal: true,
-    // });
+    expect(body.submission.openToRemoteMulti).toEqual(['hybrid', 'remote']);
   });
 
-  it('should return XXX error if applicant does not have an existing final submission', async () => {
+  it('should return 500 error if applicant does not have an existing final submission', async () => {
     const randomString = getRandomString();
     const token = await authHelper.getToken(
       `bboberson${randomString}@gmail.com`,
     );
-    const { body: applicantBody }: { body: ApplicantResponseBody } =
-      await request(dummyApp)
-        .post('/applicants')
-        .send({
-          name: 'Bob Boberson',
-          auth0Id: 'auth0|123456',
-          email: `bboberson${randomString}@gmail.com`,
-          preferredContact: 'email',
-          searchStatus: 'active',
-          acceptedTerms: true,
-          acceptedPrivacy: true,
-        });
-    const { id: resumeId } = await seedResumeUpload(applicantBody.id);
-    const testSubmission =
-      applicantSubmissionGenerator.getAPIRequestBody(resumeId);
-    const { body } = await request(dummyApp)
-      .post('/applicants/me/submissions')
-      .send({ ...testSubmission, openToRelocate: 'idk maybe' })
-      .set('Authorization', `Bearer ${token}`)
-      .expect(400);
-    expect(body).toHaveProperty('title', 'Validation Error');
-  });
-
-  it('should return 500 error  resumeId is not a valid upload id', async () => {
-    const randomString = getRandomString();
-    const token = await authHelper.getToken(
-      `bboberson${randomString}@gmail.com`,
-    );
-    const { body: applicantBody }: { body: ApplicantResponseBody } =
-      await request(dummyApp)
-        .post('/applicants')
-        .send({
-          name: 'Bob Boberson',
-          auth0Id: 'auth0|123456',
-          email: `bboberson${randomString}@gmail.com`,
-          preferredContact: 'email',
-          searchStatus: 'active',
-          acceptedTerms: true,
-          acceptedPrivacy: true,
-        });
-    const { id: resumeId } = await seedResumeUpload(applicantBody.id);
-    const testSubmission =
-      applicantSubmissionGenerator.getAPIRequestBody(resumeId);
-    const { body } = await request(dummyApp)
-      .post('/applicants/me/submissions')
-      .send({ ...testSubmission, resumeUpload: { id: 9876432 } })
+    await request(dummyApp)
+      .post('/applicants')
+      .send({
+        name: 'Bob Boberson',
+        auth0Id: 'auth0|123456',
+        email: `bboberson${randomString}@gmail.com`,
+        preferredContact: 'email',
+        searchStatus: 'active',
+        acceptedTerms: true,
+        acceptedPrivacy: true,
+      });
+    await request(dummyApp)
+      .put('/applicants/me/submissions')
+      .send({ lastRole: 'Software Engineer II' })
       .set('Authorization', `Bearer ${token}`)
       .expect(500);
-    expect(body).toEqual({
-      title: 'Error',
-      detail: 'Error encountered during request',
-      status: 500,
-    });
+  });
+
+  it('should return 500 error resumeId is not a valid upload id', async () => {
+    const randomString = getRandomString();
+    const token = await authHelper.getToken(
+      `bboberson${randomString}@gmail.com`,
+    );
+    const { body: applicantBody }: { body: ApplicantResponseBody } =
+      await request(dummyApp)
+        .post('/applicants')
+        .send({
+          name: 'Bob Boberson',
+          auth0Id: 'auth0|123456',
+          email: `bboberson${randomString}@gmail.com`,
+          preferredContact: 'email',
+          searchStatus: 'active',
+          acceptedTerms: true,
+          acceptedPrivacy: true,
+        });
+    const { id: resumeId } = await seedResumeUpload(applicantBody.id);
+    const testSubmission =
+      applicantSubmissionGenerator.getAPIRequestBody(resumeId);
+    await request(dummyApp)
+      .post('/applicants/me/submissions')
+      .send({ ...testSubmission, resumeUpload: { id: resumeId } })
+      .set('Authorization', `Bearer ${token}`);
+    await request(dummyApp)
+      .put('/applicants/me/submissions')
+      .send({ resumeUpload: { id: 99983 } })
+      .set('Authorization', `Bearer ${token}`)
+      .expect(500);
   });
 });
 
