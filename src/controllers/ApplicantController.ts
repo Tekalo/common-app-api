@@ -520,6 +520,9 @@ class ApplicantController {
         type: 'RESUME',
         status: 'SUCCESS',
       },
+      orderBy: {
+        id: 'desc', // Grab the most recent upload
+      },
     });
     if (!resume) {
       throw new CAPPError({
