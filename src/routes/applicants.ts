@@ -80,11 +80,12 @@ const applicantRoutes = (
     authenticator.validateJwt.bind(authenticator) as RequestHandler,
     (req: Request, res: Response, next) => {
       const appBody = req.body as ApplicantUpdateSubmissionBody;
+      const reqWithAuth = req as RequestWithJWT;
       const validatedBody =
         Applicants.ApplicantUpdateSubmissionRequestBodySchema.parse(appBody);
-      const applicantID = req.auth?.payload.id || req.session.applicant.id;
+      const applicantID = reqWithAuth.auth.payload.id;
       applicantController
-        .updateSubmission(applicantID, validatedBody)
+        .updateSubmission(applicantID as number, validatedBody)
         .then((result) => {
           res.status(200).json(result);
         })

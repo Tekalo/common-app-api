@@ -211,7 +211,7 @@ class ApplicantController {
     if (resumeUpload) {
       await this.validateResumeUpload(applicantId, resumeUpload.id);
     }
-    // TODO: throw error/check what happens if applicantID doesnt exist
+    // Throws error if applicantID doesn't exist
     const applicantSubmission = await this.prisma.applicantSubmission.update({
       data: {
         ...restOfSubmission,
@@ -228,7 +228,6 @@ class ApplicantController {
     // remove resumeUploadId from response
     const { resumeUploadId, ...submissionVals } = applicantSubmission;
     return Applicants.ApplicantCreateSubmissionResponseBodySchema.parse({
-      /// create response body zod schema
       submission: submissionVals,
       isFinal: true,
     });
