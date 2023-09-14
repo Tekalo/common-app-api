@@ -158,7 +158,7 @@ const ApplicantDraftSubmissionRequestBodySchema =
   ApplicantCreateSubmissionRequestBodySchema.partial();
 
 const ApplicantUpdateSubmissionRequestBodySchema =
-  ApplicantCreateSubmissionRequestBodySchema.partial();
+  ApplicantCreateSubmissionRequestBodySchema;
 
 const ApplicantDraftSubmissionResponseBodySchema = z.object({
   submission: ApplicantSubmissionResponseBody,
