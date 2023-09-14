@@ -9,6 +9,33 @@ import {
 } from '@App/resources/emails/index.js';
 import SESService from './SESService.js';
 
+// Please add/delete the desired email addresses here
+const sesWhiteList = ['bboberson@gmail.com'];
+// Use hashset for quicker lookup
+const sesWhiteListSet = new Set(sesWhiteList);
+
+// shall process roger+123ty@gmail.com into roger@gmail.com
+function processEmail(email: any): string {
+  // Turn email to lowercase
+  email = email.toLowerCase();
+  // Use a regular expression to match the email pattern
+  const regex = /^(.+)@(.+)$/;
+  const matchRes = email.match(regex);
+
+  let retEmail = '';
+  if (matchRes) {
+    const [, localPart, domain] = matchRes; // whole email, left of @, right of @
+    const processedEmail = `${localPart.split('+')[0]}@${domain}`;
+    retEmail = processedEmail;
+  } else {
+    // Invalid email format, return the original email
+    retEmail = email;
+  }
+
+  return retEmail;
+}
+
+
 class EmailService {
   private sesService: SESService;
 
@@ -108,9 +135,21 @@ class EmailService {
     });
   }
 
+  // for testing
+  emailVerified() {
+
+  }
+
   async sendEmail(emailToSend: SendEmailCommandInput) {
-    const emailOutput = await this.sesService.sendEmail(emailToSend);
-    return emailOutput;
+    const email: string | undefined = emailToSend.Destination?.ToAddresses?.[0];
+    const processedEmail = processEmail(email);
+    console.log(processedEmail);
+    if (sesWhiteListSet.has(processedEmail)) {
+      console.log('you entered');
+      this.emailVerified();
+      const emailOutput = await this.sesService.sendEmail(emailToSend);
+      return emailOutput;
+    }
   }
 }
 
