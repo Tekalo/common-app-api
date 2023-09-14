@@ -4,14 +4,14 @@ import { AppMetadata, User, UserMetadata } from 'auth0';
 import {
   ApplicantResponseBody,
   ApplicantRequestBody,
-  ApplicantSubmissionBody,
-  ApplicantDraftSubmissionBody,
+  ApplicantSubmissionBodyParsed,
   ApplicantUpdateBody,
   PrismaApplicantSubmissionWithResume,
   PrismaApplicantDraftSubmissionWithResume,
   ApplicantCreateSubmissionResponse,
   ApplicantGetSubmissionResponse,
   ApplicantDraftSubmissionResponseBody,
+  ApplicantDraftSubmissionBodyParsed,
 } from '@App/resources/types/applicants.js';
 import {
   UploadResponseBody,
@@ -148,24 +148,17 @@ class ApplicantController {
 
   async createSubmission(
     applicantId: number,
-    data: ApplicantSubmissionBody,
+    data: ApplicantSubmissionBodyParsed, // this should comes in as just an ID
   ): Promise<ApplicantCreateSubmissionResponse> {
-    const {
-      openToRemoteMulti,
-      otherCauses,
-      resumeUpload,
-      ...restOfSubmission
-    } = data;
+    const { resumeUpload, ...restOfSubmission } = data;
     // Make sure the specified resume upload belongs to the authed user. If not, throw CAPPError.
     if (resumeUpload) {
-      await this.validateResumeUpload(applicantId, resumeUpload.id);
+      await this.validateResumeUpload(applicantId, resumeUpload);
     }
     const applicantSubmission = await this.prisma.applicantSubmission.create({
       data: {
         ...restOfSubmission,
-        openToRemoteMulti: openToRemoteMulti || [],
-        otherCauses: otherCauses || [],
-        resumeUploadId: resumeUpload?.id,
+        resumeUploadId: resumeUpload,
         applicantId,
       },
       include: {
@@ -337,30 +330,20 @@ class ApplicantController {
 
   async createOrUpdateDraftSubmission(
     applicantId: number,
-    data: ApplicantDraftSubmissionBody,
+    data: ApplicantDraftSubmissionBodyParsed,
   ): Promise<ApplicantDraftSubmissionResponseBody> {
-    const {
-      openToRemoteMulti,
-      otherCauses,
-      resumeUpload,
-      ...restOfSubmission
-    } = data;
+    const { resumeUpload, ...restOfSubmission } = data;
     if (resumeUpload) {
-      await this.validateResumeUpload(applicantId, resumeUpload.id);
+      await this.validateResumeUpload(applicantId, resumeUpload);
     }
     const draftSubmission = await this.prisma.applicantDraftSubmission.upsert({
       create: {
         ...restOfSubmission,
-        openToRemoteMulti: openToRemoteMulti || undefined,
-        otherCauses: otherCauses || [],
-        resumeUploadId: resumeUpload?.id,
+        resumeUploadId: resumeUpload,
         applicantId,
       },
       update: {
         ...restOfSubmission,
-        openToRemoteMulti: openToRemoteMulti || undefined,
-        otherCauses: otherCauses || [],
-        resumeUploadId: resumeUpload?.id || null,
       },
       include: {
         resumeUpload: { select: { id: true, originalFilename: true } },
