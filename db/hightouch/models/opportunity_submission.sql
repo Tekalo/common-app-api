@@ -8,8 +8,14 @@ SELECT
   ob."orgType",
   ob."equalOpportunityEmployer",
   CASE
-    WHEN ob."referenceAttribution" = '' THEN ob."referenceAttributionOther"
-    WHEN ob."referenceAttributionOther" = '' THEN ob."referenceAttribution"
+    WHEN (
+      ob."referenceAttribution" = ''
+      OR ob."referenceAttribution" IS NULL
+    ) THEN ob."referenceAttributionOther"
+    WHEN (
+      ob."referenceAttributionOther" = ''
+      OR ob."referenceAttributionOther" IS NULL
+    ) THEN ob."referenceAttribution"
     ELSE ob."referenceAttribution" || ' - ' || ob."referenceAttributionOther"
   END AS "referenceAttributionAll",
   ob."orgName" || ' - ' || os."positionTitle" AS "opportunityName",
