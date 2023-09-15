@@ -24,7 +24,10 @@ SELECT
   END AS "paymentStatus",
   CASE
     WHEN os."roleType" = '' THEN os."otherRoleType"
-    WHEN os."otherRoleType" = '' THEN os."roleType"
+    WHEN (
+      os."otherRoleType" = ''
+      OR os."otherRoleType" IS NULL
+    ) THEN os."roleType"
     ELSE os."roleType" || ' - ' || os."otherRoleType"
   END AS "roleType",
   os."salaryRange",
