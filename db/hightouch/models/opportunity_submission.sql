@@ -22,7 +22,14 @@ SELECT
     WHEN os.paid THEN 'Paid'
     ELSE 'Unpaid'
   END AS "paymentStatus",
-  os."roleType",
+  CASE
+    WHEN os."roleType" = '' THEN os."otherRoleType"
+    WHEN (
+      os."otherRoleType" = ''
+      OR os."otherRoleType" IS NULL
+    ) THEN os."roleType"
+    ELSE os."roleType" || ' - ' || os."otherRoleType"
+  END AS "roleType",
   os."salaryRange",
   os."positionTitle",
   os."fullyRemote",
