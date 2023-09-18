@@ -464,7 +464,7 @@ describe('POST /applicants/me/submissions', () => {
       expect(body).toHaveProperty('title', 'Validation Error');
     });
 
-    it('should return 400 error resumeId is not a valid upload id', async () => {
+    it('should return 500 error resumeId is not a valid upload id', async () => {
       const randomString = getRandomString();
       const token = await authHelper.getToken(
         `bboberson${randomString}@gmail.com`,
@@ -488,11 +488,11 @@ describe('POST /applicants/me/submissions', () => {
         .post('/applicants/me/submissions')
         .send({ ...testSubmission, resumeUpload: { id: 9876432 } })
         .set('Authorization', `Bearer ${token}`)
-        .expect(400);
+        .expect(500);
       expect(body).toEqual({
-        title: 'Applicant Submission Creation Error',
-        detail: 'Invalid upload provided',
-        status: 400,
+        title: 'Error',
+        detail: 'Error encountered during request',
+        status: 500,
       });
     });
   });
@@ -1599,7 +1599,7 @@ describe('GET /applicants/:id/resume', () => {
       .expect(401);
   });
 
-  it('should successfully get an applicants presigned resume download url', async () => {
+  it('should successfully get an applicants most recently uploaded presigned resume download url', async () => {
     const dummyS3Service = new DummyS3Service();
     dummyS3Service.generateSignedDownloadUrl = () =>
       Promise.resolve('https://bogus-upload-signed-s3-link.com');
@@ -1634,7 +1634,8 @@ describe('GET /applicants/:id/resume', () => {
           acceptedPrivacy: true,
         });
 
-    const { body: uploadBody }: { body: UploadResponseBody } = await request(
+    // Bob uploads his resume
+    const { body: uploadBodyV1 }: { body: UploadResponseBody } = await request(
       dummyS3ServiceApp,
     )
       .post('/applicants/me/resume')
@@ -1645,16 +1646,47 @@ describe('GET /applicants/:id/resume', () => {
       })
       .expect(200);
 
+    // Bob's first resume is marked successfully uploaded
     await request(dummyS3ServiceApp)
-      .post(`/applicants/me/uploads/${uploadBody.id}/complete`)
+      .post(`/applicants/me/uploads/${uploadBodyV1.id}/complete`)
       .set('Authorization', `Bearer ${bobToken}`)
       .send({ status: 'SUCCESS' })
       .expect(200);
 
+    // Bob realizes it was the wrong file, and uploads another resume
+    const { body: uploadBodyV2 }: { body: UploadResponseBody } = await request(
+      dummyS3ServiceApp,
+    )
+      .post('/applicants/me/resume')
+      .set('Authorization', `Bearer ${bobToken}`)
+      .send({
+        originalFilename: 'bob_boberson_resume_v2.pdf',
+        contentType: 'application/pdf',
+      })
+      .expect(200);
+
+    // Bob's second resume is marked successfully uploaded
     await request(dummyS3ServiceApp)
+      .post(`/applicants/me/uploads/${uploadBodyV2.id}/complete`)
+      .set('Authorization', `Bearer ${bobToken}`)
+      .send({ status: 'SUCCESS' })
+      .expect(200);
+
+    // Bob submits submission with V2 resume
+    const testSubmission = applicantSubmissionGenerator.getAPIRequestBody(
+      uploadBodyV2.id,
+    );
+    await request(dummyS3ServiceApp)
+      .post('/applicants/me/submissions')
+      .set('Authorization', `Bearer ${bobToken}`)
+      .send(testSubmission)
+      .expect(200);
+
+    const { body: resumeBody } = await request(dummyS3ServiceApp)
       .get(`/applicants/${applicantBody.id}/resume`)
       .set('Authorization', `Bearer ${bobToken}`)
       .expect(200);
+    expect(resumeBody).toHaveProperty('id', uploadBodyV2.id);
   });
 
   itif('CI' in process.env)('should return a resume download url', async () => {
@@ -1692,6 +1724,15 @@ describe('GET /applicants/:id/resume', () => {
       .post(`/applicants/me/uploads/${resume.id}/complete`)
       .set('Authorization', `Bearer ${token}`)
       .send({ status: 'SUCCESS' })
+      .expect(200);
+
+    const testSubmission = applicantSubmissionGenerator.getAPIRequestBody(
+      resume.id,
+    );
+    await request(dummyApp)
+      .post('/applicants/me/submissions')
+      .set('Authorization', `Bearer ${token}`)
+      .send(testSubmission)
       .expect(200);
 
     const { body } = await request(dummyApp)

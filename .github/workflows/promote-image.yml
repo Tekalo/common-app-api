@@ -103,6 +103,7 @@ jobs:
   deploy:
     name: 'Deploy to ${{ inputs.environment }}'
     uses: ./.github/workflows/deploy-image.yml
+    concurrency: '${{ inputs.environment }}'
     needs:
       - push_image
     with:

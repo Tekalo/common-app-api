@@ -16,7 +16,8 @@
     // This should have all the NodeNext features in it, since we are using
     // NodeNext in our tsconfig, which at time of writing points to Node v18
     "experimental": {
-      "keepImportAssertions": true
+      "keepImportAttributes": true,
+      "emitAssertForImportAttributes": true
     },
     "parser": {
       "syntax": "typescript",

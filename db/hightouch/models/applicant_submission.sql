@@ -22,7 +22,13 @@ SELECT
   appsub."applicantId",
   appsub."createdAt",
   appsub."originTag",
-  appsub."resumeUrl",
+  CASE
+    WHEN appsub."resumeUploadId" IS NULL THEN appsub."resumeUrl"
+    ELSE CONCAT(
+      'https://www.tekalo.org/view-resume?applicantId=',
+      appsub."applicantId"
+    )
+  END "resumeUrl",
   appsub."resumePassword",
   appsub."lastOrg",
   appsub."lastRole",
@@ -69,8 +75,14 @@ SELECT
   appsub."hoursPerWeek",
   appsub."essayResponse",
   CASE
-    WHEN appsub."referenceAttribution" IS NULL THEN appsub."referenceAttributionOther"
-    WHEN appsub."referenceAttributionOther" IS NULL THEN appsub."referenceAttribution"
+    WHEN (
+      appsub."referenceAttribution" = ''
+      OR appsub."referenceAttribution" IS NULL
+    ) THEN appsub."referenceAttributionOther"
+    WHEN (
+      appsub."referenceAttributionOther" = ''
+      OR appsub."referenceAttributionOther" IS NULL
+    ) THEN appsub."referenceAttribution"
     ELSE appsub."referenceAttribution" || ' - ' || appsub."referenceAttributionOther"
   END AS "referenceAttributionAll",
   appsub."interestWorkArrangement"
