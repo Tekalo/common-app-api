@@ -68,6 +68,13 @@ const ApplicantResponseBodySchema = z.object({
 const ApplicantCreateSubmissionRequestBodySchema = z.object({
   originTag: z.string(),
   lastRole: z.string().max(255),
+  resumeUpload: z
+    .object({
+      id: z.number(),
+    })
+    .nullable()
+    .optional()
+    .transform((resumeObj) => resumeObj?.id),
   lastOrg: z.string().max(255),
   yoe: YOE,
   skills: z.array(Skills),
@@ -77,12 +84,6 @@ const ApplicantCreateSubmissionRequestBodySchema = z.object({
   portfolioUrl: z.string().max(500).nullable().optional(),
   portfolioPassword: z.string().max(255).nullable().optional(),
   resumeUrl: z.string().max(500).optional(), // deprecated
-  resumeUpload: z
-    .object({
-      id: z.number(),
-    })
-    .nullable()
-    .optional(),
   resumePassword: z.string().max(255).nullable().optional(),
   hoursPerWeek: z.string().max(255).nullable().optional(),
   interestEmploymentType: z.array(EmploymentType),
@@ -93,7 +94,7 @@ const ApplicantCreateSubmissionRequestBodySchema = z.object({
   openToRemoteMulti: z.array(OpenToRemote),
   desiredSalary: z.string().max(255).nullable().optional(),
   interestCauses: z.array(z.string().max(255)), // order matters
-  otherCauses: z.array(z.string().max(255)).nullable(),
+  otherCauses: z.array(z.string().max(255)).default([]).optional(),
   workAuthorization: WorkAuthorization.optional(),
   interestGovt: z.boolean(),
   interestGovtEmplTypes: z.array(InterestGovtEmplTypes).optional(),

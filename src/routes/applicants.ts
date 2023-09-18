@@ -13,6 +13,7 @@ import {
   ApplicantStateBody,
   ApplicantUpdateBody,
   ApplicantUpdateSubmissionBody,
+  ApplicantSubmissionBodyParsed,
 } from '@App/resources/types/applicants.js';
 import {
   UploadRequestBody,
@@ -63,7 +64,7 @@ const applicantRoutes = (
     authenticator.verifyJwtOrCookie.bind(authenticator) as RequestHandler,
     (req: Request, res: Response, next) => {
       const appBody = req.body as ApplicantSubmissionBody;
-      const validatedBody: ApplicantSubmissionBody =
+      const validatedBody: ApplicantSubmissionBodyParsed =
         Applicants.ApplicantCreateSubmissionRequestBodySchema.parse(appBody);
       const applicantID = req.auth?.payload.id || req.session.applicant.id;
       applicantController
