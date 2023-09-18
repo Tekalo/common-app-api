@@ -20,6 +20,7 @@ import {
   PrismaApplicantSubmissionWithResume,
   ApplicantSubmissionBody,
 } from '@App/resources/types/applicants.js';
+import { Applicants } from '@capp/schemas';
 import { getMockConfig } from '../../util/helpers.js';
 
 let mockCtx: MockContext;
@@ -877,9 +878,11 @@ describe('Applicant Controller', () => {
         ),
       );
 
+      const testBody =
+        applicantSubmissionGenerator.getAPIRequestBody(applicantId);
       await applicantController.createSubmission(
         applicantId,
-        applicantSubmissionGenerator.getAPIRequestBody(applicantId),
+        Applicants.ApplicantCreateSubmissionRequestBodySchema.parse(testBody),
       );
 
       const expectedEmail =
@@ -910,7 +913,12 @@ describe('Applicant Controller', () => {
         applicantSubmissionGenerator.getAPIRequestBody(1);
 
       await expect(
-        applicantController.createSubmission(1, requestBody),
+        applicantController.createSubmission(
+          1,
+          Applicants.ApplicantCreateSubmissionRequestBodySchema.parse(
+            requestBody,
+          ),
+        ),
       ).rejects.toEqual(mockError);
     });
 
@@ -942,7 +950,12 @@ describe('Applicant Controller', () => {
         applicantSubmissionGenerator.getAPIRequestBody(applicantId);
 
       await expect(
-        applicantController.createSubmission(applicantId, requestBody),
+        applicantController.createSubmission(
+          applicantId,
+          Applicants.ApplicantCreateSubmissionRequestBodySchema.parse(
+            requestBody,
+          ),
+        ),
       ).rejects.toEqual(
         new CAPPError({
           title: 'Resume Upload Error',
