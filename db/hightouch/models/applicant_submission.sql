@@ -75,8 +75,14 @@ SELECT
   appsub."hoursPerWeek",
   appsub."essayResponse",
   CASE
-    WHEN appsub."referenceAttribution" IS NULL THEN appsub."referenceAttributionOther"
-    WHEN appsub."referenceAttributionOther" IS NULL THEN appsub."referenceAttribution"
+    WHEN (
+      appsub."referenceAttribution" = ''
+      OR appsub."referenceAttribution" IS NULL
+    ) THEN appsub."referenceAttributionOther"
+    WHEN (
+      appsub."referenceAttributionOther" = ''
+      OR appsub."referenceAttributionOther" IS NULL
+    ) THEN appsub."referenceAttribution"
     ELSE appsub."referenceAttribution" || ' - ' || appsub."referenceAttributionOther"
   END AS "referenceAttributionAll",
   appsub."interestWorkArrangement"
