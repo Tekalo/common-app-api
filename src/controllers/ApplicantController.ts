@@ -337,12 +337,18 @@ class ApplicantController {
     return { id: applicantId };
   }
 
+  /**
+   * Additional checks/validation associated with the submission
+   * @param applicantId
+   * @param submission
+   */
   async validateApplicantSubmission(
     applicantId: number,
     submission:
       | ApplicantDraftSubmissionBodyParsed
       | ApplicantSubmissionBodyParsed,
   ): Promise<void> {
+    // If we're updating the resume, make sure the specified resume upload belongs to the authed user. If not, throw CAPPError.
     if (submission.resumeUpload) {
       const resume = await this.uploadService.getApplicantUploadOrThrow(
         applicantId,
