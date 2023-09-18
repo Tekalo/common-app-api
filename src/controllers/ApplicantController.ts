@@ -151,11 +151,8 @@ class ApplicantController {
     applicantId: number,
     data: ApplicantSubmissionBodyParsed,
   ): Promise<ApplicantCreateSubmissionResponse> {
+    await this.validateApplicantSubmission(applicantId, data);
     const { resumeUpload: resumeId, ...restOfSubmission } = data;
-    // Make sure the specified resume upload belongs to the authed user. If not, throw CAPPError.
-    if (resumeId) {
-      await this.validateResumeUpload(applicantId, resumeId);
-    }
     const applicantSubmission = await this.prisma.applicantSubmission.create({
       data: {
         ...restOfSubmission,
@@ -194,11 +191,8 @@ class ApplicantController {
     applicantId: number,
     data: ApplicantUpdateSubmissionBodyParsed,
   ): Promise<ApplicantCreateSubmissionResponse> {
+    await this.validateApplicantSubmission(applicantId, data);
     const { resumeUpload: resumeId, ...restOfSubmission } = data;
-    // If we're updating the resume, make sure the specified resume upload belongs to the authed user. If not, throw CAPPError.
-    if (resumeId) {
-      await this.validateResumeUpload(applicantId, resumeId);
-    }
     // Throws error if applicantID doesn't exist
     const applicantSubmission = await this.prisma.applicantSubmission.update({
       data: {
@@ -343,17 +337,24 @@ class ApplicantController {
     return { id: applicantId };
   }
 
-  async validateResumeUpload(applicantId: number, resumeUploadId: number) {
-    const resume = await this.uploadService.getApplicantUploadOrThrow(
-      applicantId,
-      resumeUploadId,
-    );
-    if (resume.status !== 'SUCCESS') {
-      throw new CAPPError({
-        title: 'Resume Upload Error',
-        detail: "Resume upload status must be 'SUCCESS'",
-        status: 400,
-      });
+  async validateApplicantSubmission(
+    applicantId: number,
+    submission:
+      | ApplicantDraftSubmissionBodyParsed
+      | ApplicantSubmissionBodyParsed,
+  ): Promise<void> {
+    if (submission.resumeUpload) {
+      const resume = await this.uploadService.getApplicantUploadOrThrow(
+        applicantId,
+        submission.resumeUpload,
+      );
+      if (resume.status !== 'SUCCESS') {
+        throw new CAPPError({
+          title: 'Resume Upload Error',
+          detail: "Resume upload status must be 'SUCCESS'",
+          status: 400,
+        });
+      }
     }
   }
 
@@ -361,10 +362,8 @@ class ApplicantController {
     applicantId: number,
     data: ApplicantDraftSubmissionBodyParsed,
   ): Promise<ApplicantDraftSubmissionResponseBody> {
+    await this.validateApplicantSubmission(applicantId, data);
     const { resumeUpload: resumeId, ...restOfSubmission } = data;
-    if (resumeId) {
-      await this.validateResumeUpload(applicantId, resumeId);
-    }
     const draftSubmission = await this.prisma.applicantDraftSubmission.upsert({
       create: {
         ...restOfSubmission,
