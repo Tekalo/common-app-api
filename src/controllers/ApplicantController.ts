@@ -148,17 +148,17 @@ class ApplicantController {
 
   async createSubmission(
     applicantId: number,
-    data: ApplicantSubmissionBodyParsed, // this should comes in as just an ID
+    data: ApplicantSubmissionBodyParsed,
   ): Promise<ApplicantCreateSubmissionResponse> {
-    const { resumeUpload, ...restOfSubmission } = data;
+    const { resumeUpload: resumeId, ...restOfSubmission } = data;
     // Make sure the specified resume upload belongs to the authed user. If not, throw CAPPError.
-    if (resumeUpload) {
-      await this.validateResumeUpload(applicantId, resumeUpload);
+    if (resumeId) {
+      await this.validateResumeUpload(applicantId, resumeId);
     }
     const applicantSubmission = await this.prisma.applicantSubmission.create({
       data: {
         ...restOfSubmission,
-        resumeUploadId: resumeUpload,
+        resumeUploadId: resumeId,
         applicantId,
       },
       include: {
@@ -332,19 +332,19 @@ class ApplicantController {
     applicantId: number,
     data: ApplicantDraftSubmissionBodyParsed,
   ): Promise<ApplicantDraftSubmissionResponseBody> {
-    const { resumeUpload, ...restOfSubmission } = data;
-    if (resumeUpload) {
-      await this.validateResumeUpload(applicantId, resumeUpload);
+    const { resumeUpload: resumeId, ...restOfSubmission } = data;
+    if (resumeId) {
+      await this.validateResumeUpload(applicantId, resumeId);
     }
     const draftSubmission = await this.prisma.applicantDraftSubmission.upsert({
       create: {
         ...restOfSubmission,
-        resumeUploadId: resumeUpload,
+        resumeUploadId: resumeId,
         applicantId,
       },
       update: {
         ...restOfSubmission,
-        resumeUploadId: resumeUpload,
+        resumeUploadId: resumeId,
       },
       include: {
         resumeUpload: { select: { id: true, originalFilename: true } },
