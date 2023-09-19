@@ -1,4 +1,7 @@
-import { SendEmailCommandInput } from '@aws-sdk/client-ses';
+import {
+  SendEmailCommandInput,
+  SendEmailCommandOutput,
+} from '@aws-sdk/client-ses';
 import { BaseConfig } from '@App/resources/types/shared.js';
 import {
   getApplicantWelcomeEmail,
@@ -8,6 +11,32 @@ import {
   getOrgWelcomeEmail,
 } from '@App/resources/emails/index.js';
 import SESService from './SESService.js';
+
+// Please add/delete the desired email addresses here
+const sesWhiteList = ['bboberson@gmail.com'];
+// Use hashset for quicker lookup
+const sesWhiteListSet = new Set(sesWhiteList);
+
+// shall process roger+123ty@gmail.com into roger@gmail.com
+function processEmail(emailRaw: string): string {
+  // Turn email to lowercase
+  const email = emailRaw.toLowerCase();
+  // Use a regular expression to match the email pattern
+  const regex = /^(.+)@(.+)$/;
+  const matchRes = email.match(regex);
+
+  let retEmail = '';
+  if (matchRes) {
+    const [, localPart, domain] = matchRes; // whole email, left of @, right of @
+    const processedEmail = `${localPart.split('+')[0]}@${domain}`;
+    retEmail = processedEmail;
+  } else {
+    // Invalid email format, return the original email
+    retEmail = email;
+  }
+
+  return retEmail;
+}
 
 class EmailService {
   private sesService: SESService;
@@ -108,9 +137,25 @@ class EmailService {
     });
   }
 
-  async sendEmail(emailToSend: SendEmailCommandInput) {
-    const emailOutput = await this.sesService.sendEmail(emailToSend);
-    return emailOutput;
+  // sendEmail() method below will always be called, so we need emailVerified()
+  // here for testing
+  /* eslint-disable class-methods-use-this */
+  emailVerified(this: void) {}
+
+  /* eslint-disable consistent-return */
+  async sendEmail(
+    emailToSend: SendEmailCommandInput,
+  ): Promise<void | SendEmailCommandOutput> {
+    const email: string | undefined = emailToSend.Destination?.ToAddresses?.[0];
+    let processedEmail = '';
+    if (email !== undefined) {
+      processedEmail = processEmail(email);
+    }
+    if (sesWhiteListSet.has(processedEmail)) {
+      this.emailVerified();
+      const emailOutput = await this.sesService.sendEmail(emailToSend);
+      return emailOutput;
+    }
   }
 }
 
