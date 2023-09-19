@@ -140,19 +140,29 @@ class EmailService {
   // sendEmail() method below will always be called, so we need emailVerified()
   // here for testing
   /* eslint-disable class-methods-use-this */
-  emailVerified(this: void) {}
+  emailVerified1(this: void) {}
+
+  /* eslint-disable class-methods-use-this */
+  emailVerified2(this: void) {}
 
   /* eslint-disable consistent-return */
   async sendEmail(
     emailToSend: SendEmailCommandInput,
   ): Promise<void | SendEmailCommandOutput> {
-    const email: string | undefined = emailToSend.Destination?.ToAddresses?.[0];
-    let processedEmail = '';
-    if (email !== undefined) {
-      processedEmail = processEmail(email);
-    }
-    if (sesWhiteListSet.has(processedEmail)) {
-      this.emailVerified();
+    if (this.config.env === 'dev') {
+      const email: string | undefined =
+        emailToSend.Destination?.ToAddresses?.[0];
+      let processedEmail = '';
+      if (email !== undefined) {
+        processedEmail = processEmail(email);
+      }
+      if (sesWhiteListSet.has(processedEmail)) {
+        this.emailVerified1();
+        const emailOutput = await this.sesService.sendEmail(emailToSend);
+        return emailOutput;
+      }
+    } else {
+      this.emailVerified2();
       const emailOutput = await this.sesService.sendEmail(emailToSend);
       return emailOutput;
     }

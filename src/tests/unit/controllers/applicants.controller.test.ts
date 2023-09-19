@@ -705,12 +705,12 @@ describe('Applicant Controller', () => {
   });
 
   describe('Test white list functionality in EmailService to avoid too many email bounces in dev', () => {
-    test('Should not send email if email not on white list', async () => {
+    test('Should not send email if email not on white list in dev env', async () => {
       mockCtx.prisma.applicant.findUniqueOrThrow.mockResolvedValue({
         id: 1,
         phone: '777-777-7777',
         name: 'Bob Boberson',
-        email: 'Aboberson+123xyz@schmidtfutures.com',
+        email: 'Aboberson@schmidtfutures.com',
         pronoun: 'she/hers',
         preferredContact: 'email',
         searchStatus: 'active',
@@ -726,7 +726,7 @@ describe('Applicant Controller', () => {
         getMockConfig({ env: 'dev' }),
       );
 
-      const mockEmailSpy = jest.spyOn(emailService, 'emailVerified');
+      const mockEmailSpy = jest.spyOn(emailService, 'emailVerified1');
 
       const applicantController = new ApplicantController(
         new DummyAuthService(),
@@ -743,12 +743,12 @@ describe('Applicant Controller', () => {
       expect(mockEmailSpy).not.toHaveBeenCalled();
       mockEmailSpy.mockRestore();
     });
-    test('Should send email if email on white list', async () => {
+    test('Should send email if email on white list in dev env', async () => {
       mockCtx.prisma.applicant.findUniqueOrThrow.mockResolvedValue({
         id: 1,
         phone: '777-777-7777',
         name: 'Bob Boberson',
-        email: 'bboberson@gmail.com',
+        email: 'bboberson+123xyz@gmail.com',
         pronoun: 'she/hers',
         preferredContact: 'email',
         searchStatus: 'active',
@@ -764,7 +764,45 @@ describe('Applicant Controller', () => {
         getMockConfig({ env: 'dev' }),
       );
 
-      const mockEmailSpy = jest.spyOn(emailService, 'emailVerified');
+      const mockEmailSpy = jest.spyOn(emailService, 'emailVerified1');
+
+      const applicantController = new ApplicantController(
+        new DummyAuthService(),
+        ctx.prisma,
+        emailService,
+        new DummyUploadService(
+          ctx.prisma,
+          new DummyS3Service(),
+          getMockConfig(),
+        ),
+      );
+
+      await applicantController.deleteApplicant(1);
+      expect(mockEmailSpy).toHaveBeenCalled();
+      mockEmailSpy.mockRestore();
+    });
+    test('Should send email even if email not on white list in prod env', async () => {
+      mockCtx.prisma.applicant.findUniqueOrThrow.mockResolvedValue({
+        id: 1,
+        phone: '777-777-7777',
+        name: 'Bob Boberson',
+        email: 'bboberson@schmidtfutures.com',
+        pronoun: 'she/hers',
+        preferredContact: 'email',
+        searchStatus: 'active',
+        acceptedTerms: new Date('2023-02-01'),
+        acceptedPrivacy: new Date('2023-02-01'),
+        auth0Id: 'auth0|1234',
+        isPaused: false,
+        followUpOptIn: false,
+      });
+
+      const emailService = new EmailService(
+        new DummySESService(),
+        getMockConfig({ env: 'prod' }),
+      );
+
+      const mockEmailSpy = jest.spyOn(emailService, 'emailVerified2');
 
       const applicantController = new ApplicantController(
         new DummyAuthService(),
