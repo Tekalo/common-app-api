@@ -22,6 +22,7 @@ function loadConfig(): BaseConfig {
         process.env.AWS_SES_REPLYTO_ADDRESS ||
         'tekalo@dev.apps.futurestech.cloud',
       region: process.env.AWS_REGION || 'us-east-1',
+      sesWhiteList: [],
     },
     sentryDSN: process.env.SENTRY_DSN || '',
     isLoadTest: process.env.LOAD_TEST === 'true',

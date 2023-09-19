@@ -723,10 +723,18 @@ describe('Applicant Controller', () => {
 
       const emailService = new EmailService(
         new DummySESService(),
-        getMockConfig({ env: 'dev' }),
+        getMockConfig({
+          aws: {
+            sesFromAddress: 'baz@futurestech.com',
+            sesReplyToAddress: 'replies@futurestech.com',
+            region: 'us-east-1',
+            sesWhiteList: ['bboberson@gmail.com'],
+          },
+          env: 'dev',
+        }),
       );
 
-      const mockEmailSpy = jest.spyOn(emailService, 'emailVerified1');
+      const mockEmailSpy = jest.spyOn(emailService.sesService, 'sendEmail');
 
       const applicantController = new ApplicantController(
         new DummyAuthService(),
@@ -761,10 +769,18 @@ describe('Applicant Controller', () => {
 
       const emailService = new EmailService(
         new DummySESService(),
-        getMockConfig({ env: 'dev' }),
+        getMockConfig({
+          aws: {
+            sesFromAddress: 'baz@futurestech.com',
+            sesReplyToAddress: 'replies@futurestech.com',
+            region: 'us-east-1',
+            sesWhiteList: ['bboberson@gmail.com'],
+          },
+          env: 'dev',
+        }),
       );
 
-      const mockEmailSpy = jest.spyOn(emailService, 'emailVerified1');
+      const mockEmailSpy = jest.spyOn(emailService.sesService, 'sendEmail');
 
       const applicantController = new ApplicantController(
         new DummyAuthService(),
@@ -799,10 +815,18 @@ describe('Applicant Controller', () => {
 
       const emailService = new EmailService(
         new DummySESService(),
-        getMockConfig({ env: 'prod' }),
+        getMockConfig({
+          aws: {
+            sesFromAddress: 'baz@futurestech.com',
+            sesReplyToAddress: 'replies@futurestech.com',
+            region: 'us-east-1',
+            sesWhiteList: ['bboberson@gmail.com'],
+          },
+          env: 'prod',
+        }),
       );
 
-      const mockEmailSpy = jest.spyOn(emailService, 'emailVerified2');
+      const mockEmailSpy = jest.spyOn(emailService.sesService, 'sendEmail');
 
       const applicantController = new ApplicantController(
         new DummyAuthService(),

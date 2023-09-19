@@ -12,13 +12,8 @@ import {
 } from '@App/resources/emails/index.js';
 import SESService from './SESService.js';
 
-// Please add/delete the desired email addresses here
-const sesWhiteList = ['bboberson@gmail.com'];
-// Use hashset for quicker lookup
-const sesWhiteListSet = new Set(sesWhiteList);
-
 // shall process roger+123ty@gmail.com into roger@gmail.com
-function processEmail(emailRaw: string): string {
+export function removeAliasLowercaseEmail(emailRaw: string): string {
   // Turn email to lowercase
   const email = emailRaw.toLowerCase();
   // Use a regular expression to match the email pattern
@@ -39,7 +34,7 @@ function processEmail(emailRaw: string): string {
 }
 
 class EmailService {
-  private sesService: SESService;
+  public sesService: SESService;
 
   private config: BaseConfig;
 
@@ -137,32 +132,25 @@ class EmailService {
     });
   }
 
-  // sendEmail() method below will always be called, so we need emailVerified()
-  // here for testing
-  /* eslint-disable class-methods-use-this */
-  emailVerified1(this: void) {}
-
-  /* eslint-disable class-methods-use-this */
-  emailVerified2(this: void) {}
-
   /* eslint-disable consistent-return */
   async sendEmail(
     emailToSend: SendEmailCommandInput,
   ): Promise<void | SendEmailCommandOutput> {
-    if (this.config.env === 'dev') {
+    if (this.config.env !== 'prod') {
       const email: string | undefined =
         emailToSend.Destination?.ToAddresses?.[0];
       let processedEmail = '';
       if (email !== undefined) {
-        processedEmail = processEmail(email);
+        processedEmail = removeAliasLowercaseEmail(email);
       }
+      const { sesWhiteList } = this.config.aws;
+      // Use hashset for quicker lookup
+      const sesWhiteListSet = new Set(sesWhiteList);
       if (sesWhiteListSet.has(processedEmail)) {
-        this.emailVerified1();
         const emailOutput = await this.sesService.sendEmail(emailToSend);
         return emailOutput;
       }
     } else {
-      this.emailVerified2();
       const emailOutput = await this.sesService.sendEmail(emailToSend);
       return emailOutput;
     }
