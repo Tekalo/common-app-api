@@ -72,8 +72,6 @@ const ApplicantCreateSubmissionRequestBodySchema = z.object({
     .object({
       id: z.number(),
     })
-    .nullable()
-    .optional()
     .transform((resumeObj) => resumeObj?.id),
   lastOrg: z.string().max(255),
   yoe: YOE,
