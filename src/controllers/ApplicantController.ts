@@ -203,7 +203,9 @@ class ApplicantController {
     const applicantSubmission = await this.prisma.applicantSubmission.update({
       data: {
         ...restOfSubmission,
-        resumeUploadId: resumeUpload.id,
+        resumeUpload: {
+          connect: { id: resumeUpload.id },
+        },
       },
       include: {
         resumeUpload: { select: { id: true, originalFilename: true } },
@@ -433,12 +435,20 @@ class ApplicantController {
     const draftSubmission = await this.prisma.applicantDraftSubmission.upsert({
       create: {
         ...restOfSubmission,
-        resumeUploadId: resumeUpload?.id,
-        applicantId,
+        resumeUpload: resumeUpload
+          ? {
+              connect: { id: resumeUpload?.id },
+            }
+          : undefined,
+        applicant: { connect: { id: applicantId } },
       },
       update: {
         ...restOfSubmission,
-        resumeUploadId: resumeUpload?.id,
+        resumeUpload: resumeUpload
+          ? {
+              connect: { id: resumeUpload?.id },
+            }
+          : undefined,
       },
       include: {
         resumeUpload: { select: { id: true, originalFilename: true } },
