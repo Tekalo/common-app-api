@@ -26,7 +26,6 @@ import MonitoringService from '@App/services/MonitoringService.js';
 import UploadService from '@App/services/UploadService.js';
 import { Claims } from '@App/resources/types/auth0.js';
 import { Applicants } from '@capp/schemas';
-// import { ZodObject } from 'zod';
 
 class ApplicantController {
   private auth0Service: AuthService;
