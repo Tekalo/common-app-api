@@ -106,6 +106,7 @@ const ApplicantSubmissionResponseBody = z.object({
   id: z.number(),
   applicantId: z.number(),
   createdAt: z.date(),
+  updatedAt: z.date(),
   originTag: z.string().nullable(),
   lastRole: z.string().max(255).nullable(),
   lastOrg: z.string().max(255).nullable(),

@@ -791,6 +791,7 @@ describe('Applicant Controller', () => {
       const resolvedValue: PrismaApplicantSubmissionWithResume = {
         id: 445566,
         createdAt: new Date(),
+        updatedAt: new Date(),
         applicantId,
         originTag: '',
         lastRole: 'senior software engineer',
