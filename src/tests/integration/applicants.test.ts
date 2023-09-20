@@ -933,6 +933,7 @@ describe('POST /applicants/me/submissions/draft', () => {
       expect(body.submission).toHaveProperty('id');
     });
 
+    // get rid of resumeURL examples
     it('should update an existing draft applicant submission', async () => {
       const agent = request.agent(dummyApp);
       await agent.post('/applicants').send({
@@ -944,10 +945,10 @@ describe('POST /applicants/me/submissions/draft', () => {
         acceptedPrivacy: true,
       });
       const draftBody: ApplicantDraftSubmissionBody = {
-        resumeUrl: 'https://bobcanbuild.com/resume',
+        linkedInUrl: 'https://linkedin.com/bobCanBuild',
       };
       const draftUpdateBody: ApplicantDraftSubmissionBody = {
-        resumeUrl: 'https://bobcanREALLYbuild.com/resume',
+        linkedInUrl: 'https://linkedin.com/bobCanREALLYBuild',
       };
       const {
         body: draftResp,
@@ -956,8 +957,8 @@ describe('POST /applicants/me/submissions/draft', () => {
         .send(draftBody)
         .expect(200);
       expect(draftResp.submission).toHaveProperty(
-        'resumeUrl',
-        'https://bobcanbuild.com/resume',
+        'linkedInUrl',
+        'https://linkedin.com/bobCanBuild',
       );
       const { body }: { body: ApplicantDraftSubmissionResponseBody } =
         await agent
@@ -965,8 +966,8 @@ describe('POST /applicants/me/submissions/draft', () => {
           .send(draftUpdateBody)
           .expect(200);
       expect(body.submission).toHaveProperty(
-        'resumeUrl',
-        'https://bobcanREALLYbuild.com/resume',
+        'linkedInUrl',
+        'https://linkedin.com/bobCanREALLYBuild',
       );
     });
   });

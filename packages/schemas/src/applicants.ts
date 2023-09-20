@@ -68,11 +68,9 @@ const ApplicantResponseBodySchema = z.object({
 const ApplicantCreateSubmissionRequestBodySchema = z.object({
   originTag: z.string(),
   lastRole: z.string().max(255),
-  resumeUpload: z
-    .object({
-      id: z.number(),
-    })
-    .transform((resumeObj) => resumeObj?.id),
+  resumeUpload: z.object({
+    id: z.number(),
+  }),
   lastOrg: z.string().max(255),
   yoe: YOE,
   skills: z.array(Skills),

@@ -21,6 +21,7 @@ import {
   ApplicantSubmissionBody,
 } from '@App/resources/types/applicants.js';
 import { Applicants } from '@capp/schemas';
+import { ZodError } from 'zod';
 import { getMockConfig } from '../../util/helpers.js';
 
 let mockCtx: MockContext;
@@ -956,13 +957,7 @@ describe('Applicant Controller', () => {
             requestBody,
           ),
         ),
-      ).rejects.toEqual(
-        new CAPPError({
-          title: 'Resume Upload Error',
-          detail: 'Resume upload status must be SUCCESS',
-          status: 400,
-        }),
-      );
+      ).rejects.toBeInstanceOf(ZodError);
     });
   });
   describe('Applicant Get Resume Upload Url', () => {
