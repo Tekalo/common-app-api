@@ -12,6 +12,7 @@ import {
   ApplicantGetSubmissionResponse,
   ApplicantDraftSubmissionResponseBody,
   ApplicantDraftSubmissionBodyParsed,
+  ApplicantUpdateSubmissionBodyParsed,
 } from '@App/resources/types/applicants.js';
 import {
   UploadResponseBody,
@@ -150,11 +151,8 @@ class ApplicantController {
     applicantId: number,
     data: ApplicantSubmissionBodyParsed,
   ): Promise<ApplicantCreateSubmissionResponse> {
+    await this.validateApplicantSubmission(applicantId, data);
     const { resumeUpload: resumeId, ...restOfSubmission } = data;
-    // Make sure the specified resume upload belongs to the authed user. If not, throw CAPPError.
-    if (resumeId) {
-      await this.validateResumeUpload(applicantId, resumeId);
-    }
     const applicantSubmission = await this.prisma.applicantSubmission.create({
       data: {
         ...restOfSubmission,
@@ -183,6 +181,31 @@ class ApplicantController {
         ),
       );
     }
+    return Applicants.ApplicantCreateSubmissionResponseBodySchema.parse({
+      submission: submissionVals,
+      isFinal: true,
+    });
+  }
+
+  async updateSubmission(
+    applicantId: number,
+    data: ApplicantUpdateSubmissionBodyParsed,
+  ): Promise<ApplicantCreateSubmissionResponse> {
+    await this.validateApplicantSubmission(applicantId, data);
+    const { resumeUpload: resumeId, ...restOfSubmission } = data;
+    // Throws error if applicantID doesn't exist
+    const applicantSubmission = await this.prisma.applicantSubmission.update({
+      data: {
+        ...restOfSubmission,
+        resumeUploadId: resumeId,
+      },
+      include: {
+        resumeUpload: { select: { id: true, originalFilename: true } },
+      },
+      where: { applicantId },
+    });
+    // remove resumeUploadId from response
+    const { resumeUploadId, ...submissionVals } = applicantSubmission;
     return Applicants.ApplicantCreateSubmissionResponseBodySchema.parse({
       submission: submissionVals,
       isFinal: true,
@@ -314,17 +337,30 @@ class ApplicantController {
     return { id: applicantId };
   }
 
-  async validateResumeUpload(applicantId: number, resumeUploadId: number) {
-    const resume = await this.uploadService.getApplicantUploadOrThrow(
-      applicantId,
-      resumeUploadId,
-    );
-    if (resume.status !== 'SUCCESS') {
-      throw new CAPPError({
-        title: 'Resume Upload Error',
-        detail: "Resume upload status must be 'SUCCESS'",
-        status: 400,
-      });
+  /**
+   * Additional checks/validation associated with the submission
+   * @param applicantId
+   * @param submission
+   */
+  async validateApplicantSubmission(
+    applicantId: number,
+    submission:
+      | ApplicantDraftSubmissionBodyParsed
+      | ApplicantSubmissionBodyParsed,
+  ): Promise<void> {
+    // If we're updating the resume, make sure the specified resume upload belongs to the authed user. If not, throw CAPPError.
+    if (submission.resumeUpload) {
+      const resume = await this.uploadService.getApplicantUploadOrThrow(
+        applicantId,
+        submission.resumeUpload,
+      );
+      if (resume.status !== 'SUCCESS') {
+        throw new CAPPError({
+          title: 'Resume Upload Error',
+          detail: "Resume upload status must be 'SUCCESS'",
+          status: 400,
+        });
+      }
     }
   }
 
@@ -332,10 +368,8 @@ class ApplicantController {
     applicantId: number,
     data: ApplicantDraftSubmissionBodyParsed,
   ): Promise<ApplicantDraftSubmissionResponseBody> {
+    await this.validateApplicantSubmission(applicantId, data);
     const { resumeUpload: resumeId, ...restOfSubmission } = data;
-    if (resumeId) {
-      await this.validateResumeUpload(applicantId, resumeId);
-    }
     const draftSubmission = await this.prisma.applicantDraftSubmission.upsert({
       create: {
         ...restOfSubmission,

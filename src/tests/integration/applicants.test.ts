@@ -522,6 +522,177 @@ describe('POST /applicants/me/submissions', () => {
   });
 });
 
+describe('PUT /applicants/me/submissions', () => {
+  it('should return 401 for request with no JWT', async () => {
+    const randomString = getRandomString();
+    await request(dummyApp)
+      .put('/applicants/me/submissions')
+      .send({
+        name: 'Bob Boberson',
+        pronoun: 'he/his',
+        phone: '123-456-7899',
+        email: `bboberson${randomString}@gmail.com`,
+        preferredContact: 'email',
+        searchStatus: 'active',
+        acceptedTerms: true,
+        acceptedPrivacy: true,
+      })
+      .expect(401);
+  });
+
+  it('should return 400 for request with missing data', async () => {
+    const randomString = getRandomString();
+    const token = await authHelper.getToken(
+      `bboberson${randomString}@gmail.com`,
+    );
+    const { body: applicantBody }: { body: ApplicantResponseBody } =
+      await request(dummyApp)
+        .post('/applicants')
+        .send({
+          name: 'Bob Boberson',
+          auth0Id: 'auth0|123456',
+          email: `bboberson${randomString}@gmail.com`,
+          preferredContact: 'email',
+          searchStatus: 'active',
+          acceptedTerms: true,
+          acceptedPrivacy: true,
+        });
+    const { id: resumeId } = await seedResumeUpload(applicantBody.id);
+    const testSubmission =
+      applicantSubmissionGenerator.getAPIRequestBody(resumeId);
+    await request(dummyApp)
+      .post('/applicants/me/submissions')
+      .send(testSubmission)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200);
+    const { openToRemoteMulti, ...restOfSubmission } = testSubmission;
+    await request(dummyApp)
+      .put('/applicants/me/submissions')
+      .send({ ...restOfSubmission })
+      .set('Authorization', `Bearer ${token}`)
+      .expect(400);
+  });
+
+  it('should update an existing applicant submission', async () => {
+    const randomString = getRandomString();
+    const token = await authHelper.getToken(
+      `bboberson${randomString}@gmail.com`,
+    );
+    const { body: applicantBody }: { body: ApplicantResponseBody } =
+      await request(dummyApp)
+        .post('/applicants')
+        .send({
+          name: 'Bob Boberson',
+          auth0Id: 'auth0|123456',
+          email: `bboberson${randomString}@gmail.com`,
+          preferredContact: 'email',
+          searchStatus: 'active',
+          acceptedTerms: true,
+          acceptedPrivacy: true,
+        });
+    const { id: resumeId } = await seedResumeUpload(applicantBody.id);
+    const testSubmission =
+      applicantSubmissionGenerator.getAPIRequestBody(resumeId);
+    await request(dummyApp)
+      .post('/applicants/me/submissions')
+      .send(testSubmission)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200);
+    const { body }: { body: ApplicantCreateSubmissionResponse } = await request(
+      dummyApp,
+    )
+      .put('/applicants/me/submissions')
+      .send({ ...testSubmission, openToRemoteMulti: ['hybrid', 'remote'] })
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200);
+    expect(body.submission.openToRemoteMulti).toEqual(['hybrid', 'remote']);
+  });
+
+  it('should return 500 error if applicant does not have an existing final submission', async () => {
+    const randomString = getRandomString();
+    const token = await authHelper.getToken(
+      `bboberson${randomString}@gmail.com`,
+    );
+    const { body: applicantBody }: { body: ApplicantResponseBody } =
+      await request(dummyApp)
+        .post('/applicants')
+        .send({
+          name: 'Bob Boberson',
+          auth0Id: 'auth0|123456',
+          email: `bboberson${randomString}@gmail.com`,
+          preferredContact: 'email',
+          searchStatus: 'active',
+          acceptedTerms: true,
+          acceptedPrivacy: true,
+        });
+    const { id: resumeId } = await seedResumeUpload(applicantBody.id);
+    const testSubmission =
+      applicantSubmissionGenerator.getAPIRequestBody(resumeId);
+    await request(dummyApp)
+      .put('/applicants/me/submissions')
+      .send({ ...testSubmission })
+      .set('Authorization', `Bearer ${token}`)
+      .expect(500);
+  });
+
+  it('should return 500 error if resumeId is not a valid upload id', async () => {
+    const randomString = getRandomString();
+    const token = await authHelper.getToken(
+      `bboberson${randomString}@gmail.com`,
+    );
+    const { body: applicantBody }: { body: ApplicantResponseBody } =
+      await request(dummyApp)
+        .post('/applicants')
+        .send({
+          name: 'Bob Boberson',
+          auth0Id: 'auth0|123456',
+          email: `bboberson${randomString}@gmail.com`,
+          preferredContact: 'email',
+          searchStatus: 'active',
+          acceptedTerms: true,
+          acceptedPrivacy: true,
+        });
+    const { id: resumeId } = await seedResumeUpload(applicantBody.id);
+    const testSubmission =
+      applicantSubmissionGenerator.getAPIRequestBody(resumeId);
+    await request(dummyApp)
+      .post('/applicants/me/submissions')
+      .send({ ...testSubmission, resumeUpload: { id: resumeId } })
+      .set('Authorization', `Bearer ${token}`);
+    await request(dummyApp)
+      .put('/applicants/me/submissions')
+      .send({ ...testSubmission, resumeUpload: { id: 99983 } })
+      .set('Authorization', `Bearer ${token}`)
+      .expect(500);
+  });
+  it('should return 500 error if applicant does not have existing final submission', async () => {
+    const randomString = getRandomString();
+    const token = await authHelper.getToken(
+      `bboberson${randomString}@gmail.com`,
+    );
+    const { body: applicantBody }: { body: ApplicantResponseBody } =
+      await request(dummyApp)
+        .post('/applicants')
+        .send({
+          name: 'Bob Boberson',
+          auth0Id: 'auth0|123456',
+          email: `bboberson${randomString}@gmail.com`,
+          preferredContact: 'email',
+          searchStatus: 'active',
+          acceptedTerms: true,
+          acceptedPrivacy: true,
+        });
+    const { id: resumeId } = await seedResumeUpload(applicantBody.id);
+    const testSubmission =
+      applicantSubmissionGenerator.getAPIRequestBody(resumeId);
+    await request(dummyApp)
+      .put('/applicants/me/submissions')
+      .send({ ...testSubmission, openToRemoteMulti: ['hybrid'] })
+      .set('Authorization', `Bearer ${token}`)
+      .expect(500);
+  });
+});
+
 describe('DELETE /applicants/me', () => {
   describe('Auth0 Integration', () => {
     afterEach(async () => {

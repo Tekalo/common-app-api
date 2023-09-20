@@ -6,6 +6,14 @@ export type ApplicantRequestBody = z.infer<
   typeof Applicants.ApplicantRequestBodySchema
 >;
 
+export type ApplicantUpdateSubmissionBody = z.input<
+  typeof Applicants.ApplicantUpdateSubmissionRequestBodySchema
+>;
+
+export type ApplicantUpdateSubmissionBodyParsed = z.output<
+  typeof Applicants.ApplicantUpdateSubmissionRequestBodySchema
+>;
+
 export type ApplicantDraftSubmissionBody = z.input<
   typeof Applicants.ApplicantDraftSubmissionRequestBodySchema
 >;

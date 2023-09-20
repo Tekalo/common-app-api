@@ -228,7 +228,42 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/applicantDraftSubmissionRequestBody"
+                "$ref": "#/components/schemas/applicantSubmissionRequestBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "description": "Update an existing applicant submission",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/applicantSubmissionRequestBody"
               }
             }
           }
@@ -265,7 +300,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/applicantSubmissionRequestBody"
+                "$ref": "#/components/schemas/applicantDraftSubmissionRequestBody"
               }
             }
           }
