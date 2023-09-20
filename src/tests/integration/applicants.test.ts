@@ -1098,7 +1098,7 @@ describe('POST /applicants/me/submissions/draft', () => {
         .set('Authorization', `Bearer ${token}`)
         .send({})
         .expect(200);
-      expect(bodyWithoutResume.submission.resumeUpload).toBe(undefined);
+      expect(bodyWithoutResume.submission.resumeUpload).toBe(null);
     });
   });
 });
