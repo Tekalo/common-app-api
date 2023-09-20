@@ -378,7 +378,7 @@ class ApplicantController {
       },
       update: {
         ...restOfSubmission,
-        resumeUploadId: resumeId,
+        resumeUploadId: resumeId || null,
       },
       include: {
         resumeUpload: { select: { id: true, originalFilename: true } },
