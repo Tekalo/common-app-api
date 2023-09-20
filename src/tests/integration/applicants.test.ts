@@ -1063,6 +1063,43 @@ describe('POST /applicants/me/submissions/draft', () => {
           .expect(404);
       expect(body).toHaveProperty('title', 'Not Found');
     });
+
+    it('should remove resumeUpload from existing draft', async () => {
+      const token = await authHelper.getToken('bboberson@gmail.com');
+      const { body: applicantBody }: { body: ApplicantResponseBody } =
+        await request(dummyApp).post('/applicants').send({
+          name: 'Bob Boberson',
+          email: 'bboberson@gmail.com',
+          preferredContact: 'sms',
+          searchStatus: 'active',
+          acceptedTerms: true,
+          acceptedPrivacy: true,
+        });
+      const { id: resumeId } = await seedResumeUpload(applicantBody.id);
+      const testBody: ApplicantDraftSubmissionBody = {
+        resumeUpload: { id: resumeId },
+      };
+      const {
+        body: bodyWithResume,
+      }: { body: ApplicantDraftSubmissionResponseBody } = await request(
+        dummyApp,
+      )
+        .post('/applicants/me/submissions/draft')
+        .set('Authorization', `Bearer ${token}`)
+        .send(testBody)
+        .expect(200);
+      expect(bodyWithResume.submission.resumeUpload).toHaveProperty('id');
+      const {
+        body: bodyWithoutResume,
+      }: { body: ApplicantDraftSubmissionResponseBody } = await request(
+        dummyApp,
+      )
+        .post('/applicants/me/submissions/draft')
+        .set('Authorization', `Bearer ${token}`)
+        .send({})
+        .expect(200);
+      expect(bodyWithoutResume.submission.resumeUpload).toBe(null);
+    });
   });
 });
 
