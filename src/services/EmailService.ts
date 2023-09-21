@@ -136,11 +136,10 @@ class EmailService {
   async sendEmail(
     emailToSend: SendEmailCommandInput,
   ): Promise<void | SendEmailCommandOutput> {
-    const { sesWhiteList } = this.config.aws;
-    // Use hashset for quicker lookup
-    const sesWhiteListSet = new Set(sesWhiteList);
-
     if (emailToSend.Destination?.ToAddresses !== undefined) {
+      const { sesWhiteList } = this.config.aws;
+      // Use hashset for quicker lookup
+      const sesWhiteListSet = new Set(sesWhiteList);
       for (let i = 0; i < emailToSend.Destination.ToAddresses.length; i += 1) {
         const email = emailToSend.Destination.ToAddresses[i];
         if (this.config.useEmailWhiteList) {
@@ -150,7 +149,6 @@ class EmailService {
           }
         }
       }
-
       if (emailToSend.Destination.ToAddresses.length !== 0) {
         const emailOutput = await this.sesService.sendEmail(emailToSend);
         return emailOutput;
