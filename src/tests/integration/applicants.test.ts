@@ -389,12 +389,13 @@ describe('POST /applicants/me/submissions', () => {
           .send(testBody)
           .set('Authorization', `Bearer ${token}`)
           .expect(200);
-      expect(Object.keys(body.submission).length).toEqual(33);
+      expect(Object.keys(body.submission).length).toEqual(34);
       expect(body).toEqual({
         submission: {
           id: expect.any(Number),
           applicantId: applicantBody.id,
           createdAt: expect.any(String),
+          updatedAt: expect.any(String),
           ...testBody,
           resumeUpload: { id: resumeId, originalFilename: expect.any(String) },
           openToRemoteMulti: ['in-person', 'hybrid'],
@@ -606,6 +607,7 @@ describe('PUT /applicants/me/submissions', () => {
       .set('Authorization', `Bearer ${token}`)
       .expect(200);
     expect(body.submission.openToRemoteMulti).toEqual(['hybrid', 'remote']);
+    expect(body.submission.createdAt).not.toEqual(body.submission.updatedAt);
   });
 
   it('should return 500 error if applicant does not have an existing final submission', async () => {
