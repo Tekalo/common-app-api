@@ -2,7 +2,10 @@ SELECT
   ob."contactEmail",
   ob."contactName",
   ob."contactPhone",
-  ob."impactAreas",
+  ARRAY_CAT(
+    ob."impactAreas",
+    LOWER(ob."impactAreasOther" :: TEXT) :: TEXT []
+  ) AS "impactAreasAll",
   ob."orgName",
   ob."orgSize",
   ob."orgType",

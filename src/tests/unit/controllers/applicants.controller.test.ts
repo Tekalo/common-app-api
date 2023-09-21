@@ -21,6 +21,7 @@ import {
   ApplicantSubmissionBody,
 } from '@App/resources/types/applicants.js';
 import { Applicants } from '@capp/schemas';
+import { ZodError, ZodIssueCode } from 'zod';
 import { getMockConfig } from '../../util/helpers.js';
 
 let mockCtx: MockContext;
@@ -920,6 +921,7 @@ describe('Applicant Controller', () => {
       const resolvedValue: PrismaApplicantSubmissionWithResume = {
         id: 445566,
         createdAt: new Date(),
+        updatedAt: new Date(),
         applicantId,
         originTag: '',
         lastRole: 'senior software engineer',
@@ -981,7 +983,7 @@ describe('Applicant Controller', () => {
         followUpOptIn: false,
       });
 
-      mockCtx.prisma.upload.findFirstOrThrow.mockResolvedValue({
+      mockCtx.prisma.upload.findFirst.mockResolvedValue({
         id: 1,
         applicantId,
         originalFilename: 'myresume.pdf',
@@ -1019,19 +1021,16 @@ describe('Applicant Controller', () => {
       expect(mockEmailSpy).toHaveBeenCalledWith(expectedEmail);
       mockEmailSpy.mockRestore();
     });
-    test('Should throw error if getApplicantUploadOrThrow() does not return successfully', async () => {
+    test('Should throw Zod validation error if getApplicantUpload() returns null', async () => {
       const dummyUploadService = new DummyUploadService(
         ctx.prisma,
         new DummyS3Service(),
         getMockConfig(),
       );
-      const mockError = new Prisma.PrismaClientKnownRequestError(
-        'Upload not found',
-        { code: 'P123', clientVersion: '123' },
-      );
-      dummyUploadService.getApplicantUploadOrThrow = () => {
-        throw mockError;
-      };
+
+      // eslint-disable-next-line @typescript-eslint/require-await
+      dummyUploadService.getApplicantUpload = async () => null;
+
       const applicantController = new ApplicantController(
         new DummyAuthService(),
         ctx.prisma,
@@ -1048,17 +1047,17 @@ describe('Applicant Controller', () => {
             requestBody,
           ),
         ),
-      ).rejects.toEqual(mockError);
+      ).rejects.toBeInstanceOf(ZodError);
     });
 
-    test('should throw error if upload belonging to the specified applicant does not have the status "SUCCESS"', async () => {
+    test('should throw Zod Error if upload belonging to the specified applicant does not have the status "SUCCESS"', async () => {
       const applicantId = 1;
       const dummyUploadService = new DummyUploadService(
         ctx.prisma,
         new DummyS3Service(),
         getMockConfig(),
       );
-      dummyUploadService.getApplicantUploadOrThrow = () =>
+      dummyUploadService.getApplicantUpload = () =>
         Promise.resolve({
           id: 1,
           applicantId,
@@ -1086,11 +1085,13 @@ describe('Applicant Controller', () => {
           ),
         ),
       ).rejects.toEqual(
-        new CAPPError({
-          title: 'Resume Upload Error',
-          detail: 'Resume upload status must be SUCCESS',
-          status: 400,
-        }),
+        new ZodError([
+          {
+            message: 'Invalid resume',
+            code: ZodIssueCode.custom,
+            path: ['resumeUpload.id'],
+          },
+        ]),
       );
     });
   });
