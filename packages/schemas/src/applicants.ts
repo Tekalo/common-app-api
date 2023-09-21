@@ -68,11 +68,9 @@ const ApplicantResponseBodySchema = z.object({
 const ApplicantCreateSubmissionRequestBodySchema = z.object({
   originTag: z.string(),
   lastRole: z.string().max(255),
-  resumeUpload: z
-    .object({
-      id: z.number(),
-    })
-    .transform((resumeObj) => resumeObj?.id),
+  resumeUpload: z.object({
+    id: z.number(),
+  }),
   lastOrg: z.string().max(255),
   yoe: YOE,
   skills: z.array(Skills),
@@ -106,6 +104,7 @@ const ApplicantSubmissionResponseBody = z.object({
   id: z.number(),
   applicantId: z.number(),
   createdAt: z.date(),
+  updatedAt: z.date(),
   originTag: z.string().nullable(),
   lastRole: z.string().max(255).nullable(),
   lastOrg: z.string().max(255).nullable(),
@@ -156,6 +155,9 @@ const ApplicantGetSubmissionsResponseBodySchema = z.object({
 const ApplicantDraftSubmissionRequestBodySchema =
   ApplicantCreateSubmissionRequestBodySchema.partial();
 
+const ApplicantUpdateSubmissionRequestBodySchema =
+  ApplicantCreateSubmissionRequestBodySchema;
+
 const ApplicantDraftSubmissionResponseBodySchema = z.object({
   submission: ApplicantSubmissionResponseBody,
   isFinal: z.boolean(),
@@ -171,4 +173,5 @@ export default {
   ApplicantDraftSubmissionResponseBodySchema,
   ApplicantUpdateRequestBodySchema,
   ApplicantGetSubmissionsResponseBodySchema,
+  ApplicantUpdateSubmissionRequestBodySchema,
 };

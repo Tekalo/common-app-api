@@ -8,11 +8,11 @@ import ApplicantController from '@App/controllers/ApplicantController.js';
 import { Applicants, Uploads } from '@capp/schemas';
 import {
   ApplicantRequestBody,
-  ApplicantSubmissionBody,
   ApplicantDraftSubmissionBody,
   ApplicantStateBody,
   ApplicantUpdateBody,
-  ApplicantSubmissionBodyParsed,
+  ApplicantSubmissionBody,
+  ApplicantUpdateSubmissionBody,
 } from '@App/resources/types/applicants.js';
 import {
   UploadRequestBody,
@@ -63,11 +63,29 @@ const applicantRoutes = (
     authenticator.verifyJwtOrCookie.bind(authenticator) as RequestHandler,
     (req: Request, res: Response, next) => {
       const appBody = req.body as ApplicantSubmissionBody;
-      const validatedBody: ApplicantSubmissionBodyParsed =
-        Applicants.ApplicantCreateSubmissionRequestBodySchema.parse(appBody);
       const applicantID = req.auth?.payload.id || req.session.applicant.id;
+      const validatedBody: ApplicantSubmissionBody =
+        Applicants.ApplicantCreateSubmissionRequestBodySchema.parse(appBody);
       applicantController
         .createSubmission(applicantID, validatedBody)
+        .then((result) => {
+          res.status(200).json(result);
+        })
+        .catch((err) => next(err));
+    },
+  );
+
+  router.put(
+    '/me/submissions',
+    authenticator.validateJwt.bind(authenticator) as RequestHandler,
+    (req: Request, res: Response, next) => {
+      const appBody = req.body as ApplicantUpdateSubmissionBody;
+      const reqWithAuth = req as RequestWithJWT;
+      const validatedBody: ApplicantUpdateSubmissionBody =
+        Applicants.ApplicantUpdateSubmissionRequestBodySchema.parse(appBody);
+      const applicantID = reqWithAuth.auth.payload.id;
+      applicantController
+        .updateSubmission(applicantID as number, validatedBody)
         .then((result) => {
           res.status(200).json(result);
         })

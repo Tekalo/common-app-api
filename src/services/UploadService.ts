@@ -36,16 +36,16 @@ class UploadService {
   }
 
   /**
-   * Get upload belonging to an applicant. If it does not exist, throw an error.
+   * Get upload belonging to an applicant. If it does not exist, returns null
    * @param applicantId
    * @param uploadId
    * @returns
    */
-  async getApplicantUploadOrThrow(
+  async getApplicantUpload(
     applicantId: number,
     uploadId: number,
-  ): Promise<Upload> {
-    const applicantUpload = await this.prisma.upload.findFirstOrThrow({
+  ): Promise<Upload | null> {
+    const applicantUpload = await this.prisma.upload.findFirst({
       where: { id: uploadId, applicantId },
     });
     return applicantUpload;
