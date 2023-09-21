@@ -721,30 +721,26 @@ describe('Applicant Controller', () => {
         followUpOptIn: false,
       });
 
-      const emailService = new EmailService(
-        new DummySESService(),
-        getMockConfig({
-          aws: {
-            sesFromAddress: 'baz@futurestech.com',
-            sesReplyToAddress: 'replies@futurestech.com',
-            region: 'us-east-1',
-            sesWhiteList: ['bboberson@gmail.com'],
-          },
-          env: 'dev',
-        }),
-      );
+      const sesService = new DummySESService();
+      const mockConfig = getMockConfig({
+        aws: {
+          sesFromAddress: 'baz@futurestech.com',
+          sesReplyToAddress: 'replies@futurestech.com',
+          region: 'us-east-1',
+          sesWhiteList: ['bboberson@gmail.com'],
+        },
+        env: 'dev',
+        useEmailWhiteList: true,
+      });
+      const emailService = new EmailService(sesService, mockConfig);
 
-      const mockEmailSpy = jest.spyOn(emailService.sesService, 'sendEmail');
+      const mockEmailSpy = jest.spyOn(sesService, 'sendEmail');
 
       const applicantController = new ApplicantController(
         new DummyAuthService(),
         ctx.prisma,
         emailService,
-        new DummyUploadService(
-          ctx.prisma,
-          new DummyS3Service(),
-          getMockConfig(),
-        ),
+        new DummyUploadService(ctx.prisma, new DummyS3Service(), mockConfig),
       );
 
       await applicantController.deleteApplicant(1);
@@ -767,30 +763,26 @@ describe('Applicant Controller', () => {
         followUpOptIn: false,
       });
 
-      const emailService = new EmailService(
-        new DummySESService(),
-        getMockConfig({
-          aws: {
-            sesFromAddress: 'baz@futurestech.com',
-            sesReplyToAddress: 'replies@futurestech.com',
-            region: 'us-east-1',
-            sesWhiteList: ['bboberson@gmail.com'],
-          },
-          env: 'dev',
-        }),
-      );
+      const sesService = new DummySESService();
+      const mockConfig = getMockConfig({
+        aws: {
+          sesFromAddress: 'baz@futurestech.com',
+          sesReplyToAddress: 'replies@futurestech.com',
+          region: 'us-east-1',
+          sesWhiteList: ['bboberson@gmail.com'],
+        },
+        env: 'dev',
+        useEmailWhiteList: true,
+      });
+      const emailService = new EmailService(sesService, mockConfig);
 
-      const mockEmailSpy = jest.spyOn(emailService.sesService, 'sendEmail');
+      const mockEmailSpy = jest.spyOn(sesService, 'sendEmail');
 
       const applicantController = new ApplicantController(
         new DummyAuthService(),
         ctx.prisma,
         emailService,
-        new DummyUploadService(
-          ctx.prisma,
-          new DummyS3Service(),
-          getMockConfig(),
-        ),
+        new DummyUploadService(ctx.prisma, new DummyS3Service(), mockConfig),
       );
 
       await applicantController.deleteApplicant(1);
@@ -813,30 +805,26 @@ describe('Applicant Controller', () => {
         followUpOptIn: false,
       });
 
-      const emailService = new EmailService(
-        new DummySESService(),
-        getMockConfig({
-          aws: {
-            sesFromAddress: 'baz@futurestech.com',
-            sesReplyToAddress: 'replies@futurestech.com',
-            region: 'us-east-1',
-            sesWhiteList: ['bboberson@gmail.com'],
-          },
-          env: 'prod',
-        }),
-      );
+      const sesService = new DummySESService();
+      const mockConfig = getMockConfig({
+        aws: {
+          sesFromAddress: 'baz@futurestech.com',
+          sesReplyToAddress: 'replies@futurestech.com',
+          region: 'us-east-1',
+          sesWhiteList: ['bboberson@gmail.com'],
+        },
+        env: 'prod',
+        useEmailWhiteList: false,
+      });
+      const emailService = new EmailService(sesService, mockConfig);
 
-      const mockEmailSpy = jest.spyOn(emailService.sesService, 'sendEmail');
+      const mockEmailSpy = jest.spyOn(sesService, 'sendEmail');
 
       const applicantController = new ApplicantController(
         new DummyAuthService(),
         ctx.prisma,
         emailService,
-        new DummyUploadService(
-          ctx.prisma,
-          new DummyS3Service(),
-          getMockConfig(),
-        ),
+        new DummyUploadService(ctx.prisma, new DummyS3Service(), mockConfig),
       );
 
       await applicantController.deleteApplicant(1);

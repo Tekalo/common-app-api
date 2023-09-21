@@ -22,12 +22,13 @@ function loadConfig(): BaseConfig {
         process.env.AWS_SES_REPLYTO_ADDRESS ||
         'tekalo@dev.apps.futurestech.cloud',
       region: process.env.AWS_REGION || 'us-east-1',
-      sesWhiteList: [],
+      sesWhiteList: process.env.AWS_SES_WHITELIST || [],
     },
     sentryDSN: process.env.SENTRY_DSN || '',
     isLoadTest: process.env.LOAD_TEST === 'true',
     webUrl: process.env.WEB_URL || '',
     uploadBucket: process.env.UPLOAD_BUCKET || 'capp-dev-api-uploads',
+    useEmailWhiteList: process.env.APP_ENV !== 'prod',
   });
   return validatedConfig;
 }

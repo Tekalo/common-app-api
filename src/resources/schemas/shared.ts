@@ -18,6 +18,7 @@ const ConfigSchema = z.object({
   uploadBucket: z.string(),
   isLoadTest: z.boolean(),
   webUrl: z.string(),
+  useEmailWhiteList: z.boolean(),
 });
 
 export default ConfigSchema;

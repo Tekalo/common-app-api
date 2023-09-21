@@ -309,11 +309,10 @@ describe('should lowercase email addresses and remove the right part of +', () =
     'bboberson@schmidtfutures.com',
   ];
 
-  arrInput.forEach((input, index) => {
-    test(`should return ${arrOutput[index]} for input ${input}`, () => {
-      const result = removeAliasLowercaseEmail(input);
-      const expected = arrOutput[index];
-      expect(result).toBe(expected);
-    });
+  it.each(arrInput)("test '%s'", (input) => {
+    const index = arrInput.indexOf(input);
+    const expectedOutput = arrOutput[index];
+    const result = removeAliasLowercaseEmail(input);
+    expect(result).toBe(expectedOutput);
   });
 });

@@ -40,6 +40,7 @@ const getMockConfig = (overrides: Partial<BaseConfig> = {}): BaseConfig => ({
   uploadBucket: '',
   isLoadTest: false,
   webUrl: '',
+  useEmailWhiteList: false,
   ...overrides,
 });
 

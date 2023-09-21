@@ -34,7 +34,7 @@ export function removeAliasLowercaseEmail(emailRaw: string): string {
 }
 
 class EmailService {
-  public sesService: SESService;
+  private sesService: SESService;
 
   private config: BaseConfig;
 
@@ -136,23 +136,25 @@ class EmailService {
   async sendEmail(
     emailToSend: SendEmailCommandInput,
   ): Promise<void | SendEmailCommandOutput> {
-    if (this.config.env !== 'prod') {
-      const email: string | undefined =
-        emailToSend.Destination?.ToAddresses?.[0];
-      let processedEmail = '';
-      if (email !== undefined) {
-        processedEmail = removeAliasLowercaseEmail(email);
+    const { sesWhiteList } = this.config.aws;
+    // Use hashset for quicker lookup
+    const sesWhiteListSet = new Set(sesWhiteList);
+
+    if (emailToSend.Destination?.ToAddresses !== undefined) {
+      for (let i = 0; i < emailToSend.Destination.ToAddresses.length; i += 1) {
+        const email = emailToSend.Destination.ToAddresses[i];
+        if (this.config.useEmailWhiteList) {
+          const processedEmail = removeAliasLowercaseEmail(email);
+          if (!sesWhiteListSet.has(processedEmail)) {
+            emailToSend.Destination.ToAddresses.splice(i, 1);
+          }
+        }
       }
-      const { sesWhiteList } = this.config.aws;
-      // Use hashset for quicker lookup
-      const sesWhiteListSet = new Set(sesWhiteList);
-      if (sesWhiteListSet.has(processedEmail)) {
+
+      if (emailToSend.Destination.ToAddresses.length !== 0) {
         const emailOutput = await this.sesService.sendEmail(emailToSend);
         return emailOutput;
       }
-    } else {
-      const emailOutput = await this.sesService.sendEmail(emailToSend);
-      return emailOutput;
     }
   }
 }
