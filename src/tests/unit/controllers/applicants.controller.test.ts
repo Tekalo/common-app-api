@@ -960,7 +960,7 @@ describe('Applicant Controller', () => {
           {
             message: 'Invalid resume',
             code: ZodIssueCode.custom,
-            path: ['resumeUpload'],
+            path: ['resumeUpload.id'],
           },
         ]),
       );

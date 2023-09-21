@@ -393,7 +393,7 @@ class ApplicantController {
           ctx.addIssue({
             message: 'Invalid resume',
             code: z.ZodIssueCode.custom,
-            path: ['resumeUpload'],
+            path: ['resumeUpload.id'],
           });
         }
       },

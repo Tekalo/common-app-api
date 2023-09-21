@@ -493,7 +493,7 @@ describe('POST /applicants/me/submissions', () => {
       expect(body).toHaveProperty('detail', {
         code: 'custom',
         message: 'Invalid resume',
-        path: ['resumeUpload'],
+        path: ['resumeUpload.id'],
       });
     });
   });
