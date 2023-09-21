@@ -933,7 +933,6 @@ describe('POST /applicants/me/submissions/draft', () => {
       expect(body.submission).toHaveProperty('id');
     });
 
-    // get rid of resumeURL examples
     it('should update an existing draft applicant submission', async () => {
       const agent = request.agent(dummyApp);
       await agent.post('/applicants').send({

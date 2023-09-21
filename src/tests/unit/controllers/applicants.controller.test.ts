@@ -21,7 +21,7 @@ import {
   ApplicantSubmissionBody,
 } from '@App/resources/types/applicants.js';
 import { Applicants } from '@capp/schemas';
-import { ZodError } from 'zod';
+import { ZodError, ZodIssueCode } from 'zod';
 import { getMockConfig } from '../../util/helpers.js';
 
 let mockCtx: MockContext;
@@ -923,7 +923,7 @@ describe('Applicant Controller', () => {
       ).rejects.toEqual(mockError);
     });
 
-    test('should throw error if upload belonging to the specified applicant does not have the status "SUCCESS"', async () => {
+    test('should throw Zod Error if upload belonging to the specified applicant does not have the status "SUCCESS"', async () => {
       const applicantId = 1;
       const dummyUploadService = new DummyUploadService(
         ctx.prisma,
@@ -957,7 +957,16 @@ describe('Applicant Controller', () => {
             requestBody,
           ),
         ),
-      ).rejects.toBeInstanceOf(ZodError);
+      ).rejects.toEqual(
+        new ZodError([
+          {
+            message: 'Invalid resume',
+            code: ZodIssueCode.custom,
+            fatal: true,
+            path: [],
+          },
+        ]),
+      );
     });
   });
   describe('Applicant Get Resume Upload Url', () => {

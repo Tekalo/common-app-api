@@ -26,6 +26,7 @@ import MonitoringService from '@App/services/MonitoringService.js';
 import UploadService from '@App/services/UploadService.js';
 import { Claims } from '@App/resources/types/auth0.js';
 import { Applicants } from '@capp/schemas';
+import { z } from 'zod';
 
 class ApplicantController {
   private auth0Service: AuthService;
@@ -151,11 +152,18 @@ class ApplicantController {
     applicantId: number,
     data: ApplicantSubmissionBody,
   ): Promise<ApplicantCreateSubmissionResponse> {
-    const validatedSubmission = await this.validateFinalApplicantSubmission(
+    /**
+     *
+     * @param applicantId
+     * @param submission
+     * @param schema
+     * @returns
+     */
+    const validatedSubmission = await this.validateSubmission(
       applicantId,
       data,
+      Applicants.ApplicantCreateSubmissionRequestBodySchema,
     );
-    // const { resumeUpload, ...restOfSubmission } = validatedSubmission;
     const applicantSubmission = await this.prisma.applicantSubmission.create({
       data: {
         ...validatedSubmission,
@@ -166,9 +174,6 @@ class ApplicantController {
         resumeUpload: { select: { id: true, originalFilename: true } },
       },
     });
-    // remove resumeUploadId from response
-    // bake the resumeUploadId removal into the zod schema parsed type
-    const { resumeUploadId, ...submissionVals } = applicantSubmission;
     try {
       const applicant = await this.prisma.applicant.findUniqueOrThrow({
         where: { id: applicantId },
@@ -184,6 +189,8 @@ class ApplicantController {
         ),
       );
     }
+    // Remove resumeUploadId from response
+    const { resumeUploadId, ...submissionVals } = applicantSubmission;
     return Applicants.ApplicantCreateSubmissionResponseBodySchema.parse({
       submission: submissionVals,
       isFinal: true,
@@ -194,9 +201,17 @@ class ApplicantController {
     applicantId: number,
     data: ApplicantUpdateSubmissionBody,
   ): Promise<ApplicantCreateSubmissionResponse> {
-    const validatedSubmission = await this.validateFinalApplicantSubmission(
+    /**
+     *
+     * @param applicantId
+     * @param submission
+     * @param schema
+     * @returns
+     */
+    const validatedSubmission = await this.validateSubmission(
       applicantId,
       data,
+      Applicants.ApplicantCreateSubmissionRequestBodySchema,
     );
     const { resumeUpload, ...restOfSubmission } = validatedSubmission;
     // Throws error if applicantID doesn't exist
@@ -344,81 +359,40 @@ class ApplicantController {
     return { id: applicantId };
   }
 
-  // /**
-  //  * Additional Zod refinements to validate the submission should be added here
-  //  * @param applicantId
-  //  * @param submission
-  //  */
-  // async validateApplicantSubmission<T extends ApplicantDraftSubmissionBodyParsed | ApplicantSubmissionBody>(
-  //   applicantId: number,
-  //   submission: T,
-  // ): Promise<T> {
-  //   const zodSubmission = Applicants.ApplicantCreateSubmissionRequestBodySchema;
-  //   const refinement = zodSubmission.refine(async (data) => {
-  //     if (data.resumeUpload) {
-  //       const resume = await this.uploadService.getApplicantUploadOrThrow(
-  //         applicantId,
-  //         data.resumeUpload.id,
-  //       );
-  //       if (resume.status !== 'SUCCESS') {
-  //         // return false here instead?
-  //         throw new CAPPError({
-  //           title: 'Resume Upload Error',
-  //           detail: "Resume upload status must be 'SUCCESS'",
-  //           status: 400,
-  //         });
-  //       }
-  //     }
-  //   }, { message: 'no bueno!!' });
-  //   const returnVal = await refinement.parseAsync(submission);
-  //   return returnVal;
-  // }
-
-  // eslint-disable-next-line class-methods-use-this
-  getSubmissionValidator(
-    data: ApplicantSubmissionBody | ApplicantDraftSubmissionBody,
+  async validResume(
+    submission: ApplicantSubmissionBody | ApplicantDraftSubmissionBody,
     applicantId: number,
   ) {
-    return async () => {
-      if (data.resumeUpload) {
-        const resume = await this.uploadService.getApplicantUploadOrThrow(
-          applicantId,
-          data.resumeUpload.id,
-        );
-        return resume.status === 'SUCCESS';
+    if (submission.resumeUpload) {
+      const resume = await this.uploadService.getApplicantUploadOrThrow(
+        applicantId,
+        submission.resumeUpload.id,
+      );
+      return resume.status === 'SUCCESS';
+    }
+    return true;
+  }
+
+  /**
+   * Adds any application-level logic for validating draft or final submission data
+   * @param applicantId
+   * @param submission
+   * @param schema Zod Schema to use for parsing submission data
+   * @returns validated final or draft submission
+   */
+  async validateSubmission<
+    T extends ApplicantSubmissionBody | ApplicantDraftSubmissionBody,
+  >(applicantId: number, submission: T, schema: z.ZodType<T>): Promise<T> {
+    const refinement = schema.superRefine(async (val, ctx) => {
+      const validResume = await this.validResume(val, applicantId);
+      if (!validResume) {
+        ctx.addIssue({
+          message: 'Invalid resume',
+          code: z.ZodIssueCode.custom,
+          fatal: true,
+        });
       }
-      return true;
-    };
-  }
-
-  async validateFinalApplicantSubmission(
-    applicantId: number,
-    submission: ApplicantSubmissionBody,
-  ): Promise<ApplicantSubmissionBody> {
-    const submisionValidatorFunc = this.getSubmissionValidator(
-      submission,
-      applicantId,
-    );
-    const refinement =
-      Applicants.ApplicantCreateSubmissionRequestBodySchema.refine(
-        submisionValidatorFunc,
-      );
-    const parsedSubmission = await refinement.parseAsync(submission);
-    return parsedSubmission;
-  }
-
-  async validateDraftApplicantSubmission(
-    applicantId: number,
-    submission: ApplicantDraftSubmissionBody,
-  ): Promise<ApplicantDraftSubmissionBody> {
-    const submisionValidatorFunc = this.getSubmissionValidator(
-      submission,
-      applicantId,
-    );
-    const refinement =
-      Applicants.ApplicantDraftSubmissionRequestBodySchema.refine(
-        submisionValidatorFunc,
-      );
+    });
     const parsedSubmission = await refinement.parseAsync(submission);
     return parsedSubmission;
   }
@@ -427,9 +401,17 @@ class ApplicantController {
     applicantId: number,
     data: ApplicantDraftSubmissionBody,
   ): Promise<ApplicantDraftSubmissionResponseBody> {
-    const validatedSubmission = await this.validateDraftApplicantSubmission(
+    /**
+     *
+     * @param applicantId
+     * @param submission
+     * @param schema
+     * @returns
+     */
+    const validatedSubmission = await this.validateSubmission(
       applicantId,
       data,
+      Applicants.ApplicantDraftSubmissionRequestBodySchema,
     );
     const { resumeUpload, ...restOfSubmission } = validatedSubmission;
     const draftSubmission = await this.prisma.applicantDraftSubmission.upsert({
