@@ -364,11 +364,11 @@ class ApplicantController {
     applicantId: number,
   ) {
     if (submission.resumeUpload) {
-      const resume = await this.uploadService.getApplicantUploadOrThrow(
+      const resume = await this.uploadService.getApplicantUpload(
         applicantId,
         submission.resumeUpload.id,
       );
-      return resume.status === 'SUCCESS';
+      return !!(resume && resume.status === 'SUCCESS');
     }
     return true;
   }
@@ -393,7 +393,7 @@ class ApplicantController {
           ctx.addIssue({
             message: 'Invalid resume',
             code: z.ZodIssueCode.custom,
-            fatal: true,
+            path: ['resumeUpload'],
           });
         }
       },

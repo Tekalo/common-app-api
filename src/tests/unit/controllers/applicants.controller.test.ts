@@ -854,7 +854,7 @@ describe('Applicant Controller', () => {
         followUpOptIn: false,
       });
 
-      mockCtx.prisma.upload.findFirstOrThrow.mockResolvedValue({
+      mockCtx.prisma.upload.findFirst.mockResolvedValue({
         id: 1,
         applicantId,
         originalFilename: 'myresume.pdf',
@@ -892,19 +892,16 @@ describe('Applicant Controller', () => {
       expect(mockEmailSpy).toHaveBeenCalledWith(expectedEmail);
       mockEmailSpy.mockRestore();
     });
-    test('Should throw error if getApplicantUploadOrThrow() does not return successfully', async () => {
+    test('Should throw Zod validation error if getApplicantUpload() returns null', async () => {
       const dummyUploadService = new DummyUploadService(
         ctx.prisma,
         new DummyS3Service(),
         getMockConfig(),
       );
-      const mockError = new Prisma.PrismaClientKnownRequestError(
-        'Upload not found',
-        { code: 'P123', clientVersion: '123' },
-      );
-      dummyUploadService.getApplicantUploadOrThrow = () => {
-        throw mockError;
-      };
+
+      // eslint-disable-next-line @typescript-eslint/require-await
+      dummyUploadService.getApplicantUpload = async () => null;
+
       const applicantController = new ApplicantController(
         new DummyAuthService(),
         ctx.prisma,
@@ -921,7 +918,7 @@ describe('Applicant Controller', () => {
             requestBody,
           ),
         ),
-      ).rejects.toEqual(mockError);
+      ).rejects.toBeInstanceOf(ZodError);
     });
 
     test('should throw Zod Error if upload belonging to the specified applicant does not have the status "SUCCESS"', async () => {
@@ -931,7 +928,7 @@ describe('Applicant Controller', () => {
         new DummyS3Service(),
         getMockConfig(),
       );
-      dummyUploadService.getApplicantUploadOrThrow = () =>
+      dummyUploadService.getApplicantUpload = () =>
         Promise.resolve({
           id: 1,
           applicantId,
@@ -963,8 +960,7 @@ describe('Applicant Controller', () => {
           {
             message: 'Invalid resume',
             code: ZodIssueCode.custom,
-            fatal: true,
-            path: [],
+            path: ['resumeUpload'],
           },
         ]),
       );
