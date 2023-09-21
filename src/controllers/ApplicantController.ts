@@ -383,16 +383,21 @@ class ApplicantController {
   async validateSubmission<
     T extends ApplicantSubmissionBody | ApplicantDraftSubmissionBody,
   >(applicantId: number, submission: T, schema: z.ZodType<T>): Promise<T> {
-    const refinement = schema.superRefine(async (val, ctx) => {
-      const validResume = await this.validResume(val, applicantId);
-      if (!validResume) {
-        ctx.addIssue({
-          message: 'Invalid resume',
-          code: z.ZodIssueCode.custom,
-          fatal: true,
-        });
-      }
-    });
+    const refinement = schema.superRefine(
+      async (unvalidatedSubmission, ctx) => {
+        const validResume = await this.validResume(
+          unvalidatedSubmission,
+          applicantId,
+        );
+        if (!validResume) {
+          ctx.addIssue({
+            message: 'Invalid resume',
+            code: z.ZodIssueCode.custom,
+            fatal: true,
+          });
+        }
+      },
+    );
     const parsedSubmission = await refinement.parseAsync(submission);
     return parsedSubmission;
   }
