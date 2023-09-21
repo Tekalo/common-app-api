@@ -159,7 +159,7 @@ class ApplicantController {
      * @param schema
      * @returns
      */
-    const validatedSubmission = await this.validateSubmission(
+    const validatedSubmission = await this.validateApplicantSubmission(
       applicantId,
       data,
       Applicants.ApplicantCreateSubmissionRequestBodySchema,
@@ -208,7 +208,7 @@ class ApplicantController {
      * @param schema
      * @returns
      */
-    const validatedSubmission = await this.validateSubmission(
+    const validatedSubmission = await this.validateApplicantSubmission(
       applicantId,
       data,
       Applicants.ApplicantCreateSubmissionRequestBodySchema,
@@ -380,7 +380,7 @@ class ApplicantController {
    * @param schema Zod Schema to use for parsing submission data
    * @returns validated final or draft submission
    */
-  async validateSubmission<
+  async validateApplicantSubmission<
     T extends ApplicantSubmissionBody | ApplicantDraftSubmissionBody,
   >(applicantId: number, submission: T, schema: z.ZodType<T>): Promise<T> {
     const refinement = schema.superRefine(
@@ -413,7 +413,7 @@ class ApplicantController {
      * @param schema
      * @returns
      */
-    const validatedSubmission = await this.validateSubmission(
+    const validatedSubmission = await this.validateApplicantSubmission(
       applicantId,
       data,
       Applicants.ApplicantDraftSubmissionRequestBodySchema,
