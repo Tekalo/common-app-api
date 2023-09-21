@@ -41,6 +41,7 @@ model ApplicantSubmission {
   applicantId Int       @unique
 
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   originTag String // Whose link did they click, data attribution  // enum
 
   resumeUpload   Upload? @relation(fields: [resumeUploadId], references: [id])

@@ -6,11 +6,11 @@ export type ApplicantRequestBody = z.infer<
   typeof Applicants.ApplicantRequestBodySchema
 >;
 
-export type ApplicantDraftSubmissionBody = z.input<
-  typeof Applicants.ApplicantDraftSubmissionRequestBodySchema
+export type ApplicantUpdateSubmissionBody = z.input<
+  typeof Applicants.ApplicantUpdateSubmissionRequestBodySchema
 >;
 
-export type ApplicantDraftSubmissionBodyParsed = z.output<
+export type ApplicantDraftSubmissionBody = z.input<
   typeof Applicants.ApplicantDraftSubmissionRequestBodySchema
 >;
 
@@ -19,10 +19,6 @@ export type ApplicantDraftSubmissionResponseBody = z.infer<
 >;
 
 export type ApplicantSubmissionBody = z.input<
-  typeof Applicants.ApplicantCreateSubmissionRequestBodySchema
->;
-
-export type ApplicantSubmissionBodyParsed = z.output<
   typeof Applicants.ApplicantCreateSubmissionRequestBodySchema
 >;
 
