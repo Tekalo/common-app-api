@@ -12,11 +12,13 @@ const ConfigSchema = z.object({
     sesFromAddress: z.string(),
     sesReplyToAddress: z.string(),
     region: z.string(),
+    sesWhiteList: z.array(z.string()),
   }),
   sentryDSN: z.string(),
   uploadBucket: z.string(),
   isLoadTest: z.boolean(),
   webUrl: z.string(),
+  useEmailWhiteList: z.boolean(),
 });
 
 export default ConfigSchema;
