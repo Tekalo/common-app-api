@@ -445,10 +445,8 @@ class ApplicantController {
       update: {
         ...restOfSubmission,
         resumeUpload: resumeUpload
-          ? {
-              connect: { id: resumeUpload?.id },
-            }
-          : undefined,
+          ? { connect: { id: resumeUpload.id } }
+          : { disconnect: true },
       },
       include: {
         resumeUpload: { select: { id: true, originalFilename: true } },
