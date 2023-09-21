@@ -14,8 +14,8 @@
     },
     {
       "to": "Impact Area(s)",
-      "type": "standard",
-      "from": "impactAreasAll"
+      "from": "impactAreasAll",
+      "type": "standard"
     },
     {
       "to": "Location",
