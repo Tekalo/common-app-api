@@ -7,8 +7,10 @@ import {
   PutObjectCommand,
   GetObjectCommand,
 } from '@aws-sdk/client-s3';
+import { createPresignedPost, PresignedPost } from '@aws-sdk/s3-presigned-post';
 import logger from '@App/services/logger.js';
 import CAPPError from '@App/resources/shared/CAPPError.js';
+import { Upload } from '@prisma/client';
 
 class S3Service {
   static getS3Client() {
@@ -20,7 +22,7 @@ class S3Service {
     bucket: string,
     key: string,
     contentType: string,
-  ) {
+  ): Promise<string> {
     const s3Client = S3Service.getS3Client();
     const command = new PutObjectCommand({
       Bucket: bucket,
@@ -29,6 +31,29 @@ class S3Service {
     });
     const url = await getSignedUrl(s3Client, command);
     return url;
+  }
+
+  /* eslint-disable class-methods-use-this */
+  async generateSignedPostUploadUrl(
+    bucket: string,
+    key: string,
+    contentType: string,
+    uploadRecord: Upload,
+  ): Promise<PresignedPost> {
+    const s3Client = S3Service.getS3Client();
+    return createPresignedPost(s3Client, {
+      Bucket: bucket,
+      Key: key,
+      Expires: 600,
+      Conditions: [['content-length-range', 1048576, 10485760]],
+      Fields: {
+        acl: 'bucket-owner-full-control',
+        'Content-Type': contentType,
+        'x-amz-meta-uploaded-by-applicant-id':
+          uploadRecord.applicantId.toString(),
+        'x-amz-meta-upload-id': uploadRecord.id.toString(),
+      },
+    });
   }
 
   async deleteUploads(bucket: string, prefix: string) {

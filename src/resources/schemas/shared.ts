@@ -1,6 +1,8 @@
 import { Auth0 } from '@capp/schemas';
 import { z } from 'zod';
 
+const PresignerStrategy = z.enum(['post', 'put', 'both']);
+
 const ConfigSchema = z.object({
   env: z.string(),
   port: z.number(),
@@ -19,6 +21,10 @@ const ConfigSchema = z.object({
   isLoadTest: z.boolean(),
   webUrl: z.string(),
   useEmailWhiteList: z.boolean(),
+  flags: z.object({
+    /** Which presignature strategy should we allow? put, post, both */
+    presignerStrategy: PresignerStrategy.default('put'),
+  }),
 });
 
 export default ConfigSchema;

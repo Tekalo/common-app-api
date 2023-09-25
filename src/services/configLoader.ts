@@ -29,7 +29,10 @@ function loadConfig(): BaseConfig {
     webUrl: process.env.WEB_URL || '',
     uploadBucket: process.env.UPLOAD_BUCKET || 'capp-dev-api-uploads',
     useEmailWhiteList: process.env.APP_ENV !== 'prod',
-  });
+    flags: {
+      presignerStrategy: process.env.PRESIGNER_STRATEGY ?? undefined,
+    },
+  } as BaseConfig);
   return validatedConfig;
 }
 
