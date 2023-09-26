@@ -50,7 +50,7 @@ const ApplicantRequestBodySchema = z.object({
   acceptedTerms: z.literal(true),
   acceptedPrivacy: z.literal(true),
   followUpOptIn: z.boolean().optional(),
-  utmParams: UTMPayload.optional(),
+  utmParams: UTMPayload.nullish(),
 });
 
 const ApplicantStateRequestBodySchema = z.object({
@@ -100,7 +100,7 @@ const ApplicantCreateSubmissionRequestBodySchema = z.object({
   essayResponse: z.string().max(5000),
   referenceAttribution: z.string().nullable().optional(),
   referenceAttributionOther: z.string().nullable().optional(),
-  utmParams: UTMPayload.optional(),
+  utmParams: UTMPayload.nullish(),
 });
 
 const ApplicantSubmissionResponseBody = z.object({

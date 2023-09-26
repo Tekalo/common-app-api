@@ -429,6 +429,7 @@ describe('POST /applicants/me/submissions', () => {
           ...testBody,
           resumeUpload: { id: resumeId, originalFilename: expect.any(String) },
           openToRemoteMulti: ['in-person', 'hybrid'],
+          utmParamsId: null,
         },
         isFinal: true,
       });
