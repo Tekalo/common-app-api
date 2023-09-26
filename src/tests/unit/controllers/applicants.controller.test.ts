@@ -106,6 +106,7 @@ describe('Applicant Controller', () => {
         auth0Id: 'auth0|1234',
         isPaused: false,
         followUpOptIn: false,
+        utmParamsId: null,
       });
       await expect(
         applicantController.createApplicant({
@@ -197,6 +198,7 @@ describe('Applicant Controller', () => {
         auth0Id: 'auth0|1234',
         isPaused: false,
         followUpOptIn: false,
+        utmParamsId: null,
       });
 
       const mockEmailService = new EmailService(
@@ -250,6 +252,7 @@ describe('Applicant Controller', () => {
         auth0Id: 'auth0|1234',
         isPaused: false,
         followUpOptIn: false,
+        utmParamsId: null,
       });
 
       const webUrl = process.env.WEB_URL || '';
@@ -305,6 +308,7 @@ describe('Applicant Controller', () => {
         auth0Id: 'auth0|1234',
         isPaused: false,
         followUpOptIn: false,
+        utmParamsId: null,
       });
       const dummyEmailService = new DummyEmailService(
         new DummySESService(),
@@ -364,6 +368,7 @@ describe('Applicant Controller', () => {
         auth0Id: 'auth0|1234',
         isPaused: false,
         followUpOptIn: false,
+        utmParamsId: null,
       });
       const mockError = new Prisma.PrismaClientKnownRequestError('ERROR', {
         code: '101',
@@ -398,6 +403,7 @@ describe('Applicant Controller', () => {
         auth0Id: 'auth0|1234',
         isPaused: false,
         followUpOptIn: false,
+        utmParamsId: null,
       });
       mockCtx.prisma.$transaction.mockResolvedValue(true);
       const dummyAuthService = new DummyAuthService();
@@ -435,6 +441,7 @@ describe('Applicant Controller', () => {
         auth0Id: 'auth0|1234',
         isPaused: false,
         followUpOptIn: false,
+        utmParamsId: null,
       });
       mockCtx.prisma.$transaction.mockResolvedValue(true);
       const mockS3Service = new DummyS3Service();
@@ -466,6 +473,7 @@ describe('Applicant Controller', () => {
         auth0Id: 'auth0|1234',
         isPaused: false,
         followUpOptIn: false,
+        utmParamsId: null,
       });
       mockCtx.prisma.$transaction.mockResolvedValue(true);
       const dummyS3Service = new DummyS3Service();
@@ -499,6 +507,7 @@ describe('Applicant Controller', () => {
         auth0Id: 'auth0|1234',
         isPaused: false,
         followUpOptIn: false,
+        utmParamsId: null,
       });
 
       const emailService = new EmailService(
@@ -544,6 +553,7 @@ describe('Applicant Controller', () => {
         auth0Id: 'auth0|1234',
         isPaused: false,
         followUpOptIn: false,
+        utmParamsId: null,
       });
       const mockError = new Prisma.PrismaClientKnownRequestError('ERROR', {
         code: '101',
@@ -578,6 +588,7 @@ describe('Applicant Controller', () => {
         auth0Id: 'auth0|1234',
         isPaused: false,
         followUpOptIn: false,
+        utmParamsId: null,
       });
       mockCtx.prisma.$transaction.mockResolvedValue(true);
       const dummyAuthService = new DummyAuthService();
@@ -615,6 +626,7 @@ describe('Applicant Controller', () => {
         auth0Id: 'auth0|1234',
         isPaused: false,
         followUpOptIn: false,
+        utmParamsId: null,
       });
       mockCtx.prisma.$transaction.mockResolvedValue(true);
       const mockS3Service = new DummyS3Service();
@@ -646,6 +658,7 @@ describe('Applicant Controller', () => {
         auth0Id: 'auth0|1234',
         isPaused: false,
         followUpOptIn: false,
+        utmParamsId: null,
       });
       mockCtx.prisma.$transaction.mockResolvedValue(true);
       const dummyS3Service = new DummyS3Service();
@@ -679,6 +692,7 @@ describe('Applicant Controller', () => {
         auth0Id: 'auth0|1234',
         isPaused: false,
         followUpOptIn: false,
+        utmParamsId: null,
       });
 
       const emailService = new EmailService(
@@ -720,6 +734,7 @@ describe('Applicant Controller', () => {
         auth0Id: 'auth0|1234',
         isPaused: false,
         followUpOptIn: false,
+        utmParamsId: null,
       });
 
       const sesService = new DummySESService();
@@ -762,6 +777,7 @@ describe('Applicant Controller', () => {
         auth0Id: 'auth0|1234',
         isPaused: false,
         followUpOptIn: false,
+        utmParamsId: null,
       });
 
       const sesService = new DummySESService();
@@ -804,6 +820,7 @@ describe('Applicant Controller', () => {
         auth0Id: 'auth0|1234',
         isPaused: false,
         followUpOptIn: false,
+        utmParamsId: null,
       });
 
       const sesService = new DummySESService();
@@ -961,6 +978,7 @@ describe('Applicant Controller', () => {
           'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non iaculis erat.',
         referenceAttribution: 'social media', // enum
         referenceAttributionOther: null,
+        utmParamsId: null,
       };
 
       mockCtx.prisma.applicantSubmission.create.mockResolvedValue(
@@ -981,6 +999,7 @@ describe('Applicant Controller', () => {
         auth0Id: 'auth0|1234',
         isPaused: false,
         followUpOptIn: false,
+        utmParamsId: null,
       });
 
       mockCtx.prisma.upload.findFirst.mockResolvedValue({

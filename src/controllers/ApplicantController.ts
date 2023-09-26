@@ -99,6 +99,14 @@ class ApplicantController {
         data: {
           ...prismaData,
           auth0Id: auth0UserId,
+          utmParams: data.utmParams
+            ? {
+                create: {
+                  params: data.utmParams,
+                  event: 'create-applicant',
+                },
+              }
+            : undefined,
         },
       });
       // Do not sent a welcome email if our user has a valid JWT.
@@ -169,6 +177,14 @@ class ApplicantController {
         ...validatedSubmission,
         resumeUpload: { connect: { id: validatedSubmission.resumeUpload.id } },
         applicant: { connect: { id: applicantId } },
+        utmParams: validatedSubmission.utmParams
+          ? {
+              create: {
+                params: validatedSubmission.utmParams,
+                event: 'create-submission',
+              },
+            }
+          : undefined,
       },
       include: {
         resumeUpload: { select: { id: true, originalFilename: true } },
@@ -190,9 +206,13 @@ class ApplicantController {
       );
     }
     // Remove resumeUploadId from response
-    const { resumeUploadId, ...submissionVals } = applicantSubmission;
+    const { resumeUploadId, utmParamsId, ...submissionVals } =
+      applicantSubmission;
+    const returnSubmission = {
+      ...submissionVals,
+    };
     return Applicants.ApplicantCreateSubmissionResponseBodySchema.parse({
-      submission: submissionVals,
+      submission: returnSubmission,
       isFinal: true,
     });
   }

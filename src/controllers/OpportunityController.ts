@@ -67,6 +67,14 @@ class OpportunityController {
               data: opportunitySubmissions,
             },
           },
+          utmParams: data.utmParams
+            ? {
+                create: {
+                  params: data.utmParams,
+                  event: 'create-batch',
+                },
+              }
+            : undefined,
         },
       });
     try {

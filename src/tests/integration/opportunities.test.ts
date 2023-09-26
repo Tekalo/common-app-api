@@ -1,6 +1,7 @@
 import request from 'supertest';
 import { prisma, sessionStore } from '@App/resources/client.js';
 import { OpportunityBatchResponseBody } from '@App/resources/types/opportunities.js';
+import { OpportunityBatch } from '@prisma/client';
 import opportunitySubmissionGenerator from '../fixtures/OpportunitySubmissionGenerator.js';
 import getDummyApp from '../fixtures/appGenerator.js';
 import { getRandomString } from '../util/helpers.js';
@@ -66,6 +67,7 @@ describe('POST /opportunities', () => {
       orgType: '501(c)(3)',
       referenceAttribution: 'other',
       referenceAttributionOther: 'reddit',
+      utmParamsId: null,
     });
   });
   it('should create multiple new batches of opportunities', async () => {
@@ -99,6 +101,19 @@ describe('POST /opportunities', () => {
       .send(secondOppSubmissionPayload)
       .expect(200);
     expect(body).toEqual(expect.objectContaining({ id: expect.any(Number) }));
+  });
+  it('should save UTM parameters', async () => {
+    const { body }: { body: OpportunityBatch } = await request(dummyApp)
+      .post('/opportunities/batch')
+      .send({
+        ...oppBatchPayload,
+        utmParams: { ga_session_id: 'foo', ga_client_id: 'bar' },
+      })
+      .expect(200);
+    const batch = await prisma.opportunityBatch.findUnique({
+      where: { id: body.id },
+    });
+    expect(batch).toHaveProperty('utmParamsId', expect.any(Number));
   });
   it('should throw 400 error if acceptedPrivacy is false', async () => {
     const falseAcceptedPrivacy = { ...oppBatchPayload };

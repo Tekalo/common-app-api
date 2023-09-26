@@ -16,6 +16,15 @@ model Session {
   expiresAt DateTime
 }
 
+model UTMParams {
+  id                  Int                  @id @default(autoincrement())
+  event               String
+  params              Json
+  applicantSubmission ApplicantSubmission?
+  opportunityBatch    OpportunityBatch?
+  applicant           Applicant?
+}
+
 model Applicant {
   id                Int                        @id @default(autoincrement())
   auth0Id           String                     @unique
@@ -32,10 +41,16 @@ model Applicant {
   followUpOptIn     Boolean                    @default(false)
   isPaused          Boolean                    @default(false)
   uploads           Upload[]
+
+  utmParams   UTMParams? @relation(fields: [utmParamsId], references: [id])
+  utmParamsId Int?            @unique
 }
 
 model ApplicantSubmission {
   id Int @id @default(autoincrement())
+
+  utmParams   UTMParams? @relation(fields: [utmParamsId], references: [id])
+  utmParamsId Int?            @unique
 
   applicant   Applicant @relation(fields: [applicantId], references: [id], onDelete: Cascade)
   applicantId Int       @unique
@@ -149,6 +164,9 @@ model OpportunityBatch {
   acceptedPrivacy           DateTime                @default(now())
   referenceAttribution      String?
   referenceAttributionOther String?
+
+  utmParams   UTMParams? @relation(fields: [utmParamsId], references: [id])
+  utmParamsId Int?            @unique
 }
 
 model ApplicantDeletionRequests {

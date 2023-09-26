@@ -98,6 +98,36 @@ describe('POST /applicants', () => {
       );
       expect(body).toHaveProperty('auth0Id');
     });
+    it('should save UTM parameters', async () => {
+      const randomString = getRandomString();
+      const token = await authHelper.getToken(
+        `bboberson${randomString}@gmail.com`,
+      );
+      const { body: applicantBody }: { body: ApplicantResponseBody } =
+        await request(dummyApp)
+          .post('/applicants')
+          .send({
+            name: 'Bob Boberson',
+            auth0Id: 'auth0|123456',
+            email: `bboberson${randomString}@gmail.com`,
+            preferredContact: 'email',
+            searchStatus: 'active',
+            acceptedTerms: true,
+            acceptedPrivacy: true,
+            utmParams: {
+              utm_campaign: 'foo',
+              utm_content: 'bar',
+              utm_medium: 'baz',
+              utm_source: 'qux',
+              utm_term: 'quux',
+            },
+          })
+          .set('Authorization', `Bearer ${token}`);
+      const applicant = await prisma.applicant.findUnique({
+        where: { id: applicantBody.id },
+      });
+      expect(applicant).toHaveProperty('utmParamsId', expect.any(Number));
+    });
     it('should lowercase email before saving to database', async () => {
       const randomString = getRandomString();
       const { body } = await request(dummyApp)
@@ -495,6 +525,45 @@ describe('POST /applicants/me/submissions', () => {
         message: 'Invalid resume',
         path: ['resumeUpload.id'],
       });
+    });
+
+    it('should save UTM parameters', async () => {
+      const randomString = getRandomString();
+      const token = await authHelper.getToken(
+        `bboberson${randomString}@gmail.com`,
+      );
+      const { body: applicantBody }: { body: ApplicantResponseBody } =
+        await request(dummyApp)
+          .post('/applicants')
+          .send({
+            name: 'Bob Boberson',
+            auth0Id: 'auth0|123456',
+            email: `bboberson${randomString}@gmail.com`,
+            preferredContact: 'email',
+            searchStatus: 'active',
+            acceptedTerms: true,
+            acceptedPrivacy: true,
+          });
+      const { id: resumeId } = await seedResumeUpload(applicantBody.id);
+      const testSubmission =
+        applicantSubmissionGenerator.getAPIRequestBody(resumeId);
+      testSubmission.utmParams = {
+        utm_campaign: 'foo',
+        utm_content: 'bar',
+        utm_medium: 'baz',
+        utm_source: 'qux',
+        utm_term: 'quux',
+      };
+      const { body: submissionBody }: { body: ApplicantGetSubmissionResponse } =
+        await request(dummyApp)
+          .post('/applicants/me/submissions')
+          .send({ ...testSubmission })
+          .set('Authorization', `Bearer ${token}`)
+          .expect(200);
+      const submission = await prisma.applicantSubmission.findUnique({
+        where: { id: submissionBody?.submission?.id },
+      });
+      expect(submission).toHaveProperty('utmParamsId', expect.any(Number));
     });
   });
 

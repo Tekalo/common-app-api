@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import UTMPayload from './shared.js';
 
 const PreferredContact = z.enum(['sms', 'whatsapp', 'email']);
 const SearchStatus = z.enum(['active', 'passive', 'future']);
@@ -49,6 +50,7 @@ const ApplicantRequestBodySchema = z.object({
   acceptedTerms: z.literal(true),
   acceptedPrivacy: z.literal(true),
   followUpOptIn: z.boolean().optional(),
+  utmParams: UTMPayload.optional(),
 });
 
 const ApplicantStateRequestBodySchema = z.object({
@@ -98,6 +100,7 @@ const ApplicantCreateSubmissionRequestBodySchema = z.object({
   essayResponse: z.string().max(5000),
   referenceAttribution: z.string().nullable().optional(),
   referenceAttributionOther: z.string().nullable().optional(),
+  utmParams: UTMPayload.optional(),
 });
 
 const ApplicantSubmissionResponseBody = z.object({
@@ -156,7 +159,7 @@ const ApplicantDraftSubmissionRequestBodySchema =
   ApplicantCreateSubmissionRequestBodySchema.partial();
 
 const ApplicantUpdateSubmissionRequestBodySchema =
-  ApplicantCreateSubmissionRequestBodySchema;
+  ApplicantCreateSubmissionRequestBodySchema.omit({ utmParams: true });
 
 const ApplicantDraftSubmissionResponseBodySchema = z.object({
   submission: ApplicantSubmissionResponseBody,

@@ -83,6 +83,7 @@ describe('Opportunity Controller', () => {
       equalOpportunityEmployer: organization.eoe,
       referenceAttribution: 'linkedin',
       referenceAttributionOther: null,
+      utmParamsId: null,
     };
     mockCtx.prisma.opportunityBatch.create.mockResolvedValue(mockResolved);
     const response =
@@ -206,6 +207,7 @@ describe('Opportunity Controller', () => {
       equalOpportunityEmployer: organization.eoe,
       referenceAttribution: 'linkedin',
       referenceAttributionOther: null,
+      utmParamsId: null,
     };
     mockCtx.prisma.opportunityBatch.create.mockResolvedValue(mockResolved);
 

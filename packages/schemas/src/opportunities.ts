@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import UTMPayload from './shared.js';
 
 const OrgType = z.enum(['501(c)(3)', '501(c)(4)', 'llc', 'b corp', 'other']);
 const OrgSize = z.enum([
@@ -83,6 +84,7 @@ const OpportunityBatchRequestBodySchema = z.object({
   referenceAttribution: z.string().nullable().optional(),
   referenceAttributionOther: z.string().nullable().optional(),
   submissions: z.array(OpportunitySubmissionSchema),
+  utmParams: UTMPayload.nullish(),
 });
 
 const OpportunityBatchResponseBodySchema = z.object({
