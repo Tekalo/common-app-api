@@ -208,11 +208,8 @@ class ApplicantController {
     // Remove resumeUploadId from response
     const { resumeUploadId, utmParamsId, ...submissionVals } =
       applicantSubmission;
-    const returnSubmission = {
-      ...submissionVals,
-    };
     return Applicants.ApplicantCreateSubmissionResponseBodySchema.parse({
-      submission: returnSubmission,
+      submission: submissionVals,
       isFinal: true,
     });
   }
