@@ -143,6 +143,7 @@ const ApplicantSubmissionResponseBody = z.object({
   essayResponse: z.string().max(5000).nullable(),
   referenceAttribution: z.string().nullable(),
   referenceAttributionOther: z.string().nullable(),
+  utmParamsId: z.number().nullable(),
 });
 
 const ApplicantCreateSubmissionResponseBodySchema = z.object({
@@ -150,19 +151,24 @@ const ApplicantCreateSubmissionResponseBodySchema = z.object({
   isFinal: z.boolean(),
 });
 
-const ApplicantGetSubmissionsResponseBodySchema = z.object({
-  submission: ApplicantSubmissionResponseBody.nullable(),
-  isFinal: z.boolean(),
-});
-
 const ApplicantDraftSubmissionRequestBodySchema =
-  ApplicantCreateSubmissionRequestBodySchema.partial();
+  ApplicantCreateSubmissionRequestBodySchema.omit({
+    utmParams: true,
+  }).partial();
 
 const ApplicantUpdateSubmissionRequestBodySchema =
   ApplicantCreateSubmissionRequestBodySchema.omit({ utmParams: true });
 
 const ApplicantDraftSubmissionResponseBodySchema = z.object({
-  submission: ApplicantSubmissionResponseBody,
+  submission: ApplicantSubmissionResponseBody.omit({ utmParamsId: true }),
+  isFinal: z.boolean(),
+});
+
+// Draft or final submission
+const ApplicantGetSubmissionsResponseBodySchema = z.object({
+  submission: ApplicantSubmissionResponseBody.or(
+    ApplicantDraftSubmissionResponseBodySchema.shape.submission,
+  ).nullable(),
   isFinal: z.boolean(),
 });
 
