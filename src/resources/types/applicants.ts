@@ -2,6 +2,10 @@ import { ApplicantSubmission, ApplicantDraftSubmission } from '@prisma/client';
 import { z } from 'zod';
 import { Applicants } from '@capp/schemas';
 
+/**
+ * All types suffixed with "Output" are schemas that have been parsed by Zod
+ */
+
 export type ApplicantRequestBody = z.infer<
   typeof Applicants.ApplicantRequestBodySchema
 >;
