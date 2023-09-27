@@ -13,7 +13,9 @@ import CAPPError from '@App/resources/shared/CAPPError.js';
 import { Upload } from '@prisma/client';
 
 class S3Service {
-  static getS3Client() {
+  constructor(public s3Client: S3Client = S3Service.getS3Client()) { }
+
+  protected static getS3Client() {
     return new S3Client({});
   }
 
@@ -23,13 +25,12 @@ class S3Service {
     key: string,
     contentType: string,
   ): Promise<string> {
-    const s3Client = S3Service.getS3Client();
     const command = new PutObjectCommand({
       Bucket: bucket,
       Key: key,
       ContentType: contentType,
     });
-    const url = await getSignedUrl(s3Client, command);
+    const url = await getSignedUrl(this.s3Client, command);
     return url;
   }
 
@@ -40,8 +41,7 @@ class S3Service {
     contentType: string,
     uploadRecord: Upload,
   ): Promise<PresignedPost> {
-    const s3Client = S3Service.getS3Client();
-    return createPresignedPost(s3Client, {
+    return createPresignedPost(this.s3Client, {
       Bucket: bucket,
       Key: key,
       Expires: 600,
@@ -57,13 +57,12 @@ class S3Service {
   }
 
   async deleteUploads(bucket: string, prefix: string) {
-    const s3Client = S3Service.getS3Client();
     const listUploadsCommand = new ListObjectsV2Command({
       Bucket: bucket,
       Prefix: prefix,
     });
     const uploadsToDelete: ListObjectsV2CommandOutput =
-      await s3Client.send(listUploadsCommand);
+      await this.s3Client.send(listUploadsCommand);
     if (uploadsToDelete && uploadsToDelete.KeyCount) {
       // if items to delete
       // delete the files
@@ -74,7 +73,7 @@ class S3Service {
           Quiet: false, // provides info on successful deletes
         },
       });
-      const deleted = await s3Client.send(deleteCommand); // delete the files
+      const deleted = await this.s3Client.send(deleteCommand); // delete the files
 
       // log any errors deleting files
       if (deleted.Errors) {
@@ -94,12 +93,11 @@ class S3Service {
   }
 
   async generateSignedDownloadUrl(bucket: string, key: string) {
-    const s3Client = S3Service.getS3Client();
     const command = new GetObjectCommand({
       Bucket: bucket,
       Key: key,
     });
-    const url = await getSignedUrl(s3Client, command);
+    const url = await getSignedUrl(this.s3Client, command);
     return url;
   }
 }
