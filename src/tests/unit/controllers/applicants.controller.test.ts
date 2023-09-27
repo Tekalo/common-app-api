@@ -18,7 +18,7 @@ import DummyS3Service from '@App/tests/fixtures/DummyS3Service.js';
 import applicantSubmissionGenerator from '@App/tests/fixtures/applicantSubmissionGenerator.js';
 import {
   PrismaApplicantSubmissionWithResume,
-  ApplicantSubmissionBody,
+  ApplicantSubmissionBodyInput,
 } from '@App/resources/types/applicants.js';
 import { Applicants } from '@capp/schemas';
 import { ZodError, ZodIssueCode } from 'zod';
@@ -1021,6 +1021,7 @@ describe('Applicant Controller', () => {
       expect(mockEmailSpy).toHaveBeenCalledWith(expectedEmail);
       mockEmailSpy.mockRestore();
     });
+
     test('Should throw Zod validation error if getApplicantUpload() returns null', async () => {
       const dummyUploadService = new DummyUploadService(
         ctx.prisma,
@@ -1037,7 +1038,7 @@ describe('Applicant Controller', () => {
         new DummyEmailService(new DummySESService(), getMockConfig()),
         dummyUploadService,
       );
-      const requestBody: ApplicantSubmissionBody =
+      const requestBody: ApplicantSubmissionBodyInput =
         applicantSubmissionGenerator.getAPIRequestBody(1);
 
       await expect(
@@ -1050,7 +1051,7 @@ describe('Applicant Controller', () => {
       ).rejects.toBeInstanceOf(ZodError);
     });
 
-    test('should throw Zod Error if upload belonging to the specified applicant does not have the status "SUCCESS"', async () => {
+    test('Should throw Zod Error if upload belonging to the specified applicant does not have the status "SUCCESS"', async () => {
       const applicantId = 1;
       const dummyUploadService = new DummyUploadService(
         ctx.prisma,
@@ -1095,6 +1096,7 @@ describe('Applicant Controller', () => {
       );
     });
   });
+
   describe('Applicant Get Resume Upload Url', () => {
     test('Should call upload service to generate a signed resume upload url', async () => {
       const applicantId = 666;

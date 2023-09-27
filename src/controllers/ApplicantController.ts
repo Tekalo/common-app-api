@@ -10,9 +10,11 @@ import {
   ApplicantCreateSubmissionResponse,
   ApplicantGetSubmissionResponse,
   ApplicantDraftSubmissionResponseBody,
-  ApplicantUpdateSubmissionBody,
-  ApplicantDraftSubmissionBody,
-  ApplicantSubmissionBody,
+  ApplicantUpdateSubmissionBodyParsed,
+  ApplicantDraftSubmissionBodyParsed,
+  ApplicantSubmissionBodyParsed,
+  ApplicantDraftSubmissionBodyInput,
+  ApplicantSubmissionBodyInput,
 } from '@App/resources/types/applicants.js';
 import {
   UploadResponseBody,
@@ -150,7 +152,7 @@ class ApplicantController {
 
   async createSubmission(
     applicantId: number,
-    data: ApplicantSubmissionBody,
+    data: ApplicantSubmissionBodyParsed,
   ): Promise<ApplicantCreateSubmissionResponse> {
     /**
      *
@@ -199,7 +201,7 @@ class ApplicantController {
 
   async updateSubmission(
     applicantId: number,
-    data: ApplicantUpdateSubmissionBody,
+    data: ApplicantUpdateSubmissionBodyParsed,
   ): Promise<ApplicantCreateSubmissionResponse> {
     /**
      *
@@ -360,7 +362,9 @@ class ApplicantController {
   }
 
   async validResume(
-    submission: ApplicantSubmissionBody | ApplicantDraftSubmissionBody,
+    submission:
+      | ApplicantSubmissionBodyParsed
+      | ApplicantDraftSubmissionBodyParsed,
     applicantId: number,
   ) {
     if (submission.resumeUpload) {
@@ -381,8 +385,18 @@ class ApplicantController {
    * @returns validated final or draft submission
    */
   async validateApplicantSubmission<
-    T extends ApplicantSubmissionBody | ApplicantDraftSubmissionBody,
-  >(applicantId: number, submission: T, schema: z.ZodType<T>): Promise<T> {
+    T extends
+      | ApplicantSubmissionBodyParsed
+      | ApplicantDraftSubmissionBodyParsed,
+  >(
+    applicantId: number,
+    submission: T,
+    schema: z.ZodType<
+      T,
+      z.ZodTypeDef,
+      ApplicantSubmissionBodyInput | ApplicantDraftSubmissionBodyInput
+    >,
+  ): Promise<T> {
     const refinement = schema.superRefine(
       async (unvalidatedSubmission, ctx) => {
         const validResume = await this.validResume(
@@ -404,7 +418,7 @@ class ApplicantController {
 
   async createOrUpdateDraftSubmission(
     applicantId: number,
-    data: ApplicantDraftSubmissionBody,
+    data: ApplicantDraftSubmissionBodyParsed,
   ): Promise<ApplicantDraftSubmissionResponseBody> {
     /**
      *
