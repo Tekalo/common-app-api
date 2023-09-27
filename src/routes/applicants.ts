@@ -12,9 +12,9 @@ import {
   ApplicantStateBody,
   ApplicantUpdateBody,
   ApplicantSubmissionBodyInput,
-  ApplicantSubmissionBodyParsed,
+  ApplicantSubmissionBodyOutput,
   ApplicantUpdateSubmissionBodyInput,
-  ApplicantUpdateSubmissionBodyParsed,
+  ApplicantUpdateSubmissionBodyOutput,
 } from '@App/resources/types/applicants.js';
 import {
   UploadRequestBody,
@@ -66,7 +66,7 @@ const applicantRoutes = (
     (req: Request, res: Response, next) => {
       const appBody = req.body as ApplicantSubmissionBodyInput;
       const applicantID = req.auth?.payload.id || req.session.applicant.id;
-      const validatedBody: ApplicantSubmissionBodyParsed =
+      const validatedBody: ApplicantSubmissionBodyOutput =
         Applicants.ApplicantCreateSubmissionRequestBodySchema.parse(appBody);
       applicantController
         .createSubmission(applicantID, validatedBody)
@@ -83,7 +83,7 @@ const applicantRoutes = (
     (req: Request, res: Response, next) => {
       const appBody = req.body as ApplicantUpdateSubmissionBodyInput;
       const reqWithAuth = req as RequestWithJWT;
-      const validatedBody: ApplicantUpdateSubmissionBodyParsed =
+      const validatedBody: ApplicantUpdateSubmissionBodyOutput =
         Applicants.ApplicantUpdateSubmissionRequestBodySchema.parse(appBody);
       const applicantID = reqWithAuth.auth.payload.id;
       applicantController

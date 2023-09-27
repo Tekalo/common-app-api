@@ -10,9 +10,9 @@ import {
   ApplicantCreateSubmissionResponse,
   ApplicantGetSubmissionResponse,
   ApplicantDraftSubmissionResponseBody,
-  ApplicantUpdateSubmissionBodyParsed,
-  ApplicantDraftSubmissionBodyParsed,
-  ApplicantSubmissionBodyParsed,
+  ApplicantUpdateSubmissionBodyOutput,
+  ApplicantDraftSubmissionBodyOutput,
+  ApplicantSubmissionBodyOutput,
   ApplicantDraftSubmissionBodyInput,
   ApplicantSubmissionBodyInput,
 } from '@App/resources/types/applicants.js';
@@ -152,7 +152,7 @@ class ApplicantController {
 
   async createSubmission(
     applicantId: number,
-    data: ApplicantSubmissionBodyParsed,
+    data: ApplicantSubmissionBodyOutput,
   ): Promise<ApplicantCreateSubmissionResponse> {
     /**
      *
@@ -201,7 +201,7 @@ class ApplicantController {
 
   async updateSubmission(
     applicantId: number,
-    data: ApplicantUpdateSubmissionBodyParsed,
+    data: ApplicantUpdateSubmissionBodyOutput,
   ): Promise<ApplicantCreateSubmissionResponse> {
     /**
      *
@@ -363,8 +363,8 @@ class ApplicantController {
 
   async validResume(
     submission:
-      | ApplicantSubmissionBodyParsed
-      | ApplicantDraftSubmissionBodyParsed,
+      | ApplicantSubmissionBodyOutput
+      | ApplicantDraftSubmissionBodyOutput,
     applicantId: number,
   ) {
     if (submission.resumeUpload) {
@@ -386,8 +386,8 @@ class ApplicantController {
    */
   async validateApplicantSubmission<
     T extends
-      | ApplicantSubmissionBodyParsed
-      | ApplicantDraftSubmissionBodyParsed,
+      | ApplicantSubmissionBodyOutput
+      | ApplicantDraftSubmissionBodyOutput,
   >(
     applicantId: number,
     submission: T,
@@ -418,7 +418,7 @@ class ApplicantController {
 
   async createOrUpdateDraftSubmission(
     applicantId: number,
-    data: ApplicantDraftSubmissionBodyParsed,
+    data: ApplicantDraftSubmissionBodyOutput,
   ): Promise<ApplicantDraftSubmissionResponseBody> {
     /**
      *

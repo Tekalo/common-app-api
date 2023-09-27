@@ -10,7 +10,7 @@ export type ApplicantUpdateSubmissionBodyInput = z.input<
   typeof Applicants.ApplicantUpdateSubmissionRequestBodySchema
 >;
 
-export type ApplicantUpdateSubmissionBodyParsed = z.output<
+export type ApplicantUpdateSubmissionBodyOutput = z.output<
   typeof Applicants.ApplicantUpdateSubmissionRequestBodySchema
 >;
 
@@ -18,7 +18,7 @@ export type ApplicantDraftSubmissionBodyInput = z.input<
   typeof Applicants.ApplicantDraftSubmissionRequestBodySchema
 >;
 
-export type ApplicantDraftSubmissionBodyParsed = z.output<
+export type ApplicantDraftSubmissionBodyOutput = z.output<
   typeof Applicants.ApplicantDraftSubmissionRequestBodySchema
 >;
 
@@ -30,7 +30,7 @@ export type ApplicantSubmissionBodyInput = z.input<
   typeof Applicants.ApplicantCreateSubmissionRequestBodySchema
 >;
 
-export type ApplicantSubmissionBodyParsed = z.output<
+export type ApplicantSubmissionBodyOutput = z.output<
   typeof Applicants.ApplicantCreateSubmissionRequestBodySchema
 >;
 
