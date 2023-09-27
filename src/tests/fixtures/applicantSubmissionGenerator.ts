@@ -1,4 +1,4 @@
-import { ApplicantSubmissionBodyInput } from '@App/resources/types/applicants.js';
+import { RawApplicantSubmissionBody } from '@App/resources/types/applicants.js';
 
 /**
  * Get API request body for a new applicant submission.
@@ -7,8 +7,8 @@ import { ApplicantSubmissionBodyInput } from '@App/resources/types/applicants.js
  */
 const getAPIRequestBody = (
   resumeId: number,
-  overrides?: Partial<ApplicantSubmissionBodyInput>,
-): ApplicantSubmissionBodyInput => ({
+  overrides?: Partial<RawApplicantSubmissionBody>,
+): RawApplicantSubmissionBody => ({
   originTag: '',
   lastRole: 'senior software engineer',
   lastOrg: 'mozilla',

@@ -18,7 +18,7 @@ import DummyS3Service from '@App/tests/fixtures/DummyS3Service.js';
 import applicantSubmissionGenerator from '@App/tests/fixtures/applicantSubmissionGenerator.js';
 import {
   PrismaApplicantSubmissionWithResume,
-  ApplicantSubmissionBodyInput,
+  RawApplicantSubmissionBody,
 } from '@App/resources/types/applicants.js';
 import { Applicants } from '@capp/schemas';
 import { ZodError, ZodIssueCode } from 'zod';
@@ -1038,7 +1038,7 @@ describe('Applicant Controller', () => {
         new DummyEmailService(new DummySESService(), getMockConfig()),
         dummyUploadService,
       );
-      const requestBody: ApplicantSubmissionBodyInput =
+      const requestBody: RawApplicantSubmissionBody =
         applicantSubmissionGenerator.getAPIRequestBody(1);
 
       await expect(

@@ -9,8 +9,8 @@ import {
   ApplicantResponseBody,
   ApplicantCreateSubmissionResponse,
   ApplicantGetSubmissionResponse,
-  ApplicantDraftSubmissionBodyInput,
-  ApplicantSubmissionBodyInput,
+  RawApplicantDraftSubmissionBody,
+  RawApplicantSubmissionBody,
 } from '@App/resources/types/applicants.js';
 import getDummyApp from '@App/tests/fixtures/appGenerator.js';
 import { itif, getRandomString } from '@App/tests/util/helpers.js';
@@ -381,7 +381,7 @@ describe('POST /applicants/me/submissions', () => {
       const { id: resumeId }: { id: number } = await seedResumeUpload(
         applicantBody.id,
       );
-      const testBody: ApplicantSubmissionBodyInput =
+      const testBody: RawApplicantSubmissionBody =
         applicantSubmissionGenerator.getAPIRequestBody(resumeId);
       const { body }: { body: ApplicantCreateSubmissionResponse } =
         await request(dummyApp)
@@ -513,7 +513,7 @@ describe('POST /applicants/me/submissions', () => {
           acceptedPrivacy: true,
         });
       const { id: resumeId } = await seedResumeUpload(applicantBody.id);
-      const testBody: ApplicantSubmissionBodyInput =
+      const testBody: RawApplicantSubmissionBody =
         applicantSubmissionGenerator.getAPIRequestBody(resumeId);
       const { body }: { body: ApplicantCreateSubmissionResponse } = await agent
         .post('/applicants/me/submissions')
@@ -904,7 +904,7 @@ describe('POST /applicants/me/submissions/draft', () => {
       acceptedTerms: true,
       acceptedPrivacy: true,
     });
-    const testBody: ApplicantDraftSubmissionBodyInput = {
+    const testBody: RawApplicantDraftSubmissionBody = {
       resumeUrl: 'https://bobcanbuild.com',
     };
     const { body } = await request(dummyApp)
@@ -925,7 +925,7 @@ describe('POST /applicants/me/submissions/draft', () => {
         acceptedTerms: true,
         acceptedPrivacy: true,
       });
-      const testBody: ApplicantDraftSubmissionBodyInput = {
+      const testBody: RawApplicantDraftSubmissionBody = {
         resumeUrl: 'https://bobcanbuild.com',
       };
       const { body }: { body: ApplicantDraftSubmissionResponseBody } =
@@ -946,10 +946,10 @@ describe('POST /applicants/me/submissions/draft', () => {
         acceptedTerms: true,
         acceptedPrivacy: true,
       });
-      const draftBody: ApplicantDraftSubmissionBodyInput = {
+      const draftBody: RawApplicantDraftSubmissionBody = {
         linkedInUrl: 'https://linkedin.com/bobCanBuild',
       };
-      const draftUpdateBody: ApplicantDraftSubmissionBodyInput = {
+      const draftUpdateBody: RawApplicantDraftSubmissionBody = {
         linkedInUrl: 'https://linkedin.com/bobCanREALLYBuild',
       };
       const {
@@ -985,7 +985,7 @@ describe('POST /applicants/me/submissions/draft', () => {
         acceptedTerms: true,
         acceptedPrivacy: true,
       });
-      const testBody: ApplicantDraftSubmissionBodyInput = {
+      const testBody: RawApplicantDraftSubmissionBody = {
         resumeUrl: 'https://bobcanbuild.com',
       };
       const { body }: { body: ApplicantDraftSubmissionResponseBody } =
@@ -1055,7 +1055,7 @@ describe('POST /applicants/me/submissions/draft', () => {
         acceptedTerms: true,
         acceptedPrivacy: true,
       });
-      const testBody: ApplicantDraftSubmissionBodyInput = {
+      const testBody: RawApplicantDraftSubmissionBody = {
         resumeUrl: 'https://bobcanbuild.com',
       };
       const { body }: { body: ApplicantDraftSubmissionResponseBody } =
@@ -1079,7 +1079,7 @@ describe('POST /applicants/me/submissions/draft', () => {
           acceptedPrivacy: true,
         });
       const { id: resumeId } = await seedResumeUpload(applicantBody.id);
-      const testBody: ApplicantDraftSubmissionBodyInput = {
+      const testBody: RawApplicantDraftSubmissionBody = {
         resumeUpload: { id: resumeId },
       };
       const {
@@ -1120,7 +1120,7 @@ describe('GET /applicants/me/submissions', () => {
         acceptedTerms: true,
         acceptedPrivacy: true,
       });
-      const testBody: ApplicantDraftSubmissionBodyInput = {
+      const testBody: RawApplicantDraftSubmissionBody = {
         resumeUrl: 'https://bobcanbuild.com',
       };
       await agent
@@ -1147,7 +1147,7 @@ describe('GET /applicants/me/submissions', () => {
         acceptedTerms: true,
         acceptedPrivacy: true,
       });
-      const testBody: ApplicantDraftSubmissionBodyInput = {
+      const testBody: RawApplicantDraftSubmissionBody = {
         resumeUrl: 'https://bobcanbuild.com',
       };
       await agent
@@ -1173,7 +1173,7 @@ describe('GET /applicants/me/submissions', () => {
           acceptedPrivacy: true,
         });
       const { id: resumeId } = await seedResumeUpload(applicantBody.id);
-      const testBody: ApplicantDraftSubmissionBodyInput =
+      const testBody: RawApplicantDraftSubmissionBody =
         applicantSubmissionGenerator.getAPIRequestBody(resumeId);
       await request(dummyApp)
         .post('/applicants/me/submissions')

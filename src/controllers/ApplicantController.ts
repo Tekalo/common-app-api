@@ -10,11 +10,11 @@ import {
   ApplicantCreateSubmissionResponse,
   ApplicantGetSubmissionResponse,
   ApplicantDraftSubmissionResponseBody,
-  ApplicantUpdateSubmissionBodyOutput,
-  ApplicantDraftSubmissionBodyOutput,
-  ApplicantSubmissionBodyOutput,
-  ApplicantDraftSubmissionBodyInput,
-  ApplicantSubmissionBodyInput,
+  ParsedApplicantUpdateSubmissionBody,
+  ParsedApplicantDraftSubmissionBody,
+  ParsedApplicantSubmissionBody,
+  RawApplicantDraftSubmissionBody,
+  RawApplicantSubmissionBody,
 } from '@App/resources/types/applicants.js';
 import {
   UploadResponseBody,
@@ -152,7 +152,7 @@ class ApplicantController {
 
   async createSubmission(
     applicantId: number,
-    data: ApplicantSubmissionBodyOutput,
+    data: ParsedApplicantSubmissionBody,
   ): Promise<ApplicantCreateSubmissionResponse> {
     /**
      *
@@ -201,7 +201,7 @@ class ApplicantController {
 
   async updateSubmission(
     applicantId: number,
-    data: ApplicantUpdateSubmissionBodyOutput,
+    data: ParsedApplicantUpdateSubmissionBody,
   ): Promise<ApplicantCreateSubmissionResponse> {
     /**
      *
@@ -363,8 +363,8 @@ class ApplicantController {
 
   async validResume(
     submission:
-      | ApplicantSubmissionBodyOutput
-      | ApplicantDraftSubmissionBodyOutput,
+      | ParsedApplicantSubmissionBody
+      | ParsedApplicantDraftSubmissionBody,
     applicantId: number,
   ) {
     if (submission.resumeUpload) {
@@ -386,15 +386,15 @@ class ApplicantController {
    */
   async validateApplicantSubmission<
     T extends
-      | ApplicantSubmissionBodyOutput
-      | ApplicantDraftSubmissionBodyOutput,
+      | ParsedApplicantSubmissionBody
+      | ParsedApplicantDraftSubmissionBody,
   >(
     applicantId: number,
     submission: T,
     schema: z.ZodType<
       T,
       z.ZodTypeDef,
-      ApplicantSubmissionBodyInput | ApplicantDraftSubmissionBodyInput
+      RawApplicantSubmissionBody | RawApplicantDraftSubmissionBody
     >,
   ): Promise<T> {
     const refinement = schema.superRefine(
@@ -418,7 +418,7 @@ class ApplicantController {
 
   async createOrUpdateDraftSubmission(
     applicantId: number,
-    data: ApplicantDraftSubmissionBodyOutput,
+    data: ParsedApplicantDraftSubmissionBody,
   ): Promise<ApplicantDraftSubmissionResponseBody> {
     /**
      *

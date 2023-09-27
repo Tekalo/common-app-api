@@ -3,26 +3,27 @@ import { z } from 'zod';
 import { Applicants } from '@capp/schemas';
 
 /**
- * All types suffixed with "Output" are schemas that have been parsed by Zod
+ * Types prefixed with "Raw" are schemas before being parsed by Zod
+ * Types prefixed with "Parsed" are schemas after being parsed by Zod
  */
 
 export type ApplicantRequestBody = z.infer<
   typeof Applicants.ApplicantRequestBodySchema
 >;
 
-export type ApplicantUpdateSubmissionBodyInput = z.input<
+export type RawApplicantUpdateSubmission = z.input<
   typeof Applicants.ApplicantUpdateSubmissionRequestBodySchema
 >;
 
-export type ApplicantUpdateSubmissionBodyOutput = z.output<
+export type ParsedApplicantUpdateSubmissionBody = z.output<
   typeof Applicants.ApplicantUpdateSubmissionRequestBodySchema
 >;
 
-export type ApplicantDraftSubmissionBodyInput = z.input<
+export type RawApplicantDraftSubmissionBody = z.input<
   typeof Applicants.ApplicantDraftSubmissionRequestBodySchema
 >;
 
-export type ApplicantDraftSubmissionBodyOutput = z.output<
+export type ParsedApplicantDraftSubmissionBody = z.output<
   typeof Applicants.ApplicantDraftSubmissionRequestBodySchema
 >;
 
@@ -30,11 +31,11 @@ export type ApplicantDraftSubmissionResponseBody = z.infer<
   typeof Applicants.ApplicantDraftSubmissionResponseBodySchema
 >;
 
-export type ApplicantSubmissionBodyInput = z.input<
+export type RawApplicantSubmissionBody = z.input<
   typeof Applicants.ApplicantCreateSubmissionRequestBodySchema
 >;
 
-export type ApplicantSubmissionBodyOutput = z.output<
+export type ParsedApplicantSubmissionBody = z.output<
   typeof Applicants.ApplicantCreateSubmissionRequestBodySchema
 >;
 
