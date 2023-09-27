@@ -160,8 +160,8 @@ importers:
         specifier: 5.3.1
         version: 5.3.1
       sentry-testkit:
-        specifier: 5.0.5
-        version: 5.0.5
+        specifier: 5.0.6
+        version: 5.0.6
       supertest:
         specifier: 6.3.3
         version: 6.3.3
@@ -6342,8 +6342,8 @@ packages:
       lower-case: 1.1.4
     dev: false
 
-  /sentry-testkit@5.0.5:
-    resolution: {integrity: sha512-OfrQpMsnvZUyaabg6J3ggTAPZDEVaH5e2inzTOuAHwvXR6IpGzTjy1kyqbJJkbD8vuiV91HzXaCcR0YgD/5ucQ==}
+  /sentry-testkit@5.0.6:
+    resolution: {integrity: sha512-9nuJYJOUpQxwhZf4zpDWbwM5SDqUMQ/tge1ftTW76Oa9vDrRhhijW0QNhinAKXak0q9KSn4DQwIec8CFspaJ0Q==}
     dependencies:
       body-parser: 1.20.2
       express: 4.18.2
