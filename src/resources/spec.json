@@ -566,8 +566,11 @@
               "type": "string"
             }
           },
-          "eoe": {
+          "equalOpportunityEmployer": {
             "type": "boolean"
+          },
+          "utmParamsId": {
+            "type": "number"
           }
         }
       },
