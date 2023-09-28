@@ -85,7 +85,8 @@ SELECT
     ) THEN appsub."referenceAttribution"
     ELSE appsub."referenceAttribution" || ' - ' || appsub."referenceAttributionOther"
   END AS "referenceAttributionAll",
-  appsub."interestWorkArrangement"
+  appsub."interestWorkArrangement",
+  appsub."updatedAt"
 FROM
   PUBLIC."ApplicantSubmission" appsub
   LEFT JOIN PUBLIC."Applicant" apl ON appsub."applicantId" = apl.id
