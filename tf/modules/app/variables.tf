@@ -198,9 +198,11 @@ variable "uploads_cors_allowed_origins" {
 }
 
 variable "additional_env_vars" {
-  description = "Environment specific environment variables"
+  description = "Specific environment variables to set for this deployment"
   type        = map(string)
   default     = {}
+
+  # Requiring that variables are "registered" here to help avoid accidental typos
   validation {
     condition     = alltrue([for k, v in var.additional_env_vars : contains(["PRESIGNER_STRATEGY"], k)])
     error_message = "Must be a supported env variable"
