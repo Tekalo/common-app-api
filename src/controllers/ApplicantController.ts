@@ -444,12 +444,21 @@ class ApplicantController {
             }
           : undefined,
         applicant: { connect: { id: applicantId } },
+        utmParams: data.utmParams
+          ? {
+              create: {
+                params: data.utmParams,
+                event: 'create-draft-submission',
+              },
+            }
+          : undefined,
       },
       update: {
         ...restOfSubmission,
         resumeUpload: resumeUpload
           ? { connect: { id: resumeUpload.id } }
           : { disconnect: true },
+        utmParams: undefined, // we never want to update utmParams on draft update
       },
       include: {
         resumeUpload: { select: { id: true, originalFilename: true } },

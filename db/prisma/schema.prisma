@@ -21,6 +21,7 @@ model UTMParams {
   event               String
   params              Json
   applicantSubmission ApplicantSubmission?
+  applicantDraftSubmission  ApplicantDraftSubmission?
   opportunityBatch    OpportunityBatch?
   applicant           Applicant?
 }
@@ -147,6 +148,9 @@ model ApplicantDraftSubmission {
 
   referenceAttribution      String? //How did you hear about us  //enum
   referenceAttributionOther String?
+
+  utmParams   UTMParams? @relation(fields: [utmParamsId], references: [id])
+  utmParamsId Int?            @unique
 }
 
 model OpportunityBatch {

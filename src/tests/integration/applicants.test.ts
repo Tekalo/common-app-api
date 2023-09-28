@@ -103,6 +103,13 @@ describe('POST /applicants', () => {
       const token = await authHelper.getToken(
         `bboberson${randomString}@gmail.com`,
       );
+      const utmParams = {
+        utm_campaign: 'foo',
+        utm_content: 'bar',
+        utm_medium: 'baz',
+        utm_source: 'qux',
+        utm_term: 'quux',
+      };
       const { body: applicantBody }: { body: ApplicantResponseBody } =
         await request(dummyApp)
           .post('/applicants')
@@ -114,19 +121,14 @@ describe('POST /applicants', () => {
             searchStatus: 'active',
             acceptedTerms: true,
             acceptedPrivacy: true,
-            utmParams: {
-              utm_campaign: 'foo',
-              utm_content: 'bar',
-              utm_medium: 'baz',
-              utm_source: 'qux',
-              utm_term: 'quux',
-            },
+            utmParams,
           })
           .set('Authorization', `Bearer ${token}`);
       const applicant = await prisma.applicant.findUnique({
         where: { id: applicantBody.id },
+        include: { utmParams: true },
       });
-      expect(applicant).toHaveProperty('utmParamsId', expect.any(Number));
+      expect(applicant?.utmParams?.params).toEqual(utmParams);
     });
     it('should lowercase email before saving to database', async () => {
       const randomString = getRandomString();
@@ -419,7 +421,6 @@ describe('POST /applicants/me/submissions', () => {
           .send(testBody)
           .set('Authorization', `Bearer ${token}`)
           .expect(200);
-      expect(Object.keys(body.submission).length).toEqual(35);
       expect(body).toEqual({
         submission: {
           id: expect.any(Number),
@@ -545,16 +546,17 @@ describe('POST /applicants/me/submissions', () => {
             acceptedTerms: true,
             acceptedPrivacy: true,
           });
-      const { id: resumeId } = await seedResumeUpload(applicantBody.id);
-      const testSubmission =
-        applicantSubmissionGenerator.getAPIRequestBody(resumeId);
-      testSubmission.utmParams = {
+      const utmParams = {
         utm_campaign: 'foo',
         utm_content: 'bar',
         utm_medium: 'baz',
         utm_source: 'qux',
         utm_term: 'quux',
       };
+      const { id: resumeId } = await seedResumeUpload(applicantBody.id);
+      const testSubmission =
+        applicantSubmissionGenerator.getAPIRequestBody(resumeId);
+      testSubmission.utmParams = utmParams;
       const { body: submissionBody }: { body: ApplicantGetSubmissionResponse } =
         await request(dummyApp)
           .post('/applicants/me/submissions')
@@ -563,8 +565,17 @@ describe('POST /applicants/me/submissions', () => {
           .expect(200);
       const submission = await prisma.applicantSubmission.findUnique({
         where: { id: submissionBody?.submission?.id },
+        include: { utmParams: true },
       });
-      expect(submission).toHaveProperty('utmParamsId', expect.any(Number));
+      expect(submissionBody.submission).toHaveProperty(
+        'utmParamsId',
+        expect.any(Number),
+      );
+      expect(submission).toHaveProperty('utmParams', {
+        event: 'create-submission',
+        id: expect.any(Number),
+        params: utmParams,
+      });
     });
   });
 
@@ -1056,6 +1067,9 @@ describe('POST /applicants/me/submissions/draft', () => {
       });
       const testBody: ApplicantDraftSubmissionBody = {
         resumeUrl: 'https://bobcanbuild.com',
+        utmParams: {
+          utm_source: 'foo source',
+        },
       };
       const { body }: { body: ApplicantDraftSubmissionResponseBody } =
         await request(dummyApp)
@@ -1064,6 +1078,15 @@ describe('POST /applicants/me/submissions/draft', () => {
           .send(testBody)
           .expect(200);
       expect(body.submission).toHaveProperty('id');
+      const draftSubmission = await prisma.applicantDraftSubmission.findUnique({
+        where: { id: body.submission.id },
+        include: { utmParams: true },
+      });
+      expect(draftSubmission).toHaveProperty('utmParams', {
+        event: 'create-draft-submission',
+        params: { utm_source: 'foo source' },
+        id: expect.any(Number),
+      });
     });
 
     it('should create a new applicant draft submission with a resume included', async () => {

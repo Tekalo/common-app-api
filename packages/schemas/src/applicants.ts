@@ -152,9 +152,7 @@ const ApplicantCreateSubmissionResponseBodySchema = z.object({
 });
 
 const ApplicantDraftSubmissionRequestBodySchema =
-  ApplicantCreateSubmissionRequestBodySchema.omit({
-    utmParams: true,
-  }).partial();
+  ApplicantCreateSubmissionRequestBodySchema.partial();
 
 const ApplicantUpdateSubmissionRequestBodySchema =
   ApplicantCreateSubmissionRequestBodySchema.omit({ utmParams: true });
