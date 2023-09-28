@@ -35,7 +35,14 @@ const UploadStateResponseBodySchema = z.object({
 
 const UploadResponseBodySchema = z.object({
   id: z.number(),
-  signedLink: z.string(),
+  // TODO: should these be optional? not sure a good way to handle the two variants
+  signedLink: z.string().optional(),
+  presignedPost: z
+    .object({
+      url: z.string(),
+      fields: z.record(z.string()),
+    })
+    .optional(),
 });
 
 export default {
