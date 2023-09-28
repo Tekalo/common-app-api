@@ -196,3 +196,13 @@ variable "uploads_cors_allowed_origins" {
   type        = list(string)
   nullable    = true
 }
+
+variable "additional_env_vars" {
+  description = "Environment specific environment variables"
+  type        = map(string)
+  default     = {}
+  validation {
+    condition     = alltrue([for k, v in var.additional_env_vars : contains(["PRESIGNER_STRATEGY"], k)])
+    error_message = "Must be a supported env variable"
+  }
+}
