@@ -78,18 +78,32 @@ class UploadService {
       applicantId,
       contentType,
     );
-    const signedLink = await this.s3Service.generateSignedUploadUrl(
-      this.config.uploadBucket,
-      UploadService.generateS3Filename(
-        applicantId,
-        uploadRecord.id,
-        contentType,
-      ),
+    const fileName = UploadService.generateS3Filename(
+      applicantId,
+      uploadRecord.id,
       contentType,
     );
+    const signedLink =
+      this.config.flags.presignerStrategy !== 'post'
+        ? await this.s3Service.generateSignedUploadUrl(
+            this.config.uploadBucket,
+            fileName,
+            contentType,
+          )
+        : undefined;
+    const presignedPost =
+      this.config.flags.presignerStrategy !== 'put'
+        ? await this.s3Service.generateSignedPostUploadUrl(
+            this.config.uploadBucket,
+            fileName,
+            contentType,
+            uploadRecord,
+          )
+        : undefined;
     return {
       id: uploadRecord.id,
       signedLink,
+      presignedPost,
     };
   }
 
