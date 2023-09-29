@@ -75,3 +75,9 @@ module "auth0_ses" {
   auth0_email_from_address = var.auth0_from_email_address
   env                      = module.envconfig.env
 }
+
+module "email" {
+  source               = "../../modules/email"
+  env                  = module.envconfig.env
+  email_from_address   = var.email_from_address
+}
