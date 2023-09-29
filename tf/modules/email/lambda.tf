@@ -23,12 +23,21 @@ data "aws_iam_policy_document" "mailer_ses_policy" {
       values   = [var.email_from_address]
     }
   }
+  statement {
+    sid    = "AllowKMSDecrypt"
+    effect = "Allow"
+    actions = [
+      "kms:Decrypt",
+    ]
+    resources = [data.aws_kms_key.main.arn]
+  }
 }
 
 resource "aws_iam_role" "mailer_lambda_role" {
   name               = "mailer-lambda-role"
   assume_role_policy = data.aws_iam_policy_document.mailer_assume_role_policy.json
   inline_policy {
+    name   = "lambda_inline_policy"
     policy = data.aws_iam_policy_document.mailer_ses_policy.json
   }
 }
@@ -39,6 +48,7 @@ resource "aws_iam_role_policy_attachment" "mailer_lambda_policy" {
 }
 
 resource "aws_lambda_function" "mailer" {
+  description      = "Handles sending emails for common-app-api"
   function_name    = "capp-${var.env}-email-sender"
   filename         = "email-sender.zip"
   source_code_hash = filebase64sha256("email-sender.zip")
@@ -46,4 +56,9 @@ resource "aws_lambda_function" "mailer" {
   role             = aws_iam_role.mailer_lambda_role.arn
   runtime          = "nodejs18.x"
   // save artifacts to s3?
+}
+
+resource "aws_lambda_event_source_mapping" "mailer_sqs_source" {
+  event_source_arn = aws_sqs_queue.email_sqs_queue.arn
+  function_name    = aws_lambda_function.mailer.arn
 }
