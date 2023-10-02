@@ -197,7 +197,7 @@ resource "aws_ecs_task_definition" "api" {
         },
         {
           name  = "AWS_SES_FROM_ADDRESS"
-          value = var.email_from_address
+          value = var.email_from_address || "",
         },
         {
           name  = "AWS_SES_REPLYTO_ADDRESS"
