@@ -65,7 +65,7 @@
     "husky": "8.0.3",
     "jest-mock-extended": "3.0.5",
     "jose": "4.14.6",
-    "pino": "8.15.1",
+    "pino": "8.15.3",
     "pino-http": "8.5.0",
     "swagger-ui-express": "5.0.0",
     "zod": "3.22.2"
