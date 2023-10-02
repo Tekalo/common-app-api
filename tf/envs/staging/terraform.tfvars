@@ -5,5 +5,7 @@ sentry_dsn         = "https://c38ab9f98fd0404f9d2bfb95d015da8d@o4504962952724480
 web_url            = "https://staging.common-app-frontend.pages.dev/"
 email_from_address = "tekalo@staging.apps.futurestech.cloud"
 reply_to_address   = "tekalo@staging.apps.futurestech.cloud"
+ses_whitelist      = ["acook@schmidtfutures.com", "aarmentrout@schmidtfutures.com", "cwegrzyn@schmidtfutures.com", "cgong@schmidtfutures.com", "eperakis@schmidtfutures.com", "lgittelson@schmidtfutures.com", "nnikkhoui@schmidtfutures.com", "smartin@schmidtfutures.com", "thawkins@schmidtfutures.com"]
+
 
 uploads_cors_allowed_origins = ["https://*.common-app-frontend.pages.dev"]

@@ -192,6 +192,10 @@ resource "aws_ecs_task_definition" "api" {
           value = "${var.web_url}"
         },
         {
+          name  = "AWS_SES_WHITELIST",
+          value = "${var.ses_whitelist}"
+        },
+        {
           name  = "AWS_SES_FROM_ADDRESS"
           value = var.email_from_address
         },
