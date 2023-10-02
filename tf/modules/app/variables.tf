@@ -191,6 +191,12 @@ variable "web_url" {
   nullable    = false
 }
 
+variable "ses_whitelist" {
+  description = "Email addresses SES is permitted to send to only in non-prod environments"
+  type        = string
+  nullable    = true
+}
+
 variable "uploads_cors_allowed_origins" {
   description = "CORS origins to allow for the upload bucket (use full URL, e.g., https://tekalo.org. Wildcards allowed.)"
   type        = list(string)

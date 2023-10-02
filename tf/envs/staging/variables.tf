@@ -11,5 +11,10 @@ output "load_test" {
 
 variable "ses_whitelist" {
   description = "Email addresses SES is permitted to send to only in non-prod environments"
-  type        = list(string)
+  type        = string
+}
+
+output "ses_whitelist" {
+  description = "Email addresses SES is permitted to send to only in non-prod environments"
+  type        = var.ses_whitelist
 }
