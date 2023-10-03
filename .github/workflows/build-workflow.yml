@@ -58,7 +58,23 @@ jobs:
           IMAGE_TAG: '${{ env.GITHUB_SHA_SHORT }}'
         run: |
           docker build -t "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" \
+            --build-arg GITHUB_SHA="$GITHUB_SHA"
             --target production \
             .
           docker push --all-tags "$ECR_REGISTRY/$ECR_REPOSITORY"
           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+
+      - name: Retrieve source maps
+        run: |
+          docker create --name "api-extract" "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+          docker cp extract:/api/build ./build
+
+      - name: Create Sentry release
+        uses: getsentry/action-release@v1
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ vars.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ vars.SENTRY_PROJECT }}
+        with:
+          environment: production
+          sourcemaps: ./build
