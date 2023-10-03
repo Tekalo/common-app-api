@@ -8,11 +8,13 @@ import ApplicantController from '@App/controllers/ApplicantController.js';
 import { Applicants, Uploads } from '@capp/schemas';
 import {
   ApplicantRequestBody,
-  ApplicantDraftSubmissionBody,
+  RawApplicantDraftSubmissionBody,
   ApplicantStateBody,
   ApplicantUpdateBody,
-  ApplicantSubmissionBody,
-  ApplicantUpdateSubmissionBody,
+  RawApplicantSubmissionBody,
+  ParsedApplicantSubmissionBody,
+  RawApplicantUpdateSubmission,
+  ParsedApplicantUpdateSubmissionBody,
 } from '@App/resources/types/applicants.js';
 import {
   UploadRequestBody,
@@ -62,9 +64,9 @@ const applicantRoutes = (
     '/me/submissions',
     authenticator.verifyJwtOrCookie.bind(authenticator) as RequestHandler,
     (req: Request, res: Response, next) => {
-      const appBody = req.body as ApplicantSubmissionBody;
+      const appBody = req.body as RawApplicantSubmissionBody;
       const applicantID = req.auth?.payload.id || req.session.applicant.id;
-      const validatedBody: ApplicantSubmissionBody =
+      const validatedBody: ParsedApplicantSubmissionBody =
         Applicants.ApplicantCreateSubmissionRequestBodySchema.parse(appBody);
       applicantController
         .createSubmission(applicantID, validatedBody)
@@ -79,9 +81,9 @@ const applicantRoutes = (
     '/me/submissions',
     authenticator.validateJwt.bind(authenticator) as RequestHandler,
     (req: Request, res: Response, next) => {
-      const appBody = req.body as ApplicantUpdateSubmissionBody;
+      const appBody = req.body as RawApplicantUpdateSubmission;
       const reqWithAuth = req as RequestWithJWT;
-      const validatedBody: ApplicantUpdateSubmissionBody =
+      const validatedBody: ParsedApplicantUpdateSubmissionBody =
         Applicants.ApplicantUpdateSubmissionRequestBodySchema.parse(appBody);
       const applicantID = reqWithAuth.auth.payload.id;
       applicantController
@@ -163,7 +165,7 @@ const applicantRoutes = (
     '/me/submissions/draft',
     authenticator.verifyJwtOrCookie.bind(authenticator) as RequestHandler,
     (req: Request, res: Response, next) => {
-      const appBody = req.body as ApplicantDraftSubmissionBody;
+      const appBody = req.body as RawApplicantDraftSubmissionBody;
       const applicantID = req.auth?.payload.id || req.session.applicant.id; // token applicant ID
       const validatedBody =
         Applicants.ApplicantDraftSubmissionRequestBodySchema.parse(appBody);

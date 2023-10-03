@@ -1,4 +1,4 @@
-import { ApplicantSubmissionBody } from '@App/resources/types/applicants.js';
+import { RawApplicantSubmissionBody } from '@App/resources/types/applicants.js';
 
 /**
  * Get API request body for a new applicant submission.
@@ -7,8 +7,8 @@ import { ApplicantSubmissionBody } from '@App/resources/types/applicants.js';
  */
 const getAPIRequestBody = (
   resumeId: number,
-  overrides?: Partial<ApplicantSubmissionBody>,
-): ApplicantSubmissionBody => ({
+  overrides?: Partial<RawApplicantSubmissionBody>,
+): RawApplicantSubmissionBody => ({
   originTag: '',
   lastRole: 'senior software engineer',
   lastOrg: 'mozilla',
@@ -24,7 +24,7 @@ const getAPIRequestBody = (
   resumePassword: 'bobsTheWord',
   hoursPerWeek: '40 ish',
   interestEmploymentType: ['full'], // enum
-  interestWorkArrangement: ['advisor', 'consultant'],
+  interestWorkArrangement: null,
   interestRoles: [
     'software engineer - frontend',
     'software engineer - backend',
