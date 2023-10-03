@@ -193,7 +193,7 @@ resource "aws_ecs_task_definition" "api" {
         },
         {
           name  = "AWS_SES_WHITELIST",
-          value = var.ses_whitelist
+          value = var.ses_whitelist != null ? var.ses_whitelist : "",
         },
         {
           name  = "AWS_SES_FROM_ADDRESS"
