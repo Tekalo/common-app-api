@@ -75,38 +75,38 @@ const ApplicantCreateSubmissionRequestBodySchema = z.object({
   yoe: YOE,
   skills: z.array(Skills),
   otherSkills: z.array(z.string().max(255)),
-  linkedInUrl: z.string().max(500).nullish(),
-  githubUrl: z.string().max(500).nullish(),
-  portfolioUrl: z.string().max(500).nullish(),
-  portfolioPassword: z.string().max(255).nullish(),
-  resumeUrl: z.string().max(500).nullish(), // deprecated
-  resumePassword: z.string().max(255).nullish(),
-  hoursPerWeek: z.string().max(255).nullish(),
+  linkedInUrl: z.string().max(500).nullable(),
+  githubUrl: z.string().max(500).nullable(),
+  portfolioUrl: z.string().max(500).nullable(),
+  portfolioPassword: z.string().max(255).nullable(),
+  resumeUrl: z.string().max(500).nullable(), // deprecated
+  resumePassword: z.string().max(255).nullable(),
+  hoursPerWeek: z.string().max(255).nullable(),
   interestEmploymentType: z.array(EmploymentType),
   interestWorkArrangement: z
     .array(z.string())
-    .nullish()
+    .nullable()
     .transform((val) => val || []),
   interestRoles: z.array(z.string().max(255)),
   currentLocation: z.string().max(255),
   openToRelocate: OpenToRelocate,
   openToRemoteMulti: z.array(OpenToRemote),
-  desiredSalary: z.string().max(255).nullish(),
+  desiredSalary: z.string().max(255).nullable(),
   interestCauses: z.array(z.string().max(255)), // order matters
   otherCauses: z
     .array(z.string().max(255))
-    .nullish()
+    .nullable()
     .transform((val) => val || []),
-  workAuthorization: WorkAuthorization.nullish(),
+  workAuthorization: WorkAuthorization.nullable(),
   interestGovt: z.boolean(),
   interestGovtEmplTypes: z
     .array(InterestGovtEmplTypes)
-    .nullish()
+    .nullable()
     .transform((val) => val || []),
   previousImpactExperience: z.boolean(),
   essayResponse: z.string().max(5000),
-  referenceAttribution: z.string().nullish(),
-  referenceAttributionOther: z.string().nullish(),
+  referenceAttribution: z.string().nullable(),
+  referenceAttributionOther: z.string().nullable(),
 });
 
 const ApplicantSubmissionResponseBody = z.object({
