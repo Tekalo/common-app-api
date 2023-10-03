@@ -21,10 +21,10 @@ resource "aws_kms_alias" "main" {
 resource "aws_rds_cluster" "main" {
   cluster_identifier_prefix = "capp-${var.env}"
 
-  engine                 = "aurora-postgresql"
-  engine_mode            = "provisioned"
-   # This only exists as a temporary solution until CAPP-690 is resolved
-   # We want to ideally have version 15 in all envs
+  engine      = "aurora-postgresql"
+  engine_mode = "provisioned"
+  # This only exists as a temporary solution until CAPP-690 is resolved
+  # We want to ideally have version 15 in all envs
   engine_version         = var.env == "dev" ? 15 : 14
   database_name          = "capp"
   master_username        = var.db_username
@@ -48,7 +48,7 @@ resource "aws_rds_cluster" "main" {
     create_before_destroy = true
   }
 
-  enabled_cloudwatch_logs_exports = [ "postgresql" ]
+  enabled_cloudwatch_logs_exports = ["postgresql"]
 }
 
 resource "aws_cloudwatch_log_group" "rds" {
@@ -113,7 +113,7 @@ output "service_name" {
 
 data "aws_region" "current" {}
 data "aws_s3_bucket" "upload_files" {
-  bucket      = "capp-${var.env}-api-uploads"
+  bucket = "capp-${var.env}-api-uploads"
 }
 
 resource "aws_ecs_task_definition" "api" {
@@ -126,10 +126,10 @@ resource "aws_ecs_task_definition" "api" {
 
   container_definitions = jsonencode([
     {
-      name      = "capp-api"
-      image     = "${var.image}"
-      memory    = 256
-      essential = true
+      name                   = "capp-api"
+      image                  = "${var.image}"
+      memory                 = 256
+      essential              = true
       readonlyRootFilesystem = true
       portMappings = [
         {
@@ -166,7 +166,7 @@ resource "aws_ecs_task_definition" "api" {
         },
       ]
 
-      environment = [
+      environment = concat([for key, value in var.additional_env_vars : { name = key, value = value }], [
         {
           name  = "APP_ENV"
           value = "${var.env}"
@@ -203,7 +203,7 @@ resource "aws_ecs_task_definition" "api" {
           name  = "AWS_REGION"
           value = data.aws_region.current.name
         }
-      ]
+      ], )
     }
   ])
 
@@ -221,10 +221,10 @@ resource "aws_ecs_task_definition" "cli" {
 
   container_definitions = jsonencode([
     {
-      name      = "capp-cli"
-      image     = "${var.cli_image}"
-      memory    = 512
-      essential = true
+      name                   = "capp-cli"
+      image                  = "${var.cli_image}"
+      memory                 = 512
+      essential              = true
       readonlyRootFilesystem = true
       logConfiguration = {
         logDriver = "awslogs"
