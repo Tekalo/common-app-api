@@ -7,11 +7,15 @@ import {
   PutObjectCommand,
   GetObjectCommand,
 } from '@aws-sdk/client-s3';
+import { createPresignedPost, PresignedPost } from '@aws-sdk/s3-presigned-post';
 import logger from '@App/services/logger.js';
 import CAPPError from '@App/resources/shared/CAPPError.js';
+import { Upload } from '@prisma/client';
 
 class S3Service {
-  static getS3Client() {
+  constructor(public s3Client: S3Client = S3Service.getS3Client()) {}
+
+  protected static getS3Client() {
     return new S3Client({});
   }
 
@@ -20,25 +24,45 @@ class S3Service {
     bucket: string,
     key: string,
     contentType: string,
-  ) {
-    const s3Client = S3Service.getS3Client();
+  ): Promise<string> {
     const command = new PutObjectCommand({
       Bucket: bucket,
       Key: key,
       ContentType: contentType,
     });
-    const url = await getSignedUrl(s3Client, command);
+    const url = await getSignedUrl(this.s3Client, command);
     return url;
   }
 
+  /* eslint-disable class-methods-use-this */
+  async generateSignedPostUploadUrl(
+    bucket: string,
+    key: string,
+    contentType: string,
+    uploadRecord: Upload,
+  ): Promise<PresignedPost> {
+    return createPresignedPost(this.s3Client, {
+      Bucket: bucket,
+      Key: key,
+      Expires: 600,
+      Conditions: [['content-length-range', 1048576, 10485760]],
+      Fields: {
+        acl: 'bucket-owner-full-control',
+        'Content-Type': contentType,
+        'x-amz-meta-uploaded-by-applicant-id':
+          uploadRecord.applicantId.toString(),
+        'x-amz-meta-upload-id': uploadRecord.id.toString(),
+      },
+    });
+  }
+
   async deleteUploads(bucket: string, prefix: string) {
-    const s3Client = S3Service.getS3Client();
     const listUploadsCommand = new ListObjectsV2Command({
       Bucket: bucket,
       Prefix: prefix,
     });
     const uploadsToDelete: ListObjectsV2CommandOutput =
-      await s3Client.send(listUploadsCommand);
+      await this.s3Client.send(listUploadsCommand);
     if (uploadsToDelete && uploadsToDelete.KeyCount) {
       // if items to delete
       // delete the files
@@ -49,7 +73,7 @@ class S3Service {
           Quiet: false, // provides info on successful deletes
         },
       });
-      const deleted = await s3Client.send(deleteCommand); // delete the files
+      const deleted = await this.s3Client.send(deleteCommand); // delete the files
 
       // log any errors deleting files
       if (deleted.Errors) {
@@ -69,12 +93,11 @@ class S3Service {
   }
 
   async generateSignedDownloadUrl(bucket: string, key: string) {
-    const s3Client = S3Service.getS3Client();
     const command = new GetObjectCommand({
       Bucket: bucket,
       Key: key,
     });
-    const url = await getSignedUrl(s3Client, command);
+    const url = await getSignedUrl(this.s3Client, command);
     return url;
   }
 }

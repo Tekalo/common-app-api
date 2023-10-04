@@ -18,9 +18,10 @@ import DummyS3Service from '@App/tests/fixtures/DummyS3Service.js';
 import applicantSubmissionGenerator from '@App/tests/fixtures/applicantSubmissionGenerator.js';
 import {
   PrismaApplicantSubmissionWithResume,
-  ApplicantSubmissionBody,
+  RawApplicantSubmissionBody,
 } from '@App/resources/types/applicants.js';
 import { Applicants } from '@capp/schemas';
+import { ZodError, ZodIssueCode } from 'zod';
 import { getMockConfig } from '../../util/helpers.js';
 
 let mockCtx: MockContext;
@@ -704,6 +705,135 @@ describe('Applicant Controller', () => {
     });
   });
 
+  describe('Test white list functionality in EmailService to avoid too many email bounces in dev', () => {
+    test('Should not send email if email not on white list in dev env', async () => {
+      mockCtx.prisma.applicant.findUniqueOrThrow.mockResolvedValue({
+        id: 1,
+        phone: '777-777-7777',
+        name: 'Bob Boberson',
+        email: 'Aboberson@schmidtfutures.com',
+        pronoun: 'she/hers',
+        preferredContact: 'email',
+        searchStatus: 'active',
+        acceptedTerms: new Date('2023-02-01'),
+        acceptedPrivacy: new Date('2023-02-01'),
+        auth0Id: 'auth0|1234',
+        isPaused: false,
+        followUpOptIn: false,
+      });
+
+      const sesService = new DummySESService();
+      const mockConfig = getMockConfig({
+        aws: {
+          sesFromAddress: 'baz@futurestech.com',
+          sesReplyToAddress: 'replies@futurestech.com',
+          region: 'us-east-1',
+          sesWhiteList: ['bboberson@gmail.com'],
+        },
+        env: 'dev',
+        useEmailWhiteList: true,
+      });
+      const emailService = new EmailService(sesService, mockConfig);
+
+      const mockEmailSpy = jest.spyOn(sesService, 'sendEmail');
+
+      const applicantController = new ApplicantController(
+        new DummyAuthService(),
+        ctx.prisma,
+        emailService,
+        new DummyUploadService(ctx.prisma, new DummyS3Service(), mockConfig),
+      );
+
+      await applicantController.deleteApplicant(1);
+      expect(mockEmailSpy).not.toHaveBeenCalled();
+      mockEmailSpy.mockRestore();
+    });
+    test('Should send email if email on white list in dev env', async () => {
+      mockCtx.prisma.applicant.findUniqueOrThrow.mockResolvedValue({
+        id: 1,
+        phone: '777-777-7777',
+        name: 'Bob Boberson',
+        email: 'bboberson+123xyz@gmail.com',
+        pronoun: 'she/hers',
+        preferredContact: 'email',
+        searchStatus: 'active',
+        acceptedTerms: new Date('2023-02-01'),
+        acceptedPrivacy: new Date('2023-02-01'),
+        auth0Id: 'auth0|1234',
+        isPaused: false,
+        followUpOptIn: false,
+      });
+
+      const sesService = new DummySESService();
+      const mockConfig = getMockConfig({
+        aws: {
+          sesFromAddress: 'baz@futurestech.com',
+          sesReplyToAddress: 'replies@futurestech.com',
+          region: 'us-east-1',
+          sesWhiteList: ['bboberson@gmail.com'],
+        },
+        env: 'dev',
+        useEmailWhiteList: true,
+      });
+      const emailService = new EmailService(sesService, mockConfig);
+
+      const mockEmailSpy = jest.spyOn(sesService, 'sendEmail');
+
+      const applicantController = new ApplicantController(
+        new DummyAuthService(),
+        ctx.prisma,
+        emailService,
+        new DummyUploadService(ctx.prisma, new DummyS3Service(), mockConfig),
+      );
+
+      await applicantController.deleteApplicant(1);
+      expect(mockEmailSpy).toHaveBeenCalled();
+      mockEmailSpy.mockRestore();
+    });
+    test('Should send email even if email not on white list in prod env', async () => {
+      mockCtx.prisma.applicant.findUniqueOrThrow.mockResolvedValue({
+        id: 1,
+        phone: '777-777-7777',
+        name: 'Bob Boberson',
+        email: 'bboberson@schmidtfutures.com',
+        pronoun: 'she/hers',
+        preferredContact: 'email',
+        searchStatus: 'active',
+        acceptedTerms: new Date('2023-02-01'),
+        acceptedPrivacy: new Date('2023-02-01'),
+        auth0Id: 'auth0|1234',
+        isPaused: false,
+        followUpOptIn: false,
+      });
+
+      const sesService = new DummySESService();
+      const mockConfig = getMockConfig({
+        aws: {
+          sesFromAddress: 'baz@futurestech.com',
+          sesReplyToAddress: 'replies@futurestech.com',
+          region: 'us-east-1',
+          sesWhiteList: ['bboberson@gmail.com'],
+        },
+        env: 'prod',
+        useEmailWhiteList: false,
+      });
+      const emailService = new EmailService(sesService, mockConfig);
+
+      const mockEmailSpy = jest.spyOn(sesService, 'sendEmail');
+
+      const applicantController = new ApplicantController(
+        new DummyAuthService(),
+        ctx.prisma,
+        emailService,
+        new DummyUploadService(ctx.prisma, new DummyS3Service(), mockConfig),
+      );
+
+      await applicantController.deleteApplicant(1);
+      expect(mockEmailSpy).toHaveBeenCalled();
+      mockEmailSpy.mockRestore();
+    });
+  });
+
   describe('Delete Auth0 Only Applicant', () => {
     test('Should return error if Auth0 fails to delete applicant', async () => {
       const auth0Id = 'auth0|123456';
@@ -791,6 +921,7 @@ describe('Applicant Controller', () => {
       const resolvedValue: PrismaApplicantSubmissionWithResume = {
         id: 445566,
         createdAt: new Date(),
+        updatedAt: new Date(),
         applicantId,
         originTag: '',
         lastRole: 'senior software engineer',
@@ -852,7 +983,7 @@ describe('Applicant Controller', () => {
         followUpOptIn: false,
       });
 
-      mockCtx.prisma.upload.findFirstOrThrow.mockResolvedValue({
+      mockCtx.prisma.upload.findFirst.mockResolvedValue({
         id: 1,
         applicantId,
         originalFilename: 'myresume.pdf',
@@ -890,26 +1021,24 @@ describe('Applicant Controller', () => {
       expect(mockEmailSpy).toHaveBeenCalledWith(expectedEmail);
       mockEmailSpy.mockRestore();
     });
-    test('Should throw error if getApplicantUploadOrThrow() does not return successfully', async () => {
+
+    test('Should throw Zod validation error if getApplicantUpload() returns null', async () => {
       const dummyUploadService = new DummyUploadService(
         ctx.prisma,
         new DummyS3Service(),
         getMockConfig(),
       );
-      const mockError = new Prisma.PrismaClientKnownRequestError(
-        'Upload not found',
-        { code: 'P123', clientVersion: '123' },
-      );
-      dummyUploadService.getApplicantUploadOrThrow = () => {
-        throw mockError;
-      };
+
+      // eslint-disable-next-line @typescript-eslint/require-await
+      dummyUploadService.getApplicantUpload = async () => null;
+
       const applicantController = new ApplicantController(
         new DummyAuthService(),
         ctx.prisma,
         new DummyEmailService(new DummySESService(), getMockConfig()),
         dummyUploadService,
       );
-      const requestBody: ApplicantSubmissionBody =
+      const requestBody: RawApplicantSubmissionBody =
         applicantSubmissionGenerator.getAPIRequestBody(1);
 
       await expect(
@@ -919,17 +1048,17 @@ describe('Applicant Controller', () => {
             requestBody,
           ),
         ),
-      ).rejects.toEqual(mockError);
+      ).rejects.toBeInstanceOf(ZodError);
     });
 
-    test('should throw error if upload belonging to the specified applicant does not have the status "SUCCESS"', async () => {
+    test('Should throw Zod Error if upload belonging to the specified applicant does not have the status "SUCCESS"', async () => {
       const applicantId = 1;
       const dummyUploadService = new DummyUploadService(
         ctx.prisma,
         new DummyS3Service(),
         getMockConfig(),
       );
-      dummyUploadService.getApplicantUploadOrThrow = () =>
+      dummyUploadService.getApplicantUpload = () =>
         Promise.resolve({
           id: 1,
           applicantId,
@@ -957,14 +1086,17 @@ describe('Applicant Controller', () => {
           ),
         ),
       ).rejects.toEqual(
-        new CAPPError({
-          title: 'Resume Upload Error',
-          detail: 'Resume upload status must be SUCCESS',
-          status: 400,
-        }),
+        new ZodError([
+          {
+            message: 'Invalid resume',
+            code: ZodIssueCode.custom,
+            path: ['resumeUpload.id'],
+          },
+        ]),
       );
     });
   });
+
   describe('Applicant Get Resume Upload Url', () => {
     test('Should call upload service to generate a signed resume upload url', async () => {
       const applicantId = 666;

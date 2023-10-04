@@ -2,15 +2,28 @@ import { ApplicantSubmission, ApplicantDraftSubmission } from '@prisma/client';
 import { z } from 'zod';
 import { Applicants } from '@capp/schemas';
 
+/**
+ * Types prefixed with "Raw" are schemas before being parsed by Zod
+ * Types prefixed with "Parsed" are schemas after being parsed by Zod
+ */
+
 export type ApplicantRequestBody = z.infer<
   typeof Applicants.ApplicantRequestBodySchema
 >;
 
-export type ApplicantDraftSubmissionBody = z.input<
+export type RawApplicantUpdateSubmission = z.input<
+  typeof Applicants.ApplicantUpdateSubmissionRequestBodySchema
+>;
+
+export type ParsedApplicantUpdateSubmissionBody = z.output<
+  typeof Applicants.ApplicantUpdateSubmissionRequestBodySchema
+>;
+
+export type RawApplicantDraftSubmissionBody = z.input<
   typeof Applicants.ApplicantDraftSubmissionRequestBodySchema
 >;
 
-export type ApplicantDraftSubmissionBodyParsed = z.output<
+export type ParsedApplicantDraftSubmissionBody = z.output<
   typeof Applicants.ApplicantDraftSubmissionRequestBodySchema
 >;
 
@@ -18,11 +31,11 @@ export type ApplicantDraftSubmissionResponseBody = z.infer<
   typeof Applicants.ApplicantDraftSubmissionResponseBodySchema
 >;
 
-export type ApplicantSubmissionBody = z.input<
+export type RawApplicantSubmissionBody = z.input<
   typeof Applicants.ApplicantCreateSubmissionRequestBodySchema
 >;
 
-export type ApplicantSubmissionBodyParsed = z.output<
+export type ParsedApplicantSubmissionBody = z.output<
   typeof Applicants.ApplicantCreateSubmissionRequestBodySchema
 >;
 

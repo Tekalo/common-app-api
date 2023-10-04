@@ -1,4 +1,7 @@
-import { SendEmailCommandInput } from '@aws-sdk/client-ses';
+import {
+  SendEmailCommandInput,
+  SendEmailCommandOutput,
+} from '@aws-sdk/client-ses';
 import { BaseConfig } from '@App/resources/types/shared.js';
 import {
   getApplicantWelcomeEmail,
@@ -8,6 +11,27 @@ import {
   getOrgWelcomeEmail,
 } from '@App/resources/emails/index.js';
 import SESService from './SESService.js';
+
+// shall process roger+123ty@gmail.com into roger@gmail.com
+export function removeAliasLowercaseEmail(emailRaw: string): string {
+  // Turn email to lowercase
+  const email = emailRaw.toLowerCase();
+  // Use a regular expression to match the email pattern
+  const regex = /^(.+)@(.+)$/;
+  const matchRes = email.match(regex);
+
+  let retEmail = '';
+  if (matchRes) {
+    const [, localPart, domain] = matchRes; // whole email, left of @, right of @
+    const processedEmail = `${localPart.split('+')[0]}@${domain}`;
+    retEmail = processedEmail;
+  } else {
+    // Invalid email format, return the original email
+    retEmail = email;
+  }
+
+  return retEmail;
+}
 
 class EmailService {
   private sesService: SESService;
@@ -108,9 +132,28 @@ class EmailService {
     });
   }
 
-  async sendEmail(emailToSend: SendEmailCommandInput) {
-    const emailOutput = await this.sesService.sendEmail(emailToSend);
-    return emailOutput;
+  /* eslint-disable consistent-return */
+  async sendEmail(
+    emailToSend: SendEmailCommandInput,
+  ): Promise<void | SendEmailCommandOutput> {
+    if (emailToSend.Destination?.ToAddresses !== undefined) {
+      const { sesWhiteList } = this.config.aws;
+      // Use hashset for quicker lookup
+      const sesWhiteListSet = new Set(sesWhiteList);
+      for (let i = 0; i < emailToSend.Destination.ToAddresses.length; i += 1) {
+        const email = emailToSend.Destination.ToAddresses[i];
+        if (this.config.useEmailWhiteList) {
+          const processedEmail = removeAliasLowercaseEmail(email);
+          if (!sesWhiteListSet.has(processedEmail)) {
+            emailToSend.Destination.ToAddresses.splice(i, 1);
+          }
+        }
+      }
+      if (emailToSend.Destination.ToAddresses.length !== 0) {
+        const emailOutput = await this.sesService.sendEmail(emailToSend);
+        return emailOutput;
+      }
+    }
   }
 }
 

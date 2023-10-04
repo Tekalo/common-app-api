@@ -54,11 +54,16 @@ module "app" {
   web_url              = var.web_url
   email_from_address   = var.email_from_address
   reply_to_address     = var.reply_to_address
+  ses_whitelist        = var.ses_whitelist
 
   rotation_vpc_security_group_id = module.envconfig.database_ingress_security_group_id
   rotation_vpc_subnet_ids        = module.envconfig.private_subnet_ids
 
   uploads_cors_allowed_origins = var.uploads_cors_allowed_origins
+
+  additional_env_vars = {
+    "PRESIGNER_STRATEGY" = "both"
+  }
 }
 
 module "env_defns" {

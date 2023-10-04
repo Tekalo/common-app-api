@@ -68,46 +68,52 @@ const ApplicantResponseBodySchema = z.object({
 const ApplicantCreateSubmissionRequestBodySchema = z.object({
   originTag: z.string(),
   lastRole: z.string().max(255),
-  resumeUpload: z
-    .object({
-      id: z.number(),
-    })
-    .nullable()
-    .optional()
-    .transform((resumeObj) => resumeObj?.id),
+  resumeUpload: z.object({
+    id: z.number(),
+  }),
   lastOrg: z.string().max(255),
   yoe: YOE,
   skills: z.array(Skills),
   otherSkills: z.array(z.string().max(255)),
-  linkedInUrl: z.string().max(500).nullable().optional(),
-  githubUrl: z.string().max(500).nullable().optional(),
-  portfolioUrl: z.string().max(500).nullable().optional(),
-  portfolioPassword: z.string().max(255).nullable().optional(),
-  resumeUrl: z.string().max(500).optional(), // deprecated
-  resumePassword: z.string().max(255).nullable().optional(),
-  hoursPerWeek: z.string().max(255).nullable().optional(),
+  linkedInUrl: z.string().max(500).nullish(),
+  githubUrl: z.string().max(500).nullish(),
+  portfolioUrl: z.string().max(500).nullish(),
+  portfolioPassword: z.string().max(255).nullish(),
+  resumeUrl: z.string().max(500).nullish(), // deprecated
+  resumePassword: z.string().max(255).nullish(),
+  hoursPerWeek: z.string().max(255).nullish(),
   interestEmploymentType: z.array(EmploymentType),
-  interestWorkArrangement: z.array(z.string()).optional(),
+  interestWorkArrangement: z
+    .array(z.string())
+    .nullish()
+    .transform((val) => val || []),
   interestRoles: z.array(z.string().max(255)),
   currentLocation: z.string().max(255),
   openToRelocate: OpenToRelocate,
   openToRemoteMulti: z.array(OpenToRemote),
-  desiredSalary: z.string().max(255).nullable().optional(),
+  desiredSalary: z.string().max(255).nullish(),
   interestCauses: z.array(z.string().max(255)), // order matters
-  otherCauses: z.array(z.string().max(255)).default([]).optional(),
-  workAuthorization: WorkAuthorization.optional(),
+  otherCauses: z
+    .array(z.string().max(255))
+    .nullish()
+    .transform((val) => val || []),
+  workAuthorization: WorkAuthorization.nullish(),
   interestGovt: z.boolean(),
-  interestGovtEmplTypes: z.array(InterestGovtEmplTypes).optional(),
+  interestGovtEmplTypes: z
+    .array(InterestGovtEmplTypes)
+    .nullish()
+    .transform((val) => val || []),
   previousImpactExperience: z.boolean(),
   essayResponse: z.string().max(5000),
-  referenceAttribution: z.string().nullable().optional(),
-  referenceAttributionOther: z.string().nullable().optional(),
+  referenceAttribution: z.string().nullish(),
+  referenceAttributionOther: z.string().nullish(),
 });
 
 const ApplicantSubmissionResponseBody = z.object({
   id: z.number(),
   applicantId: z.number(),
   createdAt: z.date(),
+  updatedAt: z.date(),
   originTag: z.string().nullable(),
   lastRole: z.string().max(255).nullable(),
   lastOrg: z.string().max(255).nullable(),
@@ -158,6 +164,9 @@ const ApplicantGetSubmissionsResponseBodySchema = z.object({
 const ApplicantDraftSubmissionRequestBodySchema =
   ApplicantCreateSubmissionRequestBodySchema.partial();
 
+const ApplicantUpdateSubmissionRequestBodySchema =
+  ApplicantCreateSubmissionRequestBodySchema;
+
 const ApplicantDraftSubmissionResponseBodySchema = z.object({
   submission: ApplicantSubmissionResponseBody,
   isFinal: z.boolean(),
@@ -173,4 +182,5 @@ export default {
   ApplicantDraftSubmissionResponseBodySchema,
   ApplicantUpdateRequestBodySchema,
   ApplicantGetSubmissionsResponseBodySchema,
+  ApplicantUpdateSubmissionRequestBodySchema,
 };

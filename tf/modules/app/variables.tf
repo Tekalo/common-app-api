@@ -191,8 +191,31 @@ variable "web_url" {
   nullable    = false
 }
 
+variable "ses_whitelist" {
+  description = "Email addresses SES is permitted to send to only in non-prod environments"
+  type        = string
+  default     = null
+}
+
+output "ses_whitelist" {
+  description = "Email addresses SES is permitted to send to only in non-prod environments"
+  value        = var.ses_whitelist
+}
+
 variable "uploads_cors_allowed_origins" {
   description = "CORS origins to allow for the upload bucket (use full URL, e.g., https://tekalo.org. Wildcards allowed.)"
   type        = list(string)
   nullable    = true
+}
+
+variable "additional_env_vars" {
+  description = "Specific environment variables to set for this deployment"
+  type        = map(string)
+  default     = {}
+
+  # Requiring that variables are "registered" here to help avoid accidental typos
+  validation {
+    condition     = alltrue([for k, v in var.additional_env_vars : contains(["PRESIGNER_STRATEGY"], k)])
+    error_message = "Must be a supported env variable"
+  }
 }

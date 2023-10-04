@@ -3,7 +3,9 @@ import getApplicantDeletionEmail from '@App/resources/emails/applicantDeletion.j
 import getApplicantDeletionCompleteEmail from '@App/resources/emails/applicantDeletionComplete.js';
 import getOrgWelcomeEmail from '@App/resources/emails/orgWelcomeEmail.js';
 import getApplicantWelcomeEmail from '@App/resources/emails/applicantWelcomeEmail.js';
-import EmailService from '@App/services/EmailService.js';
+import EmailService, {
+  removeAliasLowercaseEmail,
+} from '@App/services/EmailService.js';
 import DummySESService from '../../fixtures/DummySesService.js';
 import { getMockConfig } from '../../util/helpers.js';
 
@@ -17,6 +19,7 @@ describe('Email Service', () => {
           sesFromAddress: 'baz@futurestech.com',
           sesReplyToAddress: 'replies@futurestech.com',
           region: 'us-east-1',
+          sesWhiteList: [],
         },
       }),
     );
@@ -61,7 +64,9 @@ describe('Email Service', () => {
           sesFromAddress: 'baz@futurestech.com',
           sesReplyToAddress: 'replies@futurestech.com',
           region: 'us-east-1',
+          sesWhiteList: [],
         },
+        env: 'prod',
       }),
     );
     const welcomeEmailBody = emailService.generateApplicantWelcomeEmail(
@@ -82,6 +87,7 @@ describe('Email Service', () => {
           sesFromAddress: 'baz@futurestech.com',
           sesReplyToAddress: 'replies@futurestech.com',
           region: 'us-east-1',
+          sesWhiteList: [],
         },
       }),
     );
@@ -118,7 +124,9 @@ describe('Email Service', () => {
           sesFromAddress: 'baz@futurestech.com',
           sesReplyToAddress: 'replies@futurestech.com',
           region: 'us-east-1',
+          sesWhiteList: [],
         },
+        env: 'prod',
       }),
     );
     const deletionEmailBody = emailService.generateApplicantDeletionEmail(
@@ -138,6 +146,7 @@ describe('Email Service', () => {
           sesFromAddress: 'baz@futurestech.com',
           sesReplyToAddress: 'replies@futurestech.com',
           region: 'us-east-1',
+          sesWhiteList: [],
         },
       }),
     );
@@ -174,7 +183,9 @@ describe('Email Service', () => {
           sesFromAddress: 'baz@futurestech.com',
           sesReplyToAddress: 'replies@futurestech.com',
           region: 'us-east-1',
+          sesWhiteList: [],
         },
+        env: 'prod',
       }),
     );
     const deletionEmailBody =
@@ -196,7 +207,9 @@ describe('Email Service', () => {
           sesFromAddress: 'baz@futurestech.com',
           sesReplyToAddress: 'replies@futurestech.com',
           region: 'us-east-1',
+          sesWhiteList: [],
         },
+        env: 'prod',
       }),
     );
     const postSubmitEmailBody =
@@ -215,7 +228,9 @@ describe('Email Service', () => {
           sesFromAddress: 'baz@futurestech.com',
           sesReplyToAddress: 'replies@futurestech.com',
           region: 'us-east-1',
+          sesWhiteList: [],
         },
+        env: 'prod',
       }),
     );
     const submitEmailBody =
@@ -233,6 +248,7 @@ describe('Email Service', () => {
           sesFromAddress: 'baz@futurestech.com',
           sesReplyToAddress: 'replies@futurestech.com',
           region: 'us-east-1',
+          sesWhiteList: [],
         },
       }),
     );
@@ -269,12 +285,34 @@ describe('Email Service', () => {
           sesFromAddress: 'baz@futurestech.com',
           sesReplyToAddress: 'replies@futurestech.com',
           region: 'us-east-1',
+          sesWhiteList: [],
         },
+        env: 'prod',
       }),
     );
     const welcomeEmailBody =
       emailService.generateOrgWelcomeEmail('foo@bar.com');
     await emailService.sendEmail(welcomeEmailBody);
     expect(mockSesSendEmailFunc).toBeCalledWith(welcomeEmailBody);
+  });
+});
+
+describe('should lowercase email addresses and remove the right part of +', () => {
+  const arrInput = [
+    'Aboberson@schmidtfutures.com',
+    'bboberson+123xyz@gmail.com',
+    'bBoBerson+321zyx@schmidtfutures.com',
+  ];
+  const arrOutput = [
+    'aboberson@schmidtfutures.com',
+    'bboberson@gmail.com',
+    'bboberson@schmidtfutures.com',
+  ];
+
+  it.each(arrInput)("test '%s'", (input) => {
+    const index = arrInput.indexOf(input);
+    const expectedOutput = arrOutput[index];
+    const result = removeAliasLowercaseEmail(input);
+    expect(result).toBe(expectedOutput);
   });
 });

@@ -34,12 +34,20 @@ const getMockConfig = (overrides: Partial<BaseConfig> = {}): BaseConfig => ({
     sesFromAddress: '',
     sesReplyToAddress: '',
     region: '',
+    sesWhiteList: [],
   },
   sentryDSN: '',
   uploadBucket: '',
   isLoadTest: false,
   webUrl: '',
+  useEmailWhiteList: false,
   ...overrides,
+  // We explicitly merge overides.flags below. This lets us specify flags without having to specify
+  // all of them in the overrides.
+  flags: {
+    presignerStrategy: 'put',
+    ...overrides.flags,
+  },
 });
 
 export { itif, getRandomString, getMockConfig };

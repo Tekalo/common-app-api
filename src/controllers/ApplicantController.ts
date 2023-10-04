@@ -4,14 +4,17 @@ import { AppMetadata, User, UserMetadata } from 'auth0';
 import {
   ApplicantResponseBody,
   ApplicantRequestBody,
-  ApplicantSubmissionBodyParsed,
   ApplicantUpdateBody,
   PrismaApplicantSubmissionWithResume,
   PrismaApplicantDraftSubmissionWithResume,
   ApplicantCreateSubmissionResponse,
   ApplicantGetSubmissionResponse,
   ApplicantDraftSubmissionResponseBody,
-  ApplicantDraftSubmissionBodyParsed,
+  ParsedApplicantUpdateSubmissionBody,
+  ParsedApplicantDraftSubmissionBody,
+  ParsedApplicantSubmissionBody,
+  RawApplicantDraftSubmissionBody,
+  RawApplicantSubmissionBody,
 } from '@App/resources/types/applicants.js';
 import {
   UploadResponseBody,
@@ -25,6 +28,7 @@ import MonitoringService from '@App/services/MonitoringService.js';
 import UploadService from '@App/services/UploadService.js';
 import { Claims } from '@App/resources/types/auth0.js';
 import { Applicants } from '@capp/schemas';
+import { z } from 'zod';
 
 class ApplicantController {
   private auth0Service: AuthService;
@@ -148,26 +152,30 @@ class ApplicantController {
 
   async createSubmission(
     applicantId: number,
-    data: ApplicantSubmissionBodyParsed,
+    data: ParsedApplicantSubmissionBody,
   ): Promise<ApplicantCreateSubmissionResponse> {
-    const { resumeUpload: resumeId, ...restOfSubmission } = data;
-    // Make sure the specified resume upload belongs to the authed user. If not, throw CAPPError.
-    if (resumeId) {
-      await this.validateResumeUpload(applicantId, resumeId);
-    }
+    /**
+     *
+     * @param applicantId
+     * @param submission
+     * @param schema
+     * @returns
+     */
+    const validatedSubmission = await this.validateApplicantSubmission(
+      applicantId,
+      data,
+      Applicants.ApplicantCreateSubmissionRequestBodySchema,
+    );
     const applicantSubmission = await this.prisma.applicantSubmission.create({
       data: {
-        ...restOfSubmission,
-        resumeUploadId: resumeId,
-        applicantId,
+        ...validatedSubmission,
+        resumeUpload: { connect: { id: validatedSubmission.resumeUpload.id } },
+        applicant: { connect: { id: applicantId } },
       },
       include: {
         resumeUpload: { select: { id: true, originalFilename: true } },
       },
     });
-    // remove resumeUploadId from response
-    const { resumeUploadId, ...submissionVals } = applicantSubmission;
-
     try {
       const applicant = await this.prisma.applicant.findUniqueOrThrow({
         where: { id: applicantId },
@@ -183,6 +191,45 @@ class ApplicantController {
         ),
       );
     }
+    // Remove resumeUploadId from response
+    const { resumeUploadId, ...submissionVals } = applicantSubmission;
+    return Applicants.ApplicantCreateSubmissionResponseBodySchema.parse({
+      submission: submissionVals,
+      isFinal: true,
+    });
+  }
+
+  async updateSubmission(
+    applicantId: number,
+    data: ParsedApplicantUpdateSubmissionBody,
+  ): Promise<ApplicantCreateSubmissionResponse> {
+    /**
+     *
+     * @param applicantId
+     * @param submission
+     * @param schema
+     * @returns
+     */
+    const validatedSubmission = await this.validateApplicantSubmission(
+      applicantId,
+      data,
+      Applicants.ApplicantCreateSubmissionRequestBodySchema,
+    );
+    const { resumeUpload, ...restOfSubmission } = validatedSubmission;
+    // Throws error if applicantID doesn't exist
+    const applicantSubmission = await this.prisma.applicantSubmission.update({
+      data: {
+        ...restOfSubmission,
+        resumeUpload: {
+          connect: { id: resumeUpload.id },
+        },
+      },
+      include: {
+        resumeUpload: { select: { id: true, originalFilename: true } },
+      },
+      where: { applicantId },
+    });
+    const { resumeUploadId, ...submissionVals } = applicantSubmission;
     return Applicants.ApplicantCreateSubmissionResponseBodySchema.parse({
       submission: submissionVals,
       isFinal: true,
@@ -314,37 +361,93 @@ class ApplicantController {
     return { id: applicantId };
   }
 
-  async validateResumeUpload(applicantId: number, resumeUploadId: number) {
-    const resume = await this.uploadService.getApplicantUploadOrThrow(
-      applicantId,
-      resumeUploadId,
-    );
-    if (resume.status !== 'SUCCESS') {
-      throw new CAPPError({
-        title: 'Resume Upload Error',
-        detail: "Resume upload status must be 'SUCCESS'",
-        status: 400,
-      });
+  async validResume(
+    submission:
+      | ParsedApplicantSubmissionBody
+      | ParsedApplicantDraftSubmissionBody,
+    applicantId: number,
+  ) {
+    if (submission.resumeUpload) {
+      const resume = await this.uploadService.getApplicantUpload(
+        applicantId,
+        submission.resumeUpload.id,
+      );
+      return !!(resume && resume.status === 'SUCCESS');
     }
+    return true;
+  }
+
+  /**
+   * Adds any application-level logic for validating draft or final submission data
+   * @param applicantId
+   * @param submission
+   * @param schema Zod Schema to use for parsing submission data
+   * @returns validated final or draft submission
+   */
+  async validateApplicantSubmission<
+    T extends
+      | ParsedApplicantSubmissionBody
+      | ParsedApplicantDraftSubmissionBody,
+  >(
+    applicantId: number,
+    submission: T,
+    schema: z.ZodType<
+      T,
+      z.ZodTypeDef,
+      RawApplicantSubmissionBody | RawApplicantDraftSubmissionBody
+    >,
+  ): Promise<T> {
+    const refinement = schema.superRefine(
+      async (unvalidatedSubmission, ctx) => {
+        const validResume = await this.validResume(
+          unvalidatedSubmission,
+          applicantId,
+        );
+        if (!validResume) {
+          ctx.addIssue({
+            message: 'Invalid resume',
+            code: z.ZodIssueCode.custom,
+            path: ['resumeUpload.id'],
+          });
+        }
+      },
+    );
+    const parsedSubmission = await refinement.parseAsync(submission);
+    return parsedSubmission;
   }
 
   async createOrUpdateDraftSubmission(
     applicantId: number,
-    data: ApplicantDraftSubmissionBodyParsed,
+    data: ParsedApplicantDraftSubmissionBody,
   ): Promise<ApplicantDraftSubmissionResponseBody> {
-    const { resumeUpload: resumeId, ...restOfSubmission } = data;
-    if (resumeId) {
-      await this.validateResumeUpload(applicantId, resumeId);
-    }
+    /**
+     *
+     * @param applicantId
+     * @param submission
+     * @param schema
+     * @returns
+     */
+    const validatedSubmission = await this.validateApplicantSubmission(
+      applicantId,
+      data,
+      Applicants.ApplicantDraftSubmissionRequestBodySchema,
+    );
+    const { resumeUpload, ...restOfSubmission } = validatedSubmission;
     const draftSubmission = await this.prisma.applicantDraftSubmission.upsert({
       create: {
         ...restOfSubmission,
-        resumeUploadId: resumeId,
-        applicantId,
+        resumeUpload: resumeUpload
+          ? {
+              connect: { id: resumeUpload?.id },
+            }
+          : undefined,
+        applicant: { connect: { id: applicantId } },
       },
       update: {
         ...restOfSubmission,
-        resumeUploadId: resumeId,
+        resumeUpload: resumeUpload
+          ? { connect: { id: resumeUpload.id } }
+          : { disconnect: true },
       },
       include: {
         resumeUpload: { select: { id: true, originalFilename: true } },

@@ -176,6 +176,11 @@
       "to": "Type(s) of part-time / short-term opportunities",
       "from": "interestWorkArrangement",
       "type": "standard"
+    },
+    {
+      "to": "Application Last Updated At",
+      "from": "updatedAt",
+      "type": "standard"
     }
   ],
   "tableName": "Candidates",

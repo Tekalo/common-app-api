@@ -36,16 +36,16 @@ class UploadService {
   }
 
   /**
-   * Get upload belonging to an applicant. If it does not exist, throw an error.
+   * Get upload belonging to an applicant. If it does not exist, returns null
    * @param applicantId
    * @param uploadId
    * @returns
    */
-  async getApplicantUploadOrThrow(
+  async getApplicantUpload(
     applicantId: number,
     uploadId: number,
-  ): Promise<Upload> {
-    const applicantUpload = await this.prisma.upload.findFirstOrThrow({
+  ): Promise<Upload | null> {
+    const applicantUpload = await this.prisma.upload.findFirst({
       where: { id: uploadId, applicantId },
     });
     return applicantUpload;
@@ -78,18 +78,32 @@ class UploadService {
       applicantId,
       contentType,
     );
-    const signedLink = await this.s3Service.generateSignedUploadUrl(
-      this.config.uploadBucket,
-      UploadService.generateS3Filename(
-        applicantId,
-        uploadRecord.id,
-        contentType,
-      ),
+    const fileName = UploadService.generateS3Filename(
+      applicantId,
+      uploadRecord.id,
       contentType,
     );
+    const signedLink =
+      this.config.flags.presignerStrategy !== 'post'
+        ? await this.s3Service.generateSignedUploadUrl(
+            this.config.uploadBucket,
+            fileName,
+            contentType,
+          )
+        : undefined;
+    const presignedPost =
+      this.config.flags.presignerStrategy !== 'put'
+        ? await this.s3Service.generateSignedPostUploadUrl(
+            this.config.uploadBucket,
+            fileName,
+            contentType,
+            uploadRecord,
+          )
+        : undefined;
     return {
       id: uploadRecord.id,
       signedLink,
+      presignedPost,
     };
   }
 
