@@ -62,3 +62,9 @@ resource "aws_lambda_event_source_mapping" "mailer_sqs_source" {
   event_source_arn = aws_sqs_queue.email_sqs_queue.arn
   function_name    = aws_lambda_function.mailer.arn
 }
+
+# Create a cloudwatch log group explicitly so we can set a retention policy
+resource "aws_cloudwatch_log_group" "mailer_lambda_log" {
+  name              = "/aws/lambda/${aws_lambda_function.mailer.function_name}"
+  retention_in_days = 30
+}
