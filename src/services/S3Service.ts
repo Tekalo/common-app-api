@@ -13,7 +13,7 @@ import CAPPError from '@App/resources/shared/CAPPError.js';
 import { Upload } from '@prisma/client';
 
 class S3Service {
-  constructor(public s3Client: S3Client = S3Service.getS3Client()) { }
+  constructor(public s3Client: S3Client = S3Service.getS3Client()) {}
 
   protected static getS3Client() {
     return new S3Client({});

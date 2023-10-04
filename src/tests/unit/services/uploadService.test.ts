@@ -56,7 +56,11 @@ describe('Upload Service', () => {
   });
 
   test('should successfully generate a presigned POST resume upload url', async () => {
-    const dummyS3Service = new S3Service(new S3Client({ credentials: { accessKeyId: 'foo', secretAccessKey: 'bar' } }));
+    const dummyS3Service = new S3Service(
+      new S3Client({
+        credentials: { accessKeyId: 'foo', secretAccessKey: 'bar' },
+      }),
+    );
     const uploadBucket = 'upload_bucket';
     const mockConfig = getMockConfig({
       uploadBucket,
@@ -93,12 +97,12 @@ describe('Upload Service', () => {
     expect(resp).toHaveProperty(
       'presignedPost',
       expect.objectContaining({
-        'url': `https://s3.us-east-1.amazonaws.com/${uploadBucket}`,
-        'fields': expect.objectContaining({
+        url: `https://s3.us-east-1.amazonaws.com/${uploadBucket}`,
+        fields: expect.objectContaining({
           'Content-Type': 'application/pdf',
-          'acl': 'bucket-owner-full-control',
-          'bucket': uploadBucket,
-          'key': `resumes/${applicantId}/${uploadRecord.id}.pdf`,
+          acl: 'bucket-owner-full-control',
+          bucket: uploadBucket,
+          key: `resumes/${applicantId}/${uploadRecord.id}.pdf`,
           'x-amz-meta-upload-id': `${uploadRecord.id}`,
           'x-amz-meta-uploaded-by-applicant-id': `${applicantId}`,
         }),
