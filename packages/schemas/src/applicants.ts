@@ -77,30 +77,39 @@ const ApplicantCreateSubmissionRequestBodySchema = z.object({
   yoe: YOE,
   skills: z.array(Skills),
   otherSkills: z.array(z.string().max(255)),
-  linkedInUrl: z.string().max(500).nullable().optional(),
-  githubUrl: z.string().max(500).nullable().optional(),
-  portfolioUrl: z.string().max(500).nullable().optional(),
-  portfolioPassword: z.string().max(255).nullable().optional(),
-  resumeUrl: z.string().max(500).optional(), // deprecated
-  resumePassword: z.string().max(255).nullable().optional(),
-  hoursPerWeek: z.string().max(255).nullable().optional(),
+  linkedInUrl: z.string().max(500).nullish(),
+  githubUrl: z.string().max(500).nullish(),
+  portfolioUrl: z.string().max(500).nullish(),
+  portfolioPassword: z.string().max(255).nullish(),
+  resumeUrl: z.string().max(500).nullish(), // deprecated
+  resumePassword: z.string().max(255).nullish(),
+  hoursPerWeek: z.string().max(255).nullish(),
   interestEmploymentType: z.array(EmploymentType),
-  interestWorkArrangement: z.array(z.string()).optional(),
+  interestWorkArrangement: z
+    .array(z.string())
+    .nullish()
+    .transform((val) => val || []),
   interestRoles: z.array(z.string().max(255)),
   currentLocation: z.string().max(255),
   openToRelocate: OpenToRelocate,
   openToRemoteMulti: z.array(OpenToRemote),
-  desiredSalary: z.string().max(255).nullable().optional(),
+  desiredSalary: z.string().max(255).nullish(),
   interestCauses: z.array(z.string().max(255)), // order matters
-  otherCauses: z.array(z.string().max(255)).default([]).optional(),
-  workAuthorization: WorkAuthorization.optional(),
+  otherCauses: z
+    .array(z.string().max(255))
+    .nullish()
+    .transform((val) => val || []),
+  workAuthorization: WorkAuthorization.nullish(),
   interestGovt: z.boolean(),
-  interestGovtEmplTypes: z.array(InterestGovtEmplTypes).optional(),
+  interestGovtEmplTypes: z
+    .array(InterestGovtEmplTypes)
+    .nullish()
+    .transform((val) => val || []),
   previousImpactExperience: z.boolean(),
   essayResponse: z.string().max(5000),
-  referenceAttribution: z.string().nullable().optional(),
-  referenceAttributionOther: z.string().nullable().optional(),
   utmParams: UTMPayload.nullish(),
+  referenceAttribution: z.string().nullish(),
+  referenceAttributionOther: z.string().nullish(),
 });
 
 const ApplicantSubmissionResponseBody = z.object({
