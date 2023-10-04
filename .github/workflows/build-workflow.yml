@@ -76,5 +76,6 @@ jobs:
           SENTRY_ORG: ${{ vars.SENTRY_ORG }}
           SENTRY_PROJECT: ${{ vars.SENTRY_PROJECT }}
         with:
-          environment: production
+          # TODO: i think we should create the deploy manually when we actually do the deploy?
+          # environment: production
           sourcemaps: ./build
