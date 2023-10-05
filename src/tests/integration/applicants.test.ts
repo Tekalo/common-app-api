@@ -430,7 +430,6 @@ describe('POST /applicants/me/submissions', () => {
           ...testBody,
           resumeUpload: { id: resumeId, originalFilename: expect.any(String) },
           openToRemoteMulti: ['in-person', 'hybrid'],
-          utmParamsId: null,
           interestWorkArrangement: [],
         },
         isFinal: true,
@@ -568,10 +567,6 @@ describe('POST /applicants/me/submissions', () => {
         where: { id: submissionBody?.submission?.id },
         include: { utmParams: true },
       });
-      expect(submissionBody.submission).toHaveProperty(
-        'utmParamsId',
-        expect.any(Number),
-      );
       expect(submission).toHaveProperty('utmParams', {
         event: 'create-submission',
         id: expect.any(Number),

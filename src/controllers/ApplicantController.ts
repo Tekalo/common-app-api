@@ -207,10 +207,8 @@ class ApplicantController {
         ),
       );
     }
-    // Remove resumeUploadId from response
-    const { resumeUploadId, ...submissionVals } = applicantSubmission;
     return Applicants.ApplicantCreateSubmissionResponseBodySchema.parse({
-      submission: submissionVals,
+      submission: applicantSubmission,
       isFinal: true,
     });
   }
@@ -245,9 +243,8 @@ class ApplicantController {
       },
       where: { applicantId },
     });
-    const { resumeUploadId, ...submissionVals } = applicantSubmission;
     return Applicants.ApplicantCreateSubmissionResponseBodySchema.parse({
-      submission: submissionVals,
+      submission: applicantSubmission,
       isFinal: true,
     });
   }

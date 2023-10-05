@@ -152,7 +152,6 @@ const ApplicantSubmissionResponseBody = z.object({
   essayResponse: z.string().max(5000).nullable(),
   referenceAttribution: z.string().nullable(),
   referenceAttributionOther: z.string().nullable(),
-  utmParamsId: z.number().nullable(),
 });
 
 const ApplicantCreateSubmissionResponseBodySchema = z.object({
@@ -167,7 +166,7 @@ const ApplicantUpdateSubmissionRequestBodySchema =
   ApplicantCreateSubmissionRequestBodySchema.omit({ utmParams: true });
 
 const ApplicantDraftSubmissionResponseBodySchema = z.object({
-  submission: ApplicantSubmissionResponseBody.omit({ utmParamsId: true }),
+  submission: ApplicantSubmissionResponseBody,
   isFinal: z.boolean(),
 });
 
