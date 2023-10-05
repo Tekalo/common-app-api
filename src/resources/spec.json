@@ -568,9 +568,6 @@
           },
           "equalOpportunityEmployer": {
             "type": "boolean"
-          },
-          "utmParamsId": {
-            "type": "number"
           }
         }
       },
