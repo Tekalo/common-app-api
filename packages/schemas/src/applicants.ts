@@ -161,8 +161,69 @@ const ApplicantGetSubmissionsResponseBodySchema = z.object({
   isFinal: z.boolean(),
 });
 
-const ApplicantDraftSubmissionRequestBodySchema =
-  ApplicantCreateSubmissionRequestBodySchema.partial();
+const ApplicantDraftSubmissionRequestBodySchema = z.object({
+  originTag: z.string().nullish(),
+  lastRole: z.string().max(255).nullish(),
+  resumeUpload: z
+    .object({
+      id: z.number(),
+    })
+    .nullish(),
+  lastOrg: z.string().max(255).nullish(),
+  yoe: YOE.nullish(),
+  skills: z
+    .array(Skills)
+    .nullish()
+    .transform((val) => val || []),
+  otherSkills: z
+    .array(z.string().max(255))
+    .nullish()
+    .transform((val) => val || []),
+  linkedInUrl: z.string().max(500).nullish(),
+  githubUrl: z.string().max(500).nullish(),
+  portfolioUrl: z.string().max(500).nullish(),
+  portfolioPassword: z.string().max(255).nullish(),
+  resumeUrl: z.string().max(500).nullish(), // deprecated
+  resumePassword: z.string().max(255).nullish(),
+  hoursPerWeek: z.string().max(255).nullish(),
+  interestEmploymentType: z
+    .array(EmploymentType)
+    .nullish()
+    .transform((val) => val || []),
+  interestWorkArrangement: z
+    .array(z.string())
+    .nullish()
+    .transform((val) => val || []),
+  interestRoles: z
+    .array(z.string().max(255))
+    .nullish()
+    .transform((val) => val || []),
+  currentLocation: z.string().max(255).nullish(),
+  openToRelocate: OpenToRelocate.nullish(),
+  openToRemoteMulti: z
+    .array(OpenToRemote)
+    .nullish()
+    .transform((val) => val || []),
+  desiredSalary: z.string().max(255).nullish(),
+  interestCauses: z
+    .array(z.string().max(255))
+    .nullish()
+    .transform((val) => val || []), // order matters
+  otherCauses: z
+    .array(z.string().max(255))
+    .nullish()
+    .transform((val) => val || []),
+  workAuthorization: WorkAuthorization.nullish(),
+  interestGovt: z.boolean().nullish(),
+  interestGovtEmplTypes: z
+    .array(InterestGovtEmplTypes)
+    .nullish()
+    .transform((val) => val || []),
+  previousImpactExperience: z.boolean().nullish(),
+  essayResponse: z.string().max(5000).nullish(),
+  referenceAttribution: z.string().nullish(),
+  referenceAttributionOther: z.string().nullish(),
+});
 
 const ApplicantUpdateSubmissionRequestBodySchema =
   ApplicantCreateSubmissionRequestBodySchema;
