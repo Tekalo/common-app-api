@@ -64,7 +64,7 @@
     "express-session": "1.17.3",
     "husky": "8.0.3",
     "jest-mock-extended": "3.0.5",
-    "jose": "4.15.1",
+    "jose": "4.15.2",
     "pino": "8.15.4",
     "pino-http": "8.5.0",
     "swagger-ui-express": "5.0.0",
