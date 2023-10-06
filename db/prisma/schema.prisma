@@ -17,13 +17,20 @@ model Session {
 }
 
 model UTMParams {
-  id                  Int                  @id @default(autoincrement())
-  event               String
-  params              Json
-  applicantSubmission ApplicantSubmission?
-  applicantDraftSubmission  ApplicantDraftSubmission?
-  opportunityBatch    OpportunityBatch?
-  applicant           Applicant?
+  id                    Int                  @id @default(autoincrement())
+  event                 String
+  params                Json
+  applicantSubmission   ApplicantSubmission? @relation(fields: [applicantSubmissionId], references: [id], onDelete: Cascade)
+  applicantSubmissionId Int?                 @unique
+
+  applicantDraftSubmission   ApplicantDraftSubmission? @relation(fields: [applicantDraftSubmissionId], references: [id], onDelete: Cascade)
+  applicantDraftSubmissionId Int?                      @unique
+
+  opportunityBatch   OpportunityBatch? @relation(fields: [opportunityBatchId], references: [id], onDelete: Cascade)
+  opportunityBatchId Int?              @unique
+
+  applicant   Applicant? @relation(fields: [applicantId], references: [id], onDelete: Cascade)
+  applicantId Int?       @unique
 }
 
 model Applicant {
@@ -43,15 +50,13 @@ model Applicant {
   isPaused          Boolean                    @default(false)
   uploads           Upload[]
 
-  utmParams   UTMParams? @relation(fields: [utmParamsId], references: [id])
-  utmParamsId Int?            @unique
+  utmParams UTMParams?
 }
 
 model ApplicantSubmission {
   id Int @id @default(autoincrement())
 
-  utmParams   UTMParams? @relation(fields: [utmParamsId], references: [id])
-  utmParamsId Int?            @unique
+  utmParams UTMParams?
 
   applicant   Applicant @relation(fields: [applicantId], references: [id], onDelete: Cascade)
   applicantId Int       @unique
@@ -149,8 +154,7 @@ model ApplicantDraftSubmission {
   referenceAttribution      String? //How did you hear about us  //enum
   referenceAttributionOther String?
 
-  utmParams   UTMParams? @relation(fields: [utmParamsId], references: [id])
-  utmParamsId Int?            @unique
+  utmParams UTMParams?
 }
 
 model OpportunityBatch {
@@ -169,8 +173,7 @@ model OpportunityBatch {
   referenceAttribution      String?
   referenceAttributionOther String?
 
-  utmParams   UTMParams? @relation(fields: [utmParamsId], references: [id])
-  utmParamsId Int?            @unique
+  utmParams UTMParams?
 }
 
 model ApplicantDeletionRequests {

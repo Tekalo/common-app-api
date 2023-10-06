@@ -59,7 +59,7 @@ describe('POST /opportunities', () => {
       contactEmail: 'bboberson@gmail.com',
       contactName: 'Bob Boberson',
       contactPhone: '+918-867-5309',
-      equalOpportunityEmployer: true,
+      eoe: true,
       impactAreas: ['Clean Energy', 'Education'],
       impactAreasOther: ['Feeding the Community', 'Space for Socializing'],
       orgName: 'Bobs Burgers Foundation',
@@ -67,7 +67,6 @@ describe('POST /opportunities', () => {
       orgType: '501(c)(3)',
       referenceAttribution: 'other',
       referenceAttributionOther: 'reddit',
-      utmParamsId: null,
     });
   });
   it('should create multiple new batches of opportunities', async () => {
@@ -112,8 +111,12 @@ describe('POST /opportunities', () => {
       .expect(200);
     const batch = await prisma.opportunityBatch.findUnique({
       where: { id: body.id },
+      include: { utmParams: true },
     });
-    expect(batch).toHaveProperty('utmParamsId', expect.any(Number));
+    expect(batch?.utmParams).toHaveProperty('params', {
+      ga_session_id: 'foo',
+      ga_client_id: 'bar',
+    });
   });
   it('should throw 400 error if acceptedPrivacy is false', async () => {
     const falseAcceptedPrivacy = { ...oppBatchPayload };

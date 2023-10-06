@@ -89,6 +89,7 @@ const OpportunityBatchRequestBodySchema = z.object({
 
 const OpportunityBatchResponseBodySchema = z.object({
   id: z.number(),
+  eoe: z.boolean(),
   acceptedPrivacy: z.date(),
   contactEmail: z.string(),
   contactName: z.string(),
@@ -98,6 +99,8 @@ const OpportunityBatchResponseBodySchema = z.object({
   orgName: z.string(),
   orgSize: z.string(),
   orgType: z.string(),
+  referenceAttribution: z.string().nullable().optional(),
+  referenceAttributionOther: z.string().nullable().optional(),
 });
 
 export default {

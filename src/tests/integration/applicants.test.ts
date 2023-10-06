@@ -567,11 +567,7 @@ describe('POST /applicants/me/submissions', () => {
         where: { id: submissionBody?.submission?.id },
         include: { utmParams: true },
       });
-      expect(submission).toHaveProperty('utmParams', {
-        event: 'create-submission',
-        id: expect.any(Number),
-        params: utmParams,
-      });
+      expect(submission?.utmParams).toHaveProperty('params', utmParams);
     });
   });
 
@@ -1078,10 +1074,8 @@ describe('POST /applicants/me/submissions/draft', () => {
         where: { id: body.submission.id },
         include: { utmParams: true },
       });
-      expect(draftSubmission).toHaveProperty('utmParams', {
-        event: 'create-draft-submission',
-        params: { utm_source: 'foo source' },
-        id: expect.any(Number),
+      expect(draftSubmission?.utmParams).toHaveProperty('params', {
+        utm_source: 'foo source',
       });
     });
 
