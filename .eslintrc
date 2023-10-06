@@ -34,7 +34,11 @@
         "plugin:@typescript-eslint/recommended-requiring-type-checking"
       ],
       "parserOptions": {
-        "project": ["./tsconfig.json", "./packages/schemas/tsconfig.json"] // Specify it only for TypeScript files
+        "project": [
+          "./tsconfig.json",
+          "./packages/schemas/tsconfig.json",
+          "./packages/email-sender/tsconfig.json"
+        ] // Specify it only for TypeScript files
       },
       "rules": {
         "@typescript-eslint/indent": "off",
