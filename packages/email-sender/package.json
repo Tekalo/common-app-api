@@ -1,0 +1,26 @@
+{
+  "name": "@capp/email-sender",
+  "version": "1.0.0",
+  "description": "",
+  "main": "build/index.js",
+  "types": "src/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "swc src --copy-files --out-dir build",
+    "check": "tsc --noEmit",
+    "container-build": "docker compose run -w /api/packages/email-sender --rm api pnpm build",
+    "copy": "cp -r node_modules build/",
+    "package": "pnpm run container-build && pnpm run copy && pnpm run zip && pnpm run tf-dev",
+    "tf-dev": "cp email-sender.zip ../../tf/envs/dev/.",
+    "zip": "cd build && zip -r ../email-sender.zip ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.122",
+    "prettier": "3.0.3",
+    "swc": "1.0.11",
+    "typescript": "5.2.2"
+  }
+}
