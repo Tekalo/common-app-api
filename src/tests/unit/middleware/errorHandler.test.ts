@@ -40,7 +40,8 @@ describe('Error Handler', () => {
     expect(mockResponse.json).toBeCalledWith({
       title: 'Original Error',
       status: 500,
-      detail: expect.stringMatching(
+      detail: 'Foo Error Message',
+      stack: expect.stringMatching(
         /\(\/api\/src\/tests\/unit\/middleware\/errorHandler\.test\.ts/i,
       ),
     });

@@ -30,7 +30,7 @@ const errorHandler = (
     problem.detail = detail;
   }
   if (process.env.APP_ENV !== 'prod') {
-    problem.detail = err.stack;
+    problem.stack = err.stack;
   }
   return res
     .status(problem.status || 500)
