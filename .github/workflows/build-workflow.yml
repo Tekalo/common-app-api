@@ -28,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      image: ${{ steps.build-image.outputs.image }}
+      image: ${{ steps.set-vars.outputs.image }}
 
     steps:
       - name: Checkout
@@ -52,9 +52,11 @@ jobs:
       - name: Set short github sha variable
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        id: set-vars
         run: |
-          echo "GITHUB_SHA_SHORT=$(echo "$GITHUB_SHA" | cut -c 1-6)" \
-            >> "$GITHUB_ENV"
+          GITHUB_SHA_SHORT="$(echo "$GITHUB_SHA" | cut -c 1-6)""
+          echo "GITHUB_SHA_SHORT=${GITHUB_SHA_SHORT:?}" >> "$GITHUB_ENV"
+          echo "IMAGE_TAG=${GITHUB_SHA_SHORT:?}" >> "$GITHUB_ENV"
           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$GITHUB_SHA_SHORT" >> $GITHUB_OUTPUT
 
       - name: Docker meta
