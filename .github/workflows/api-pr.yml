@@ -30,14 +30,6 @@ jobs:
     uses: ./.github/workflows/job-test.yml
     secrets: inherit
 
-  build-image:
-    uses: ./.github/workflows/build-workflow.yml
-    needs:
-      - test
-    with:
-      env: 'dev'
-    secrets: inherit
-
   # Github required checks are based on the JOB name, and reusable workflows always muck with
   # job names, so we create a consistent job name here.
   status:

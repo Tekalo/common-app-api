@@ -17,6 +17,8 @@ on:
     secrets:
       TF_API_TOKEN:
         required: true
+      SENTRY_AUTH_TOKEN:
+        required: true
 
 env:
   AWS_REGION: us-east-1
@@ -58,6 +60,19 @@ jobs:
           role-to-assume: ${{ vars[format('{0}_AWS_PLAN_ROLE', inputs.env)] }}
           role-session-name: GithubActions
 
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Pull image and get labels
+        id: labels
+        env:
+          IMAGE: '${{ inputs.image }}'
+        run: |
+          docker pull "$IMAGE"
+          RELEASE_SHA="$(docker image inspect -f json "$IMAGE" | jq '.[].Config.Labels."org.opencontainers.image.revision"' -r)"
+          echo "RELEASE_SHA=${RELEASE_SHA}" >> $GITHUB_ENV
+
       - name: Get latest image build tag
         id: prev-image
         run: |
@@ -95,3 +110,12 @@ jobs:
           terraform apply -auto-approve -input=false \
           -var 'cli_image=${{ inputs.image }}' \
           -var 'image=${{ inputs.image }}'
+
+      - name: Set sentry release
+        env:
+          SENTRY_AUTH_TOKEN: '${{ secrets.SENTRY_AUTH_TOKEN }}'
+          SENTRY_PROJECT: '${{ vars.SENTRY_PROJECT }}'
+          SENTRY_ORG: '${{ vars.SENTRY_ORG }}'
+        run: |
+          curl -sL https://sentry.io/get-cli/ | SENTRY_CLI_VERSION="2.21.2" sh
+          sentry-cli releases deploys "$RELEASE_SHA" new -e "${{ inputs.env }}"

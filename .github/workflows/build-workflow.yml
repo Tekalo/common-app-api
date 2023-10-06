@@ -96,7 +96,6 @@ jobs:
           SENTRY_ORG: ${{ vars.SENTRY_ORG }}
           SENTRY_PROJECT: ${{ vars.SENTRY_PROJECT }}
         with:
-          finalize: false
-          # TODO: i think we should create the deploy manually when we actually do the deploy?
-          # environment: production
+          # TODO: not sure if we should finalize here. Maybe better to do it in the deploy?
+          finalize: true
           sourcemaps: ./build
