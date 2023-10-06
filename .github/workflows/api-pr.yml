@@ -36,6 +36,7 @@ jobs:
       - test
     with:
       env: 'dev'
+    secrets: inherit
 
   # Github required checks are based on the JOB name, and reusable workflows always muck with
   # job names, so we create a consistent job name here.
