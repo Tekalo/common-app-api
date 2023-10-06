@@ -41,9 +41,7 @@ describe('Error Handler', () => {
       title: 'Original Error',
       status: 500,
       detail: 'Foo Error Message',
-      stack: expect.stringMatching(
-        /\(\/api\/src\/tests\/unit\/middleware\/errorHandler\.test\.ts/i,
-      ),
+      stack: expect.stringMatching(/Error: Original Error/),
     });
   });
   test('Generated error should not include exception and stacktrace in production environment', () => {
