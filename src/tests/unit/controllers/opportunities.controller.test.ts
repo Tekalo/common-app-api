@@ -83,13 +83,11 @@ describe('Opportunity Controller', () => {
       equalOpportunityEmployer: organization.eoe,
       referenceAttribution: 'linkedin',
       referenceAttributionOther: null,
-      utmParamsId: null,
     };
     mockCtx.prisma.opportunityBatch.create.mockResolvedValue(mockResolved);
     const response =
       await opportunityController.createOpportunityBatch(reqPayload);
-    const { equalOpportunityEmployer, utmParamsId, ...restOfReolved } =
-      mockResolved;
+    const { equalOpportunityEmployer, ...restOfReolved } = mockResolved;
     expect(response).toEqual({ eoe: organization.eoe, ...restOfReolved });
   });
   test('Should return error when Prisma throws an invalid input error', async () => {
@@ -209,7 +207,6 @@ describe('Opportunity Controller', () => {
       equalOpportunityEmployer: organization.eoe,
       referenceAttribution: 'linkedin',
       referenceAttributionOther: null,
-      utmParamsId: null,
     };
     mockCtx.prisma.opportunityBatch.create.mockResolvedValue(mockResolved);
 
