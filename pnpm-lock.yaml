@@ -1,5 +1,9 @@
 lockfileVersion: '6.0'
 
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
 importers:
 
   .:
@@ -170,24 +174,6 @@ importers:
       ts-node:
         specifier: 10.9.1
         version: 10.9.1(@swc/core@1.3.92)(@types/node@18.18.3)(typescript@5.2.2)
-<<<<<<< HEAD
-      typescript:
-        specifier: 5.2.2
-        version: 5.2.2
-
-  packages/email-sender:
-    devDependencies:
-      '@types/aws-lambda':
-        specifier: ^8.10.122
-        version: 8.10.122
-      prettier:
-        specifier: 3.0.3
-        version: 3.0.3
-      swc:
-        specifier: 1.0.11
-        version: 1.0.11
-=======
->>>>>>> ccdb117 (update to package.json)
       typescript:
         specifier: 5.2.2
         version: 5.2.2
@@ -7175,11 +7161,3 @@ packages:
   /zod@3.22.4:
     resolution: {integrity: sha512-iC+8Io04lddc+mVqQ9AZ7OQ2MrUKGN+oIQyq1vemgt46jwCwLfhq7/pwnBnNXXXZb8VTVLKwp9EDkx+ryxIWmg==}
     dev: false
-
-  /zod@3.22.4:
-    resolution: {integrity: sha512-iC+8Io04lddc+mVqQ9AZ7OQ2MrUKGN+oIQyq1vemgt46jwCwLfhq7/pwnBnNXXXZb8VTVLKwp9EDkx+ryxIWmg==}
-    dev: false
-
-settings:
-  autoInstallPeers: true
-  excludeLinksFromLockfile: false
