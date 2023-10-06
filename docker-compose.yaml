@@ -69,7 +69,7 @@ services:
       - SENTRY_DSN=https://dummy_dsn_with_valid_format@example.org/123
       - UPLOAD_BUCKET=capp-dev-api-uploads
       - AWS_REGION=us-east-1
-      - APP_ENV=dev
+      - APP_ENV=test
     profiles:
       - test
     depends_on:
