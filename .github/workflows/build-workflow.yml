@@ -68,14 +68,14 @@ jobs:
         with:
           context: .
           push: true
-          load: true
+          load: false
           tags: '${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}'
           target: production
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |
             GITHUB_SHA=${{ env.GITHUB_SHA_SHORT}}
-          provenance: false
+          # provenance: false # TODO: why did anna disable this for rise?
           labels: ${{ steps.meta.outputs.labels }}
 
       - name: Output sourcemaps
