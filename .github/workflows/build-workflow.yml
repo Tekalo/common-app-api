@@ -54,7 +54,7 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         id: set-vars
         run: |
-          GITHUB_SHA_SHORT="$(echo "$GITHUB_SHA" | cut -c 1-6)""
+          GITHUB_SHA_SHORT="$(echo "$GITHUB_SHA" | cut -c 1-6)"
           echo "GITHUB_SHA_SHORT=${GITHUB_SHA_SHORT:?}" >> "$GITHUB_ENV"
           echo "IMAGE_TAG=${GITHUB_SHA_SHORT:?}" >> "$GITHUB_ENV"
           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$GITHUB_SHA_SHORT" >> $GITHUB_OUTPUT
