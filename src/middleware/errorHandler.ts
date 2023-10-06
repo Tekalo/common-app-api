@@ -29,7 +29,7 @@ const errorHandler = (
     problem.status = 400;
     problem.detail = detail;
   }
-  if (process.env.APP_ENV === 'dev') {
+  if (process.env.APP_ENV !== 'prod') {
     problem.detail = err.stack;
   }
   return res

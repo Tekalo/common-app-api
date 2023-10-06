@@ -4,16 +4,26 @@ import { NextFunction, Request, Response } from 'express';
 import { jest } from '@jest/globals';
 import pino from 'pino';
 
+const { env } = process;
+
+beforeEach(() => {
+  process.env = { ...env };
+});
+
+afterEach(() => {
+  process.env = env;
+});
+
 describe('Error Handler', () => {
   test('Generated error should include exception and stacktrace in dev environment', () => {
-    const mockError = new Error('Something went wrong');
+    process.env.APP_ENV = 'dev';
     const error = new CAPPError(
       {
-        title: 'Foo Error',
-        detail: 'Bar Error Message',
+        title: 'Original Error',
+        detail: 'Foo Error Message',
         status: 500,
       },
-      { cause: mockError },
+      { cause: new Error('Original Error Cause') },
     );
     const mockRequest = {
       session: {},
@@ -28,8 +38,39 @@ describe('Error Handler', () => {
     const mockNext: NextFunction = jest.fn();
     errorHandler(error, mockRequest, mockResponse, mockNext);
     expect(mockResponse.json).toBeCalledWith({
-      title: 'Foo Error',
-      detail: expect.stringMatching(/peter/i),
+      title: 'Original Error',
+      status: 500,
+      detail: expect.stringMatching(
+        /\(\/api\/src\/tests\/unit\/middleware\/errorHandler\.test\.ts/i,
+      ),
+    });
+  });
+  test('Generated error should not include exception and stacktrace in production environment', () => {
+    process.env.APP_ENV = 'prod';
+    const error = new CAPPError(
+      {
+        title: 'Original Error',
+        detail: 'Foo Error Message',
+        status: 500,
+      },
+      { cause: new Error('Original Error Cause') },
+    );
+    const mockRequest = {
+      session: {},
+      log: { error: (() => {}) as pino.LogFn },
+    } as Request;
+
+    const mockResponse = {} as Response;
+    mockResponse.json = jest.fn(() => mockResponse);
+    mockResponse.status = jest.fn(() => mockResponse); // chained
+    mockResponse.setHeader = jest.fn(() => mockResponse);
+
+    const mockNext: NextFunction = jest.fn();
+    errorHandler(error, mockRequest, mockResponse, mockNext);
+    expect(mockResponse.json).toBeCalledWith({
+      title: 'Original Error',
+      status: 500,
+      detail: 'Foo Error Message',
     });
   });
 });

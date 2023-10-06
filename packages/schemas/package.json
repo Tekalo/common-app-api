@@ -2,6 +2,7 @@
   "name": "@capp/schemas",
   "version": "1.0.0",
   "description": "",
+  "main": "build/index.js",
   "types": "src/index.d.ts",
   "type": "module",
   "scripts": {
