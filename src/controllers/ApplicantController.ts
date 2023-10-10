@@ -476,9 +476,10 @@ class ApplicantController {
       },
       where: { applicantId },
     });
-    // remove resumeUploadId from response
-    const { resumeUploadId, ...draftSubmissionVals } = draftSubmission;
-    return { submission: draftSubmissionVals, isFinal: false };
+    return Applicants.ApplicantDraftSubmissionResponseBodySchema.parse({
+      submission: draftSubmission,
+      isFinal: true,
+    });
   }
 
   async getMySubmissions(id: number): Promise<ApplicantGetSubmissionResponse> {
@@ -509,12 +510,10 @@ class ApplicantController {
       if (!submission) {
         return { isFinal: false, submission: null };
       }
-      const { resumeUploadId, ...submissionVals } = submission;
-
-      return {
+      return Applicants.ApplicantGetSubmissionsResponseBodySchema.parse({
         isFinal,
-        submission: submissionVals,
-      };
+        submission,
+      });
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         throw new CAPPError(
