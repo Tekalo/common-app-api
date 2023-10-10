@@ -523,6 +523,9 @@
           },
           "isPaused": {
             "type": "boolean"
+          },
+          "utmParams": {
+            "$ref": "#/components/schemas/utmParams"
           }
         }
       },
@@ -563,7 +566,7 @@
               "type": "string"
             }
           },
-          "eoe": {
+          "equalOpportunityEmployer": {
             "type": "boolean"
           }
         }
@@ -702,6 +705,9 @@
                 }
               }
             }
+          },
+          "utmParams": {
+            "$ref": "#/components/schemas/utmParams"
           }
         }
       },
@@ -824,6 +830,9 @@
           },
           "referenceAttributionOther": {
             "type": "string"
+          },
+          "utmParams": {
+            "$ref": "#/components/schemas/utmParams"
           }
         },
         "required": [
@@ -956,6 +965,38 @@
             "type": "string"
           },
           "referenceAttribution": {
+            "type": "string"
+          }
+        }
+      },
+      "utmParams": {
+        "type": "object",
+        "properties": {
+          "utm_source": {
+            "type": "string"
+          },
+          "utm_campaign": {
+            "type": "string"
+          },
+          "utm_content": {
+            "type": "string"
+          },
+          "utm_medium": {
+            "type": "string"
+          },
+          "utm_term": {
+            "type": "string"
+          },
+          "utm_id": {
+            "type": "string"
+          },
+          "utm_source_platform": {
+            "type": "string"
+          },
+          "ga_client_id": {
+            "type": "string"
+          },
+          "ga_session_id": {
             "type": "string"
           }
         }

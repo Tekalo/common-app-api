@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import CAPPError from '@App/resources/shared/CAPPError.js';
+import { Opportunities } from '@capp/schemas';
 import {
   OpportunityBatchRequestBody,
   OpportunityBatchResponseBody,
@@ -48,27 +49,38 @@ class OpportunityController {
       referenceAttribution,
       referenceAttributionOther,
     } = data;
-    const returnBatch: OpportunityBatchResponseBody =
-      await this.prisma.opportunityBatch.create({
-        data: {
-          orgName: organization.name,
-          orgType: organization.type,
-          orgSize: organization.size,
-          impactAreas: organization.impactAreas,
-          impactAreasOther: organization.impactAreasOther || [],
-          contactName: contact.name,
-          contactPhone: contact.phone,
-          contactEmail: contact.email,
-          equalOpportunityEmployer: organization.eoe,
-          referenceAttribution,
-          referenceAttributionOther,
-          opportunitySubmissions: {
-            createMany: {
-              data: opportunitySubmissions,
-            },
+    const batch = await this.prisma.opportunityBatch.create({
+      data: {
+        orgName: organization.name,
+        orgType: organization.type,
+        orgSize: organization.size,
+        impactAreas: organization.impactAreas,
+        impactAreasOther: organization.impactAreasOther || [],
+        contactName: contact.name,
+        contactPhone: contact.phone,
+        contactEmail: contact.email,
+        equalOpportunityEmployer: organization.eoe,
+        referenceAttribution,
+        referenceAttributionOther,
+        opportunitySubmissions: {
+          createMany: {
+            data: opportunitySubmissions,
           },
         },
-      });
+        utmParams: data.utmParams
+          ? {
+              create: {
+                params: data.utmParams,
+                event: 'create-batch',
+              },
+            }
+          : undefined,
+      },
+    });
+    const returnBatch: OpportunityBatchResponseBody = {
+      eoe: batch.equalOpportunityEmployer,
+      ...batch,
+    };
     try {
       const welcomeEmail = this.emailService.generateOrgWelcomeEmail(
         returnBatch.contactEmail,
@@ -82,7 +94,7 @@ class OpportunityController {
         ),
       );
     }
-    return returnBatch;
+    return Opportunities.OpportunityBatchResponseBodySchema.parse(returnBatch);
   }
 
   // Deletes specified opportunity batch immediately
