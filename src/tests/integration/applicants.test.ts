@@ -98,6 +98,38 @@ describe('POST /applicants', () => {
       );
       expect(body).toHaveProperty('auth0Id');
     });
+    it('should save UTM parameters', async () => {
+      const randomString = getRandomString();
+      const token = await authHelper.getToken(
+        `bboberson${randomString}@gmail.com`,
+      );
+      const utmParams = {
+        utm_campaign: 'foo',
+        utm_content: 'bar',
+        utm_medium: 'baz',
+        utm_source: 'qux',
+        utm_term: 'quux',
+      };
+      const { body: applicantBody }: { body: ApplicantResponseBody } =
+        await request(dummyApp)
+          .post('/applicants')
+          .send({
+            name: 'Bob Boberson',
+            auth0Id: 'auth0|123456',
+            email: `bboberson${randomString}@gmail.com`,
+            preferredContact: 'email',
+            searchStatus: 'active',
+            acceptedTerms: true,
+            acceptedPrivacy: true,
+            utmParams,
+          })
+          .set('Authorization', `Bearer ${token}`);
+      const applicant = await prisma.applicant.findUnique({
+        where: { id: applicantBody.id },
+        include: { utmParams: true },
+      });
+      expect(applicant?.utmParams?.params).toEqual(utmParams);
+    });
     it('should lowercase email before saving to database', async () => {
       const randomString = getRandomString();
       const { body } = await request(dummyApp)
@@ -395,7 +427,6 @@ describe('POST /applicants/me/submissions', () => {
           .send(testBody)
           .set('Authorization', `Bearer ${token}`)
           .expect(200);
-      expect(Object.keys(body.submission).length).toEqual(34);
       expect(body).toEqual({
         submission: {
           id: expect.any(Number),
@@ -502,6 +533,47 @@ describe('POST /applicants/me/submissions', () => {
         message: 'Invalid resume',
         path: ['resumeUpload.id'],
       });
+    });
+
+    it('should save UTM parameters', async () => {
+      const randomString = getRandomString();
+      const token = await authHelper.getToken(
+        `bboberson${randomString}@gmail.com`,
+      );
+      const { body: applicantBody }: { body: ApplicantResponseBody } =
+        await request(dummyApp)
+          .post('/applicants')
+          .send({
+            name: 'Bob Boberson',
+            auth0Id: 'auth0|123456',
+            email: `bboberson${randomString}@gmail.com`,
+            preferredContact: 'email',
+            searchStatus: 'active',
+            acceptedTerms: true,
+            acceptedPrivacy: true,
+          });
+      const utmParams = {
+        utm_campaign: 'foo',
+        utm_content: 'bar',
+        utm_medium: 'baz',
+        utm_source: 'qux',
+        utm_term: 'quux',
+      };
+      const { id: resumeId } = await seedResumeUpload(applicantBody.id);
+      const testSubmission =
+        applicantSubmissionGenerator.getAPIRequestBody(resumeId);
+      testSubmission.utmParams = utmParams;
+      const { body: submissionBody }: { body: ApplicantGetSubmissionResponse } =
+        await request(dummyApp)
+          .post('/applicants/me/submissions')
+          .send({ ...testSubmission })
+          .set('Authorization', `Bearer ${token}`)
+          .expect(200);
+      const submission = await prisma.applicantSubmission.findUnique({
+        where: { id: submissionBody?.submission?.id },
+        include: { utmParams: true },
+      });
+      expect(submission?.utmParams).toHaveProperty('params', utmParams);
     });
   });
 
@@ -993,6 +1065,9 @@ describe('POST /applicants/me/submissions/draft', () => {
       });
       const testBody: RawApplicantDraftSubmissionBody = {
         resumeUrl: 'https://bobcanbuild.com',
+        utmParams: {
+          utm_source: 'foo source',
+        },
       };
       const { body }: { body: ApplicantDraftSubmissionResponseBody } =
         await request(dummyApp)
@@ -1001,6 +1076,13 @@ describe('POST /applicants/me/submissions/draft', () => {
           .send(testBody)
           .expect(200);
       expect(body.submission).toHaveProperty('id');
+      const draftSubmission = await prisma.applicantDraftSubmission.findUnique({
+        where: { id: body.submission.id },
+        include: { utmParams: true },
+      });
+      expect(draftSubmission?.utmParams).toHaveProperty('params', {
+        utm_source: 'foo source',
+      });
     });
 
     it('should create a new applicant draft submission with a resume included', async () => {

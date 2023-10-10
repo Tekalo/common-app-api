@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import UTMPayload from './shared.js';
 
 const PreferredContact = z.enum(['sms', 'whatsapp', 'email']);
 const SearchStatus = z.enum(['active', 'passive', 'future']);
@@ -49,6 +50,7 @@ const ApplicantRequestBodySchema = z.object({
   acceptedTerms: z.literal(true),
   acceptedPrivacy: z.literal(true),
   followUpOptIn: z.boolean().optional(),
+  utmParams: UTMPayload.nullish(),
 });
 
 const ApplicantStateRequestBodySchema = z.object({
@@ -79,13 +81,13 @@ const ApplicantCreateSubmissionRequestBodySchema = z.object({
   githubUrl: z.string().max(500).nullable(),
   portfolioUrl: z.string().max(500).nullable(),
   portfolioPassword: z.string().max(255).nullable(),
-  resumeUrl: z.string().max(500).nullable(), // deprecated
-  resumePassword: z.string().max(255).nullable(),
+  resumeUrl: z.string().max(500).nullish(), // deprecated
+  resumePassword: z.string().max(255).nullish(),
   hoursPerWeek: z.string().max(255).nullable(),
   interestEmploymentType: z.array(EmploymentType),
   interestWorkArrangement: z
     .array(z.string())
-    .nullable()
+    .nullish()
     .transform((val) => val || []),
   interestRoles: z.array(z.string().max(255)),
   currentLocation: z.string().max(255),
@@ -105,8 +107,9 @@ const ApplicantCreateSubmissionRequestBodySchema = z.object({
     .transform((val) => val || []),
   previousImpactExperience: z.boolean(),
   essayResponse: z.string().max(5000),
+  utmParams: UTMPayload.nullish(),
   referenceAttribution: z.string().nullable(),
-  referenceAttributionOther: z.string().nullable(),
+  referenceAttributionOther: z.string().nullish(),
 });
 
 const ApplicantSubmissionResponseBody = z.object({
@@ -153,11 +156,6 @@ const ApplicantSubmissionResponseBody = z.object({
 
 const ApplicantCreateSubmissionResponseBodySchema = z.object({
   submission: ApplicantSubmissionResponseBody,
-  isFinal: z.boolean(),
-});
-
-const ApplicantGetSubmissionsResponseBodySchema = z.object({
-  submission: ApplicantSubmissionResponseBody.nullable(),
   isFinal: z.boolean(),
 });
 
@@ -221,15 +219,24 @@ const ApplicantDraftSubmissionRequestBodySchema = z.object({
     .transform((val) => val || []),
   previousImpactExperience: z.boolean().nullish(),
   essayResponse: z.string().max(5000).nullish(),
+  utmParams: UTMPayload.nullish(),
   referenceAttribution: z.string().nullish(),
   referenceAttributionOther: z.string().nullish(),
 });
 
 const ApplicantUpdateSubmissionRequestBodySchema =
-  ApplicantCreateSubmissionRequestBodySchema;
+  ApplicantCreateSubmissionRequestBodySchema.omit({ utmParams: true });
 
 const ApplicantDraftSubmissionResponseBodySchema = z.object({
   submission: ApplicantSubmissionResponseBody,
+  isFinal: z.boolean(),
+});
+
+// Draft or final submission
+const ApplicantGetSubmissionsResponseBodySchema = z.object({
+  submission: ApplicantSubmissionResponseBody.or(
+    ApplicantDraftSubmissionResponseBodySchema.shape.submission,
+  ).nullable(),
   isFinal: z.boolean(),
 });
 

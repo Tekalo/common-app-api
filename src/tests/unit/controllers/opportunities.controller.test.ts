@@ -87,7 +87,8 @@ describe('Opportunity Controller', () => {
     mockCtx.prisma.opportunityBatch.create.mockResolvedValue(mockResolved);
     const response =
       await opportunityController.createOpportunityBatch(reqPayload);
-    expect(response).toEqual(mockResolved);
+    const { equalOpportunityEmployer, ...restOfReolved } = mockResolved;
+    expect(response).toEqual({ eoe: organization.eoe, ...restOfReolved });
   });
   test('Should return error when Prisma throws an invalid input error', async () => {
     const mockError = new Prisma.PrismaClientKnownRequestError('ERROR', {
