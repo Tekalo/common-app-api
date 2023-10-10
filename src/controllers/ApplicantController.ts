@@ -101,6 +101,14 @@ class ApplicantController {
         data: {
           ...prismaData,
           auth0Id: auth0UserId,
+          utmParams: data.utmParams
+            ? {
+                create: {
+                  params: data.utmParams,
+                  event: 'create-applicant',
+                },
+              }
+            : undefined,
         },
       });
       // Do not sent a welcome email if our user has a valid JWT.
@@ -171,6 +179,14 @@ class ApplicantController {
         ...validatedSubmission,
         resumeUpload: { connect: { id: validatedSubmission.resumeUpload.id } },
         applicant: { connect: { id: applicantId } },
+        utmParams: validatedSubmission.utmParams
+          ? {
+              create: {
+                params: validatedSubmission.utmParams,
+                event: 'create-submission',
+              },
+            }
+          : undefined,
       },
       include: {
         resumeUpload: { select: { id: true, originalFilename: true } },
@@ -191,10 +207,8 @@ class ApplicantController {
         ),
       );
     }
-    // Remove resumeUploadId from response
-    const { resumeUploadId, ...submissionVals } = applicantSubmission;
     return Applicants.ApplicantCreateSubmissionResponseBodySchema.parse({
-      submission: submissionVals,
+      submission: applicantSubmission,
       isFinal: true,
     });
   }
@@ -229,9 +243,8 @@ class ApplicantController {
       },
       where: { applicantId },
     });
-    const { resumeUploadId, ...submissionVals } = applicantSubmission;
     return Applicants.ApplicantCreateSubmissionResponseBodySchema.parse({
-      submission: submissionVals,
+      submission: applicantSubmission,
       isFinal: true,
     });
   }
@@ -442,12 +455,21 @@ class ApplicantController {
             }
           : undefined,
         applicant: { connect: { id: applicantId } },
+        utmParams: data.utmParams
+          ? {
+              create: {
+                params: data.utmParams,
+                event: 'create-draft-submission',
+              },
+            }
+          : undefined,
       },
       update: {
         ...restOfSubmission,
         resumeUpload: resumeUpload
           ? { connect: { id: resumeUpload.id } }
           : { disconnect: true },
+        utmParams: undefined, // we never want to update utmParams on draft update
       },
       include: {
         resumeUpload: { select: { id: true, originalFilename: true } },
