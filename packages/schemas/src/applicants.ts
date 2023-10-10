@@ -82,12 +82,12 @@ const ApplicantCreateSubmissionRequestBodySchema = z.object({
   portfolioUrl: z.string().max(500).nullable(),
   portfolioPassword: z.string().max(255).nullable(),
   resumeUrl: z.string().max(500).nullish(), // deprecated
-  resumePassword: z.string().max(255).nullable(),
+  resumePassword: z.string().max(255).nullish(),
   hoursPerWeek: z.string().max(255).nullable(),
   interestEmploymentType: z.array(EmploymentType),
   interestWorkArrangement: z
     .array(z.string())
-    .nullable()
+    .nullish()
     .transform((val) => val || []),
   interestRoles: z.array(z.string().max(255)),
   currentLocation: z.string().max(255),
@@ -109,7 +109,7 @@ const ApplicantCreateSubmissionRequestBodySchema = z.object({
   essayResponse: z.string().max(5000),
   utmParams: UTMPayload.nullish(),
   referenceAttribution: z.string().nullable(),
-  referenceAttributionOther: z.string().nullable(),
+  referenceAttributionOther: z.string().nullish(),
 });
 
 const ApplicantSubmissionResponseBody = z.object({
