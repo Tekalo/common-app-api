@@ -50,7 +50,8 @@ const applicantRoutes = (
 
   router.post('/', (req: Request, res: Response, next) => {
     const appBody = req.body as ApplicantRequestBody;
-    const validatedBody = Applicants.ApplicantRequestBodySchema.parse(appBody);
+    const validatedBody =
+      Applicants.ApplicantCreateRequestBodySchema.parse(appBody);
     applicantController
       .createApplicant(validatedBody, req.auth)
       .then((result) => {

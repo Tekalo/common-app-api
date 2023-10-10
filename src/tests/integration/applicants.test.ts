@@ -1491,7 +1491,7 @@ describe('GET /applicants/:id', () => {
       .get(`/applicants/${body1.id}`)
       .set('Authorization', `Bearer ${token}`)
       .expect(200);
-    // refer to ApplicantResponseBodySchema
+    // refer to ApplicantCreateResponseBodySchema
     expect(body2).toHaveProperty('id');
     expect(body2).toHaveProperty('name');
     expect(body2).toHaveProperty('email');
