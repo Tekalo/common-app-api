@@ -84,7 +84,7 @@ jobs:
       - name: Login to Amazon ECR
         if: env.NEED_COPY == 'true'
         id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
+        uses: aws-actions/amazon-ecr-login@v2
         with:
           registries: '${{ env.PROD_AWS_ACCOUNT_ID }},${{ env.DEV_AWS_ACCOUNT_ID }}'
 
