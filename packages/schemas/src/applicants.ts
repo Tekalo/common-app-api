@@ -40,7 +40,7 @@ const OpenToRemote = z.enum(['remote', 'in-person', 'hybrid', 'not sure']);
 const WorkAuthorization = z.enum(['authorized', 'sponsorship']);
 const EmploymentType = z.enum(['full', 'part']);
 
-const ApplicantRequestBodySchema = z.object({
+const ApplicantCreateRequestBodySchema = z.object({
   name: z.string().max(255),
   email: z.string().email().toLowerCase(),
   phone: z.string().optional(),
@@ -53,6 +53,13 @@ const ApplicantRequestBodySchema = z.object({
   utmParams: UTMPayload.nullish(),
 });
 
+const ApplicantGetResponseBodySchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  email: z.string(),
+  isPaused: z.boolean(),
+});
+
 const ApplicantStateRequestBodySchema = z.object({
   pause: z.boolean(),
 });
@@ -61,7 +68,7 @@ const ApplicantUpdateRequestBodySchema = z.object({
   auth0Id: z.string(),
 });
 
-const ApplicantResponseBodySchema = z.object({
+const ApplicantCreateResponseBodySchema = z.object({
   id: z.number(),
   auth0Id: z.string().nullable(),
   email: z.string(),
@@ -241,8 +248,9 @@ const ApplicantGetSubmissionsResponseBodySchema = z.object({
 });
 
 export default {
-  ApplicantRequestBodySchema,
-  ApplicantResponseBodySchema,
+  ApplicantCreateRequestBodySchema,
+  ApplicantCreateResponseBodySchema,
+  ApplicantGetResponseBodySchema,
   ApplicantCreateSubmissionRequestBodySchema,
   ApplicantCreateSubmissionResponseBodySchema,
   ApplicantDraftSubmissionRequestBodySchema,

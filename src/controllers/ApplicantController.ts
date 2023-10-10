@@ -135,11 +135,11 @@ class ApplicantController {
           );
         }
       }
-      return {
+      return Applicants.ApplicantCreateResponseBodySchema.parse({
         id: returnApplicant.id,
         auth0Id: auth0UserId || null,
         email: returnApplicant.email,
-      };
+      });
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         // P2002 indicates unique constraint failed(in our case, either email or auth0id)
@@ -476,9 +476,10 @@ class ApplicantController {
       },
       where: { applicantId },
     });
-    // remove resumeUploadId from response
-    const { resumeUploadId, ...draftSubmissionVals } = draftSubmission;
-    return { submission: draftSubmissionVals, isFinal: false };
+    return Applicants.ApplicantDraftSubmissionResponseBodySchema.parse({
+      submission: draftSubmission,
+      isFinal: true,
+    });
   }
 
   async getMySubmissions(id: number): Promise<ApplicantGetSubmissionResponse> {
@@ -509,12 +510,10 @@ class ApplicantController {
       if (!submission) {
         return { isFinal: false, submission: null };
       }
-      const { resumeUploadId, ...submissionVals } = submission;
-
-      return {
+      return Applicants.ApplicantGetSubmissionsResponseBodySchema.parse({
         isFinal,
-        submission: submissionVals,
-      };
+        submission,
+      });
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         throw new CAPPError(
@@ -542,7 +541,12 @@ class ApplicantController {
         await this.prisma.applicant.findFirstOrThrow({
           where: { id },
         });
-      return { id, name, email, isPaused };
+      return Applicants.ApplicantGetResponseBodySchema.parse({
+        id,
+        name,
+        email,
+        isPaused,
+      });
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         throw new CAPPError(

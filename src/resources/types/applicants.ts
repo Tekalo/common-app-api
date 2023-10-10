@@ -8,7 +8,7 @@ import { Applicants } from '@capp/schemas';
  */
 
 export type ApplicantRequestBody = z.infer<
-  typeof Applicants.ApplicantRequestBodySchema
+  typeof Applicants.ApplicantCreateRequestBodySchema
 >;
 
 export type RawApplicantUpdateSubmission = z.input<
@@ -44,7 +44,7 @@ export type ApplicantUpdateBody = z.infer<
 >;
 
 export type ApplicantResponseBody = z.infer<
-  typeof Applicants.ApplicantResponseBodySchema
+  typeof Applicants.ApplicantCreateResponseBodySchema
 >;
 
 export type ApplicantStateBody = z.infer<
