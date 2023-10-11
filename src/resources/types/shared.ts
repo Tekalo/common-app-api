@@ -7,6 +7,7 @@ export type Problem = {
   detail?: string | ZodIssue; // The detailed error message
   type?: string;
   instance?: string;
+  stack?: string;
 };
 
 export type SessionCookie = {

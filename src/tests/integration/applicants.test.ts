@@ -197,7 +197,10 @@ describe('POST /applicants', () => {
           acceptedPrivacy: true,
         })
         .expect(409);
-      expect(body).toHaveProperty('detail', 'User must login');
+      expect(body).toMatchObject({
+        detail: 'User must login',
+        stack: expect.stringMatching(/Error: Auth0 User Exists/),
+      });
     });
     test('Should throw error if request body has invalid preferred contact', async () => {
       const { body } = await request(dummyApp)
@@ -229,7 +232,10 @@ describe('POST /applicants', () => {
         })
         .set('Authorization', `Bearer ${token}`)
         .expect(400);
-      expect(body).toHaveProperty('detail', 'Invalid email provided');
+      expect(body).toMatchObject({
+        detail: 'Invalid email provided',
+        stack: expect.stringMatching(/Error: Auth0 User Creation Error/),
+      });
     });
     test('Should update applicantID in cookie with 2 subsequent requests for 2 different users', async () => {
       type RespHeaders = {
