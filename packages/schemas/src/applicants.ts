@@ -88,8 +88,6 @@ const ApplicantCreateSubmissionRequestBodySchema = z.object({
   githubUrl: z.string().max(500).nullable(),
   portfolioUrl: z.string().max(500).nullable(),
   portfolioPassword: z.string().max(255).nullable(),
-  resumeUrl: z.string().max(500).nullish(), // deprecated
-  resumePassword: z.string().max(255).nullish(),
   hoursPerWeek: z.string().max(255).nullable(),
   interestEmploymentType: z.array(EmploymentType),
   interestWorkArrangement: z
@@ -140,8 +138,6 @@ const ApplicantSubmissionResponseBody = z.object({
       originalFilename: z.string(),
     })
     .nullable(),
-  resumeUrl: z.string().max(500).nullable(), // deprecated
-  resumePassword: z.string().max(255).nullable(),
   hoursPerWeek: z.string().max(255).nullable(),
   interestEmploymentType: z.array(z.string()).nullable(),
   interestWorkArrangement: z.array(z.string()).nullable(),
@@ -188,8 +184,6 @@ const ApplicantDraftSubmissionRequestBodySchema = z.object({
   githubUrl: z.string().max(500).nullish(),
   portfolioUrl: z.string().max(500).nullish(),
   portfolioPassword: z.string().max(255).nullish(),
-  resumeUrl: z.string().max(500).nullish(), // deprecated
-  resumePassword: z.string().max(255).nullish(),
   hoursPerWeek: z.string().max(255).nullish(),
   interestEmploymentType: z
     .array(EmploymentType)

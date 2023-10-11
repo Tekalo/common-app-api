@@ -747,10 +747,6 @@
           "portfolioPassword": {
             "type": "string"
           },
-          "resumeUrl": {
-            "type": "string",
-            "deprecated": true
-          },
           "resumeUpload": {
             "type": "object",
             "properties": {
@@ -758,9 +754,6 @@
                 "type": "number"
               }
             }
-          },
-          "resumePassword": {
-            "type": "string"
           },
           "hoursPerWeek": {
             "type": "string"
@@ -889,10 +882,6 @@
           "portfolioPassword": {
             "type": "string"
           },
-          "resumeUrl": {
-            "type": "string",
-            "deprecated": true
-          },
           "resumeUpload": {
             "type": "object",
             "properties": {
@@ -903,9 +892,6 @@
                 "type": "string"
               }
             }
-          },
-          "resumePassword": {
-            "type": "string"
           },
           "hoursPerWeek": {
             "type": "string"

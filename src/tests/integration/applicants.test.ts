@@ -575,6 +575,67 @@ describe('POST /applicants/me/submissions', () => {
       });
       expect(submission?.utmParams).toHaveProperty('params', utmParams);
     });
+
+    it('should save a complete draft submission, fetch draft, and use response as final submission body', async () => {
+      const randomString = getRandomString();
+      const token = await authHelper.getToken(
+        `bboberson${randomString}@gmail.com`,
+      );
+      const { body: applicantBody }: { body: Applicant } = await request(
+        dummyApp,
+      )
+        .post('/applicants')
+        .send({
+          name: 'Bob Boberson',
+          auth0Id: 'auth0|123456',
+          email: `bboberson${randomString}@gmail.com`,
+          preferredContact: 'email',
+          searchStatus: 'active',
+          acceptedTerms: true,
+          acceptedPrivacy: true,
+        });
+      const { id: resumeId } = await seedResumeUpload(applicantBody.id);
+      const testSubmission =
+        applicantSubmissionGenerator.getAPIRequestBody(resumeId);
+      // Save completed submission body as draft
+      const {
+        body: draftSubmissionResponse,
+      }: { body: ApplicantDraftSubmissionResponseBody } = await request(
+        dummyApp,
+      )
+        .post('/applicants/me/submissions/draft')
+        .send({ ...testSubmission })
+        .set('Authorization', `Bearer ${token}`)
+        .expect(200);
+      // Fetch draft submission
+      const {
+        body: fetchedSubmission,
+      }: { body: ApplicantGetSubmissionResponse } = await request(dummyApp)
+        .get('/applicants/me/submissions')
+        .set('Authorization', `Bearer ${token}`)
+        .expect(200);
+
+      // Use fetched submission as final submission body
+      const {
+        body: finalSubmissionResponse,
+      }: { body: ApplicantCreateSubmissionResponse } = await request(dummyApp)
+        .post('/applicants/me/submissions')
+        .send({ ...fetchedSubmission.submission })
+        .set('Authorization', `Bearer ${token}`)
+        .expect(200);
+      const { id, createdAt, ...restOfDraftSubmission } =
+        draftSubmissionResponse.submission;
+      expect(finalSubmissionResponse).toEqual({
+        submission: {
+          ...restOfDraftSubmission,
+          // below 3 vals will always differ between draft and final
+          id: finalSubmissionResponse.submission.id,
+          createdAt: finalSubmissionResponse.submission.createdAt,
+          updatedAt: finalSubmissionResponse.submission.updatedAt,
+        },
+        isFinal: true,
+      });
+    });
   });
 
   describe('Cookie authentication', () => {
@@ -983,7 +1044,7 @@ describe('POST /applicants/me/submissions/draft', () => {
       acceptedPrivacy: true,
     });
     const testBody: RawApplicantDraftSubmissionBody = {
-      resumeUrl: 'https://bobcanbuild.com',
+      lastOrg: 'Krusty Krab',
     };
     const { body } = await request(dummyApp)
       .post('/applicants/me/submissions/draft')
@@ -1004,7 +1065,7 @@ describe('POST /applicants/me/submissions/draft', () => {
         acceptedPrivacy: true,
       });
       const testBody: RawApplicantDraftSubmissionBody = {
-        resumeUrl: 'https://bobcanbuild.com',
+        lastOrg: 'Krusty Krab',
       };
       const { body }: { body: ApplicantDraftSubmissionResponseBody } =
         await agent
@@ -1064,7 +1125,7 @@ describe('POST /applicants/me/submissions/draft', () => {
         acceptedPrivacy: true,
       });
       const testBody: RawApplicantDraftSubmissionBody = {
-        resumeUrl: 'https://bobcanbuild.com',
+        lastOrg: 'Krusty Krab',
         utmParams: {
           utm_source: 'foo source',
         },
@@ -1144,7 +1205,7 @@ describe('POST /applicants/me/submissions/draft', () => {
         acceptedPrivacy: true,
       });
       const testBody: RawApplicantDraftSubmissionBody = {
-        resumeUrl: 'https://bobcanbuild.com',
+        lastOrg: 'Krusty Krab',
       };
       const { body }: { body: ApplicantDraftSubmissionResponseBody } =
         await request(dummyApp)
@@ -1209,7 +1270,7 @@ describe('GET /applicants/me/submissions', () => {
         acceptedPrivacy: true,
       });
       const testBody: RawApplicantDraftSubmissionBody = {
-        resumeUrl: 'https://bobcanbuild.com',
+        lastOrg: 'Krusty Krab',
       };
       await agent
         .post('/applicants/me/submissions/draft')
@@ -1236,7 +1297,7 @@ describe('GET /applicants/me/submissions', () => {
         acceptedPrivacy: true,
       });
       const testBody: RawApplicantDraftSubmissionBody = {
-        resumeUrl: 'https://bobcanbuild.com',
+        lastOrg: 'Krusty Krab',
       };
       await agent
         .post('/applicants/me/submissions/draft')
