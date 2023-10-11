@@ -94,7 +94,7 @@ const ApplicantCreateSubmissionRequestBodySchema = z.object({
   interestEmploymentType: z.array(EmploymentType),
   interestWorkArrangement: z
     .array(z.string())
-    .nullish()
+    .nullable()
     .transform((val) => val || []),
   interestRoles: z.array(z.string().max(255)),
   currentLocation: z.string().max(255),
@@ -116,7 +116,7 @@ const ApplicantCreateSubmissionRequestBodySchema = z.object({
   essayResponse: z.string().max(5000),
   utmParams: UTMPayload.nullish(),
   referenceAttribution: z.string().nullable(),
-  referenceAttributionOther: z.string().nullish(),
+  referenceAttributionOther: z.string().nullable(),
 });
 
 const ApplicantSubmissionResponseBody = z.object({
