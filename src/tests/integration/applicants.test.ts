@@ -577,6 +577,50 @@ describe('POST /applicants/me/submissions', () => {
       });
       expect(submission?.utmParams).toHaveProperty('params', utmParams);
     });
+
+    it('should save a complete draft submission, fetch draft, and use response as final submission body', async () => {
+      const randomString = getRandomString();
+      const token = await authHelper.getToken(
+        `bboberson${randomString}@gmail.com`,
+      );
+      const { body: applicantBody }: { body: Applicant } = await request(
+        dummyApp,
+      )
+        .post('/applicants')
+        .send({
+          name: 'Bob Boberson',
+          auth0Id: 'auth0|123456',
+          email: `bboberson${randomString}@gmail.com`,
+          preferredContact: 'email',
+          searchStatus: 'active',
+          acceptedTerms: true,
+          acceptedPrivacy: true,
+        });
+      const { id: resumeId } = await seedResumeUpload(applicantBody.id);
+      const testSubmission =
+        applicantSubmissionGenerator.getAPIRequestBody(resumeId);
+      // Save completed submission body as draft
+      await request(dummyApp)
+        .post('/applicants/me/submissions/draft')
+        .send({ ...testSubmission })
+        .set('Authorization', `Bearer ${token}`)
+        .expect(200);
+      // Save completed submission body as draft
+      const {
+        body: draftSubmissionBody,
+      }: { body: ApplicantDraftSubmissionResponseBody } = await request(
+        dummyApp,
+      )
+        .get('/applicants/me/submissions')
+        .set('Authorization', `Bearer ${token}`)
+        .expect(200);
+      // Use draft response as final submission body
+      await request(dummyApp)
+        .post('/applicants/me/submissions/draft')
+        .send({ ...draftSubmissionBody })
+        .set('Authorization', `Bearer ${token}`)
+        .expect(200);
+    });
   });
 
   describe('Cookie authentication', () => {

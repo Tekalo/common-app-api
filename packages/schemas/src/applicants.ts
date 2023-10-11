@@ -138,8 +138,8 @@ const ApplicantSubmissionResponseBody = z.object({
       originalFilename: z.string(),
     })
     .nullable(),
-  resumeUrl: z.string().max(500).nullable(),
-  resumePassword: z.string().max(255).nullable(),
+  resumeUrl: z.string().max(500).nullable(), // deprecated, returns historically set values
+  resumePassword: z.string().max(255).nullable(), // deprecated, returns historically set values
   hoursPerWeek: z.string().max(255).nullable(),
   interestEmploymentType: z.array(z.string()).nullable(),
   interestWorkArrangement: z.array(z.string()).nullable(),
