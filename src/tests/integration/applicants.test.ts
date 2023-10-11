@@ -600,26 +600,43 @@ describe('POST /applicants/me/submissions', () => {
       const testSubmission =
         applicantSubmissionGenerator.getAPIRequestBody(resumeId);
       // Save completed submission body as draft
-      await request(dummyApp)
+      const {
+        body: draftSubmissionResponse,
+      }: { body: ApplicantDraftSubmissionResponseBody } = await request(
+        dummyApp,
+      )
         .post('/applicants/me/submissions/draft')
         .send({ ...testSubmission })
         .set('Authorization', `Bearer ${token}`)
         .expect(200);
-      // Save completed submission body as draft
+      // Fetch draft submission
       const {
-        body: draftSubmissionBody,
-      }: { body: ApplicantDraftSubmissionResponseBody } = await request(
-        dummyApp,
-      )
+        body: fetchedSubmission,
+      }: { body: ApplicantGetSubmissionResponse } = await request(dummyApp)
         .get('/applicants/me/submissions')
         .set('Authorization', `Bearer ${token}`)
         .expect(200);
-      // Use draft response as final submission body
-      await request(dummyApp)
-        .post('/applicants/me/submissions/draft')
-        .send({ ...draftSubmissionBody })
+
+      // Use fetched submission as final submission body
+      const {
+        body: finalSubmissionResponse,
+      }: { body: ApplicantCreateSubmissionResponse } = await request(dummyApp)
+        .post('/applicants/me/submissions')
+        .send({ ...fetchedSubmission.submission })
         .set('Authorization', `Bearer ${token}`)
         .expect(200);
+      const { id, createdAt, ...restOfDraftSubmission } =
+        draftSubmissionResponse.submission;
+      expect(finalSubmissionResponse).toEqual({
+        submission: {
+          ...restOfDraftSubmission,
+          // below 3 vals will always differ between draft and final
+          id: finalSubmissionResponse.submission.id,
+          createdAt: finalSubmissionResponse.submission.createdAt,
+          updatedAt: finalSubmissionResponse.submission.updatedAt,
+        },
+        isFinal: true,
+      });
     });
   });
 
