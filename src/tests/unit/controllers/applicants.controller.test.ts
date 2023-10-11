@@ -938,7 +938,7 @@ describe('Applicant Controller', () => {
           id: 1,
           originalFilename: 'My_Tekalo_Resume.pdf',
         },
-        resumeUrl: 'myportfolio.com',
+        resumeUrl: null,
         resumePassword: null,
         hoursPerWeek: null,
         interestEmploymentType: ['full'], // enum

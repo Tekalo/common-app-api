@@ -20,8 +20,6 @@ const getAPIRequestBody = (
   portfolioUrl: 'https://bobsportfolio.com',
   portfolioPassword: 'bobsTheWord',
   resumeUpload: { id: resumeId },
-  resumeUrl: 'myresume.com',
-  resumePassword: 'bobsTheWord',
   hoursPerWeek: '40 ish',
   interestEmploymentType: ['full'], // enum
   interestWorkArrangement: null,

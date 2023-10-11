@@ -437,6 +437,8 @@ describe('POST /applicants/me/submissions', () => {
           resumeUpload: { id: resumeId, originalFilename: expect.any(String) },
           openToRemoteMulti: ['in-person', 'hybrid'],
           interestWorkArrangement: [],
+          resumeUrl: null,
+          resumePassword: null,
         },
         isFinal: true,
       });
@@ -983,7 +985,7 @@ describe('POST /applicants/me/submissions/draft', () => {
       acceptedPrivacy: true,
     });
     const testBody: RawApplicantDraftSubmissionBody = {
-      resumeUrl: 'https://bobcanbuild.com',
+      lastOrg: 'Krusty Krab',
     };
     const { body } = await request(dummyApp)
       .post('/applicants/me/submissions/draft')
@@ -1004,7 +1006,7 @@ describe('POST /applicants/me/submissions/draft', () => {
         acceptedPrivacy: true,
       });
       const testBody: RawApplicantDraftSubmissionBody = {
-        resumeUrl: 'https://bobcanbuild.com',
+        lastOrg: 'Krusty Krab',
       };
       const { body }: { body: ApplicantDraftSubmissionResponseBody } =
         await agent
@@ -1064,7 +1066,7 @@ describe('POST /applicants/me/submissions/draft', () => {
         acceptedPrivacy: true,
       });
       const testBody: RawApplicantDraftSubmissionBody = {
-        resumeUrl: 'https://bobcanbuild.com',
+        lastOrg: 'Krusty Krab',
         utmParams: {
           utm_source: 'foo source',
         },
@@ -1144,7 +1146,7 @@ describe('POST /applicants/me/submissions/draft', () => {
         acceptedPrivacy: true,
       });
       const testBody: RawApplicantDraftSubmissionBody = {
-        resumeUrl: 'https://bobcanbuild.com',
+        lastOrg: 'Krusty Krab',
       };
       const { body }: { body: ApplicantDraftSubmissionResponseBody } =
         await request(dummyApp)
@@ -1209,7 +1211,7 @@ describe('GET /applicants/me/submissions', () => {
         acceptedPrivacy: true,
       });
       const testBody: RawApplicantDraftSubmissionBody = {
-        resumeUrl: 'https://bobcanbuild.com',
+        lastOrg: 'Krusty Krab',
       };
       await agent
         .post('/applicants/me/submissions/draft')
@@ -1236,7 +1238,7 @@ describe('GET /applicants/me/submissions', () => {
         acceptedPrivacy: true,
       });
       const testBody: RawApplicantDraftSubmissionBody = {
-        resumeUrl: 'https://bobcanbuild.com',
+        lastOrg: 'Krusty Krab',
       };
       await agent
         .post('/applicants/me/submissions/draft')
