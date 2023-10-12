@@ -75,7 +75,7 @@ const ApplicantCreateResponseBodySchema = z.object({
 });
 
 /**
- * All optional fields should be nullable()
+ * All optional fields AKA fields that are always present on the submission form, but do not have to be filled out, should be nullable()
  * All conditional fields AKA fields that may not always appear on the submission form, should be nullish()
  */
 const ApplicantCreateSubmissionRequestBody = z.object({
@@ -94,7 +94,7 @@ const ApplicantCreateSubmissionRequestBody = z.object({
   portfolioPassword: z.string().max(255).nullable(),
   hoursPerWeek: z.string().max(255).nullable(),
   interestEmploymentType: z.array(EmploymentType),
-  // conditional field: interestWorkArrangement can be undefined if interestEmploymentType is 'full'
+  // Conditional field: interestWorkArrangement can be undefined if interestEmploymentType is 'full'
   interestWorkArrangement: z
     .array(z.string())
     .nullish()
