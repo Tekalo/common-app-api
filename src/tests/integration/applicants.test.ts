@@ -748,6 +748,47 @@ describe('PUT /applicants/me/submissions', () => {
       .expect(400);
   });
 
+  it("should return 400 error if request body is missing interestWorkArrangement if interestEmploymentType is 'part'", async () => {
+    const randomString = getRandomString();
+    const token = await authHelper.getToken(
+      `bboberson${randomString}@gmail.com`,
+    );
+    const { body: applicantBody }: { body: ApplicantResponseBody } =
+      await request(dummyApp)
+        .post('/applicants')
+        .send({
+          name: 'Bob Boberson',
+          auth0Id: 'auth0|123456',
+          email: `bboberson${randomString}@gmail.com`,
+          preferredContact: 'email',
+          searchStatus: 'active',
+          acceptedTerms: true,
+          acceptedPrivacy: true,
+        });
+    const { id: resumeId } = await seedResumeUpload(applicantBody.id);
+    const testSubmission =
+      applicantSubmissionGenerator.getAPIRequestBody(resumeId);
+    await request(dummyApp)
+      .post('/applicants/me/submissions')
+      .send({ ...testSubmission })
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200);
+    testSubmission.interestEmploymentType = ['part'];
+    delete testSubmission.interestWorkArrangement;
+
+    const { body } = await request(dummyApp)
+      .put('/applicants/me/submissions')
+      .send({ ...testSubmission })
+      .set('Authorization', `Bearer ${token}`)
+      .expect(400);
+    expect(body).toHaveProperty('title', 'Validation Error');
+    expect(body).toHaveProperty('detail', {
+      code: 'custom',
+      message: 'interestWorkArrangement must be defined or set to null',
+      path: ['interestWorkArrangement'],
+    });
+  });
+
   it('should update an existing applicant submission', async () => {
     const randomString = getRandomString();
     const token = await authHelper.getToken(
