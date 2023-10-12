@@ -124,6 +124,11 @@ const ApplicantCreateSubmissionRequestBody = z.object({
 
 type SubmissionType = z.input<typeof ApplicantCreateSubmissionRequestBody>;
 
+/**
+ * Any additional validation logic that should be applied to the final submission schema
+ * @param submission
+ * @returns {boolean} true if validation passes, false if not
+ */
 const submissionRefinement = (submission: SubmissionType) => {
   // interestWorkArrangement cannot be null/undefined if interestEmploymentType is 'part'
   if (submission.interestEmploymentType.includes('part')) {
