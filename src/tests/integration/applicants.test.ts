@@ -2,7 +2,7 @@ import request from 'supertest';
 import { jest } from '@jest/globals';
 import cookie from 'cookie';
 import cookieParser from 'cookie-parser';
-import { Applicant, Session, Upload } from '@prisma/client';
+import { Applicant, Session } from '@prisma/client';
 import getApp from '@App/app.js';
 import {
   ApplicantDraftSubmissionResponseBody,
@@ -22,7 +22,11 @@ import {
   UploadResponseBody,
   UploadStateResponseBody,
 } from '@App/resources/types/uploads.js';
-import applicantSubmissionGenerator from '../fixtures/applicantSubmissionGenerator.js';
+import {
+  getAPIRequestBody,
+  seedApplicant,
+  seedResumeUpload,
+} from '../fixtures/applicantSubmissionGenerator.js';
 import DummyAuthService from '../fixtures/DummyAuthService.js';
 import DummyMonitoringService from '../fixtures/DummyMonitoringService.js';
 import authHelper, { TokenOptions } from '../util/auth.js';
@@ -33,17 +37,6 @@ import DummyS3Service from '../fixtures/DummyS3Service.js';
 
 let testUserIDs: Array<string> = [];
 const authService = new AuthService();
-
-const seedResumeUpload = async (applicantId: number): Promise<Upload> =>
-  prisma.upload.create({
-    data: {
-      type: 'RESUME',
-      status: 'SUCCESS',
-      applicantId,
-      originalFilename: 'myresume.pdf',
-      contentType: 'application/pdf',
-    },
-  });
 
 afterEach(async () => {
   await prisma.upload.deleteMany();
@@ -403,24 +396,12 @@ describe('POST /applicants/me/submissions', () => {
       const token = await authHelper.getToken(
         `bboberson${randomString}@gmail.com`,
       );
-      const { body: applicantBody }: { body: ApplicantResponseBody } =
-        await request(dummyApp)
-          .post('/applicants')
-          .send({
-            name: 'Bob Boberson',
-            auth0Id: 'auth0|123456',
-            email: `bboberson${randomString}@gmail.com`,
-            preferredContact: 'email',
-            searchStatus: 'active',
-            acceptedTerms: true,
-            acceptedPrivacy: true,
-          });
+      const applicant = await seedApplicant(randomString);
       // create resume upload
       const { id: resumeId }: { id: number } = await seedResumeUpload(
-        applicantBody.id,
+        applicant.id,
       );
-      const testBody: RawApplicantSubmissionBody =
-        applicantSubmissionGenerator.getAPIRequestBody(resumeId);
+      const testBody: RawApplicantSubmissionBody = getAPIRequestBody(resumeId);
       const { body }: { body: ApplicantCreateSubmissionResponse } =
         await request(dummyApp)
           .post('/applicants/me/submissions')
@@ -430,7 +411,7 @@ describe('POST /applicants/me/submissions', () => {
       expect(body).toEqual({
         submission: {
           id: expect.any(Number),
-          applicantId: applicantBody.id,
+          applicantId: applicant.id,
           createdAt: expect.any(String),
           updatedAt: expect.any(String),
           ...testBody,
@@ -447,23 +428,11 @@ describe('POST /applicants/me/submissions', () => {
       const token = await authHelper.getToken(
         `bboberson${randomString}@gmail.com`,
       );
-      const { body: applicantBody }: { body: ApplicantResponseBody } =
-        await request(dummyApp)
-          .post('/applicants')
-          .send({
-            name: 'Bob Boberson',
-            auth0Id: 'auth0|123456',
-            email: `bboberson${randomString}@gmail.com`,
-            preferredContact: 'email',
-            searchStatus: 'active',
-            acceptedTerms: true,
-            acceptedPrivacy: true,
-          });
+      const applicant = await seedApplicant(randomString);
       const { id: resumeId }: { id: number } = await seedResumeUpload(
-        applicantBody.id,
+        applicant.id,
       );
-      const testSubmission =
-        applicantSubmissionGenerator.getAPIRequestBody(resumeId);
+      const testSubmission = getAPIRequestBody(resumeId);
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       delete testSubmission.yoe;
@@ -480,21 +449,9 @@ describe('POST /applicants/me/submissions', () => {
       const token = await authHelper.getToken(
         `bboberson${randomString}@gmail.com`,
       );
-      const { body: applicantBody }: { body: ApplicantResponseBody } =
-        await request(dummyApp)
-          .post('/applicants')
-          .send({
-            name: 'Bob Boberson',
-            auth0Id: 'auth0|123456',
-            email: `bboberson${randomString}@gmail.com`,
-            preferredContact: 'email',
-            searchStatus: 'active',
-            acceptedTerms: true,
-            acceptedPrivacy: true,
-          });
-      const { id: resumeId } = await seedResumeUpload(applicantBody.id);
-      const testSubmission =
-        applicantSubmissionGenerator.getAPIRequestBody(resumeId);
+      const applicant = await seedApplicant(randomString);
+      const { id: resumeId } = await seedResumeUpload(applicant.id);
+      const testSubmission = getAPIRequestBody(resumeId);
       const { body } = await request(dummyApp)
         .post('/applicants/me/submissions')
         .send({ ...testSubmission, openToRelocate: 'idk maybe' })
@@ -508,21 +465,9 @@ describe('POST /applicants/me/submissions', () => {
       const token = await authHelper.getToken(
         `bboberson${randomString}@gmail.com`,
       );
-      const { body: applicantBody }: { body: ApplicantResponseBody } =
-        await request(dummyApp)
-          .post('/applicants')
-          .send({
-            name: 'Bob Boberson',
-            auth0Id: 'auth0|123456',
-            email: `bboberson${randomString}@gmail.com`,
-            preferredContact: 'email',
-            searchStatus: 'active',
-            acceptedTerms: true,
-            acceptedPrivacy: true,
-          });
-      const { id: resumeId } = await seedResumeUpload(applicantBody.id);
-      const testSubmission =
-        applicantSubmissionGenerator.getAPIRequestBody(resumeId);
+      const applicant = await seedApplicant(randomString);
+      const { id: resumeId } = await seedResumeUpload(applicant.id);
+      const testSubmission = getAPIRequestBody(resumeId);
       const { body } = await request(dummyApp)
         .post('/applicants/me/submissions')
         .send({ ...testSubmission, resumeUpload: { id: 9876432 } })
@@ -540,18 +485,7 @@ describe('POST /applicants/me/submissions', () => {
       const token = await authHelper.getToken(
         `bboberson${randomString}@gmail.com`,
       );
-      const { body: applicantBody }: { body: ApplicantResponseBody } =
-        await request(dummyApp)
-          .post('/applicants')
-          .send({
-            name: 'Bob Boberson',
-            auth0Id: 'auth0|123456',
-            email: `bboberson${randomString}@gmail.com`,
-            preferredContact: 'email',
-            searchStatus: 'active',
-            acceptedTerms: true,
-            acceptedPrivacy: true,
-          });
+      const applicant = await seedApplicant(randomString);
       const utmParams = {
         utm_campaign: 'foo',
         utm_content: 'bar',
@@ -559,9 +493,8 @@ describe('POST /applicants/me/submissions', () => {
         utm_source: 'qux',
         utm_term: 'quux',
       };
-      const { id: resumeId } = await seedResumeUpload(applicantBody.id);
-      const testSubmission =
-        applicantSubmissionGenerator.getAPIRequestBody(resumeId);
+      const { id: resumeId } = await seedResumeUpload(applicant.id);
+      const testSubmission = getAPIRequestBody(resumeId);
       testSubmission.utmParams = utmParams;
       const { body: submissionBody }: { body: ApplicantGetSubmissionResponse } =
         await request(dummyApp)
@@ -581,22 +514,9 @@ describe('POST /applicants/me/submissions', () => {
       const token = await authHelper.getToken(
         `bboberson${randomString}@gmail.com`,
       );
-      const { body: applicantBody }: { body: Applicant } = await request(
-        dummyApp,
-      )
-        .post('/applicants')
-        .send({
-          name: 'Bob Boberson',
-          auth0Id: 'auth0|123456',
-          email: `bboberson${randomString}@gmail.com`,
-          preferredContact: 'email',
-          searchStatus: 'active',
-          acceptedTerms: true,
-          acceptedPrivacy: true,
-        });
-      const { id: resumeId } = await seedResumeUpload(applicantBody.id);
-      const testSubmission =
-        applicantSubmissionGenerator.getAPIRequestBody(resumeId);
+      const applicant = await seedApplicant(randomString);
+      const { id: resumeId } = await seedResumeUpload(applicant.id);
+      const testSubmission = getAPIRequestBody(resumeId);
       // Save completed submission body as draft
       const {
         body: draftSubmissionResponse,
@@ -652,8 +572,7 @@ describe('POST /applicants/me/submissions', () => {
           acceptedPrivacy: true,
         });
       const { id: resumeId } = await seedResumeUpload(applicantBody.id);
-      const testBody: RawApplicantSubmissionBody =
-        applicantSubmissionGenerator.getAPIRequestBody(resumeId);
+      const testBody: RawApplicantSubmissionBody = getAPIRequestBody(resumeId);
       const { body }: { body: ApplicantCreateSubmissionResponse } = await agent
         .post('/applicants/me/submissions')
         .send(testBody)
@@ -686,21 +605,9 @@ describe('PUT /applicants/me/submissions', () => {
     const token = await authHelper.getToken(
       `bboberson${randomString}@gmail.com`,
     );
-    const { body: applicantBody }: { body: ApplicantResponseBody } =
-      await request(dummyApp)
-        .post('/applicants')
-        .send({
-          name: 'Bob Boberson',
-          auth0Id: 'auth0|123456',
-          email: `bboberson${randomString}@gmail.com`,
-          preferredContact: 'email',
-          searchStatus: 'active',
-          acceptedTerms: true,
-          acceptedPrivacy: true,
-        });
-    const { id: resumeId } = await seedResumeUpload(applicantBody.id);
-    const testSubmission =
-      applicantSubmissionGenerator.getAPIRequestBody(resumeId);
+    const applicant = await seedApplicant(randomString);
+    const { id: resumeId } = await seedResumeUpload(applicant.id);
+    const testSubmission = getAPIRequestBody(resumeId);
     await request(dummyApp)
       .post('/applicants/me/submissions')
       .send(testSubmission)
@@ -719,21 +626,9 @@ describe('PUT /applicants/me/submissions', () => {
     const token = await authHelper.getToken(
       `bboberson${randomString}@gmail.com`,
     );
-    const { body: applicantBody }: { body: ApplicantResponseBody } =
-      await request(dummyApp)
-        .post('/applicants')
-        .send({
-          name: 'Bob Boberson',
-          auth0Id: 'auth0|123456',
-          email: `bboberson${randomString}@gmail.com`,
-          preferredContact: 'email',
-          searchStatus: 'active',
-          acceptedTerms: true,
-          acceptedPrivacy: true,
-        });
-    const { id: resumeId } = await seedResumeUpload(applicantBody.id);
-    const testSubmission =
-      applicantSubmissionGenerator.getAPIRequestBody(resumeId);
+    const applicant = await seedApplicant(randomString);
+    const { id: resumeId } = await seedResumeUpload(applicant.id);
+    const testSubmission = getAPIRequestBody(resumeId);
     await request(dummyApp)
       .post('/applicants/me/submissions')
       .send(testSubmission)
@@ -755,21 +650,9 @@ describe('PUT /applicants/me/submissions', () => {
     const token = await authHelper.getToken(
       `bboberson${randomString}@gmail.com`,
     );
-    const { body: applicantBody }: { body: ApplicantResponseBody } =
-      await request(dummyApp)
-        .post('/applicants')
-        .send({
-          name: 'Bob Boberson',
-          auth0Id: 'auth0|123456',
-          email: `bboberson${randomString}@gmail.com`,
-          preferredContact: 'email',
-          searchStatus: 'active',
-          acceptedTerms: true,
-          acceptedPrivacy: true,
-        });
-    const { id: resumeId } = await seedResumeUpload(applicantBody.id);
-    const testSubmission =
-      applicantSubmissionGenerator.getAPIRequestBody(resumeId);
+    const applicant = await seedApplicant(randomString);
+    const { id: resumeId } = await seedResumeUpload(applicant.id);
+    const testSubmission = getAPIRequestBody(resumeId);
     await request(dummyApp)
       .put('/applicants/me/submissions')
       .send({ ...testSubmission })
@@ -782,21 +665,9 @@ describe('PUT /applicants/me/submissions', () => {
     const token = await authHelper.getToken(
       `bboberson${randomString}@gmail.com`,
     );
-    const { body: applicantBody }: { body: ApplicantResponseBody } =
-      await request(dummyApp)
-        .post('/applicants')
-        .send({
-          name: 'Bob Boberson',
-          auth0Id: 'auth0|123456',
-          email: `bboberson${randomString}@gmail.com`,
-          preferredContact: 'email',
-          searchStatus: 'active',
-          acceptedTerms: true,
-          acceptedPrivacy: true,
-        });
-    const { id: resumeId } = await seedResumeUpload(applicantBody.id);
-    const testSubmission =
-      applicantSubmissionGenerator.getAPIRequestBody(resumeId);
+    const applicant = await seedApplicant(randomString);
+    const { id: resumeId } = await seedResumeUpload(applicant.id);
+    const testSubmission = getAPIRequestBody(resumeId);
     await request(dummyApp)
       .post('/applicants/me/submissions')
       .send({ ...testSubmission, resumeUpload: { id: resumeId } })
@@ -812,21 +683,9 @@ describe('PUT /applicants/me/submissions', () => {
     const token = await authHelper.getToken(
       `bboberson${randomString}@gmail.com`,
     );
-    const { body: applicantBody }: { body: ApplicantResponseBody } =
-      await request(dummyApp)
-        .post('/applicants')
-        .send({
-          name: 'Bob Boberson',
-          auth0Id: 'auth0|123456',
-          email: `bboberson${randomString}@gmail.com`,
-          preferredContact: 'email',
-          searchStatus: 'active',
-          acceptedTerms: true,
-          acceptedPrivacy: true,
-        });
-    const { id: resumeId } = await seedResumeUpload(applicantBody.id);
-    const testSubmission =
-      applicantSubmissionGenerator.getAPIRequestBody(resumeId);
+    const applicant = await seedApplicant(randomString);
+    const { id: resumeId } = await seedResumeUpload(applicant.id);
+    const testSubmission = getAPIRequestBody(resumeId);
     await request(dummyApp)
       .put('/applicants/me/submissions')
       .send({ ...testSubmission, openToRemoteMulti: ['hybrid'] })
@@ -854,18 +713,9 @@ describe('DELETE /applicants/me', () => {
         const token = await authHelper.getToken(
           `bboberson${randomString}@gmail.com`,
         );
-        const { body }: { body: ApplicantResponseBody } = await request(app)
-          .post('/applicants')
-          .send({
-            name: 'Bob Boberson',
-            email: `bboberson${randomString}@gmail.com`,
-            preferredContact: 'email',
-            searchStatus: 'active',
-            acceptedTerms: true,
-            acceptedPrivacy: true,
-          });
-        if (body.auth0Id) {
-          testUserIDs.push(body.auth0Id);
+        const applicant = await seedApplicant(randomString);
+        if (applicant.auth0Id) {
+          testUserIDs.push(applicant.auth0Id);
         }
         await request(app)
           .delete('/applicants/me')
@@ -1013,16 +863,7 @@ describe('DELETE /applicants/me', () => {
       const token = await authHelper.getToken(
         `bboberson${randomString}@gmail.com`,
       );
-      await request(dummyApp)
-        .post('/applicants')
-        .send({
-          name: 'Bob Boberson',
-          email: `bboberson${randomString}@gmail.com`,
-          preferredContact: 'email',
-          searchStatus: 'active',
-          acceptedTerms: true,
-          acceptedPrivacy: true,
-        });
+      await seedApplicant(randomString);
       const { body } = await request(dummyApp)
         .delete('/applicants/me')
         .set('Authorization', `Bearer ${token}`)
@@ -1035,14 +876,7 @@ describe('DELETE /applicants/me', () => {
 describe('POST /applicants/me/submissions/draft', () => {
   it('should not allow applicant to save draft submission without a valid cookie or JWT supplied', async () => {
     // Supertest will not save cookies (each request has a separate cookie jar)
-    await request(dummyApp).post('/applicants').send({
-      name: 'Bob Boberson',
-      email: 'bboberson@gmail.com',
-      preferredContact: 'sms',
-      searchStatus: 'active',
-      acceptedTerms: true,
-      acceptedPrivacy: true,
-    });
+    await seedApplicant(getRandomString());
     const testBody: RawApplicantDraftSubmissionBody = {
       lastOrg: 'Krusty Krab',
     };
@@ -1055,10 +889,11 @@ describe('POST /applicants/me/submissions/draft', () => {
 
   describe('Cookie based authentication', () => {
     it('should create a new draft applicant submission', async () => {
+      const randomString = getRandomString();
       const agent = request.agent(dummyApp);
       await agent.post('/applicants').send({
         name: 'Bob Boberson',
-        email: 'bboberson@gmail.com',
+        email: `bboberson${randomString}@gmail.com`,
         preferredContact: 'sms',
         searchStatus: 'active',
         acceptedTerms: true,
@@ -1115,15 +950,11 @@ describe('POST /applicants/me/submissions/draft', () => {
 
   describe('JWT based authentication', () => {
     it('should create a new draft applicant submission', async () => {
-      const token = await authHelper.getToken('bboberson@gmail.com');
-      await request(dummyApp).post('/applicants').send({
-        name: 'Bob Boberson',
-        email: 'bboberson@gmail.com',
-        preferredContact: 'sms',
-        searchStatus: 'active',
-        acceptedTerms: true,
-        acceptedPrivacy: true,
-      });
+      const randomString = getRandomString();
+      const token = await authHelper.getToken(
+        `bboberson${randomString}@gmail.com`,
+      );
+      await seedApplicant(randomString);
       const testBody: RawApplicantDraftSubmissionBody = {
         lastOrg: 'Krusty Krab',
         utmParams: {
@@ -1151,17 +982,7 @@ describe('POST /applicants/me/submissions/draft', () => {
       const token = await authHelper.getToken(
         `bboberson${randomString}@gmail.com`,
       );
-      await request(dummyApp)
-        .post('/applicants')
-        .send({
-          name: 'Bob Boberson',
-          auth0Id: 'auth0|123456',
-          email: `bboberson${randomString}@gmail.com`,
-          preferredContact: 'email',
-          searchStatus: 'active',
-          acceptedTerms: true,
-          acceptedPrivacy: true,
-        });
+      await seedApplicant(randomString);
       // Bob uploads his resume
       const { body: resumeBody }: { body: UploadResponseBody } = await request(
         dummyApp,
@@ -1195,15 +1016,9 @@ describe('POST /applicants/me/submissions/draft', () => {
     });
 
     it('should not allow applicant to save draft submission of a non-existent user', async () => {
+      const randomString = getRandomString();
       const token = await authHelper.getToken('bibbitybobbityboo@gmail.com');
-      await request(dummyApp).post('/applicants').send({
-        name: 'Pat Patterson',
-        email: 'bboberson@gmail.com',
-        preferredContact: 'sms',
-        searchStatus: 'active',
-        acceptedTerms: true,
-        acceptedPrivacy: true,
-      });
+      await seedApplicant(randomString);
       const testBody: RawApplicantDraftSubmissionBody = {
         lastOrg: 'Krusty Krab',
       };
@@ -1217,17 +1032,12 @@ describe('POST /applicants/me/submissions/draft', () => {
     });
 
     it('should remove resumeUpload from existing draft', async () => {
-      const token = await authHelper.getToken('bboberson@gmail.com');
-      const { body: applicantBody }: { body: ApplicantResponseBody } =
-        await request(dummyApp).post('/applicants').send({
-          name: 'Bob Boberson',
-          email: 'bboberson@gmail.com',
-          preferredContact: 'sms',
-          searchStatus: 'active',
-          acceptedTerms: true,
-          acceptedPrivacy: true,
-        });
-      const { id: resumeId } = await seedResumeUpload(applicantBody.id);
+      const randomString = getRandomString();
+      const token = await authHelper.getToken(
+        `bboberson${randomString}@gmail.com`,
+      );
+      const applicant = await seedApplicant(randomString);
+      const { id: resumeId } = await seedResumeUpload(applicant.id);
       const testBody: RawApplicantDraftSubmissionBody = {
         resumeUpload: { id: resumeId },
       };
@@ -1257,7 +1067,7 @@ describe('POST /applicants/me/submissions/draft', () => {
 
 describe('GET /applicants/me/submissions', () => {
   describe('JWT authentication', () => {
-    it('should get current applicants draft submission with token', async () => {
+    it('should create applicant with cookie, save and get current applicants draft submission with token', async () => {
       // We create draft submission with cookie, get /me/submissions with JWT
       const agent = request.agent(dummyApp);
       const token = await authHelper.getToken('bboberson@gmail.com');
@@ -1286,7 +1096,7 @@ describe('GET /applicants/me/submissions', () => {
       expect(body.submission).toHaveProperty('id');
     });
 
-    it('should get current applicants draft submission with cookie', async () => {
+    it('should create applicant with cookie, save and get current applicants draft submission with cookie', async () => {
       const agent = request.agent(dummyApp);
       await agent.post('/applicants').send({
         name: 'Bob Boberson',
@@ -1311,19 +1121,14 @@ describe('GET /applicants/me/submissions', () => {
     });
 
     it('should get current applicants final submission', async () => {
-      const token = await authHelper.getToken('bboberson@gmail.com');
-      const { body: applicantBody }: { body: ApplicantResponseBody } =
-        await request(dummyApp).post('/applicants').send({
-          name: 'Bob Boberson',
-          email: 'bboberson@gmail.com',
-          preferredContact: 'sms',
-          searchStatus: 'active',
-          acceptedTerms: true,
-          acceptedPrivacy: true,
-        });
-      const { id: resumeId } = await seedResumeUpload(applicantBody.id);
+      const randomString = getRandomString();
+      const token = await authHelper.getToken(
+        `bboberson${randomString}@gmail.com`,
+      );
+      const applicant = await seedApplicant(randomString);
+      const { id: resumeId } = await seedResumeUpload(applicant.id);
       const testBody: RawApplicantDraftSubmissionBody =
-        applicantSubmissionGenerator.getAPIRequestBody(resumeId);
+        getAPIRequestBody(resumeId);
       await request(dummyApp)
         .post('/applicants/me/submissions')
         .send(testBody)
@@ -1352,15 +1157,11 @@ describe('GET /applicants/me/submissions', () => {
       expect(body).toHaveProperty('title', 'Not Found');
     });
     it('should return 200 if applicant exists but has no submissions', async () => {
-      const token = await authHelper.getToken('bboberson@gmail.com');
-      await request(dummyApp).post('/applicants').send({
-        name: 'Bob Boberson',
-        email: 'bboberson@gmail.com',
-        preferredContact: 'sms',
-        searchStatus: 'active',
-        acceptedTerms: true,
-        acceptedPrivacy: true,
-      });
+      const randomString = getRandomString();
+      const token = await authHelper.getToken(
+        `bboberson${randomString}@gmail.com`,
+      );
+      await seedApplicant(randomString);
       const { body } = await request(dummyApp)
         .get('/applicants/me/submissions')
         .set('Authorization', `Bearer ${token}`)
@@ -1384,18 +1185,7 @@ describe('PUT /applicants/me/state', () => {
     const token = await authHelper.getToken(
       `bboberson${randomString}@gmail.com`,
     );
-    await request(dummyApp)
-      .post('/applicants')
-      .send({
-        name: 'Bob Boberson',
-        auth0Id: 'auth0|123456',
-        email: `bboberson${randomString}@gmail.com`,
-        preferredContact: 'email',
-        searchStatus: 'active',
-        acceptedTerms: true,
-        acceptedPrivacy: true,
-      })
-      .expect(200);
+    await seedApplicant(randomString);
     const { body: pausedBody } = await request(dummyApp)
       .put('/applicants/me/state')
       .send({ pause: true })
@@ -1427,20 +1217,9 @@ describe('PUT /applicants/:auth0Id', () => {
     const token = await authHelper.getToken(undefined, {
       scope: 'another:scope update:tekalo_db_user_auth0_id',
     });
-    const { body }: { body: ApplicantResponseBody } = await request(dummyApp)
-      .post('/applicants')
-      .send({
-        name: 'Bob Boberson',
-        auth0Id: 'auth0|12345',
-        email: `bboberson${getRandomString()}@gmail.com`,
-        preferredContact: 'email',
-        searchStatus: 'active',
-        acceptedTerms: true,
-        acceptedPrivacy: true,
-      })
-      .expect(200);
+    const applicant = await seedApplicant(getRandomString());
     const { body: updatedAuthID }: { body: Applicant } = await request(dummyApp)
-      .put(`/applicants/${body.auth0Id as string}`)
+      .put(`/applicants/${applicant.auth0Id as string}`)
       .send({ auth0Id: 'google-oauth|12345' })
       .set('Authorization', `Bearer ${token}`)
       .expect(200);
@@ -1448,20 +1227,9 @@ describe('PUT /applicants/:auth0Id', () => {
   });
 
   it('should return 401 for request made without valid JWT', async () => {
-    const { body }: { body: ApplicantResponseBody } = await request(dummyApp)
-      .post('/applicants')
-      .send({
-        name: 'Bob Boberson',
-        auth0Id: 'auth0|12345',
-        email: `bboberson${getRandomString()}@gmail.com`,
-        preferredContact: 'email',
-        searchStatus: 'active',
-        acceptedTerms: true,
-        acceptedPrivacy: true,
-      })
-      .expect(200);
+    const applicant = await seedApplicant(getRandomString());
     await request(dummyApp)
-      .put(`/applicants/${body.auth0Id as string}`)
+      .put(`/applicants/${applicant.auth0Id as string}`)
       .send({ auth0Id: 'google-oauth|6789' })
       .expect(401);
   });
@@ -1484,16 +1252,7 @@ describe('GET /applicants/me', () => {
     const token = await authHelper.getToken(
       `bboberson${randomString}@gmail.com`,
     );
-    await request(dummyApp)
-      .post('/applicants')
-      .send({
-        name: 'Bob Boberson',
-        email: `bboberson${randomString}@gmail.com`,
-        preferredContact: 'sms',
-        searchStatus: 'active',
-        acceptedTerms: true,
-        acceptedPrivacy: true,
-      });
+    await seedApplicant(randomString);
     const { body } = await request(dummyApp)
       .get('/applicants/me')
       .set('Authorization', `Bearer ${token}`);
@@ -1519,18 +1278,8 @@ describe('GET /applicants/me', () => {
 
 describe('GET /applicants/:id', () => {
   it('should return a 401 status code and NOT allow a user without an admin JWT to retrieve applicant information', async () => {
-    const randomString = getRandomString();
-    const { body }: { body: ApplicantResponseBody } = await request(dummyApp)
-      .post('/applicants')
-      .send({
-        name: 'Bob Boberson',
-        email: `bboberson${randomString}@gmail.com`,
-        preferredContact: 'sms',
-        searchStatus: 'active',
-        acceptedTerms: true,
-        acceptedPrivacy: true,
-      });
-    await request(dummyApp).get(`/applicants/${body.id}`).expect(401);
+    const applicant = await seedApplicant(getRandomString());
+    await request(dummyApp).get(`/applicants/${applicant.id}`).expect(401);
   });
 
   it('should return a 200 status code and allow a user with an admin JWT to retrieve applicant information', async () => {
@@ -1542,44 +1291,24 @@ describe('GET /applicants/:id', () => {
       `bboberson${randomString}@gmail.com`,
       partialTokenOptions,
     );
-    const { body: body1 }: { body: ApplicantResponseBody } = await request(
-      dummyApp,
-    )
-      .post('/applicants')
-      .send({
-        name: 'Bob Boberson',
-        email: `bboberson${randomString}@gmail.com`,
-        preferredContact: 'email',
-        searchStatus: 'active',
-        acceptedTerms: true,
-        acceptedPrivacy: true,
-      });
-    const { body: body2 } = await request(dummyApp)
-      .get(`/applicants/${body1.id}`)
+    const applicant = await seedApplicant(randomString);
+    const { body: applicantResponse } = await request(dummyApp)
+      .get(`/applicants/${applicant.id}`)
       .set('Authorization', `Bearer ${token}`)
       .expect(200);
     // refer to ApplicantCreateResponseBodySchema
-    expect(body2).toHaveProperty('id');
-    expect(body2).toHaveProperty('name');
-    expect(body2).toHaveProperty('email');
-    expect(body2).toHaveProperty('isPaused');
+    expect(applicantResponse).toHaveProperty('id');
+    expect(applicantResponse).toHaveProperty('name');
+    expect(applicantResponse).toHaveProperty('email');
+    expect(applicantResponse).toHaveProperty('isPaused');
   });
 });
 
 describe('DELETE /applicants/:id', () => {
   it('should return a 401 status code and NOT allow a user without an admin JWT to delete applicant information', async () => {
     const randomString = getRandomString();
-    const { body }: { body: ApplicantResponseBody } = await request(dummyApp)
-      .post('/applicants')
-      .send({
-        name: 'Bob Boberson',
-        email: `bboberson${randomString}@gmail.com`,
-        preferredContact: 'sms',
-        searchStatus: 'active',
-        acceptedTerms: true,
-        acceptedPrivacy: true,
-      });
-    await request(dummyApp).delete(`/applicants/${body.id}`).expect(401);
+    const applicant = await seedApplicant(randomString);
+    await request(dummyApp).delete(`/applicants/${applicant.id}`).expect(401);
   });
 
   it('should return a 200 status code and allow a user with an admin JWT to delete applicant information', async () => {
@@ -1591,20 +1320,9 @@ describe('DELETE /applicants/:id', () => {
       `bboberson${randomString}@gmail.com`,
       partialTokenOptions,
     );
-    const { body: body1 }: { body: ApplicantResponseBody } = await request(
-      dummyApp,
-    )
-      .post('/applicants')
-      .send({
-        name: 'Bob Boberson',
-        email: `bboberson${randomString}@gmail.com`,
-        preferredContact: 'email',
-        searchStatus: 'active',
-        acceptedTerms: true,
-        acceptedPrivacy: true,
-      });
+    const applicant = await seedApplicant(randomString);
     await request(dummyApp)
-      .delete(`/applicants/${body1.id}`)
+      .delete(`/applicants/${applicant.id}`)
       .set('Authorization', `Bearer ${token}`)
       .expect(200);
   });
@@ -1627,17 +1345,7 @@ describe('POST /applicants/me/resume', () => {
     );
 
     // create an applicant
-    await request(dummyApp)
-      .post('/applicants')
-      .send({
-        name: 'Bob Boberson',
-        email: `bboberson${randomString}@gmail.com`,
-        preferredContact: 'sms',
-        searchStatus: 'active',
-        acceptedTerms: true,
-        acceptedPrivacy: true,
-      });
-
+    await seedApplicant(randomString);
     const { body } = await request(dummyApp)
       .post('/applicants/me/resume')
       .set('Authorization', `Bearer ${token}`)
@@ -1650,39 +1358,13 @@ describe('POST /applicants/me/resume', () => {
     expect(body).toHaveProperty('signedLink');
   });
   it('should allow an upload request that includes a content type with charset', async () => {
-    const dummyS3Service = new DummyS3Service();
-    dummyS3Service.generateSignedUploadUrl = () =>
-      Promise.resolve('https://bogus-signed-s3-link.com');
-    const dummyUploadService = new DummyUploadService(
-      prisma,
-      dummyS3Service,
-      appConfig,
-    );
-
-    const dummyUploadApp = getApp(
-      new DummyAuthService(),
-      new DummyMonitoringService(prisma),
-      new DummyEmailService(new DummySESService(), appConfig),
-      dummyUploadService,
-      appConfig,
-    );
-
     const randomString = getRandomString();
     const token = await authHelper.getToken(
       `bboberson${randomString}@gmail.com`,
     );
 
     // create an applicant
-    await request(dummyUploadApp)
-      .post('/applicants')
-      .send({
-        name: 'Bob Boberson',
-        email: `bboberson${randomString}@gmail.com`,
-        preferredContact: 'sms',
-        searchStatus: 'active',
-        acceptedTerms: true,
-        acceptedPrivacy: true,
-      });
+    await seedApplicant(randomString);
 
     const { body } = await request(dummyApp)
       .post('/applicants/me/resume')
@@ -2033,9 +1715,7 @@ describe('GET /applicants/:id/resume', () => {
       .expect(200);
 
     // Bob submits submission with V2 resume
-    const testSubmission = applicantSubmissionGenerator.getAPIRequestBody(
-      uploadBodyV2.id,
-    );
+    const testSubmission = getAPIRequestBody(uploadBodyV2.id);
     await request(dummyS3ServiceApp)
       .post('/applicants/me/submissions')
       .set('Authorization', `Bearer ${bobToken}`)
@@ -2086,9 +1766,7 @@ describe('GET /applicants/:id/resume', () => {
       .send({ status: 'SUCCESS' })
       .expect(200);
 
-    const testSubmission = applicantSubmissionGenerator.getAPIRequestBody(
-      resume.id,
-    );
+    const testSubmission = getAPIRequestBody(resume.id);
     await request(dummyApp)
       .post('/applicants/me/submissions')
       .set('Authorization', `Bearer ${token}`)

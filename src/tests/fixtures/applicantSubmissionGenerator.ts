@@ -1,4 +1,9 @@
-import { RawApplicantSubmissionBody } from '@App/resources/types/applicants.js';
+import { prisma } from '@App/resources/client.js';
+import {
+  ApplicantResponseBody,
+  RawApplicantSubmissionBody,
+} from '@App/resources/types/applicants.js';
+import { Upload } from '@prisma/client';
 
 /**
  * Get API request body for a new applicant submission.
@@ -44,8 +49,38 @@ const getAPIRequestBody = (
   ...overrides,
 });
 
-const applicantSubmissionGenerator = {
-  getAPIRequestBody,
+const seedResumeUpload = async (applicantId: number): Promise<Upload> =>
+  prisma.upload.create({
+    data: {
+      type: 'RESUME',
+      status: 'SUCCESS',
+      applicantId,
+      originalFilename: 'myresume.pdf',
+      contentType: 'application/pdf',
+    },
+  });
+
+const seedApplicant = async (
+  emailSuffix?: string,
+): Promise<ApplicantResponseBody> => {
+  const applicant = await prisma.applicant.create({
+    data: {
+      name: 'Bob Boberson',
+      auth0Id: 'auth0|123456',
+      pronoun: 'he/his',
+      phone: '123-456-7899',
+      email: `bboberson${emailSuffix}@gmail.com`,
+      preferredContact: 'email',
+      searchStatus: 'active',
+      acceptedTerms: new Date(Date.now()),
+      acceptedPrivacy: new Date(Date.now()),
+    },
+  });
+  return {
+    id: applicant.id,
+    auth0Id: applicant.auth0Id,
+    email: applicant.email,
+  };
 };
 
-export default applicantSubmissionGenerator;
+export { getAPIRequestBody, seedResumeUpload, seedApplicant };
