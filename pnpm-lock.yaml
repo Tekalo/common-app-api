@@ -63,8 +63,8 @@ importers:
         specifier: 3.0.5
         version: 3.0.5(jest@29.7.0)(typescript@5.2.2)
       jose:
-        specifier: 4.15.2
-        version: 4.15.2
+        specifier: 4.15.3
+        version: 4.15.3
       pino:
         specifier: 8.16.0
         version: 8.16.0
@@ -4071,7 +4071,7 @@ packages:
     resolution: {integrity: sha512-HXnez7vocYlOqlfF3ozPcf/WE3zxT7zfUNfeg5FHJnvNwhBYlNXiPOvuCtBalis8xcigvwtInzEKhBuH87+9ug==}
     engines: {node: ^12.19.0 || ^14.15.0 || ^16.13.0 || ^18.12.0 || ^20.2.0}
     dependencies:
-      jose: 4.15.2
+      jose: 4.15.3
     dev: false
 
   /express-session@1.17.3:
@@ -5310,8 +5310,8 @@ packages:
       - supports-color
       - ts-node
 
-  /jose@4.15.2:
-    resolution: {integrity: sha512-IY73F228OXRl9ar3jJagh7Vnuhj/GzBunPiZP13K0lOl7Am9SoWW3kEzq3MCllJMTtZqHTiDXQvoRd4U95aU6A==}
+  /jose@4.15.3:
+    resolution: {integrity: sha512-RZJdL9Qjd1sqNdyiVteRGV/bnWtik/+PJh1JP4kT6+x1QQMn+7ryueRys5BEueuayvSVY8CWGCisCDazeRLTuw==}
     dev: false
 
   /joycon@3.1.1:
@@ -5403,7 +5403,7 @@ packages:
       '@types/express': 4.17.19
       '@types/jsonwebtoken': 9.0.3
       debug: 4.3.4
-      jose: 4.15.2
+      jose: 4.15.3
       limiter: 1.1.5
       lru-memoizer: 2.2.0
     transitivePeerDependencies:
