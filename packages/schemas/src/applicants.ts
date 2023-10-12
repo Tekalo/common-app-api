@@ -76,7 +76,7 @@ const ApplicantCreateResponseBodySchema = z.object({
 
 /**
  * All optional fields should be nullable()
- * All conditional fields should be nullish()
+ * All conditional fields AKA fields that may not always appear on the submission form, should be nullish()
  */
 const ApplicantCreateSubmissionRequestBody = z.object({
   originTag: z.string(),

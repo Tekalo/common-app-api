@@ -503,7 +503,7 @@ describe('POST /applicants/me/submissions', () => {
       expect(body).toHaveProperty('title', 'Validation Error');
     });
 
-    it("should return 400 error if request body is missing interestWorkArrangement if interestEmploymentType is 'part'", async () => {
+    it("should return 400 error if request body is missing interestWorkArrangement when interestEmploymentType is 'part'", async () => {
       const randomString = getRandomString();
       const token = await authHelper.getToken(
         `bboberson${randomString}@gmail.com`,
@@ -748,7 +748,7 @@ describe('PUT /applicants/me/submissions', () => {
       .expect(400);
   });
 
-  it("should return 400 error if request body is missing interestWorkArrangement if interestEmploymentType is 'part'", async () => {
+  it("should return 400 error if request body is missing interestWorkArrangement when interestEmploymentType is 'part'", async () => {
     const randomString = getRandomString();
     const token = await authHelper.getToken(
       `bboberson${randomString}@gmail.com`,
