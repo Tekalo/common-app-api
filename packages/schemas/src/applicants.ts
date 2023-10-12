@@ -74,7 +74,11 @@ const ApplicantCreateResponseBodySchema = z.object({
   email: z.string(),
 });
 
-const ApplicantCreateSubmissionRequestBodySchema = z.object({
+/**
+ * All optional fields should be nullable()
+ * All conditional fields should be nullish()
+ */
+const ApplicantCreateSubmissionRequestBody = z.object({
   originTag: z.string(),
   lastRole: z.string().max(255),
   resumeUpload: z.object({
@@ -90,9 +94,10 @@ const ApplicantCreateSubmissionRequestBodySchema = z.object({
   portfolioPassword: z.string().max(255).nullable(),
   hoursPerWeek: z.string().max(255).nullable(),
   interestEmploymentType: z.array(EmploymentType),
+  // conditional field: interestWorkArrangement can be undefined if interestEmploymentType is 'full'
   interestWorkArrangement: z
     .array(z.string())
-    .nullable()
+    .nullish()
     .transform((val) => val || []),
   interestRoles: z.array(z.string().max(255)),
   currentLocation: z.string().max(255),
@@ -116,6 +121,22 @@ const ApplicantCreateSubmissionRequestBodySchema = z.object({
   referenceAttribution: z.string().nullable(),
   referenceAttributionOther: z.string().nullable(),
 });
+
+type SubmissionType = z.input<typeof ApplicantCreateSubmissionRequestBody>;
+
+const submissionRefinement = (submission: SubmissionType) => {
+  // interestWorkArrangement cannot be null/undefined if interestEmploymentType is 'part'
+  if (submission.interestEmploymentType.includes('part')) {
+    return submission.interestWorkArrangement?.length;
+  }
+  return true;
+};
+
+const ApplicantCreateSubmissionRequestBodySchema =
+  ApplicantCreateSubmissionRequestBody.refine(submissionRefinement, {
+    message: 'interestWorkArrangement must be defined or set to null',
+    path: ['interestWorkArrangement'],
+  });
 
 const ApplicantSubmissionResponseBody = z.object({
   id: z.number(),
@@ -226,7 +247,13 @@ const ApplicantDraftSubmissionRequestBodySchema = z.object({
 });
 
 const ApplicantUpdateSubmissionRequestBodySchema =
-  ApplicantCreateSubmissionRequestBodySchema.omit({ utmParams: true });
+  ApplicantCreateSubmissionRequestBody.omit({ utmParams: true }).refine(
+    submissionRefinement,
+    {
+      message: 'interestWorkArrangement must be defined or set to null',
+      path: ['interestWorkArrangement'],
+    },
+  );
 
 const ApplicantDraftSubmissionResponseBodySchema = z.object({
   submission: ApplicantSubmissionResponseBody,

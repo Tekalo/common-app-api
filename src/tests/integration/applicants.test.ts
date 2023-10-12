@@ -503,6 +503,40 @@ describe('POST /applicants/me/submissions', () => {
       expect(body).toHaveProperty('title', 'Validation Error');
     });
 
+    it("should return 400 error if request body is missing interestWorkArrangement if interestEmploymentType is 'part'", async () => {
+      const randomString = getRandomString();
+      const token = await authHelper.getToken(
+        `bboberson${randomString}@gmail.com`,
+      );
+      const { body: applicantBody }: { body: ApplicantResponseBody } =
+        await request(dummyApp)
+          .post('/applicants')
+          .send({
+            name: 'Bob Boberson',
+            auth0Id: 'auth0|123456',
+            email: `bboberson${randomString}@gmail.com`,
+            preferredContact: 'email',
+            searchStatus: 'active',
+            acceptedTerms: true,
+            acceptedPrivacy: true,
+          });
+      const { id: resumeId } = await seedResumeUpload(applicantBody.id);
+      const { interestWorkArrangement, ...testSubmission } =
+        applicantSubmissionGenerator.getAPIRequestBody(resumeId);
+      testSubmission.interestEmploymentType = ['part'];
+      const { body } = await request(dummyApp)
+        .post('/applicants/me/submissions')
+        .send({ ...testSubmission })
+        .set('Authorization', `Bearer ${token}`)
+        .expect(400);
+      expect(body).toHaveProperty('title', 'Validation Error');
+      expect(body).toHaveProperty('detail', {
+        code: 'custom',
+        message: 'interestWorkArrangement must be defined or set to null',
+        path: ['interestWorkArrangement'],
+      });
+    });
+
     it('should return 400 error if resumeId is not a valid upload id', async () => {
       const randomString = getRandomString();
       const token = await authHelper.getToken(
