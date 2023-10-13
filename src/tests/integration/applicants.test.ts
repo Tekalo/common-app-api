@@ -479,7 +479,7 @@ describe('POST /applicants/me/submissions', () => {
           });
       const { id: resumeId } = await seedResumeUpload(applicantBody.id);
       const { interestWorkArrangement, ...testSubmission } =
-        applicantSubmissionGenerator.getAPIRequestBody(resumeId);
+        getAPIRequestBody(resumeId);
       testSubmission.interestEmploymentType = ['part'];
       const { body } = await request(dummyApp)
         .post('/applicants/me/submissions')
@@ -673,8 +673,7 @@ describe('PUT /applicants/me/submissions', () => {
           acceptedPrivacy: true,
         });
     const { id: resumeId } = await seedResumeUpload(applicantBody.id);
-    const testSubmission =
-      applicantSubmissionGenerator.getAPIRequestBody(resumeId);
+    const testSubmission = getAPIRequestBody(resumeId);
     await request(dummyApp)
       .post('/applicants/me/submissions')
       .send({ ...testSubmission })
