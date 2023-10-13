@@ -119,7 +119,8 @@ const ApplicantCreateSubmissionRequestBody = z.object({
   essayResponse: z.string().max(5000),
   utmParams: UTMPayload.nullish(),
   referenceAttribution: z.string().nullable(),
-  referenceAttributionOther: z.string().nullable(),
+  // Conditional field: referenceAttributionOther can be undefined if referenceAttribution is not 'Other'
+  referenceAttributionOther: z.string().nullish().default(null),
 });
 
 type SubmissionType = z.input<typeof ApplicantCreateSubmissionRequestBody>;
@@ -180,7 +181,7 @@ const ApplicantSubmissionResponseBody = z.object({
   previousImpactExperience: z.boolean().nullable(),
   essayResponse: z.string().max(5000).nullable(),
   referenceAttribution: z.string().nullable(),
-  referenceAttributionOther: z.string().nullish(),
+  referenceAttributionOther: z.string().nullable(),
 });
 
 const ApplicantCreateSubmissionResponseBodySchema = z.object({
