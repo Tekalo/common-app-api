@@ -180,7 +180,7 @@ const ApplicantSubmissionResponseBody = z.object({
   previousImpactExperience: z.boolean().nullable(),
   essayResponse: z.string().max(5000).nullable(),
   referenceAttribution: z.string().nullable(),
-  referenceAttributionOther: z.string().nullable(),
+  referenceAttributionOther: z.string().nullish(),
 });
 
 const ApplicantCreateSubmissionResponseBodySchema = z.object({
