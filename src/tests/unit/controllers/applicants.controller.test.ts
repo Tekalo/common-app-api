@@ -916,7 +916,7 @@ describe('Applicant Controller', () => {
   });
 
   describe('Applicant Create Submission', () => {
-    test('Should send post-submission email after applicant submits application', () => {
+    test('Should send post-submission email after applicant submits application', async () => {
       const applicantId = 666;
       const resolvedValue: PrismaApplicantSubmissionWithResume = {
         id: 445566,
@@ -1049,7 +1049,7 @@ describe('Applicant Controller', () => {
       ).rejects.toBeInstanceOf(ZodError);
     });
 
-    test('Should throw Zod Error if upload belonging to the specified applicant does not have the status "SUCCESS"', () => {
+    test('Should throw Zod Error if upload belonging to the specified applicant does not have the status "SUCCESS"', async () => {
       const applicantId = 1;
       const dummyUploadService = new DummyUploadService(
         ctx.prisma,
