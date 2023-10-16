@@ -15,7 +15,7 @@ import {
 import SESService from '@App/services/SESService.js';
 import DummySESService from '@App/tests/fixtures/DummySesService.js';
 import DummyS3Service from '@App/tests/fixtures/DummyS3Service.js';
-import applicantSubmissionGenerator from '@App/tests/fixtures/applicantSubmissionGenerator.js';
+import { getAPIRequestBody } from '@App/tests/fixtures/applicantSubmissionGenerator.js';
 import {
   PrismaApplicantSubmissionWithResume,
   RawApplicantSubmissionBody,
@@ -1009,8 +1009,7 @@ describe('Applicant Controller', () => {
         ),
       );
 
-      const testBody =
-        applicantSubmissionGenerator.getAPIRequestBody(applicantId);
+      const testBody = getAPIRequestBody(applicantId);
       await applicantController.createSubmission(
         applicantId,
         Applicants.ApplicantCreateSubmissionRequestBodySchema.parse(testBody),
@@ -1029,8 +1028,7 @@ describe('Applicant Controller', () => {
         getMockConfig(),
       );
 
-      // eslint-disable-next-line @typescript-eslint/require-await
-      dummyUploadService.getApplicantUpload = async () => null;
+      dummyUploadService.getApplicantUpload = async () => Promise.resolve(null);
 
       const applicantController = new ApplicantController(
         new DummyAuthService(),
@@ -1038,8 +1036,8 @@ describe('Applicant Controller', () => {
         new DummyEmailService(new DummySESService(), getMockConfig()),
         dummyUploadService,
       );
-      const requestBody: RawApplicantSubmissionBody =
-        applicantSubmissionGenerator.getAPIRequestBody(1);
+      const requestBody: RawApplicantSubmissionBody = getAPIRequestBody(1);
+      console.log(requestBody);
 
       await expect(
         applicantController.createSubmission(
@@ -1075,8 +1073,7 @@ describe('Applicant Controller', () => {
         new DummyEmailService(new DummySESService(), getMockConfig()),
         dummyUploadService,
       );
-      const requestBody =
-        applicantSubmissionGenerator.getAPIRequestBody(applicantId);
+      const requestBody = getAPIRequestBody(applicantId);
 
       await expect(
         applicantController.createSubmission(
