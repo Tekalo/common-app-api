@@ -5,7 +5,7 @@ import CAPPError from '@App/resources/shared/CAPPError.js';
 import EmailService from '@App/services/EmailService.js';
 import DummyEmailService from '@App/tests/fixtures/DummyEmailService.js';
 import DummyAuthService from '@App/tests/fixtures/DummyAuthService.js';
-import UploadService from '@App/services/UploadService.js';
+// import UploadService from '@App/services/UploadService.js';
 import DummyUploadService from '@App/tests/fixtures/DummyUploadService.js';
 import {
   MockContext,
@@ -15,13 +15,13 @@ import {
 import SESService from '@App/services/SESService.js';
 import DummySESService from '@App/tests/fixtures/DummySesService.js';
 import DummyS3Service from '@App/tests/fixtures/DummyS3Service.js';
-import { getAPIRequestBody } from '@App/tests/fixtures/applicantSubmissionGenerator.js';
-import {
-  PrismaApplicantSubmissionWithResume,
-  RawApplicantSubmissionBody,
-} from '@App/resources/types/applicants.js';
-import { Applicants } from '@capp/schemas';
-import { ZodError, ZodIssueCode } from 'zod';
+// import { getAPIRequestBody } from '@App/tests/fixtures/applicantSubmissionGenerator.js';
+// import {
+//   PrismaApplicantSubmissionWithResume,
+//   RawApplicantSubmissionBody,
+// } from '@App/resources/types/applicants.js';
+// import { Applicants } from '@capp/schemas';
+// import { ZodError, ZodIssueCode } from 'zod';
 import { getMockConfig } from '../../util/helpers.js';
 
 let mockCtx: MockContext;
