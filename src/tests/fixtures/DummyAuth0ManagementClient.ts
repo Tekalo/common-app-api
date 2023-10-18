@@ -1,5 +1,3 @@
-// import { ManagementClientBase, UsersByEmailManager, UsersManager } from 'auth0';
-// import { ManagementClient } from 'auth0';
 import { ManagementClient } from 'auth0';
 import DummyAuth0UsersByEmailManager from './DummyAuth0UsersByEmailManager.js';
 import DummyAuth0UsersManager from './DummyAuth0UsersManager.js';

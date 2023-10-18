@@ -1,5 +1,3 @@
-const { UsersByEmailManager } = require('auth0');
-
 /**
 * Handler that will be called during the execution of a PostLogin flow.
 *

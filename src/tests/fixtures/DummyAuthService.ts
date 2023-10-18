@@ -15,7 +15,7 @@ class DummyAuthService extends AuthService {
 
   // eslint-disable-next-line
   async deleteUsers(email: string, auth0Id: string) {
-    return [{ data: null, headers: '', status: 200, statusText: '' }];
+    return [{ data: undefined, headers: '', status: 200, statusText: '' }];
   }
 
   // eslint-disable-next-line

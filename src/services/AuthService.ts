@@ -53,7 +53,6 @@ class AuthService {
     };
     try {
       return await auth0Client.tickets.changePassword(params);
-      // return await auth0Client.createPasswordChangeTicket(params);
     } catch (e) {
       throw new CAPPError(
         {
@@ -125,9 +124,7 @@ class AuthService {
       const { data: allUsers } = await auth0Client.usersByEmail.getByEmail({
         email,
       });
-
-      // TODO: DO NOT MAKE PR until i have removed the unknown
-      const deletionRequests: Array<Promise<ApiResponse<unknown>>> = [];
+      const deletionRequests: Array<Promise<ApiResponse<void>>> = [];
       allUsers.forEach((user) => {
         if (user.user_id) {
           deletionRequests.push(auth0Client.users.delete({ id: user.user_id }));
