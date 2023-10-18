@@ -1,15 +1,16 @@
-/* eslint-disable class-methods-use-this */
+// import { ManagementClientBase, UsersByEmailManager, UsersManager } from 'auth0';
+// import { ManagementClient } from 'auth0';
 import { ManagementClient } from 'auth0';
+import DummyAuth0UsersByEmailManager from './DummyAuth0UsersByEmailManager.js';
+import DummyAuth0UsersManager from './DummyAuth0UsersManager.js';
 
 class DummyAuth0ManagementClient extends ManagementClient {
-  // eslint-disable-next-line
-  getUsersByEmail(email: string): Promise<Array<Object>> {
-    return Promise.resolve([]);
-  }
-  // eslint-disable-next-line
-  deleteUser(params: object): Promise<void> {
-    return Promise.resolve();
-  }
+  users: DummyAuth0UsersManager = new DummyAuth0UsersManager(
+    this.configuration,
+  );
+
+  usersByEmail: DummyAuth0UsersByEmailManager =
+    new DummyAuth0UsersByEmailManager(this.configuration);
 }
 
 export default DummyAuth0ManagementClient;
