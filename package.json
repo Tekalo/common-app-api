@@ -58,7 +58,7 @@
     "@sentry/types": "7.74.0",
     "@tsconfig/node18": "18.2.2",
     "@types/auth0": "3.3.7",
-    "@types/cookie": "0.5.2",
+    "@types/cookie": "0.5.3",
     "auth0": "3.7.1",
     "express": "4.18.2",
     "express-oauth2-jwt-bearer": "1.6.0",
