@@ -1,11 +1,10 @@
 import {
   GetUsers200ResponseOneOfInner,
   GetUsers200ResponseOneOfInnerAppMetadata,
-  GetUsers200ResponseOneOfInnerCreatedAt,
 } from 'auth0';
 
 /**
- * Get mock response body from a call to Auth0's users.create().
+ * Get mock response body from a call to Auth0's users.create(), users.get(), or usersByEmail.getByEmail()
  * @param options
  * @returns
  */
@@ -22,11 +21,11 @@ function getMockUserCreateResponse(
     phone_verified: false,
     phone_number: '',
     verified_at: null,
-    created_at: '' as GetUsers200ResponseOneOfInnerCreatedAt,
+    created_at: '',
     updated_at: '',
     identities: [],
     app_metadata: {} as GetUsers200ResponseOneOfInnerAppMetadata,
-    user_metadata: {} as GetUsers200ResponseOneOfInnerAppMetadata,
+    user_metadata: {},
     picture: '',
     nickname: '',
     multifactor: [],
