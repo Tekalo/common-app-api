@@ -39,8 +39,8 @@ importers:
         specifier: 18.2.2
         version: 18.2.2
       '@types/auth0':
-        specifier: 3.3.6
-        version: 3.3.6
+        specifier: 3.3.7
+        version: 3.3.7
       '@types/cookie':
         specifier: 0.5.2
         version: 0.5.2
@@ -2386,8 +2386,8 @@ packages:
     resolution: {integrity: sha512-d6McJeGsuoRlwWZmVIeE8CUA27lu6jLjvv1JzqmpsytOYYbVi1tHZEnwCNVOXnj4pyLvneZlFlpXUK+X9wBWyw==}
     dev: false
 
-  /@types/auth0@3.3.6:
-    resolution: {integrity: sha512-m/F5mw5UlvnaWqHggY2dpx9RK1IJhIRzoF3Z7zGYqkMWUthvFdlSRu05lokzKKy1bF4ZPfIT8FBC0qHkLm1EUA==}
+  /@types/auth0@3.3.7:
+    resolution: {integrity: sha512-S3aXNk8v8SM7Di2vUtHkp1ebDiS6GhAoxVPvc5mwcoFlBDB5L57j+V4kLbceWjdjB4c+FyqrwFxKJ59E7O+PMg==}
     dev: false
 
   /@types/aws-lambda@8.10.122:
