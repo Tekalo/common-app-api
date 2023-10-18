@@ -1,6 +1,6 @@
 import { GetUsers200ResponseOneOfInner, UsersManager } from 'auth0';
 import { ApiResponse } from 'node_modules/auth0/dist/esm/lib/runtime.js';
-import auth0ResponseGenerator from './auth0ResponseGenerator.js';
+import auth0ResponseGenerator from './auth0ManagementAPIResponseGenerator.js';
 
 class DummyAuth0UsersManager extends UsersManager {
   // eslint-disable-next-line class-methods-use-this

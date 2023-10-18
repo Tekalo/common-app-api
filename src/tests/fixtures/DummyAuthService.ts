@@ -1,6 +1,6 @@
 import AuthService from '@App/services/AuthService.js';
 import { getRandomString } from '../util/helpers.js';
-import auth0Generator from './auth0ResponseGenerator.js';
+import auth0Generator from './auth0ManagementAPIResponseGenerator.js';
 
 class DummyAuthService extends AuthService {
   // eslint-disable-next-line
@@ -20,9 +20,10 @@ class DummyAuthService extends AuthService {
 
   // eslint-disable-next-line
   async createUser(data: { name: string; email: string }) {
-    const auth0Id = getRandomString();
     const mockUser = {
-      data: auth0Generator.getMockUserCreateResponse(`auth0|${auth0Id}`),
+      data: auth0Generator.getMockUserCreateResponse(
+        `auth0|${getRandomString()}`,
+      ),
       headers: '',
       status: 200,
       statusText: '',

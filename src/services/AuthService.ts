@@ -95,8 +95,8 @@ class AuthService {
    */
   async userExists(email: string): Promise<boolean> {
     const auth0Client: ManagementClient = this.getClient();
-    // Auth0 stores all emails as lower case, but if auth0 is not the IDP we store as case-sensitive
-    // TODO write test for this? or test this with idp google in console?
+    // Auth0 stores all emails as lower case, but if auth0 is not the IDP we store as case-sensitive.
+    // Google and Linkedin both case in-sensitive, this should be updated if we add case-sensitive IDPs in the future.
     const { data: users } = await auth0Client.usersByEmail.getByEmail({
       email: email.toLowerCase(),
     });
@@ -120,9 +120,10 @@ class AuthService {
       // TODO: When we have account linking setup, we won't need to do the double delete
       // Delete #1: Delete Auth0 User by ID
       await auth0Client.users.delete({ id: auth0Id });
-
+      // Auth0 stores all emails as lower case, but if auth0 is not the IDP we store as case-sensitive.
+      // Google and Linkedin both case in-sensitive, this should be updated if we add case-sensitive IDPs in the future.
       const { data: allUsers } = await auth0Client.usersByEmail.getByEmail({
-        email,
+        email: email.toLowerCase(),
       });
       const deletionRequests: Array<Promise<ApiResponse<void>>> = [];
       allUsers.forEach((user) => {

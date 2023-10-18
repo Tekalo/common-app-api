@@ -1,11 +1,8 @@
 import { jest } from '@jest/globals';
 import AuthService from '@App/services/AuthService.js';
-// import configLoader from '@App/services/configLoader.js';
-// import { ManagementClient, UsersByEmailManager } from 'auth0';
 import DummyAuth0ManagementClient from '../fixtures/DummyAuth0ManagementClient.js';
 import { getRandomString } from '../util/helpers.js';
-// import DummyAuth0UsersByEmail from '../fixtures/DummyAuth0UsersByEmail.js';
-import auth0ResponseGenerator from '../fixtures/auth0ResponseGenerator.js';
+import auth0ResponseGenerator from '../fixtures/auth0ManagementAPIResponseGenerator.js';
 import DummyAuth0EmailManager from '../fixtures/DummyAuth0UsersByEmailManager.js';
 
 describe('Auth Service', () => {

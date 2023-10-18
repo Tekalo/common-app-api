@@ -22,7 +22,7 @@ import {
 } from '@App/resources/types/applicants.js';
 import { Applicants } from '@capp/schemas';
 import { ZodError, ZodIssueCode } from 'zod';
-import auth0ResponseGenerator from '@App/tests/fixtures/auth0ResponseGenerator.js';
+import auth0ResponseGenerator from '@App/tests/fixtures/auth0ManagementAPIResponseGenerator.js';
 import { getMockConfig } from '../../util/helpers.js';
 
 let mockCtx: MockContext;
