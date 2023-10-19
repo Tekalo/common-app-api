@@ -1,6 +1,5 @@
 import { Applicant, Prisma, PrismaClient, UploadStatus } from '@prisma/client';
 import { AuthResult } from 'express-oauth2-jwt-bearer';
-import { AppMetadata, User, UserMetadata } from 'auth0';
 import {
   ApplicantResponseBody,
   ApplicantRequestBody,
@@ -56,7 +55,7 @@ class ApplicantController {
     auth?: AuthResult,
   ): Promise<ApplicantResponseBody> {
     let auth0UserId;
-    let auth0User: User<AppMetadata, UserMetadata> | undefined;
+    let auth0User;
     let returnApplicant: Applicant;
     // If our request already has a JWT, user must have signed up with social/password before registering.
     // Ensure registration email matches auth0 email
@@ -80,10 +79,10 @@ class ApplicantController {
           status: 409,
         });
       }
-      auth0User = await this.auth0Service.createUser({
+      ({ data: auth0User } = await this.auth0Service.createUser({
         name: data.name,
         email: data.email,
-      });
+      }));
       auth0UserId = auth0User?.user_id;
     }
     if (!auth0UserId) {
@@ -115,14 +114,15 @@ class ApplicantController {
       // A valid JWT at this stage means they are authenticated with social login.
       if (!auth) {
         try {
-          const { ticket } = await this.auth0Service.generatePasswordReset(
-            returnApplicant.auth0Id,
-          );
+          const { data: ticketResponse } =
+            await this.auth0Service.generatePasswordReset(
+              returnApplicant.auth0Id,
+            );
           const signInLink: string = AuthService.getSignInLink();
 
           const welcomeEmail = this.emailService.generateApplicantWelcomeEmail(
             returnApplicant.email,
-            ticket,
+            ticketResponse.ticket,
             signInLink,
           );
           await this.emailService.sendEmail(welcomeEmail);
@@ -335,7 +335,8 @@ class ApplicantController {
   // Deletes applicants who have no registration or application data from Auth0
   // and sends deletion complete email
   async deleteAuth0OnlyApplicant(auth0Id: string) {
-    const applicantToDelete = await this.auth0Service.getUser(auth0Id);
+    const { data: applicantToDelete } =
+      await this.auth0Service.getUser(auth0Id);
     // Create deletion request
     const neverDate = new Date('2000-01-01');
     await this.prisma.applicantDeletionRequests.create({
