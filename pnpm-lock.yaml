@@ -112,8 +112,8 @@ importers:
         specifier: 2.0.15
         version: 2.0.15
       '@types/swagger-ui-express':
-        specifier: 4.1.4
-        version: 4.1.4
+        specifier: 4.1.5
+        version: 4.1.5
       '@typescript-eslint/eslint-plugin':
         specifier: 6.7.5
         version: 6.7.5(@typescript-eslint/parser@6.7.5)(eslint@8.51.0)(typescript@5.2.2)
@@ -2586,8 +2586,8 @@ packages:
       '@types/superagent': 4.1.19
     dev: true
 
-  /@types/swagger-ui-express@4.1.4:
-    resolution: {integrity: sha512-h6dfIPFveCJKpStDtjrB+4pig4DAf9Uu2Z51RB7Fj3s6AifexmqhZxBoG50K/k3Afz7wyXsIAY5ZIDTlC2VjrQ==}
+  /@types/swagger-ui-express@4.1.5:
+    resolution: {integrity: sha512-MRvm1OCzIR321glc/4tP34wRVmsupgLzs6XIq50CFp0CJUzxbpDsrhJxEBMQfoO46ixrlCiw3QXxEs5HHxYI8Q==}
     dependencies:
       '@types/express': 4.17.20
       '@types/serve-static': 1.15.3
