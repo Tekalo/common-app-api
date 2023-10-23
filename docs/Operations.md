@@ -34,7 +34,7 @@ This alert comes from Sentry and indicates that the API or specific endpoints ar
 
 ### Sync [sync #] failed with error: error message
 
-This alert comes from Hightouch and indicates that there is a problem with the sync from the API Postgres database and Airtable. Sometimes the cause of the sync failure is a temporary outage of the Hightouch service. Check the [Hightouch status page](https://status.hightouch.io/) to see if there is a problem.
+This alert comes from Hightouch and indicates that there is a problem with the sync from the API Postgres database and Airtable. Sometimes the cause of the sync failure is a temporary outage of the Hightouch service. Check the [Hightouch status page](https://status.hightouch.io/) to see if there is a problem. More information about investigating Hightouch sync errors can be found [here](https://www.notion.so/schmidtfutures/ETL-Sync-Error-580a82c5c53648068b50dba1e01d0a34).
 
 ### ELB request count anomaly
 
