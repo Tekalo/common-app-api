@@ -2,9 +2,9 @@
 
 Tekalo uses [Auth0](https://manage.auth0.com) as its authentication mechanism for applicants.
 
-## Workflow
+## Flow
 
-# TODO: link to the auth0 flow diagram in github repo
+![Authentication Flow Diagram](../docs/media/Applicant_Auth_Flow.jpeg "Auth Flow")
 
 ## Actions
 
