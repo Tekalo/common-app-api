@@ -1,6 +1,6 @@
 # Data ReadMe
 
-At it's core, Tekalo is about getting data about candidates and opportunities to recruiting specialists. In order to do this, we have flows for users to fill out and edit their forms, but we need to get that data into an interface that matchmakers will be comfortable interacting with. The data pipeline is responsible for fetching the data from the backend's database and loading that data into Airtable, where certain automations are enacted upon it and the matchmakers can start their work.
+At it's core, Tekalo is about getting data about candidates and opportunities to talent connectors. In order to do this, we have flows for users to fill out and edit their forms, but we need to get that data into an interface that talent connectors will be comfortable interacting with. The data pipeline is responsible for fetching the data from the backend's database and loading that data into Airtable, where certain automations are enacted upon it and the talent connectors can start their work.
 
 ## ETL Pipeline
 
