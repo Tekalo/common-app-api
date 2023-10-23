@@ -22,6 +22,7 @@ import {
   UploadResponseBody,
   UploadStateResponseBody,
 } from '@App/resources/types/uploads.js';
+import { ApiResponse } from 'node_modules/auth0/dist/esm/lib/models.js';
 import {
   getAPIRequestBody,
   seedApplicant,
@@ -55,10 +56,10 @@ const dummyApp = getDummyApp();
 
 const deleteAuth0Users = async () => {
   if (testUserIDs.length) {
-    const deletionRequests = Array<Promise<void>>();
+    const deletionRequests: Array<Promise<ApiResponse<void>>> = [];
     const auth0Service = authService.getClient();
     testUserIDs.forEach((id) => {
-      deletionRequests.push(auth0Service.deleteUser({ id }));
+      deletionRequests.push(auth0Service.users.delete({ id }));
     });
     await Promise.all(deletionRequests);
     testUserIDs = [];
@@ -231,9 +232,7 @@ describe('POST /applicants', () => {
       });
     });
     test('Should update applicantID in cookie with 2 subsequent requests for 2 different users', async () => {
-      type RespHeaders = {
-        'set-cookie': string;
-      };
+      type RespHeaders = { 'set-cookie': string };
       const { clientSecret } = configLoader.loadConfig().auth0.api;
       const agent = request.agent(dummyApp);
 
@@ -806,7 +805,7 @@ describe('DELETE /applicants/me', () => {
         // logged in with a social account without registering
         const name = 'Bob TheTestUser';
         const email = `bboberson${randomString}@gmail.com`;
-        const auth0User = await authService.createUser({
+        const { data: auth0User } = await authService.createUser({
           name,
           email,
         });
@@ -852,14 +851,14 @@ describe('DELETE /applicants/me', () => {
       async () => {
         const name = 'Bob TheTestUser';
         const email = `bboberson${getRandomString()}@gmail.com`;
-        const auth0User = await authService.createUser({
+        const { data: auth0User } = await authService.createUser({
           name,
           email,
         });
 
         const name2 = 'Bob TheOtherTestUser';
         const email2 = `bboberson${getRandomString()}@gmail.com`;
-        const auth0User2 = await authService.createUser({
+        const { data: auth0User2 } = await authService.createUser({
           name: name2,
           email: email2,
         });
