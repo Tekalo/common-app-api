@@ -3,13 +3,13 @@
 Monitoring of the Tekalo API is configured in [Sentry](https://schmidt-futures.sentry.io/issues/?project=4504963428777984) and [AWS CloudWatch](https://us-east-1.console.aws.amazon.com/cloudwatch/home?region=us-east-1#dashboards/dashboard/capp-api-prod).
 Alarms have been set up to detect anomalous behavior and will trigger alerts in [PagerDuty](https://schmidtfutures.pagerduty.com/incidents).
 
-CloudWatch alarms are configured in [terraform](tf/modules/app/alarms.tf), while Sentry alarms are configured manually in the Sentry console.
+CloudWatch alarms are configured in [terraform](../tf/modules/app/alarms.tf), while Sentry alarms are configured manually in the Sentry console.
 
 [Hightouch](https://app.hightouch.com/common-app/extensions/alerting/configuration) syncs are also configured to alert through PagerDuty on sync error.
 
 Alerts are also configured in Sentry for the front-end application. Sentry is only configured to capture errors on static pages for the front-end, as it wasn't possible to set up Sentry for the middleware or proxy API due to limitations of Cloudflare (where the front-end is deployed). [Related ticket](https://github.com/cloudflare/next-on-pages/issues/174).
 
-For the most part alerts are configured only to trigger on production. Hightouch alerts are an exception to this as it is not currently possible to configure alerts per environment.
+For the most part alerts are configured only to trigger on production. Hightouch alerts are currently enabled for all environments.
 
 ## Where to go to investigate problems
 
@@ -22,7 +22,7 @@ For the most part alerts are configured only to trigger on production. Hightouch
 
 ### API error count
 
-This alert comes from Sentry and indicates that there are one or more errors coming from the API. We've configured Sentry to alarm on any error because the Tekalo API very rarely throws unhandled errors. Most likely if you see this alert it will be because there is a problem with code that was recently merged / deployed to production.
+This alert comes from Sentry and indicates that there are one or more unhandled errors coming from the API. We've configured Sentry to alarm on any error because the Tekalo API very rarely throws unhandled errors. Most likely if you see this alert it will be because there is a problem with code that was recently merged / deployed to production.
 
 ### API request failure rate
 
