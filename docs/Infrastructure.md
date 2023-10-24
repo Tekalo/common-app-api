@@ -34,7 +34,9 @@ Applicant resumés are stored in S3. The API generates a signed S3 upload link u
 
 ## Email
 
-SES
+Emails to applicants are triggered at different stages of the application and are sent by the API via AWS Simple Email Service (SES). Emails sent on behalf of the application by Auth0 are also handled by SES.
+
+It's important not to let the SES bounce rate get too high; if the configured domain sends a lot of email to bad email addresses it will get a reputation as a spam domain and will be blocked by email providers. AWS will preemptively block accounts with high bounce rates from sending emails until the problem has been mitigated. For this reason an email whitelist has been implemented for the dev and staging environments. Only emails with addresses on the whitelist will be sent. The whitelist is configured in the [terraform.tfvars](../tf/envs/staging/terraform.tfvars) for each environment.
 
 ## Logs
 
