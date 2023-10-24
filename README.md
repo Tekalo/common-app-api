@@ -1,6 +1,6 @@
 # CommonApp
 
-The Common App API is used to support the Common App Application, a tool for matching tech talent to opportunities at non-profit, philanthropic, and government organizations.
+The Common App API is used to support Tekalo, a tool for matching tech talent to opportunities at non-profit, philanthropic, and government organizations. A diagram depicting the backend architecture can be found [here](./docs/media/tekalo_backend_architecture.png)
 
 ## Getting Started
 
