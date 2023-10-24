@@ -12,7 +12,7 @@ Tekalo uses [Auth0](https://manage.auth0.com) as its authentication mechanism fo
 
 Tekalo uses 3 [Auth0 actions](https://auth0.com/docs/customize/actions) to customize the login flow. All 3 actions will be triggered every time a user logs in to Tekalo.
 
-### 1. **Add-Email-To-Access-Token***
+### 1. **Add-Email-To-Access-Token**
 Adds the user's email to the Auth0 access token. This allows the API to validate the JWT matches the applicant's email when calling various API endpoints that require authentication.
 
 ### 2. **Add-Role-To-Access-Token**
