@@ -6,7 +6,7 @@ Tekalo uses [Auth0](https://auth0.com) as its authentication mechanism for appli
 
 ## Flow
 
-![Authentication Flow Diagram](../docs/media/Applicant_Auth_Flow.jpeg "Auth Flow")
+![Authentication Flow Diagram](../docs/media/applicant_auth_flow.jpeg "Auth Flow")
 
 ## Actions
 
