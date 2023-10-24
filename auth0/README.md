@@ -32,4 +32,4 @@ In the scenario where a user creates themselves as an applicant, but leaves Teka
 
   3. Set a custom `auth0.capp.com/exists_in_db` claim in the Auth0 id token
 
-- If the applicant opts out of a social identity provider, they can create a password for their account via the Tekalo login page password reset link. The shell account allows for them to set a new password as the shell user with their email address and connection type `Username-Password-Authentication` already exists.
+- If the applicant chooses not to use a social identity provider, they can create a password for their account via the Tekalo login page password reset link. The shell account, which already has connection type `Username-Password-Authentication` will be updated with the new password set by the user. This converts the shell account into a verified user account.
