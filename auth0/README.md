@@ -41,4 +41,4 @@ When an applicant returns to the site, they'll need to login to revisit their ac
 
 - If the applicant chooses not to use a social identity provider, they can create a password for their account via the Tekalo login page password reset link. The shell account, which already has connection type `Username-Password-Authentication` will be updated with the new password set by the user. This converts the shell account into a verified user account.
 
-If Auth0 account linking is setup, this action will no longer be necssary.
+If Auth0 account linking is setup, this action will no longer be necessary.
