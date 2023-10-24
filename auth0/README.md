@@ -1,6 +1,6 @@
 # Auth0
 
-Tekalo uses [Auth0](https://manage.auth0.com) as its authentication mechanism for applicants. Tekalo has 2 Auth0 tenants:
+Tekalo uses [Auth0](https://auth0.com) as its authentication mechanism for applicants. You can manage Auth0 tenants via the [management console](https://manage.auth0.com). Tekalo has 2 Auth0 tenants:
 * [sf-capp-dev](https://manage.auth0.com/dashboard/us/sf-capp-dev/) for both Tekalo's dev and staging environments
 * [sf-futuresengine-prod](https://manage.auth0.com/dashboard/us/sf-futuresengine-prod/) for only Tekalo's production environment
 
