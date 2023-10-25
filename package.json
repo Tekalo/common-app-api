@@ -106,6 +106,10 @@
     "ts-node": "10.9.1",
     "typescript": "5.2.2"
   },
+  "//": "added to resolve a critical vulnerability in @babel/traverse 7.23.0",
+  "peerDependencies": {
+    "@babel/core": "7.23.2"
+  },
   "prisma": {
     "schema": "db/prisma/schema.prisma",
     "seed": "pnpx ts-node --transpile-only ./db/resources/seed.ts"
