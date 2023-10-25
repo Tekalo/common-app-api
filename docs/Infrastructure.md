@@ -40,8 +40,10 @@ It's important not to let the SES bounce rate get too high; if the configured do
 
 ## Logs
 
-CloudWatch
+Each API tasks outputs logs to [CloudWatch](https://us-east-1.console.aws.amazon.com/cloudwatch/home?region=us-east-1#logsV2:log-groups/log-group/CAPP$252Fprod$252FApi). Additionally, Auth0 logs are imported into [CloudWatch](https://us-east-1.console.aws.amazon.com/cloudwatch/home?region=us-east-1#logsV2:log-groups/log-group/$252Faws$252Fevents$252Fauth0-tekalo-prod) to extend their retention period and make them easier to search. Another potentially useful log in CloudWatch are those related to the [password rotation function](https://us-east-1.console.aws.amazon.com/cloudwatch/home?region=us-east-1#logsV2:log-groups/log-group/$252Faws$252Flambda$252Fcapp-prod-rds-postgres-rotator-func).
 
 ## Metrics, dashboards, and alarms
 
-CloudWatch
+CloudWatch collects metrics on all of the infrastructure we run in AWS. There is a [dashboard](https://us-east-1.console.aws.amazon.com/cloudwatch/home?region=us-east-1#dashboards/dashboard/capp-api-prod) that can give an overview of the overall health of the API infrastructure.
+
+[Alarms](<https://us-east-1.console.aws.amazon.com/cloudwatch/home?region=us-east-1#alarmsV2:?~(search~'capp-prod)>) have also been configured for most of the pieces of infrastructure supporting the API. These will trigger alerts in PagerDuty if the alarm thresholds are exceeded.
