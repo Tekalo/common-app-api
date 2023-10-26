@@ -30,7 +30,7 @@ There is currently only one database instance in the cluster, though it would pr
 
 ## Storage
 
-Applicant resumés are stored in S3. The API generates a signed S3 upload link upon client request and generates a signed link to retrieve the resume for logged-in users with sufficient permissions. The S3 bucket has been configured with intelligent tiering to reduce storage costs.
+Applicant resumés are stored in S3. The API generates a signed S3 upload link upon client request and generates a [pre-signed URL](https://docs.aws.amazon.com/AmazonS3/latest/userguide/ShareObjectPreSignedURL.html) to retrieve the resume for logged-in users with sufficient permissions. The S3 bucket has been configured with intelligent tiering to reduce storage costs.
 
 ## Email
 
