@@ -92,6 +92,14 @@ pnpm container-install --save-dev pino-pretty # same as: pnpm install --save-dev
 
 If you do accidentally run `pnpm install` or otherwise mess up your node modules, deleting your `.pnpm-store` and `node_modules` folders should bring you back to a good state.
 
+Below is a diagram depicting the high-level architecture of the API and its related services.
+
+## Architecture
+
+Below is a diagram depicting the high-level architecture of the API and its related services.
+
+![API Architecture Diagram](./docs/media/tekalo_api_architecture.png 'API Architecture')
+
 ## Database
 
 We make use of Prisma as an ORM over our Postgres database
