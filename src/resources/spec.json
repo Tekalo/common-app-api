@@ -37,7 +37,108 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/applicantRequestBody"
+                "type": "object",
+                "properties": {
+                  "ApplicantRequestBodySchema": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "maxLength": 255
+                      },
+                      "email": {
+                        "type": "string",
+                        "format": "email"
+                      },
+                      "phone": {
+                        "type": "string"
+                      },
+                      "pronoun": {
+                        "type": "string",
+                        "maxLength": 255
+                      },
+                      "preferredContact": {
+                        "type": "string",
+                        "enum": ["sms", "whatsapp", "email"]
+                      },
+                      "searchStatus": {
+                        "type": "string",
+                        "enum": ["active", "passive", "future"]
+                      },
+                      "acceptedTerms": {
+                        "type": "boolean",
+                        "enum": [true]
+                      },
+                      "acceptedPrivacy": {
+                        "type": "boolean",
+                        "enum": [true]
+                      },
+                      "followUpOptIn": {
+                        "type": "boolean"
+                      },
+                      "utmParams": {
+                        "type": "object",
+                        "nullable": true,
+                        "properties": {
+                          "utm_source": {
+                            "type": "string",
+                            "nullable": true,
+                            "maxLength": 200
+                          },
+                          "utm_medium": {
+                            "type": "string",
+                            "nullable": true,
+                            "maxLength": 200
+                          },
+                          "utm_campaign": {
+                            "type": "string",
+                            "nullable": true,
+                            "maxLength": 200
+                          },
+                          "utm_term": {
+                            "type": "string",
+                            "nullable": true,
+                            "maxLength": 200
+                          },
+                          "utm_content": {
+                            "type": "string",
+                            "nullable": true,
+                            "maxLength": 200
+                          },
+                          "utm_id": {
+                            "type": "string",
+                            "nullable": true,
+                            "maxLength": 200
+                          },
+                          "utm_source_platform": {
+                            "type": "string",
+                            "nullable": true,
+                            "maxLength": 200
+                          },
+                          "ga_client_id": {
+                            "type": "string",
+                            "nullable": true,
+                            "maxLength": 200
+                          },
+                          "ga_session_id": {
+                            "type": "string",
+                            "nullable": true,
+                            "maxLength": 200
+                          }
+                        }
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "email",
+                      "preferredContact",
+                      "searchStatus",
+                      "acceptedTerms",
+                      "acceptedPrivacy"
+                    ]
+                  }
+                },
+                "required": ["ApplicantRequestBodySchema"]
               }
             }
           }
@@ -49,19 +150,25 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "additionalProperties": false,
                   "properties": {
-                    "id": {
-                      "type": "number"
-                    },
-                    "email": {
-                      "type": "string"
-                    },
-                    "auth0Id": {
-                      "type": "boolean",
-                      "nullable": true
+                    "ApplicantResponseBodySchema": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "number"
+                        },
+                        "auth0Id": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "email": {
+                          "type": "string"
+                        }
+                      },
+                      "required": ["id", "auth0Id", "email"]
                     }
-                  }
+                  },
+                  "required": ["ApplicantResponseBodySchema"]
                 }
               }
             }
@@ -166,12 +273,18 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "additionalProperties": false,
                 "properties": {
-                  "pause": {
-                    "type": "boolean"
+                  "ApplicantStateRequestBodySchema": {
+                    "type": "object",
+                    "properties": {
+                      "pause": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": ["pause"]
                   }
-                }
+                },
+                "required": ["ApplicantStateRequestBodySchema"]
               }
             }
           }
@@ -206,15 +319,475 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "additionalProperties": false,
                   "properties": {
-                    "isFinal": {
-                      "type": "boolean"
-                    },
-                    "submission": {
-                      "type": "object"
+                    "ApplicantGetSubmissionsResponseBodySchema": {
+                      "type": "object",
+                      "properties": {
+                        "submission": {
+                          "anyOf": [
+                            {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "number"
+                                },
+                                "applicantId": {
+                                  "type": "number"
+                                },
+                                "createdAt": {
+                                  "type": "string"
+                                },
+                                "updatedAt": {
+                                  "type": "string"
+                                },
+                                "originTag": {
+                                  "type": "string",
+                                  "nullable": true
+                                },
+                                "lastRole": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "maxLength": 255
+                                },
+                                "lastOrg": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "maxLength": 255
+                                },
+                                "yoe": {
+                                  "type": "string",
+                                  "nullable": true
+                                },
+                                "skills": {
+                                  "type": "array",
+                                  "nullable": true,
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                },
+                                "otherSkills": {
+                                  "type": "array",
+                                  "nullable": true,
+                                  "items": {
+                                    "type": "string",
+                                    "maxLength": 255
+                                  }
+                                },
+                                "linkedInUrl": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "maxLength": 500
+                                },
+                                "githubUrl": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "maxLength": 500
+                                },
+                                "portfolioUrl": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "maxLength": 500
+                                },
+                                "portfolioPassword": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "maxLength": 255
+                                },
+                                "resumeUpload": {
+                                  "type": "object",
+                                  "nullable": true,
+                                  "properties": {
+                                    "id": {
+                                      "type": "number"
+                                    },
+                                    "originalFilename": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "required": ["id", "originalFilename"]
+                                },
+                                "resumeUrl": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "maxLength": 500
+                                },
+                                "resumePassword": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "maxLength": 255
+                                },
+                                "hoursPerWeek": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "maxLength": 255
+                                },
+                                "interestEmploymentType": {
+                                  "type": "array",
+                                  "nullable": true,
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                },
+                                "interestWorkArrangement": {
+                                  "type": "array",
+                                  "nullable": true,
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                },
+                                "interestRoles": {
+                                  "type": "array",
+                                  "nullable": true,
+                                  "items": {
+                                    "type": "string",
+                                    "maxLength": 255
+                                  }
+                                },
+                                "currentLocation": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "maxLength": 255
+                                },
+                                "openToRelocate": {
+                                  "type": "string",
+                                  "nullable": true
+                                },
+                                "openToRemoteMulti": {
+                                  "type": "array",
+                                  "nullable": true,
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                },
+                                "desiredSalary": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "maxLength": 255
+                                },
+                                "interestCauses": {
+                                  "type": "array",
+                                  "nullable": true,
+                                  "items": {
+                                    "type": "string",
+                                    "maxLength": 255
+                                  }
+                                },
+                                "otherCauses": {
+                                  "type": "array",
+                                  "nullable": true,
+                                  "items": {
+                                    "type": "string",
+                                    "maxLength": 255
+                                  }
+                                },
+                                "workAuthorization": {
+                                  "type": "string",
+                                  "nullable": true
+                                },
+                                "interestGovt": {
+                                  "type": "boolean",
+                                  "nullable": true
+                                },
+                                "interestGovtEmplTypes": {
+                                  "type": "array",
+                                  "nullable": true,
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                },
+                                "previousImpactExperience": {
+                                  "type": "boolean",
+                                  "nullable": true
+                                },
+                                "essayResponse": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "maxLength": 5000
+                                },
+                                "referenceAttribution": {
+                                  "type": "string",
+                                  "nullable": true
+                                },
+                                "referenceAttributionOther": {
+                                  "type": "string",
+                                  "nullable": true
+                                }
+                              },
+                              "required": [
+                                "id",
+                                "applicantId",
+                                "createdAt",
+                                "updatedAt",
+                                "originTag",
+                                "lastRole",
+                                "lastOrg",
+                                "yoe",
+                                "skills",
+                                "otherSkills",
+                                "linkedInUrl",
+                                "githubUrl",
+                                "portfolioUrl",
+                                "portfolioPassword",
+                                "resumeUpload",
+                                "resumeUrl",
+                                "resumePassword",
+                                "hoursPerWeek",
+                                "interestEmploymentType",
+                                "interestWorkArrangement",
+                                "interestRoles",
+                                "currentLocation",
+                                "openToRelocate",
+                                "openToRemoteMulti",
+                                "desiredSalary",
+                                "interestCauses",
+                                "otherCauses",
+                                "workAuthorization",
+                                "interestGovt",
+                                "interestGovtEmplTypes",
+                                "previousImpactExperience",
+                                "essayResponse",
+                                "referenceAttribution",
+                                "referenceAttributionOther"
+                              ]
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "number"
+                                },
+                                "applicantId": {
+                                  "type": "number"
+                                },
+                                "createdAt": {
+                                  "type": "string"
+                                },
+                                "updatedAt": {
+                                  "type": "string"
+                                },
+                                "originTag": {
+                                  "type": "string",
+                                  "nullable": true
+                                },
+                                "lastRole": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "maxLength": 255
+                                },
+                                "lastOrg": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "maxLength": 255
+                                },
+                                "yoe": {
+                                  "type": "string",
+                                  "nullable": true
+                                },
+                                "skills": {
+                                  "type": "array",
+                                  "nullable": true,
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                },
+                                "otherSkills": {
+                                  "type": "array",
+                                  "nullable": true,
+                                  "items": {
+                                    "type": "string",
+                                    "maxLength": 255
+                                  }
+                                },
+                                "linkedInUrl": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "maxLength": 500
+                                },
+                                "githubUrl": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "maxLength": 500
+                                },
+                                "portfolioUrl": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "maxLength": 500
+                                },
+                                "portfolioPassword": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "maxLength": 255
+                                },
+                                "resumeUpload": {
+                                  "type": "object",
+                                  "nullable": true,
+                                  "properties": {
+                                    "id": {
+                                      "type": "number"
+                                    },
+                                    "originalFilename": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "required": ["id", "originalFilename"]
+                                },
+                                "resumeUrl": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "maxLength": 500
+                                },
+                                "resumePassword": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "maxLength": 255
+                                },
+                                "hoursPerWeek": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "maxLength": 255
+                                },
+                                "interestEmploymentType": {
+                                  "type": "array",
+                                  "nullable": true,
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                },
+                                "interestWorkArrangement": {
+                                  "type": "array",
+                                  "nullable": true,
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                },
+                                "interestRoles": {
+                                  "type": "array",
+                                  "nullable": true,
+                                  "items": {
+                                    "type": "string",
+                                    "maxLength": 255
+                                  }
+                                },
+                                "currentLocation": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "maxLength": 255
+                                },
+                                "openToRelocate": {
+                                  "type": "string",
+                                  "nullable": true
+                                },
+                                "openToRemoteMulti": {
+                                  "type": "array",
+                                  "nullable": true,
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                },
+                                "desiredSalary": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "maxLength": 255
+                                },
+                                "interestCauses": {
+                                  "type": "array",
+                                  "nullable": true,
+                                  "items": {
+                                    "type": "string",
+                                    "maxLength": 255
+                                  }
+                                },
+                                "otherCauses": {
+                                  "type": "array",
+                                  "nullable": true,
+                                  "items": {
+                                    "type": "string",
+                                    "maxLength": 255
+                                  }
+                                },
+                                "workAuthorization": {
+                                  "type": "string",
+                                  "nullable": true
+                                },
+                                "interestGovt": {
+                                  "type": "boolean",
+                                  "nullable": true
+                                },
+                                "interestGovtEmplTypes": {
+                                  "type": "array",
+                                  "nullable": true,
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                },
+                                "previousImpactExperience": {
+                                  "type": "boolean",
+                                  "nullable": true
+                                },
+                                "essayResponse": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "maxLength": 5000
+                                },
+                                "referenceAttribution": {
+                                  "type": "string",
+                                  "nullable": true
+                                },
+                                "referenceAttributionOther": {
+                                  "type": "string",
+                                  "nullable": true
+                                }
+                              },
+                              "required": [
+                                "id",
+                                "applicantId",
+                                "createdAt",
+                                "updatedAt",
+                                "originTag",
+                                "lastRole",
+                                "lastOrg",
+                                "yoe",
+                                "skills",
+                                "otherSkills",
+                                "linkedInUrl",
+                                "githubUrl",
+                                "portfolioUrl",
+                                "portfolioPassword",
+                                "resumeUpload",
+                                "resumeUrl",
+                                "resumePassword",
+                                "hoursPerWeek",
+                                "interestEmploymentType",
+                                "interestWorkArrangement",
+                                "interestRoles",
+                                "currentLocation",
+                                "openToRelocate",
+                                "openToRemoteMulti",
+                                "desiredSalary",
+                                "interestCauses",
+                                "otherCauses",
+                                "workAuthorization",
+                                "interestGovt",
+                                "interestGovtEmplTypes",
+                                "previousImpactExperience",
+                                "essayResponse",
+                                "referenceAttribution",
+                                "referenceAttributionOther"
+                              ]
+                            },
+                            {
+                              "nullable": true
+                            }
+                          ]
+                        },
+                        "isFinal": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": ["submission", "isFinal"]
                     }
-                  }
+                  },
+                  "required": ["ApplicantGetSubmissionsResponseBodySchema"]
                 }
               }
             }
@@ -228,7 +801,282 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/applicantSubmissionRequestBody"
+                "type": "object",
+                "properties": {
+                  "ApplicantCreateSubmissionRequestBodySchema": {
+                    "type": "object",
+                    "properties": {
+                      "originTag": {
+                        "type": "string"
+                      },
+                      "lastRole": {
+                        "type": "string",
+                        "maxLength": 255
+                      },
+                      "resumeUpload": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "number"
+                          }
+                        },
+                        "required": ["id"]
+                      },
+                      "lastOrg": {
+                        "type": "string",
+                        "maxLength": 255
+                      },
+                      "yoe": {
+                        "type": "string",
+                        "enum": [
+                          "<1",
+                          "1",
+                          "2",
+                          "3",
+                          "4",
+                          "5",
+                          "6",
+                          "7",
+                          "8",
+                          "9",
+                          "10",
+                          ">11"
+                        ]
+                      },
+                      "skills": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "enum": [
+                            "react",
+                            "javascript",
+                            "python",
+                            "java",
+                            "sql",
+                            "privacy",
+                            "security",
+                            "devops",
+                            "figma",
+                            "sketch",
+                            "prototyping",
+                            "user research",
+                            "product development",
+                            "project management"
+                          ]
+                        }
+                      },
+                      "otherSkills": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "maxLength": 255
+                        }
+                      },
+                      "linkedInUrl": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 500
+                      },
+                      "githubUrl": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 500
+                      },
+                      "portfolioUrl": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 500
+                      },
+                      "portfolioPassword": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 255
+                      },
+                      "resumeUrl": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 500
+                      },
+                      "resumePassword": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 255
+                      },
+                      "hoursPerWeek": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 255
+                      },
+                      "interestEmploymentType": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "enum": ["full", "part"]
+                        }
+                      },
+                      "interestWorkArrangement": {
+                        "type": "array",
+                        "nullable": true,
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "interestRoles": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "maxLength": 255
+                        }
+                      },
+                      "currentLocation": {
+                        "type": "string",
+                        "maxLength": 255
+                      },
+                      "openToRelocate": {
+                        "type": "string",
+                        "enum": ["yes", "no", "not sure"]
+                      },
+                      "openToRemoteMulti": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "enum": ["remote", "in-person", "hybrid", "not sure"]
+                        }
+                      },
+                      "desiredSalary": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 255
+                      },
+                      "interestCauses": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "maxLength": 255
+                        }
+                      },
+                      "otherCauses": {
+                        "type": "array",
+                        "nullable": true,
+                        "items": {
+                          "type": "string",
+                          "maxLength": 255
+                        }
+                      },
+                      "workAuthorization": {
+                        "type": "string",
+                        "nullable": true,
+                        "enum": ["authorized", "sponsorship", null]
+                      },
+                      "interestGovt": {
+                        "type": "boolean"
+                      },
+                      "interestGovtEmplTypes": {
+                        "type": "array",
+                        "nullable": true,
+                        "items": {
+                          "type": "string",
+                          "enum": ["paid", "unpaid"]
+                        }
+                      },
+                      "previousImpactExperience": {
+                        "type": "boolean"
+                      },
+                      "essayResponse": {
+                        "type": "string",
+                        "maxLength": 5000
+                      },
+                      "utmParams": {
+                        "type": "object",
+                        "nullable": true,
+                        "properties": {
+                          "utm_source": {
+                            "type": "string",
+                            "nullable": true,
+                            "maxLength": 200
+                          },
+                          "utm_medium": {
+                            "type": "string",
+                            "nullable": true,
+                            "maxLength": 200
+                          },
+                          "utm_campaign": {
+                            "type": "string",
+                            "nullable": true,
+                            "maxLength": 200
+                          },
+                          "utm_term": {
+                            "type": "string",
+                            "nullable": true,
+                            "maxLength": 200
+                          },
+                          "utm_content": {
+                            "type": "string",
+                            "nullable": true,
+                            "maxLength": 200
+                          },
+                          "utm_id": {
+                            "type": "string",
+                            "nullable": true,
+                            "maxLength": 200
+                          },
+                          "utm_source_platform": {
+                            "type": "string",
+                            "nullable": true,
+                            "maxLength": 200
+                          },
+                          "ga_client_id": {
+                            "type": "string",
+                            "nullable": true,
+                            "maxLength": 200
+                          },
+                          "ga_session_id": {
+                            "type": "string",
+                            "nullable": true,
+                            "maxLength": 200
+                          }
+                        }
+                      },
+                      "referenceAttribution": {
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "referenceAttributionOther": {
+                        "type": "string",
+                        "nullable": true
+                      }
+                    },
+                    "required": [
+                      "originTag",
+                      "lastRole",
+                      "resumeUpload",
+                      "lastOrg",
+                      "yoe",
+                      "skills",
+                      "otherSkills",
+                      "linkedInUrl",
+                      "githubUrl",
+                      "portfolioUrl",
+                      "portfolioPassword",
+                      "hoursPerWeek",
+                      "interestEmploymentType",
+                      "interestRoles",
+                      "currentLocation",
+                      "openToRelocate",
+                      "openToRemoteMulti",
+                      "desiredSalary",
+                      "interestCauses",
+                      "otherCauses",
+                      "workAuthorization",
+                      "interestGovt",
+                      "interestGovtEmplTypes",
+                      "previousImpactExperience",
+                      "essayResponse",
+                      "referenceAttribution"
+                    ]
+                  }
+                },
+                "required": ["ApplicantCreateSubmissionRequestBodySchema"]
               }
             }
           }
@@ -239,7 +1087,244 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object"
+                  "type": "object",
+                  "properties": {
+                    "ApplicantCreateSubmissionResponseBodySchema": {
+                      "type": "object",
+                      "properties": {
+                        "submission": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "number"
+                            },
+                            "applicantId": {
+                              "type": "number"
+                            },
+                            "createdAt": {
+                              "type": "string"
+                            },
+                            "updatedAt": {
+                              "type": "string"
+                            },
+                            "originTag": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "lastRole": {
+                              "type": "string",
+                              "nullable": true,
+                              "maxLength": 255
+                            },
+                            "lastOrg": {
+                              "type": "string",
+                              "nullable": true,
+                              "maxLength": 255
+                            },
+                            "yoe": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "skills": {
+                              "type": "array",
+                              "nullable": true,
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            "otherSkills": {
+                              "type": "array",
+                              "nullable": true,
+                              "items": {
+                                "type": "string",
+                                "maxLength": 255
+                              }
+                            },
+                            "linkedInUrl": {
+                              "type": "string",
+                              "nullable": true,
+                              "maxLength": 500
+                            },
+                            "githubUrl": {
+                              "type": "string",
+                              "nullable": true,
+                              "maxLength": 500
+                            },
+                            "portfolioUrl": {
+                              "type": "string",
+                              "nullable": true,
+                              "maxLength": 500
+                            },
+                            "portfolioPassword": {
+                              "type": "string",
+                              "nullable": true,
+                              "maxLength": 255
+                            },
+                            "resumeUpload": {
+                              "type": "object",
+                              "nullable": true,
+                              "properties": {
+                                "id": {
+                                  "type": "number"
+                                },
+                                "originalFilename": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": ["id", "originalFilename"]
+                            },
+                            "resumeUrl": {
+                              "type": "string",
+                              "nullable": true,
+                              "maxLength": 500
+                            },
+                            "resumePassword": {
+                              "type": "string",
+                              "nullable": true,
+                              "maxLength": 255
+                            },
+                            "hoursPerWeek": {
+                              "type": "string",
+                              "nullable": true,
+                              "maxLength": 255
+                            },
+                            "interestEmploymentType": {
+                              "type": "array",
+                              "nullable": true,
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            "interestWorkArrangement": {
+                              "type": "array",
+                              "nullable": true,
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            "interestRoles": {
+                              "type": "array",
+                              "nullable": true,
+                              "items": {
+                                "type": "string",
+                                "maxLength": 255
+                              }
+                            },
+                            "currentLocation": {
+                              "type": "string",
+                              "nullable": true,
+                              "maxLength": 255
+                            },
+                            "openToRelocate": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "openToRemoteMulti": {
+                              "type": "array",
+                              "nullable": true,
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            "desiredSalary": {
+                              "type": "string",
+                              "nullable": true,
+                              "maxLength": 255
+                            },
+                            "interestCauses": {
+                              "type": "array",
+                              "nullable": true,
+                              "items": {
+                                "type": "string",
+                                "maxLength": 255
+                              }
+                            },
+                            "otherCauses": {
+                              "type": "array",
+                              "nullable": true,
+                              "items": {
+                                "type": "string",
+                                "maxLength": 255
+                              }
+                            },
+                            "workAuthorization": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "interestGovt": {
+                              "type": "boolean",
+                              "nullable": true
+                            },
+                            "interestGovtEmplTypes": {
+                              "type": "array",
+                              "nullable": true,
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            "previousImpactExperience": {
+                              "type": "boolean",
+                              "nullable": true
+                            },
+                            "essayResponse": {
+                              "type": "string",
+                              "nullable": true,
+                              "maxLength": 5000
+                            },
+                            "referenceAttribution": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "referenceAttributionOther": {
+                              "type": "string",
+                              "nullable": true
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "applicantId",
+                            "createdAt",
+                            "updatedAt",
+                            "originTag",
+                            "lastRole",
+                            "lastOrg",
+                            "yoe",
+                            "skills",
+                            "otherSkills",
+                            "linkedInUrl",
+                            "githubUrl",
+                            "portfolioUrl",
+                            "portfolioPassword",
+                            "resumeUpload",
+                            "resumeUrl",
+                            "resumePassword",
+                            "hoursPerWeek",
+                            "interestEmploymentType",
+                            "interestWorkArrangement",
+                            "interestRoles",
+                            "currentLocation",
+                            "openToRelocate",
+                            "openToRemoteMulti",
+                            "desiredSalary",
+                            "interestCauses",
+                            "otherCauses",
+                            "workAuthorization",
+                            "interestGovt",
+                            "interestGovtEmplTypes",
+                            "previousImpactExperience",
+                            "essayResponse",
+                            "referenceAttribution",
+                            "referenceAttributionOther"
+                          ]
+                        },
+                        "isFinal": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": ["submission", "isFinal"]
+                    }
+                  },
+                  "required": ["ApplicantCreateSubmissionResponseBodySchema"]
                 }
               }
             }
@@ -263,7 +1348,282 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/applicantSubmissionRequestBody"
+                "type": "object",
+                "properties": {
+                  "ApplicantCreateSubmissionRequestBodySchema": {
+                    "type": "object",
+                    "properties": {
+                      "originTag": {
+                        "type": "string"
+                      },
+                      "lastRole": {
+                        "type": "string",
+                        "maxLength": 255
+                      },
+                      "resumeUpload": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "number"
+                          }
+                        },
+                        "required": ["id"]
+                      },
+                      "lastOrg": {
+                        "type": "string",
+                        "maxLength": 255
+                      },
+                      "yoe": {
+                        "type": "string",
+                        "enum": [
+                          "<1",
+                          "1",
+                          "2",
+                          "3",
+                          "4",
+                          "5",
+                          "6",
+                          "7",
+                          "8",
+                          "9",
+                          "10",
+                          ">11"
+                        ]
+                      },
+                      "skills": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "enum": [
+                            "react",
+                            "javascript",
+                            "python",
+                            "java",
+                            "sql",
+                            "privacy",
+                            "security",
+                            "devops",
+                            "figma",
+                            "sketch",
+                            "prototyping",
+                            "user research",
+                            "product development",
+                            "project management"
+                          ]
+                        }
+                      },
+                      "otherSkills": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "maxLength": 255
+                        }
+                      },
+                      "linkedInUrl": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 500
+                      },
+                      "githubUrl": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 500
+                      },
+                      "portfolioUrl": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 500
+                      },
+                      "portfolioPassword": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 255
+                      },
+                      "resumeUrl": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 500
+                      },
+                      "resumePassword": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 255
+                      },
+                      "hoursPerWeek": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 255
+                      },
+                      "interestEmploymentType": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "enum": ["full", "part"]
+                        }
+                      },
+                      "interestWorkArrangement": {
+                        "type": "array",
+                        "nullable": true,
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "interestRoles": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "maxLength": 255
+                        }
+                      },
+                      "currentLocation": {
+                        "type": "string",
+                        "maxLength": 255
+                      },
+                      "openToRelocate": {
+                        "type": "string",
+                        "enum": ["yes", "no", "not sure"]
+                      },
+                      "openToRemoteMulti": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "enum": ["remote", "in-person", "hybrid", "not sure"]
+                        }
+                      },
+                      "desiredSalary": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 255
+                      },
+                      "interestCauses": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "maxLength": 255
+                        }
+                      },
+                      "otherCauses": {
+                        "type": "array",
+                        "nullable": true,
+                        "items": {
+                          "type": "string",
+                          "maxLength": 255
+                        }
+                      },
+                      "workAuthorization": {
+                        "type": "string",
+                        "nullable": true,
+                        "enum": ["authorized", "sponsorship", null]
+                      },
+                      "interestGovt": {
+                        "type": "boolean"
+                      },
+                      "interestGovtEmplTypes": {
+                        "type": "array",
+                        "nullable": true,
+                        "items": {
+                          "type": "string",
+                          "enum": ["paid", "unpaid"]
+                        }
+                      },
+                      "previousImpactExperience": {
+                        "type": "boolean"
+                      },
+                      "essayResponse": {
+                        "type": "string",
+                        "maxLength": 5000
+                      },
+                      "utmParams": {
+                        "type": "object",
+                        "nullable": true,
+                        "properties": {
+                          "utm_source": {
+                            "type": "string",
+                            "nullable": true,
+                            "maxLength": 200
+                          },
+                          "utm_medium": {
+                            "type": "string",
+                            "nullable": true,
+                            "maxLength": 200
+                          },
+                          "utm_campaign": {
+                            "type": "string",
+                            "nullable": true,
+                            "maxLength": 200
+                          },
+                          "utm_term": {
+                            "type": "string",
+                            "nullable": true,
+                            "maxLength": 200
+                          },
+                          "utm_content": {
+                            "type": "string",
+                            "nullable": true,
+                            "maxLength": 200
+                          },
+                          "utm_id": {
+                            "type": "string",
+                            "nullable": true,
+                            "maxLength": 200
+                          },
+                          "utm_source_platform": {
+                            "type": "string",
+                            "nullable": true,
+                            "maxLength": 200
+                          },
+                          "ga_client_id": {
+                            "type": "string",
+                            "nullable": true,
+                            "maxLength": 200
+                          },
+                          "ga_session_id": {
+                            "type": "string",
+                            "nullable": true,
+                            "maxLength": 200
+                          }
+                        }
+                      },
+                      "referenceAttribution": {
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "referenceAttributionOther": {
+                        "type": "string",
+                        "nullable": true
+                      }
+                    },
+                    "required": [
+                      "originTag",
+                      "lastRole",
+                      "resumeUpload",
+                      "lastOrg",
+                      "yoe",
+                      "skills",
+                      "otherSkills",
+                      "linkedInUrl",
+                      "githubUrl",
+                      "portfolioUrl",
+                      "portfolioPassword",
+                      "hoursPerWeek",
+                      "interestEmploymentType",
+                      "interestRoles",
+                      "currentLocation",
+                      "openToRelocate",
+                      "openToRemoteMulti",
+                      "desiredSalary",
+                      "interestCauses",
+                      "otherCauses",
+                      "workAuthorization",
+                      "interestGovt",
+                      "interestGovtEmplTypes",
+                      "previousImpactExperience",
+                      "essayResponse",
+                      "referenceAttribution"
+                    ]
+                  }
+                },
+                "required": ["ApplicantCreateSubmissionRequestBodySchema"]
               }
             }
           }
@@ -274,7 +1634,244 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object"
+                  "type": "object",
+                  "properties": {
+                    "ApplicantCreateSubmissionResponseBodySchema": {
+                      "type": "object",
+                      "properties": {
+                        "submission": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "number"
+                            },
+                            "applicantId": {
+                              "type": "number"
+                            },
+                            "createdAt": {
+                              "type": "string"
+                            },
+                            "updatedAt": {
+                              "type": "string"
+                            },
+                            "originTag": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "lastRole": {
+                              "type": "string",
+                              "nullable": true,
+                              "maxLength": 255
+                            },
+                            "lastOrg": {
+                              "type": "string",
+                              "nullable": true,
+                              "maxLength": 255
+                            },
+                            "yoe": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "skills": {
+                              "type": "array",
+                              "nullable": true,
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            "otherSkills": {
+                              "type": "array",
+                              "nullable": true,
+                              "items": {
+                                "type": "string",
+                                "maxLength": 255
+                              }
+                            },
+                            "linkedInUrl": {
+                              "type": "string",
+                              "nullable": true,
+                              "maxLength": 500
+                            },
+                            "githubUrl": {
+                              "type": "string",
+                              "nullable": true,
+                              "maxLength": 500
+                            },
+                            "portfolioUrl": {
+                              "type": "string",
+                              "nullable": true,
+                              "maxLength": 500
+                            },
+                            "portfolioPassword": {
+                              "type": "string",
+                              "nullable": true,
+                              "maxLength": 255
+                            },
+                            "resumeUpload": {
+                              "type": "object",
+                              "nullable": true,
+                              "properties": {
+                                "id": {
+                                  "type": "number"
+                                },
+                                "originalFilename": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": ["id", "originalFilename"]
+                            },
+                            "resumeUrl": {
+                              "type": "string",
+                              "nullable": true,
+                              "maxLength": 500
+                            },
+                            "resumePassword": {
+                              "type": "string",
+                              "nullable": true,
+                              "maxLength": 255
+                            },
+                            "hoursPerWeek": {
+                              "type": "string",
+                              "nullable": true,
+                              "maxLength": 255
+                            },
+                            "interestEmploymentType": {
+                              "type": "array",
+                              "nullable": true,
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            "interestWorkArrangement": {
+                              "type": "array",
+                              "nullable": true,
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            "interestRoles": {
+                              "type": "array",
+                              "nullable": true,
+                              "items": {
+                                "type": "string",
+                                "maxLength": 255
+                              }
+                            },
+                            "currentLocation": {
+                              "type": "string",
+                              "nullable": true,
+                              "maxLength": 255
+                            },
+                            "openToRelocate": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "openToRemoteMulti": {
+                              "type": "array",
+                              "nullable": true,
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            "desiredSalary": {
+                              "type": "string",
+                              "nullable": true,
+                              "maxLength": 255
+                            },
+                            "interestCauses": {
+                              "type": "array",
+                              "nullable": true,
+                              "items": {
+                                "type": "string",
+                                "maxLength": 255
+                              }
+                            },
+                            "otherCauses": {
+                              "type": "array",
+                              "nullable": true,
+                              "items": {
+                                "type": "string",
+                                "maxLength": 255
+                              }
+                            },
+                            "workAuthorization": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "interestGovt": {
+                              "type": "boolean",
+                              "nullable": true
+                            },
+                            "interestGovtEmplTypes": {
+                              "type": "array",
+                              "nullable": true,
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            "previousImpactExperience": {
+                              "type": "boolean",
+                              "nullable": true
+                            },
+                            "essayResponse": {
+                              "type": "string",
+                              "nullable": true,
+                              "maxLength": 5000
+                            },
+                            "referenceAttribution": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "referenceAttributionOther": {
+                              "type": "string",
+                              "nullable": true
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "applicantId",
+                            "createdAt",
+                            "updatedAt",
+                            "originTag",
+                            "lastRole",
+                            "lastOrg",
+                            "yoe",
+                            "skills",
+                            "otherSkills",
+                            "linkedInUrl",
+                            "githubUrl",
+                            "portfolioUrl",
+                            "portfolioPassword",
+                            "resumeUpload",
+                            "resumeUrl",
+                            "resumePassword",
+                            "hoursPerWeek",
+                            "interestEmploymentType",
+                            "interestWorkArrangement",
+                            "interestRoles",
+                            "currentLocation",
+                            "openToRelocate",
+                            "openToRemoteMulti",
+                            "desiredSalary",
+                            "interestCauses",
+                            "otherCauses",
+                            "workAuthorization",
+                            "interestGovt",
+                            "interestGovtEmplTypes",
+                            "previousImpactExperience",
+                            "essayResponse",
+                            "referenceAttribution",
+                            "referenceAttributionOther"
+                          ]
+                        },
+                        "isFinal": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": ["submission", "isFinal"]
+                    }
+                  },
+                  "required": ["ApplicantCreateSubmissionResponseBodySchema"]
                 }
               }
             }
@@ -300,7 +1897,271 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/applicantDraftSubmissionRequestBody"
+                "type": "object",
+                "properties": {
+                  "ApplicantDraftSubmissionRequestBodySchema": {
+                    "type": "object",
+                    "properties": {
+                      "originTag": {
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "lastRole": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 255
+                      },
+                      "resumeUpload": {
+                        "type": "object",
+                        "nullable": true,
+                        "properties": {
+                          "id": {
+                            "type": "number"
+                          }
+                        },
+                        "required": ["id"]
+                      },
+                      "lastOrg": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 255
+                      },
+                      "yoe": {
+                        "type": "string",
+                        "nullable": true,
+                        "enum": [
+                          "<1",
+                          "1",
+                          "2",
+                          "3",
+                          "4",
+                          "5",
+                          "6",
+                          "7",
+                          "8",
+                          "9",
+                          "10",
+                          ">11",
+                          null
+                        ]
+                      },
+                      "skills": {
+                        "type": "array",
+                        "nullable": true,
+                        "items": {
+                          "type": "string",
+                          "enum": [
+                            "react",
+                            "javascript",
+                            "python",
+                            "java",
+                            "sql",
+                            "privacy",
+                            "security",
+                            "devops",
+                            "figma",
+                            "sketch",
+                            "prototyping",
+                            "user research",
+                            "product development",
+                            "project management"
+                          ]
+                        }
+                      },
+                      "otherSkills": {
+                        "type": "array",
+                        "nullable": true,
+                        "items": {
+                          "type": "string",
+                          "maxLength": 255
+                        }
+                      },
+                      "linkedInUrl": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 500
+                      },
+                      "githubUrl": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 500
+                      },
+                      "portfolioUrl": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 500
+                      },
+                      "portfolioPassword": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 255
+                      },
+                      "resumeUrl": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 500
+                      },
+                      "resumePassword": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 255
+                      },
+                      "hoursPerWeek": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 255
+                      },
+                      "interestEmploymentType": {
+                        "type": "array",
+                        "nullable": true,
+                        "items": {
+                          "type": "string",
+                          "enum": ["full", "part"]
+                        }
+                      },
+                      "interestWorkArrangement": {
+                        "type": "array",
+                        "nullable": true,
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "interestRoles": {
+                        "type": "array",
+                        "nullable": true,
+                        "items": {
+                          "type": "string",
+                          "maxLength": 255
+                        }
+                      },
+                      "currentLocation": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 255
+                      },
+                      "openToRelocate": {
+                        "type": "string",
+                        "nullable": true,
+                        "enum": ["yes", "no", "not sure", null]
+                      },
+                      "openToRemoteMulti": {
+                        "type": "array",
+                        "nullable": true,
+                        "items": {
+                          "type": "string",
+                          "enum": ["remote", "in-person", "hybrid", "not sure"]
+                        }
+                      },
+                      "desiredSalary": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 255
+                      },
+                      "interestCauses": {
+                        "type": "array",
+                        "nullable": true,
+                        "items": {
+                          "type": "string",
+                          "maxLength": 255
+                        }
+                      },
+                      "otherCauses": {
+                        "type": "array",
+                        "nullable": true,
+                        "items": {
+                          "type": "string",
+                          "maxLength": 255
+                        }
+                      },
+                      "workAuthorization": {
+                        "type": "string",
+                        "nullable": true,
+                        "enum": ["authorized", "sponsorship", null]
+                      },
+                      "interestGovt": {
+                        "type": "boolean",
+                        "nullable": true
+                      },
+                      "interestGovtEmplTypes": {
+                        "type": "array",
+                        "nullable": true,
+                        "items": {
+                          "type": "string",
+                          "enum": ["paid", "unpaid"]
+                        }
+                      },
+                      "previousImpactExperience": {
+                        "type": "boolean",
+                        "nullable": true
+                      },
+                      "essayResponse": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 5000
+                      },
+                      "utmParams": {
+                        "type": "object",
+                        "nullable": true,
+                        "properties": {
+                          "utm_source": {
+                            "type": "string",
+                            "nullable": true,
+                            "maxLength": 200
+                          },
+                          "utm_medium": {
+                            "type": "string",
+                            "nullable": true,
+                            "maxLength": 200
+                          },
+                          "utm_campaign": {
+                            "type": "string",
+                            "nullable": true,
+                            "maxLength": 200
+                          },
+                          "utm_term": {
+                            "type": "string",
+                            "nullable": true,
+                            "maxLength": 200
+                          },
+                          "utm_content": {
+                            "type": "string",
+                            "nullable": true,
+                            "maxLength": 200
+                          },
+                          "utm_id": {
+                            "type": "string",
+                            "nullable": true,
+                            "maxLength": 200
+                          },
+                          "utm_source_platform": {
+                            "type": "string",
+                            "nullable": true,
+                            "maxLength": 200
+                          },
+                          "ga_client_id": {
+                            "type": "string",
+                            "nullable": true,
+                            "maxLength": 200
+                          },
+                          "ga_session_id": {
+                            "type": "string",
+                            "nullable": true,
+                            "maxLength": 200
+                          }
+                        }
+                      },
+                      "referenceAttribution": {
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "referenceAttributionOther": {
+                        "type": "string",
+                        "nullable": true
+                      }
+                    }
+                  }
+                },
+                "required": ["ApplicantDraftSubmissionRequestBodySchema"]
               }
             }
           }
@@ -311,7 +2172,244 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object"
+                  "type": "object",
+                  "properties": {
+                    "ApplicantDraftSubmissionResponseBodySchema": {
+                      "type": "object",
+                      "properties": {
+                        "submission": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "number"
+                            },
+                            "applicantId": {
+                              "type": "number"
+                            },
+                            "createdAt": {
+                              "type": "string"
+                            },
+                            "updatedAt": {
+                              "type": "string"
+                            },
+                            "originTag": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "lastRole": {
+                              "type": "string",
+                              "nullable": true,
+                              "maxLength": 255
+                            },
+                            "lastOrg": {
+                              "type": "string",
+                              "nullable": true,
+                              "maxLength": 255
+                            },
+                            "yoe": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "skills": {
+                              "type": "array",
+                              "nullable": true,
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            "otherSkills": {
+                              "type": "array",
+                              "nullable": true,
+                              "items": {
+                                "type": "string",
+                                "maxLength": 255
+                              }
+                            },
+                            "linkedInUrl": {
+                              "type": "string",
+                              "nullable": true,
+                              "maxLength": 500
+                            },
+                            "githubUrl": {
+                              "type": "string",
+                              "nullable": true,
+                              "maxLength": 500
+                            },
+                            "portfolioUrl": {
+                              "type": "string",
+                              "nullable": true,
+                              "maxLength": 500
+                            },
+                            "portfolioPassword": {
+                              "type": "string",
+                              "nullable": true,
+                              "maxLength": 255
+                            },
+                            "resumeUpload": {
+                              "type": "object",
+                              "nullable": true,
+                              "properties": {
+                                "id": {
+                                  "type": "number"
+                                },
+                                "originalFilename": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": ["id", "originalFilename"]
+                            },
+                            "resumeUrl": {
+                              "type": "string",
+                              "nullable": true,
+                              "maxLength": 500
+                            },
+                            "resumePassword": {
+                              "type": "string",
+                              "nullable": true,
+                              "maxLength": 255
+                            },
+                            "hoursPerWeek": {
+                              "type": "string",
+                              "nullable": true,
+                              "maxLength": 255
+                            },
+                            "interestEmploymentType": {
+                              "type": "array",
+                              "nullable": true,
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            "interestWorkArrangement": {
+                              "type": "array",
+                              "nullable": true,
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            "interestRoles": {
+                              "type": "array",
+                              "nullable": true,
+                              "items": {
+                                "type": "string",
+                                "maxLength": 255
+                              }
+                            },
+                            "currentLocation": {
+                              "type": "string",
+                              "nullable": true,
+                              "maxLength": 255
+                            },
+                            "openToRelocate": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "openToRemoteMulti": {
+                              "type": "array",
+                              "nullable": true,
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            "desiredSalary": {
+                              "type": "string",
+                              "nullable": true,
+                              "maxLength": 255
+                            },
+                            "interestCauses": {
+                              "type": "array",
+                              "nullable": true,
+                              "items": {
+                                "type": "string",
+                                "maxLength": 255
+                              }
+                            },
+                            "otherCauses": {
+                              "type": "array",
+                              "nullable": true,
+                              "items": {
+                                "type": "string",
+                                "maxLength": 255
+                              }
+                            },
+                            "workAuthorization": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "interestGovt": {
+                              "type": "boolean",
+                              "nullable": true
+                            },
+                            "interestGovtEmplTypes": {
+                              "type": "array",
+                              "nullable": true,
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            "previousImpactExperience": {
+                              "type": "boolean",
+                              "nullable": true
+                            },
+                            "essayResponse": {
+                              "type": "string",
+                              "nullable": true,
+                              "maxLength": 5000
+                            },
+                            "referenceAttribution": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "referenceAttributionOther": {
+                              "type": "string",
+                              "nullable": true
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "applicantId",
+                            "createdAt",
+                            "updatedAt",
+                            "originTag",
+                            "lastRole",
+                            "lastOrg",
+                            "yoe",
+                            "skills",
+                            "otherSkills",
+                            "linkedInUrl",
+                            "githubUrl",
+                            "portfolioUrl",
+                            "portfolioPassword",
+                            "resumeUpload",
+                            "resumeUrl",
+                            "resumePassword",
+                            "hoursPerWeek",
+                            "interestEmploymentType",
+                            "interestWorkArrangement",
+                            "interestRoles",
+                            "currentLocation",
+                            "openToRelocate",
+                            "openToRemoteMulti",
+                            "desiredSalary",
+                            "interestCauses",
+                            "otherCauses",
+                            "workAuthorization",
+                            "interestGovt",
+                            "interestGovtEmplTypes",
+                            "previousImpactExperience",
+                            "essayResponse",
+                            "referenceAttribution",
+                            "referenceAttributionOther"
+                          ]
+                        },
+                        "isFinal": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": ["submission", "isFinal"]
+                    }
+                  },
+                  "required": ["ApplicantDraftSubmissionResponseBodySchema"]
                 }
               }
             }
@@ -337,7 +2435,282 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/opportunitiesRequestBody"
+                "type": "object",
+                "properties": {
+                  "OpportunityBatchRequestBodySchema": {
+                    "type": "object",
+                    "properties": {
+                      "organization": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string",
+                            "maxLength": 255
+                          },
+                          "type": {
+                            "type": "string",
+                            "enum": [
+                              "501(c)(3)",
+                              "501(c)(4)",
+                              "llc",
+                              "b corp",
+                              "other"
+                            ]
+                          },
+                          "size": {
+                            "type": "string",
+                            "enum": [
+                              "<20",
+                              "20-50",
+                              "51-100",
+                              "101-200",
+                              "201-500",
+                              "500+"
+                            ]
+                          },
+                          "impactAreas": {
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "maxLength": 255
+                            }
+                          },
+                          "impactAreasOther": {
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "maxLength": 255
+                            }
+                          },
+                          "eoe": {
+                            "type": "boolean"
+                          }
+                        },
+                        "required": [
+                          "name",
+                          "type",
+                          "size",
+                          "impactAreas",
+                          "eoe"
+                        ]
+                      },
+                      "contact": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string",
+                            "maxLength": 255
+                          },
+                          "email": {
+                            "type": "string",
+                            "format": "email"
+                          },
+                          "phone": {
+                            "type": "string",
+                            "nullable": true,
+                            "maxLength": 255
+                          }
+                        },
+                        "required": ["name", "email"]
+                      },
+                      "acceptedPrivacy": {
+                        "type": "boolean",
+                        "enum": [true]
+                      },
+                      "referenceAttribution": {
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "referenceAttributionOther": {
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "submissions": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "roleType": {
+                              "type": "string"
+                            },
+                            "otherRoleType": {
+                              "type": "string"
+                            },
+                            "positionTitle": {
+                              "type": "string",
+                              "maxLength": 255
+                            },
+                            "fullyRemote": {
+                              "type": "boolean"
+                            },
+                            "location": {
+                              "type": "string"
+                            },
+                            "paid": {
+                              "type": "boolean"
+                            },
+                            "pitchEssay": {
+                              "type": "string",
+                              "maxLength": 5000
+                            },
+                            "source": {
+                              "type": "string"
+                            },
+                            "employmentType": {
+                              "type": "string",
+                              "maxLength": 255
+                            },
+                            "salaryRange": {
+                              "type": "string",
+                              "maxLength": 255
+                            },
+                            "desiredHoursPerWeek": {
+                              "type": "string",
+                              "nullable": true,
+                              "maxLength": 255
+                            },
+                            "desiredStartDate": {
+                              "type": "string"
+                            },
+                            "desiredEndDate": {
+                              "type": "string"
+                            },
+                            "jdUrl": {
+                              "type": "string",
+                              "maxLength": 500
+                            },
+                            "desiredYoe": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "enum": [
+                                  "0-2",
+                                  "3-5",
+                                  "6-8",
+                                  "9-12",
+                                  "13-15",
+                                  "15+",
+                                  "2-4",
+                                  "4-8",
+                                  "8-12",
+                                  "12-15"
+                                ]
+                              }
+                            },
+                            "desiredSkills": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "enum": [
+                                  "react",
+                                  "javascript",
+                                  "python",
+                                  "java",
+                                  "sql",
+                                  "privacy",
+                                  "security",
+                                  "devops",
+                                  "figma",
+                                  "sketch",
+                                  "prototyping",
+                                  "user research",
+                                  "product development",
+                                  "project management"
+                                ]
+                              }
+                            },
+                            "desiredOtherSkills": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            "visaSponsorship": {
+                              "type": "string",
+                              "enum": ["yes", "no", "sometimes"]
+                            },
+                            "similarStaffed": {
+                              "type": "boolean"
+                            },
+                            "desiredImpactExp": {
+                              "type": "string",
+                              "maxLength": 5000
+                            }
+                          },
+                          "required": [
+                            "roleType",
+                            "positionTitle",
+                            "fullyRemote",
+                            "paid",
+                            "pitchEssay",
+                            "source",
+                            "employmentType",
+                            "desiredYoe",
+                            "similarStaffed"
+                          ]
+                        }
+                      },
+                      "utmParams": {
+                        "type": "object",
+                        "nullable": true,
+                        "properties": {
+                          "utm_source": {
+                            "type": "string",
+                            "nullable": true,
+                            "maxLength": 200
+                          },
+                          "utm_medium": {
+                            "type": "string",
+                            "nullable": true,
+                            "maxLength": 200
+                          },
+                          "utm_campaign": {
+                            "type": "string",
+                            "nullable": true,
+                            "maxLength": 200
+                          },
+                          "utm_term": {
+                            "type": "string",
+                            "nullable": true,
+                            "maxLength": 200
+                          },
+                          "utm_content": {
+                            "type": "string",
+                            "nullable": true,
+                            "maxLength": 200
+                          },
+                          "utm_id": {
+                            "type": "string",
+                            "nullable": true,
+                            "maxLength": 200
+                          },
+                          "utm_source_platform": {
+                            "type": "string",
+                            "nullable": true,
+                            "maxLength": 200
+                          },
+                          "ga_client_id": {
+                            "type": "string",
+                            "nullable": true,
+                            "maxLength": 200
+                          },
+                          "ga_session_id": {
+                            "type": "string",
+                            "nullable": true,
+                            "maxLength": 200
+                          }
+                        }
+                      }
+                    },
+                    "required": [
+                      "organization",
+                      "contact",
+                      "acceptedPrivacy",
+                      "submissions"
+                    ]
+                  }
+                },
+                "required": ["OpportunityBatchRequestBodySchema"]
               }
             }
           }
@@ -348,7 +2721,77 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/opportunitiesResponseBody"
+                  "type": "object",
+                  "properties": {
+                    "OpportunityBatchResponseBodySchema": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "number"
+                        },
+                        "eoe": {
+                          "type": "boolean"
+                        },
+                        "acceptedPrivacy": {
+                          "type": "string"
+                        },
+                        "contactEmail": {
+                          "type": "string"
+                        },
+                        "contactName": {
+                          "type": "string"
+                        },
+                        "contactPhone": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "impactAreas": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "impactAreasOther": {
+                          "type": "array",
+                          "nullable": true,
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "orgName": {
+                          "type": "string"
+                        },
+                        "orgSize": {
+                          "type": "string"
+                        },
+                        "orgType": {
+                          "type": "string"
+                        },
+                        "referenceAttribution": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "referenceAttributionOther": {
+                          "type": "string",
+                          "nullable": true
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "eoe",
+                        "acceptedPrivacy",
+                        "contactEmail",
+                        "contactName",
+                        "contactPhone",
+                        "impactAreas",
+                        "impactAreasOther",
+                        "orgName",
+                        "orgSize",
+                        "orgType"
+                      ]
+                    }
+                  },
+                  "required": ["OpportunityBatchResponseBodySchema"]
                 }
               }
             }
@@ -365,15 +2808,21 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "additionalProperties": false,
                 "properties": {
-                  "contentType": {
-                    "type": "string"
-                  },
-                  "originalFilename": {
-                    "type": "string"
+                  "UploadRequestBodySchema": {
+                    "type": "object",
+                    "properties": {
+                      "originalFilename": {
+                        "type": "string"
+                      },
+                      "contentType": {
+                        "type": "string"
+                      }
+                    },
+                    "required": ["originalFilename", "contentType"]
                   }
-                }
+                },
+                "required": ["UploadRequestBodySchema"]
               }
             }
           }
@@ -385,15 +2834,36 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "additionalProperties": false,
                   "properties": {
-                    "id": {
-                      "type": "string"
-                    },
-                    "signedLink": {
-                      "type": "string"
+                    "UploadResponseBodySchema": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "number"
+                        },
+                        "signedLink": {
+                          "type": "string"
+                        },
+                        "presignedPost": {
+                          "type": "object",
+                          "properties": {
+                            "url": {
+                              "type": "string"
+                            },
+                            "fields": {
+                              "type": "object",
+                              "additionalProperties": {
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "required": ["url", "fields"]
+                        }
+                      },
+                      "required": ["id"]
                     }
-                  }
+                  },
+                  "required": ["UploadResponseBodySchema"]
                 }
               }
             }
@@ -403,6 +2873,7 @@
     },
     "/applicants/me/uploads/:id/complete": {
       "post": {
+        "description": "Mark an upload as completed",
         "parameters": [
           {
             "in": "path",
@@ -412,19 +2883,25 @@
             }
           }
         ],
-        "description": "Mark an upload as completed",
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
-                "additionalProperties": false,
                 "properties": {
-                  "status": {
-                    "type": "string"
+                  "UploadStateRequestBodySchema": {
+                    "type": "object",
+                    "properties": {
+                      "status": {
+                        "type": "string",
+                        "enum": ["REQUESTED", "SUCCESS", "FAILURE"]
+                      }
+                    },
+                    "required": ["status"]
                   }
-                }
+                },
+                "required": ["UploadStateRequestBodySchema"]
               }
             }
           }
@@ -436,18 +2913,25 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "additionalProperties": false,
                   "properties": {
-                    "id": {
-                      "type": "string"
-                    },
-                    "originalFilename": {
-                      "type": "string"
-                    },
-                    "status": {
-                      "type": "string"
+                    "UploadStateResponseBodySchema": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "number"
+                        },
+                        "originalFilename": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": ["REQUESTED", "SUCCESS", "FAILURE"]
+                        }
+                      },
+                      "required": ["id", "originalFilename", "status"]
                     }
-                  }
+                  },
+                  "required": ["UploadStateResponseBodySchema"]
                 }
               }
             }
@@ -457,6 +2941,7 @@
     },
     "/applicants/:id/resume": {
       "get": {
+        "description": "Get resume download URL for a given applicant",
         "parameters": [
           {
             "in": "path",
@@ -466,7 +2951,6 @@
             }
           }
         ],
-        "description": "Get resume download URL for a given applicant",
         "responses": {
           "200": {
             "description": "Success",
@@ -474,530 +2958,39 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "additionalProperties": false,
                   "properties": {
-                    "id": {
-                      "type": "string"
-                    },
-                    "signedLink": {
-                      "type": "string"
+                    "UploadResponseBodySchema": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "number"
+                        },
+                        "signedLink": {
+                          "type": "string"
+                        },
+                        "presignedPost": {
+                          "type": "object",
+                          "properties": {
+                            "url": {
+                              "type": "string"
+                            },
+                            "fields": {
+                              "type": "object",
+                              "additionalProperties": {
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "required": ["url", "fields"]
+                        }
+                      },
+                      "required": ["id"]
                     }
-                  }
+                  },
+                  "required": ["UploadResponseBodySchema"]
                 }
               }
             }
-          }
-        }
-      }
-    }
-  },
-  "components": {
-    "schemas": {
-      "applicantRequestBody": {
-        "additionalProperties": false,
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string"
-          },
-          "pronoun": {
-            "type": "string"
-          },
-          "preferredContact": {
-            "type": "string"
-          },
-          "searchStatus": {
-            "type": "string"
-          },
-          "acceptedTerms": {
-            "type": "boolean"
-          },
-          "acceptedPrivacy": {
-            "type": "boolean"
-          },
-          "followUpOptIn": {
-            "type": "boolean"
-          },
-          "isPaused": {
-            "type": "boolean"
-          },
-          "utmParams": {
-            "$ref": "#/components/schemas/utmParams"
-          }
-        }
-      },
-      "opportunitiesResponseBody": {
-        "additionalProperties": false,
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "number"
-          },
-          "contactName": {
-            "type": "string"
-          },
-          "contactEmail": {
-            "type": "string"
-          },
-          "contactPhone": {
-            "type": "string"
-          },
-          "orgName": {
-            "type": "string"
-          },
-          "orgSize": {
-            "type": "string"
-          },
-          "orgType": {
-            "type": "string"
-          },
-          "impactAreas": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "impactAreasOther": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "equalOpportunityEmployer": {
-            "type": "boolean"
-          }
-        }
-      },
-      "opportunitiesRequestBody": {
-        "additionalProperties": false,
-        "type": "object",
-        "properties": {
-          "acceptedPrivacy": {
-            "type": "boolean"
-          },
-          "referenceAttribution": {
-            "type": "string"
-          },
-          "referenceAttributionOther": {
-            "type": "string"
-          },
-          "contact": {
-            "type": "object",
-            "properties": {
-              "email": {
-                "type": "string"
-              },
-              "name": {
-                "type": "string"
-              },
-              "phone": {
-                "type": "string"
-              }
-            }
-          },
-          "organization": {
-            "type": "object",
-            "properties": {
-              "impactAreas": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              },
-              "impactAreasOther": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              },
-              "name": {
-                "type": "string"
-              },
-              "size": {
-                "type": "string"
-              },
-              "type": {
-                "type": "string"
-              },
-              "eoe": {
-                "type": "boolean"
-              }
-            }
-          },
-          "submissions": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "fullyRemote": {
-                  "type": "boolean"
-                },
-                "location": {
-                  "type": "string"
-                },
-                "paid": {
-                  "type": "boolean"
-                },
-                "roleType": {
-                  "type": "string"
-                },
-                "otherRoleType": {
-                  "type": "string"
-                },
-                "positionTitle": {
-                  "type": "string"
-                },
-                "pitchEssay": {
-                  "type": "string"
-                },
-                "source": {
-                  "type": "string"
-                },
-                "hoursPerWeek": {
-                  "type": "string"
-                },
-                "employmentType": {
-                  "type": "string"
-                },
-                "salaryRange": {
-                  "type": "string"
-                },
-                "desiredHoursPerWeek": {
-                  "type": "string"
-                },
-                "desiredStartDate": {
-                  "type": "string",
-                  "format": "date"
-                },
-                "desiredEndDate": {
-                  "type": "string",
-                  "format": "date"
-                },
-                "jdUrl": {
-                  "type": "string"
-                },
-                "desiredYoe": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                },
-                "desiredSkills": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                },
-                "desiredOtherSkills": {
-                  "type": "string"
-                },
-                "visaSponsorship": {
-                  "type": "string"
-                },
-                "similarStaffed": {
-                  "type": "boolean"
-                },
-                "desiredImpactExp": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "utmParams": {
-            "$ref": "#/components/schemas/utmParams"
-          }
-        }
-      },
-      "applicantSubmissionRequestBody": {
-        "type": "object",
-        "properties": {
-          "originTag": {
-            "type": "string"
-          },
-          "lastRole": {
-            "type": "string"
-          },
-          "lastOrg": {
-            "type": "string"
-          },
-          "yoe": {
-            "type": "string"
-          },
-          "skills": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "otherSkills": {
-            "type": "string"
-          },
-          "linkedInUrl": {
-            "type": "string"
-          },
-          "githubUrl": {
-            "type": "string"
-          },
-          "portfolioUrl": {
-            "type": "string"
-          },
-          "portfolioPassword": {
-            "type": "string"
-          },
-          "resumeUrl": {
-            "type": "string",
-            "deprecated": true
-          },
-          "resumeUpload": {
-            "type": "object",
-            "properties": {
-              "id": {
-                "type": "number"
-              }
-            }
-          },
-          "resumePassword": {
-            "type": "string"
-          },
-          "hoursPerWeek": {
-            "type": "string"
-          },
-          "interestEmploymentType": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "interestWorkArrangement": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "interestRoles": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "currentLocation": {
-            "type": "string"
-          },
-          "openToRelocate": {
-            "type": "string"
-          },
-          "openToRemoteMulti": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "desiredSalary": {
-            "type": "string"
-          },
-          "interestCauses": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "otherCauses": {
-            "type": "array"
-          },
-          "workAuthorization": {
-            "type": "string"
-          },
-          "interestGovt": {
-            "type": "boolean"
-          },
-          "interestGovtEmplTypes": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "previousImpactExperience": {
-            "type": "boolean"
-          },
-          "essayResponse": {
-            "type": "string"
-          },
-          "referenceAttribution": {
-            "type": "string"
-          },
-          "referenceAttributionOther": {
-            "type": "string"
-          },
-          "utmParams": {
-            "$ref": "#/components/schemas/utmParams"
-          }
-        },
-        "required": [
-          "originTag",
-          "lastRole",
-          "lastOrg",
-          "yoe",
-          "skills",
-          "interestEmploymentType",
-          "interestRoles",
-          "currentLocation",
-          "openToRelocate",
-          "openToRemoteMulti",
-          "interestCauses",
-          "workAuthorization",
-          "interestGovt",
-          "previousImpactExperience",
-          "essayResponse"
-        ]
-      },
-      "applicantDraftSubmissionRequestBody": {
-        "type": "object",
-        "properties": {
-          "originTag": {
-            "type": "string"
-          },
-          "lastRole": {
-            "type": "string"
-          },
-          "lastOrg": {
-            "type": "string"
-          },
-          "yoe": {
-            "type": "string"
-          },
-          "skills": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "otherSkills": {
-            "type": "string"
-          },
-          "linkedInUrl": {
-            "type": "string"
-          },
-          "githubUrl": {
-            "type": "string"
-          },
-          "portfolioUrl": {
-            "type": "string"
-          },
-          "portfolioPassword": {
-            "type": "string"
-          },
-          "resumeUrl": {
-            "type": "string",
-            "deprecated": true
-          },
-          "resumeUpload": {
-            "type": "object",
-            "properties": {
-              "id": {
-                "type": "number"
-              },
-              "originalFilename": {
-                "type": "string"
-              }
-            }
-          },
-          "resumePassword": {
-            "type": "string"
-          },
-          "hoursPerWeek": {
-            "type": "string"
-          },
-          "interestEmploymentType": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "interestRoles": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "currentLocation": {
-            "type": "string"
-          },
-          "openToRelocate": {
-            "type": "string"
-          },
-          "openToRemoteMulti": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "desiredSalary": {
-            "type": "string"
-          },
-          "interestCauses": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "otherCauses": {
-            "type": "array"
-          },
-          "workAuthorization": {
-            "type": "string"
-          },
-          "interestGovt": {
-            "type": "boolean"
-          },
-          "interestGovtEmplTypes": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "previousImpactExperience": {
-            "type": "boolean"
-          },
-          "essayResponse": {
-            "type": "string"
-          },
-          "referenceAttribution": {
-            "type": "string"
-          }
-        }
-      },
-      "utmParams": {
-        "type": "object",
-        "properties": {
-          "utm_source": {
-            "type": "string"
-          },
-          "utm_campaign": {
-            "type": "string"
-          },
-          "utm_content": {
-            "type": "string"
-          },
-          "utm_medium": {
-            "type": "string"
-          },
-          "utm_term": {
-            "type": "string"
-          },
-          "utm_id": {
-            "type": "string"
-          },
-          "utm_source_platform": {
-            "type": "string"
-          },
-          "ga_client_id": {
-            "type": "string"
-          },
-          "ga_session_id": {
-            "type": "string"
           }
         }
       }

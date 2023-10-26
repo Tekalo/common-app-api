@@ -34,7 +34,8 @@
     "prepare": "husky install",
     "prisma:migrate": "docker compose run --rm api pnpx prisma migrate dev",
     "prisma:seed": "docker compose run --rm api pnpx prisma db seed",
-    "prisma:update": "docker compose run --rm api pnpx prisma db push"
+    "prisma:update": "docker compose run --rm api pnpx prisma db push",
+    "generate-spec": "docker compose run --rm api node ./build/resources/AppendData.js"
   },
   "repository": {
     "type": "git",
@@ -69,7 +70,8 @@
     "pino": "8.16.0",
     "pino-http": "8.5.0",
     "swagger-ui-express": "5.0.0",
-    "zod": "3.22.4"
+    "zod": "3.22.4",
+    "zod-openapi": "^2.9.0"
   },
   "devDependencies": {
     "@jest/globals": "29.7.0",

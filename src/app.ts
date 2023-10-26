@@ -5,6 +5,7 @@ import { pinoHttp } from 'pino-http';
 import session from 'express-session';
 import { auth } from 'express-oauth2-jwt-bearer';
 import logger from '@App/services/logger.js';
+import '@App/resources/AppendData.js';
 import spec from '@App/resources/spec.json' assert { type: 'json' };
 import {
   applicantRoutes,
@@ -19,6 +20,8 @@ import UploadService from './services/UploadService.js';
 import { BaseConfig } from './resources/types/shared.js';
 import EmailService from './services/EmailService.js';
 import { AuthRequest } from './resources/types/auth0.js';
+
+// generate spec for OpenAPI
 
 const getApp = (
   authService: AuthService,
