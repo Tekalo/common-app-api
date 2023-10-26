@@ -24,19 +24,21 @@ When code is merged into the `main` branch a build and deploy is triggered throu
 
 ## Database
 
-An Aurora Serverless v2 PostgreSQL RDS cluster supports the API. Credentials for the database are stored in Secrets Manager and are accessed and set in the task container at deploy time. Automatic rotation of the database password has been configured. The API tasks [will shut down if a database authentication error is detected](https://github.com/schmidtfutures/common-app-api/blob/main/src/resources/client.ts#L24-L28), allowing new tasks to be started with the new password.
+An Aurora Serverless v2 PostgreSQL RDS cluster supports the API. Credentials for the database are stored in Secrets Manager and are accessed and set in the task container at deploy time. At the time of container startup, the [docker container](../Dockerfile) will [process the secret json](../scripts/ensure-db-url.sh) and ensure that the db connection string is properly set in the environment.
+
+Automatic rotation of the database password has been configured. The API tasks [will shut down if a database authentication error is detected](https://github.com/schmidtfutures/common-app-api/blob/main/src/resources/client.ts#L24-L28), allowing new tasks to be started with the new password.
 
 There is currently only one database instance in the cluster, though it would probably make sense to deploy a replica to prevent downtime if there is a database failure.
 
 ## Storage
 
-Applicant resumés are stored in S3. The API generates a signed S3 upload link upon client request and generates a [pre-signed URL](https://docs.aws.amazon.com/AmazonS3/latest/userguide/ShareObjectPreSignedURL.html) to retrieve the resume for logged-in users with sufficient permissions. The S3 bucket has been configured with intelligent tiering to reduce storage costs.
+Applicant resumés are stored in S3. The API generates a [presigned S3 upload URL](https://docs.aws.amazon.com/AmazonS3/latest/userguide/PresignedUrlUploadObject.html) upon client request and generates a [presigned URL](https://docs.aws.amazon.com/AmazonS3/latest/userguide/ShareObjectPreSignedURL.html) to retrieve the resume for logged-in users with sufficient permissions. The S3 bucket has been configured with intelligent tiering to reduce storage costs.
 
 ## Email
 
 Emails to applicants are triggered at different stages of the application and are sent by the API via AWS Simple Email Service (SES). Emails sent on behalf of the application by Auth0 are also handled by SES.
 
-It's important not to let the SES bounce rate get too high; if the configured domain sends a lot of email to bad email addresses it will get a reputation as a spam domain and will be blocked by email providers. AWS will preemptively block accounts with high bounce rates from sending emails until the problem has been mitigated. For this reason an email whitelist has been implemented for the dev and staging environments. Only emails with addresses on the whitelist will be sent. The whitelist is configured in the [terraform.tfvars](../tf/envs/staging/terraform.tfvars) for each environment.
+It's important not to let the SES bounce rate get too high; if the configured domain sends a lot of email to bad email addresses it will get a reputation as a spam domain and will be blocked by email providers. AWS will preemptively block accounts with high bounce rates from sending emails until the problem has been mitigated. For this reason an email whitelist has been implemented for the dev and staging environments. Only emails with addresses on the whitelist will be sent. The whitelist is configured in the [terraform.tfvars](../tf/envs/staging/terraform.tfvars) as `ses_whitelist` for each environment. It is then injected as the environment variable `AWS_SES_WHITELIST`.
 
 ## Logs
 
