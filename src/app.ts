@@ -5,7 +5,7 @@ import { pinoHttp } from 'pino-http';
 import session from 'express-session';
 import { auth } from 'express-oauth2-jwt-bearer';
 import logger from '@App/services/logger.js';
-import '@App/resources/AppendData.js';
+import '@App/resources/appendData.js';
 import spec from '@App/resources/spec.json' assert { type: 'json' };
 import {
   applicantRoutes,

@@ -35,7 +35,7 @@
     "prisma:migrate": "docker compose run --rm api pnpx prisma migrate dev",
     "prisma:seed": "docker compose run --rm api pnpx prisma db seed",
     "prisma:update": "docker compose run --rm api pnpx prisma db push",
-    "generate-spec": "docker compose run --rm api node ./build/resources/AppendData.js"
+    "generate-spec": "docker compose run --rm api node ./build/resources/appendData.js"
   },
   "repository": {
     "type": "git",
