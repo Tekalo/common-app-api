@@ -21,8 +21,6 @@ import { BaseConfig } from './resources/types/shared.js';
 import EmailService from './services/EmailService.js';
 import { AuthRequest } from './resources/types/auth0.js';
 
-// generate spec for OpenAPI
-
 const getApp = (
   authService: AuthService,
   monitoringService: MonitoringService,

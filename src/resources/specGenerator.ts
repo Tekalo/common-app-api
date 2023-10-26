@@ -1,5 +1,3 @@
-// const applicantPath = `${process.cwd()}/packages/schemas/src/applicants.js`;
-
 import { Applicants, Opportunities, Uploads } from '@capp/schemas';
 import { z } from 'zod';
 import { createDocument, extendZodWithOpenApi } from 'zod-openapi';
