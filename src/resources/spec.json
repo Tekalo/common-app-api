@@ -39,7 +39,7 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "ApplicantRequestBodySchema": {
+                  "ApplicantCreateRequestBodySchema": {
                     "type": "object",
                     "properties": {
                       "name": {
@@ -59,19 +59,31 @@
                       },
                       "preferredContact": {
                         "type": "string",
-                        "enum": ["sms", "whatsapp", "email"]
+                        "enum": [
+                          "sms",
+                          "whatsapp",
+                          "email"
+                        ]
                       },
                       "searchStatus": {
                         "type": "string",
-                        "enum": ["active", "passive", "future"]
+                        "enum": [
+                          "active",
+                          "passive",
+                          "future"
+                        ]
                       },
                       "acceptedTerms": {
                         "type": "boolean",
-                        "enum": [true]
+                        "enum": [
+                          true
+                        ]
                       },
                       "acceptedPrivacy": {
                         "type": "boolean",
-                        "enum": [true]
+                        "enum": [
+                          true
+                        ]
                       },
                       "followUpOptIn": {
                         "type": "boolean"
@@ -138,7 +150,9 @@
                     ]
                   }
                 },
-                "required": ["ApplicantRequestBodySchema"]
+                "required": [
+                  "ApplicantCreateRequestBodySchema"
+                ]
               }
             }
           }
@@ -151,7 +165,7 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "ApplicantResponseBodySchema": {
+                    "ApplicantCreateResponseBodySchema": {
                       "type": "object",
                       "properties": {
                         "id": {
@@ -165,10 +179,16 @@
                           "type": "string"
                         }
                       },
-                      "required": ["id", "auth0Id", "email"]
+                      "required": [
+                        "id",
+                        "auth0Id",
+                        "email"
+                      ]
                     }
                   },
-                  "required": ["ApplicantResponseBodySchema"]
+                  "required": [
+                    "ApplicantCreateResponseBodySchema"
+                  ]
                 }
               }
             }
@@ -281,10 +301,14 @@
                         "type": "boolean"
                       }
                     },
-                    "required": ["pause"]
+                    "required": [
+                      "pause"
+                    ]
                   }
                 },
-                "required": ["ApplicantStateRequestBodySchema"]
+                "required": [
+                  "ApplicantStateRequestBodySchema"
+                ]
               }
             }
           }
@@ -404,17 +428,10 @@
                                       "type": "string"
                                     }
                                   },
-                                  "required": ["id", "originalFilename"]
-                                },
-                                "resumeUrl": {
-                                  "type": "string",
-                                  "nullable": true,
-                                  "maxLength": 500
-                                },
-                                "resumePassword": {
-                                  "type": "string",
-                                  "nullable": true,
-                                  "maxLength": 255
+                                  "required": [
+                                    "id",
+                                    "originalFilename"
+                                  ]
                                 },
                                 "hoursPerWeek": {
                                   "type": "string",
@@ -529,8 +546,6 @@
                                 "portfolioUrl",
                                 "portfolioPassword",
                                 "resumeUpload",
-                                "resumeUrl",
-                                "resumePassword",
                                 "hoursPerWeek",
                                 "interestEmploymentType",
                                 "interestWorkArrangement",
@@ -629,17 +644,10 @@
                                       "type": "string"
                                     }
                                   },
-                                  "required": ["id", "originalFilename"]
-                                },
-                                "resumeUrl": {
-                                  "type": "string",
-                                  "nullable": true,
-                                  "maxLength": 500
-                                },
-                                "resumePassword": {
-                                  "type": "string",
-                                  "nullable": true,
-                                  "maxLength": 255
+                                  "required": [
+                                    "id",
+                                    "originalFilename"
+                                  ]
                                 },
                                 "hoursPerWeek": {
                                   "type": "string",
@@ -754,8 +762,6 @@
                                 "portfolioUrl",
                                 "portfolioPassword",
                                 "resumeUpload",
-                                "resumeUrl",
-                                "resumePassword",
                                 "hoursPerWeek",
                                 "interestEmploymentType",
                                 "interestWorkArrangement",
@@ -784,10 +790,15 @@
                           "type": "boolean"
                         }
                       },
-                      "required": ["submission", "isFinal"]
+                      "required": [
+                        "submission",
+                        "isFinal"
+                      ]
                     }
                   },
-                  "required": ["ApplicantGetSubmissionsResponseBodySchema"]
+                  "required": [
+                    "ApplicantGetSubmissionsResponseBodySchema"
+                  ]
                 }
               }
             }
@@ -820,7 +831,9 @@
                             "type": "number"
                           }
                         },
-                        "required": ["id"]
+                        "required": [
+                          "id"
+                        ]
                       },
                       "lastOrg": {
                         "type": "string",
@@ -892,16 +905,6 @@
                         "nullable": true,
                         "maxLength": 255
                       },
-                      "resumeUrl": {
-                        "type": "string",
-                        "nullable": true,
-                        "maxLength": 500
-                      },
-                      "resumePassword": {
-                        "type": "string",
-                        "nullable": true,
-                        "maxLength": 255
-                      },
                       "hoursPerWeek": {
                         "type": "string",
                         "nullable": true,
@@ -911,7 +914,10 @@
                         "type": "array",
                         "items": {
                           "type": "string",
-                          "enum": ["full", "part"]
+                          "enum": [
+                            "full",
+                            "part"
+                          ]
                         }
                       },
                       "interestWorkArrangement": {
@@ -934,13 +940,22 @@
                       },
                       "openToRelocate": {
                         "type": "string",
-                        "enum": ["yes", "no", "not sure"]
+                        "enum": [
+                          "yes",
+                          "no",
+                          "not sure"
+                        ]
                       },
                       "openToRemoteMulti": {
                         "type": "array",
                         "items": {
                           "type": "string",
-                          "enum": ["remote", "in-person", "hybrid", "not sure"]
+                          "enum": [
+                            "remote",
+                            "in-person",
+                            "hybrid",
+                            "not sure"
+                          ]
                         }
                       },
                       "desiredSalary": {
@@ -966,7 +981,11 @@
                       "workAuthorization": {
                         "type": "string",
                         "nullable": true,
-                        "enum": ["authorized", "sponsorship", null]
+                        "enum": [
+                          "authorized",
+                          "sponsorship",
+                          null
+                        ]
                       },
                       "interestGovt": {
                         "type": "boolean"
@@ -976,7 +995,10 @@
                         "nullable": true,
                         "items": {
                           "type": "string",
-                          "enum": ["paid", "unpaid"]
+                          "enum": [
+                            "paid",
+                            "unpaid"
+                          ]
                         }
                       },
                       "previousImpactExperience": {
@@ -1043,7 +1065,8 @@
                       },
                       "referenceAttributionOther": {
                         "type": "string",
-                        "nullable": true
+                        "nullable": true,
+                        "default": null
                       }
                     },
                     "required": [
@@ -1076,7 +1099,9 @@
                     ]
                   }
                 },
-                "required": ["ApplicantCreateSubmissionRequestBodySchema"]
+                "required": [
+                  "ApplicantCreateSubmissionRequestBodySchema"
+                ]
               }
             }
           }
@@ -1171,17 +1196,10 @@
                                   "type": "string"
                                 }
                               },
-                              "required": ["id", "originalFilename"]
-                            },
-                            "resumeUrl": {
-                              "type": "string",
-                              "nullable": true,
-                              "maxLength": 500
-                            },
-                            "resumePassword": {
-                              "type": "string",
-                              "nullable": true,
-                              "maxLength": 255
+                              "required": [
+                                "id",
+                                "originalFilename"
+                              ]
                             },
                             "hoursPerWeek": {
                               "type": "string",
@@ -1296,8 +1314,6 @@
                             "portfolioUrl",
                             "portfolioPassword",
                             "resumeUpload",
-                            "resumeUrl",
-                            "resumePassword",
                             "hoursPerWeek",
                             "interestEmploymentType",
                             "interestWorkArrangement",
@@ -1321,10 +1337,15 @@
                           "type": "boolean"
                         }
                       },
-                      "required": ["submission", "isFinal"]
+                      "required": [
+                        "submission",
+                        "isFinal"
+                      ]
                     }
                   },
-                  "required": ["ApplicantCreateSubmissionResponseBodySchema"]
+                  "required": [
+                    "ApplicantCreateSubmissionResponseBodySchema"
+                  ]
                 }
               }
             }
@@ -1367,7 +1388,9 @@
                             "type": "number"
                           }
                         },
-                        "required": ["id"]
+                        "required": [
+                          "id"
+                        ]
                       },
                       "lastOrg": {
                         "type": "string",
@@ -1439,16 +1462,6 @@
                         "nullable": true,
                         "maxLength": 255
                       },
-                      "resumeUrl": {
-                        "type": "string",
-                        "nullable": true,
-                        "maxLength": 500
-                      },
-                      "resumePassword": {
-                        "type": "string",
-                        "nullable": true,
-                        "maxLength": 255
-                      },
                       "hoursPerWeek": {
                         "type": "string",
                         "nullable": true,
@@ -1458,7 +1471,10 @@
                         "type": "array",
                         "items": {
                           "type": "string",
-                          "enum": ["full", "part"]
+                          "enum": [
+                            "full",
+                            "part"
+                          ]
                         }
                       },
                       "interestWorkArrangement": {
@@ -1481,13 +1497,22 @@
                       },
                       "openToRelocate": {
                         "type": "string",
-                        "enum": ["yes", "no", "not sure"]
+                        "enum": [
+                          "yes",
+                          "no",
+                          "not sure"
+                        ]
                       },
                       "openToRemoteMulti": {
                         "type": "array",
                         "items": {
                           "type": "string",
-                          "enum": ["remote", "in-person", "hybrid", "not sure"]
+                          "enum": [
+                            "remote",
+                            "in-person",
+                            "hybrid",
+                            "not sure"
+                          ]
                         }
                       },
                       "desiredSalary": {
@@ -1513,7 +1538,11 @@
                       "workAuthorization": {
                         "type": "string",
                         "nullable": true,
-                        "enum": ["authorized", "sponsorship", null]
+                        "enum": [
+                          "authorized",
+                          "sponsorship",
+                          null
+                        ]
                       },
                       "interestGovt": {
                         "type": "boolean"
@@ -1523,7 +1552,10 @@
                         "nullable": true,
                         "items": {
                           "type": "string",
-                          "enum": ["paid", "unpaid"]
+                          "enum": [
+                            "paid",
+                            "unpaid"
+                          ]
                         }
                       },
                       "previousImpactExperience": {
@@ -1590,7 +1622,8 @@
                       },
                       "referenceAttributionOther": {
                         "type": "string",
-                        "nullable": true
+                        "nullable": true,
+                        "default": null
                       }
                     },
                     "required": [
@@ -1623,7 +1656,9 @@
                     ]
                   }
                 },
-                "required": ["ApplicantCreateSubmissionRequestBodySchema"]
+                "required": [
+                  "ApplicantCreateSubmissionRequestBodySchema"
+                ]
               }
             }
           }
@@ -1718,17 +1753,10 @@
                                   "type": "string"
                                 }
                               },
-                              "required": ["id", "originalFilename"]
-                            },
-                            "resumeUrl": {
-                              "type": "string",
-                              "nullable": true,
-                              "maxLength": 500
-                            },
-                            "resumePassword": {
-                              "type": "string",
-                              "nullable": true,
-                              "maxLength": 255
+                              "required": [
+                                "id",
+                                "originalFilename"
+                              ]
                             },
                             "hoursPerWeek": {
                               "type": "string",
@@ -1843,8 +1871,6 @@
                             "portfolioUrl",
                             "portfolioPassword",
                             "resumeUpload",
-                            "resumeUrl",
-                            "resumePassword",
                             "hoursPerWeek",
                             "interestEmploymentType",
                             "interestWorkArrangement",
@@ -1868,10 +1894,15 @@
                           "type": "boolean"
                         }
                       },
-                      "required": ["submission", "isFinal"]
+                      "required": [
+                        "submission",
+                        "isFinal"
+                      ]
                     }
                   },
-                  "required": ["ApplicantCreateSubmissionResponseBodySchema"]
+                  "required": [
+                    "ApplicantCreateSubmissionResponseBodySchema"
+                  ]
                 }
               }
             }
@@ -1919,7 +1950,9 @@
                             "type": "number"
                           }
                         },
-                        "required": ["id"]
+                        "required": [
+                          "id"
+                        ]
                       },
                       "lastOrg": {
                         "type": "string",
@@ -1996,16 +2029,6 @@
                         "nullable": true,
                         "maxLength": 255
                       },
-                      "resumeUrl": {
-                        "type": "string",
-                        "nullable": true,
-                        "maxLength": 500
-                      },
-                      "resumePassword": {
-                        "type": "string",
-                        "nullable": true,
-                        "maxLength": 255
-                      },
                       "hoursPerWeek": {
                         "type": "string",
                         "nullable": true,
@@ -2016,7 +2039,10 @@
                         "nullable": true,
                         "items": {
                           "type": "string",
-                          "enum": ["full", "part"]
+                          "enum": [
+                            "full",
+                            "part"
+                          ]
                         }
                       },
                       "interestWorkArrangement": {
@@ -2042,14 +2068,24 @@
                       "openToRelocate": {
                         "type": "string",
                         "nullable": true,
-                        "enum": ["yes", "no", "not sure", null]
+                        "enum": [
+                          "yes",
+                          "no",
+                          "not sure",
+                          null
+                        ]
                       },
                       "openToRemoteMulti": {
                         "type": "array",
                         "nullable": true,
                         "items": {
                           "type": "string",
-                          "enum": ["remote", "in-person", "hybrid", "not sure"]
+                          "enum": [
+                            "remote",
+                            "in-person",
+                            "hybrid",
+                            "not sure"
+                          ]
                         }
                       },
                       "desiredSalary": {
@@ -2076,7 +2112,11 @@
                       "workAuthorization": {
                         "type": "string",
                         "nullable": true,
-                        "enum": ["authorized", "sponsorship", null]
+                        "enum": [
+                          "authorized",
+                          "sponsorship",
+                          null
+                        ]
                       },
                       "interestGovt": {
                         "type": "boolean",
@@ -2087,7 +2127,10 @@
                         "nullable": true,
                         "items": {
                           "type": "string",
-                          "enum": ["paid", "unpaid"]
+                          "enum": [
+                            "paid",
+                            "unpaid"
+                          ]
                         }
                       },
                       "previousImpactExperience": {
@@ -2161,7 +2204,9 @@
                     }
                   }
                 },
-                "required": ["ApplicantDraftSubmissionRequestBodySchema"]
+                "required": [
+                  "ApplicantDraftSubmissionRequestBodySchema"
+                ]
               }
             }
           }
@@ -2256,17 +2301,10 @@
                                   "type": "string"
                                 }
                               },
-                              "required": ["id", "originalFilename"]
-                            },
-                            "resumeUrl": {
-                              "type": "string",
-                              "nullable": true,
-                              "maxLength": 500
-                            },
-                            "resumePassword": {
-                              "type": "string",
-                              "nullable": true,
-                              "maxLength": 255
+                              "required": [
+                                "id",
+                                "originalFilename"
+                              ]
                             },
                             "hoursPerWeek": {
                               "type": "string",
@@ -2381,8 +2419,6 @@
                             "portfolioUrl",
                             "portfolioPassword",
                             "resumeUpload",
-                            "resumeUrl",
-                            "resumePassword",
                             "hoursPerWeek",
                             "interestEmploymentType",
                             "interestWorkArrangement",
@@ -2406,10 +2442,15 @@
                           "type": "boolean"
                         }
                       },
-                      "required": ["submission", "isFinal"]
+                      "required": [
+                        "submission",
+                        "isFinal"
+                      ]
                     }
                   },
-                  "required": ["ApplicantDraftSubmissionResponseBodySchema"]
+                  "required": [
+                    "ApplicantDraftSubmissionResponseBodySchema"
+                  ]
                 }
               }
             }
@@ -2511,11 +2552,16 @@
                             "maxLength": 255
                           }
                         },
-                        "required": ["name", "email"]
+                        "required": [
+                          "name",
+                          "email"
+                        ]
                       },
                       "acceptedPrivacy": {
                         "type": "boolean",
-                        "enum": [true]
+                        "enum": [
+                          true
+                        ]
                       },
                       "referenceAttribution": {
                         "type": "string",
@@ -2627,7 +2673,11 @@
                             },
                             "visaSponsorship": {
                               "type": "string",
-                              "enum": ["yes", "no", "sometimes"]
+                              "enum": [
+                                "yes",
+                                "no",
+                                "sometimes"
+                              ]
                             },
                             "similarStaffed": {
                               "type": "boolean"
@@ -2710,7 +2760,9 @@
                     ]
                   }
                 },
-                "required": ["OpportunityBatchRequestBodySchema"]
+                "required": [
+                  "OpportunityBatchRequestBodySchema"
+                ]
               }
             }
           }
@@ -2791,7 +2843,9 @@
                       ]
                     }
                   },
-                  "required": ["OpportunityBatchResponseBodySchema"]
+                  "required": [
+                    "OpportunityBatchResponseBodySchema"
+                  ]
                 }
               }
             }
@@ -2819,10 +2873,15 @@
                         "type": "string"
                       }
                     },
-                    "required": ["originalFilename", "contentType"]
+                    "required": [
+                      "originalFilename",
+                      "contentType"
+                    ]
                   }
                 },
-                "required": ["UploadRequestBodySchema"]
+                "required": [
+                  "UploadRequestBodySchema"
+                ]
               }
             }
           }
@@ -2857,13 +2916,20 @@
                               }
                             }
                           },
-                          "required": ["url", "fields"]
+                          "required": [
+                            "url",
+                            "fields"
+                          ]
                         }
                       },
-                      "required": ["id"]
+                      "required": [
+                        "id"
+                      ]
                     }
                   },
-                  "required": ["UploadResponseBodySchema"]
+                  "required": [
+                    "UploadResponseBodySchema"
+                  ]
                 }
               }
             }
@@ -2895,13 +2961,21 @@
                     "properties": {
                       "status": {
                         "type": "string",
-                        "enum": ["REQUESTED", "SUCCESS", "FAILURE"]
+                        "enum": [
+                          "REQUESTED",
+                          "SUCCESS",
+                          "FAILURE"
+                        ]
                       }
                     },
-                    "required": ["status"]
+                    "required": [
+                      "status"
+                    ]
                   }
                 },
-                "required": ["UploadStateRequestBodySchema"]
+                "required": [
+                  "UploadStateRequestBodySchema"
+                ]
               }
             }
           }
@@ -2925,13 +2999,23 @@
                         },
                         "status": {
                           "type": "string",
-                          "enum": ["REQUESTED", "SUCCESS", "FAILURE"]
+                          "enum": [
+                            "REQUESTED",
+                            "SUCCESS",
+                            "FAILURE"
+                          ]
                         }
                       },
-                      "required": ["id", "originalFilename", "status"]
+                      "required": [
+                        "id",
+                        "originalFilename",
+                        "status"
+                      ]
                     }
                   },
-                  "required": ["UploadStateResponseBodySchema"]
+                  "required": [
+                    "UploadStateResponseBodySchema"
+                  ]
                 }
               }
             }
@@ -2981,13 +3065,20 @@
                               }
                             }
                           },
-                          "required": ["url", "fields"]
+                          "required": [
+                            "url",
+                            "fields"
+                          ]
                         }
                       },
-                      "required": ["id"]
+                      "required": [
+                        "id"
+                      ]
                     }
                   },
-                  "required": ["UploadResponseBodySchema"]
+                  "required": [
+                    "UploadResponseBodySchema"
+                  ]
                 }
               }
             }

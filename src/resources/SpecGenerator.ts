@@ -7,9 +7,9 @@ import { createDocument, extendZodWithOpenApi } from 'zod-openapi';
 extendZodWithOpenApi(z);
 
 const {
-  ApplicantRequestBodySchema,
+  ApplicantCreateRequestBodySchema,
   ApplicantStateRequestBodySchema,
-  ApplicantResponseBodySchema,
+  ApplicantCreateResponseBodySchema,
   ApplicantCreateSubmissionRequestBodySchema,
   ApplicantCreateSubmissionResponseBodySchema,
   ApplicantDraftSubmissionRequestBodySchema,
@@ -67,7 +67,7 @@ const specJson = createDocument({
           required: true,
           content: {
             'application/json': {
-              schema: z.object({ ApplicantRequestBodySchema }),
+              schema: z.object({ ApplicantCreateRequestBodySchema }),
             },
           },
         },
@@ -76,7 +76,7 @@ const specJson = createDocument({
             description: 'Success',
             content: {
               'application/json': {
-                schema: z.object({ ApplicantResponseBodySchema }),
+                schema: z.object({ ApplicantCreateResponseBodySchema }),
               },
             },
           },

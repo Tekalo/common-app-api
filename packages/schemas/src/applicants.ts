@@ -40,7 +40,7 @@ const OpenToRemote = z.enum(['remote', 'in-person', 'hybrid', 'not sure']);
 const WorkAuthorization = z.enum(['authorized', 'sponsorship']);
 const EmploymentType = z.enum(['full', 'part']);
 
-const ApplicantRequestBodySchema = z.object({
+const ApplicantCreateRequestBodySchema = z.object({
   name: z.string().max(255),
   email: z.string().email().toLowerCase(),
   phone: z.string().optional(),
@@ -53,6 +53,13 @@ const ApplicantRequestBodySchema = z.object({
   utmParams: UTMPayload.nullish(),
 });
 
+const ApplicantGetResponseBodySchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  email: z.string(),
+  isPaused: z.boolean(),
+});
+
 const ApplicantStateRequestBodySchema = z.object({
   pause: z.boolean(),
 });
@@ -61,13 +68,17 @@ const ApplicantUpdateRequestBodySchema = z.object({
   auth0Id: z.string(),
 });
 
-const ApplicantResponseBodySchema = z.object({
+const ApplicantCreateResponseBodySchema = z.object({
   id: z.number(),
   auth0Id: z.string().nullable(),
   email: z.string(),
 });
 
-const ApplicantCreateSubmissionRequestBodySchema = z.object({
+/**
+ * All optional fields AKA fields that are always present on the submission form, but do not have to be filled out, should be nullable()
+ * All conditional fields AKA fields that may not always appear on the submission form, should be nullish()
+ */
+const ApplicantCreateSubmissionRequestBody = z.object({
   originTag: z.string(),
   lastRole: z.string().max(255),
   resumeUpload: z.object({
@@ -81,10 +92,9 @@ const ApplicantCreateSubmissionRequestBodySchema = z.object({
   githubUrl: z.string().max(500).nullable(),
   portfolioUrl: z.string().max(500).nullable(),
   portfolioPassword: z.string().max(255).nullable(),
-  resumeUrl: z.string().max(500).nullish(), // deprecated
-  resumePassword: z.string().max(255).nullish(),
   hoursPerWeek: z.string().max(255).nullable(),
   interestEmploymentType: z.array(EmploymentType),
+  // Conditional field: interestWorkArrangement can be undefined if interestEmploymentType is 'full'
   interestWorkArrangement: z
     .array(z.string())
     .nullish()
@@ -109,8 +119,30 @@ const ApplicantCreateSubmissionRequestBodySchema = z.object({
   essayResponse: z.string().max(5000),
   utmParams: UTMPayload.nullish(),
   referenceAttribution: z.string().nullable(),
-  referenceAttributionOther: z.string().nullish(),
+  // Conditional field: referenceAttributionOther can be undefined if referenceAttribution is not 'Other'
+  referenceAttributionOther: z.string().nullish().default(null),
 });
+
+type SubmissionType = z.input<typeof ApplicantCreateSubmissionRequestBody>;
+
+/**
+ * Any additional validation logic that should be applied to the final submission schema
+ * @param submission
+ * @returns {boolean} true if validation passes, false if not
+ */
+const submissionRefinement = (submission: SubmissionType) => {
+  // interestWorkArrangement cannot be null/undefined if interestEmploymentType is 'part'
+  if (submission.interestEmploymentType.includes('part')) {
+    return submission.interestWorkArrangement?.length;
+  }
+  return true;
+};
+
+const ApplicantCreateSubmissionRequestBodySchema =
+  ApplicantCreateSubmissionRequestBody.refine(submissionRefinement, {
+    message: 'interestWorkArrangement must be defined or set to null',
+    path: ['interestWorkArrangement'],
+  });
 
 const ApplicantSubmissionResponseBody = z.object({
   id: z.number(),
@@ -133,8 +165,6 @@ const ApplicantSubmissionResponseBody = z.object({
       originalFilename: z.string(),
     })
     .nullable(),
-  resumeUrl: z.string().max(500).nullable(), // deprecated
-  resumePassword: z.string().max(255).nullable(),
   hoursPerWeek: z.string().max(255).nullable(),
   interestEmploymentType: z.array(z.string()).nullable(),
   interestWorkArrangement: z.array(z.string()).nullable(),
@@ -181,8 +211,6 @@ const ApplicantDraftSubmissionRequestBodySchema = z.object({
   githubUrl: z.string().max(500).nullish(),
   portfolioUrl: z.string().max(500).nullish(),
   portfolioPassword: z.string().max(255).nullish(),
-  resumeUrl: z.string().max(500).nullish(), // deprecated
-  resumePassword: z.string().max(255).nullish(),
   hoursPerWeek: z.string().max(255).nullish(),
   interestEmploymentType: z
     .array(EmploymentType)
@@ -225,7 +253,13 @@ const ApplicantDraftSubmissionRequestBodySchema = z.object({
 });
 
 const ApplicantUpdateSubmissionRequestBodySchema =
-  ApplicantCreateSubmissionRequestBodySchema.omit({ utmParams: true });
+  ApplicantCreateSubmissionRequestBody.omit({ utmParams: true }).refine(
+    submissionRefinement,
+    {
+      message: 'interestWorkArrangement must be defined or set to null',
+      path: ['interestWorkArrangement'],
+    },
+  );
 
 const ApplicantDraftSubmissionResponseBodySchema = z.object({
   submission: ApplicantSubmissionResponseBody,
@@ -241,8 +275,9 @@ const ApplicantGetSubmissionsResponseBodySchema = z.object({
 });
 
 export default {
-  ApplicantRequestBodySchema,
-  ApplicantResponseBodySchema,
+  ApplicantCreateRequestBodySchema,
+  ApplicantCreateResponseBodySchema,
+  ApplicantGetResponseBodySchema,
   ApplicantCreateSubmissionRequestBodySchema,
   ApplicantCreateSubmissionResponseBodySchema,
   ApplicantDraftSubmissionRequestBodySchema,

@@ -29,6 +29,9 @@ const errorHandler = (
     problem.status = 400;
     problem.detail = detail;
   }
+  if (process.env.APP_ENV !== 'prod') {
+    problem.stack = err.stack;
+  }
   return res
     .status(problem.status || 500)
     .setHeader('Content-Type', 'application/problem+json')

@@ -230,3 +230,11 @@ This repository uses [husky](https://www.npmjs.com/package/husky) to run git hoo
 Before each commit, `husky` will run a `pre-commit` hook to run eslint and prettier formatter on your code to ensure consistent code syntax and style uniformity.
 
 Additional hooks should be [added](https://typicode.github.io/husky/#/?id=create-a-hook) under the `.husky` directory as seperate scripts and this README should be updated accordingly.
+
+## Infrastructure
+
+The Tekalo api runs in AWS. The infrastructure configured in terraform files. [More information](tf/README.md).
+
+## Operations / Troubleshooting
+
+[Supporting the Tekalo API in production](docs/Operations.md)

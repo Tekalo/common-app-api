@@ -15,13 +15,14 @@ import {
 import SESService from '@App/services/SESService.js';
 import DummySESService from '@App/tests/fixtures/DummySesService.js';
 import DummyS3Service from '@App/tests/fixtures/DummyS3Service.js';
-import applicantSubmissionGenerator from '@App/tests/fixtures/applicantSubmissionGenerator.js';
+import { getAPIRequestBody } from '@App/tests/fixtures/applicantSubmissionGenerator.js';
 import {
   PrismaApplicantSubmissionWithResume,
   RawApplicantSubmissionBody,
 } from '@App/resources/types/applicants.js';
 import { Applicants } from '@capp/schemas';
 import { ZodError, ZodIssueCode } from 'zod';
+import auth0ResponseGenerator from '@App/tests/fixtures/auth0ManagementAPIResponseGenerator.js';
 import { getMockConfig } from '../../util/helpers.js';
 
 let mockCtx: MockContext;
@@ -98,7 +99,7 @@ describe('Applicant Controller', () => {
         phone: '777-777-7777',
         name: 'Bob Boberson',
         email: 'bboberson@schmidtfutures.com',
-        pronoun: 'she/hers',
+        pronoun: 'he/his',
         preferredContact: 'email',
         searchStatus: 'active',
         acceptedTerms: new Date('2023-02-01'),
@@ -189,7 +190,7 @@ describe('Applicant Controller', () => {
         phone: '777-777-7777',
         name: 'Bob Boberson',
         email: 'bboberson@schmidtfutures.com',
-        pronoun: 'she/hers',
+        pronoun: 'he/his',
         preferredContact: 'email',
         searchStatus: 'active',
         acceptedTerms: new Date('2023-02-01'),
@@ -242,7 +243,7 @@ describe('Applicant Controller', () => {
         phone: '777-777-7777',
         name: 'Bob Boberson',
         email: 'bboberson@schmidtfutures.com',
-        pronoun: 'she/hers',
+        pronoun: 'he/his',
         preferredContact: 'email',
         searchStatus: 'active',
         acceptedTerms: new Date('2023-02-01'),
@@ -297,7 +298,7 @@ describe('Applicant Controller', () => {
         phone: '777-777-7777',
         name: 'Bob Boberson',
         email: 'bboberson@schmidtfutures.com',
-        pronoun: 'she/hers',
+        pronoun: 'he/his',
         preferredContact: 'email',
         searchStatus: 'active',
         acceptedTerms: new Date('2023-02-01'),
@@ -356,7 +357,7 @@ describe('Applicant Controller', () => {
         phone: '777-777-7777',
         name: 'Bob Boberson',
         email: 'bboberson@schmidtfutures.com',
-        pronoun: 'she/hers',
+        pronoun: 'he/his',
         preferredContact: 'email',
         searchStatus: 'active',
         acceptedTerms: new Date('2023-02-01'),
@@ -390,7 +391,7 @@ describe('Applicant Controller', () => {
         phone: '777-777-7777',
         name: 'Bob Boberson',
         email: 'bboberson@schmidtfutures.com',
-        pronoun: 'she/hers',
+        pronoun: 'he/his',
         preferredContact: 'email',
         searchStatus: 'active',
         acceptedTerms: new Date('2023-02-01'),
@@ -427,7 +428,7 @@ describe('Applicant Controller', () => {
         phone: '777-777-7777',
         name: 'Bob Boberson',
         email: 'bboberson@schmidtfutures.com',
-        pronoun: 'she/hers',
+        pronoun: 'he/his',
         preferredContact: 'email',
         searchStatus: 'active',
         acceptedTerms: new Date('2023-02-01'),
@@ -458,7 +459,7 @@ describe('Applicant Controller', () => {
         phone: '777-777-7777',
         name: 'Bob Boberson',
         email: 'bboberson@schmidtfutures.com',
-        pronoun: 'she/hers',
+        pronoun: 'he/his',
         preferredContact: 'email',
         searchStatus: 'active',
         acceptedTerms: new Date('2023-02-01'),
@@ -491,7 +492,7 @@ describe('Applicant Controller', () => {
         phone: '777-777-7777',
         name: 'Bob Boberson',
         email: 'bboberson@schmidtfutures.com',
-        pronoun: 'she/hers',
+        pronoun: 'he/his',
         preferredContact: 'email',
         searchStatus: 'active',
         acceptedTerms: new Date('2023-02-01'),
@@ -536,7 +537,7 @@ describe('Applicant Controller', () => {
         phone: '777-777-7777',
         name: 'Bob Boberson',
         email: 'bboberson@schmidtfutures.com',
-        pronoun: 'she/hers',
+        pronoun: 'he/his',
         preferredContact: 'email',
         searchStatus: 'active',
         acceptedTerms: new Date('2023-02-01'),
@@ -570,7 +571,7 @@ describe('Applicant Controller', () => {
         phone: '777-777-7777',
         name: 'Bob Boberson',
         email: 'bboberson@schmidtfutures.com',
-        pronoun: 'she/hers',
+        pronoun: 'he/his',
         preferredContact: 'email',
         searchStatus: 'active',
         acceptedTerms: new Date('2023-02-01'),
@@ -607,7 +608,7 @@ describe('Applicant Controller', () => {
         phone: '777-777-7777',
         name: 'Bob Boberson',
         email: 'bboberson@schmidtfutures.com',
-        pronoun: 'she/hers',
+        pronoun: 'he/his',
         preferredContact: 'email',
         searchStatus: 'active',
         acceptedTerms: new Date('2023-02-01'),
@@ -638,7 +639,7 @@ describe('Applicant Controller', () => {
         phone: '777-777-7777',
         name: 'Bob Boberson',
         email: 'bboberson@schmidtfutures.com',
-        pronoun: 'she/hers',
+        pronoun: 'he/his',
         preferredContact: 'email',
         searchStatus: 'active',
         acceptedTerms: new Date('2023-02-01'),
@@ -671,7 +672,7 @@ describe('Applicant Controller', () => {
         phone: '777-777-7777',
         name: 'Bob Boberson',
         email: 'bboberson@schmidtfutures.com',
-        pronoun: 'she/hers',
+        pronoun: 'he/his',
         preferredContact: 'email',
         searchStatus: 'active',
         acceptedTerms: new Date('2023-02-01'),
@@ -712,7 +713,7 @@ describe('Applicant Controller', () => {
         phone: '777-777-7777',
         name: 'Bob Boberson',
         email: 'Aboberson@schmidtfutures.com',
-        pronoun: 'she/hers',
+        pronoun: 'he/his',
         preferredContact: 'email',
         searchStatus: 'active',
         acceptedTerms: new Date('2023-02-01'),
@@ -754,7 +755,7 @@ describe('Applicant Controller', () => {
         phone: '777-777-7777',
         name: 'Bob Boberson',
         email: 'bboberson+123xyz@gmail.com',
-        pronoun: 'she/hers',
+        pronoun: 'he/his',
         preferredContact: 'email',
         searchStatus: 'active',
         acceptedTerms: new Date('2023-02-01'),
@@ -796,7 +797,7 @@ describe('Applicant Controller', () => {
         phone: '777-777-7777',
         name: 'Bob Boberson',
         email: 'bboberson@schmidtfutures.com',
-        pronoun: 'she/hers',
+        pronoun: 'he/his',
         preferredContact: 'email',
         searchStatus: 'active',
         acceptedTerms: new Date('2023-02-01'),
@@ -885,13 +886,22 @@ describe('Applicant Controller', () => {
       );
 
       const mockEmailSpy = jest.spyOn(emailService, 'sendEmail');
+      const mockUser = {
+        name: 'Bob Boberson',
+        email: 'bboberson@schmidtfutures.com',
+        auth0Id: 'auth0|12345',
+      };
 
       const dummyAuthService = new DummyAuthService();
       dummyAuthService.getUser = () =>
         Promise.resolve({
-          id: 'auth|12345',
-          email: 'bboberson@schmidtfutures.com',
-          name: 'Bob Boberson',
+          data: auth0ResponseGenerator.getMockUserCreateResponse(
+            mockUser.auth0Id,
+            { name: mockUser.name, email: mockUser.email },
+          ),
+          status: 200,
+          headers: '',
+          statusText: '',
         });
 
       const applicantController = new ApplicantController(
@@ -907,8 +917,8 @@ describe('Applicant Controller', () => {
 
       await applicantController.deleteAuth0OnlyApplicant('auth|12345');
       const expectedEmail = emailService.generateApplicantDeletionCompleteEmail(
-        'bboberson@schmidtfutures.com',
-        'Bob Boberson',
+        mockUser.email,
+        mockUser.name,
       );
       expect(mockEmailSpy).toHaveBeenCalledWith(expectedEmail);
       mockEmailSpy.mockRestore();
@@ -938,7 +948,7 @@ describe('Applicant Controller', () => {
           id: 1,
           originalFilename: 'My_Tekalo_Resume.pdf',
         },
-        resumeUrl: 'myportfolio.com',
+        resumeUrl: null,
         resumePassword: null,
         hoursPerWeek: null,
         interestEmploymentType: ['full'], // enum
@@ -973,7 +983,7 @@ describe('Applicant Controller', () => {
         phone: '777-777-7777',
         name: 'Bob Boberson',
         email: bobEmail,
-        pronoun: 'she/hers',
+        pronoun: 'he/his',
         preferredContact: 'email',
         searchStatus: 'active',
         acceptedTerms: new Date('2023-02-01'),
@@ -1009,8 +1019,7 @@ describe('Applicant Controller', () => {
         ),
       );
 
-      const testBody =
-        applicantSubmissionGenerator.getAPIRequestBody(applicantId);
+      const testBody = getAPIRequestBody(applicantId);
       await applicantController.createSubmission(
         applicantId,
         Applicants.ApplicantCreateSubmissionRequestBodySchema.parse(testBody),
@@ -1029,8 +1038,7 @@ describe('Applicant Controller', () => {
         getMockConfig(),
       );
 
-      // eslint-disable-next-line @typescript-eslint/require-await
-      dummyUploadService.getApplicantUpload = async () => null;
+      dummyUploadService.getApplicantUpload = async () => Promise.resolve(null);
 
       const applicantController = new ApplicantController(
         new DummyAuthService(),
@@ -1038,8 +1046,7 @@ describe('Applicant Controller', () => {
         new DummyEmailService(new DummySESService(), getMockConfig()),
         dummyUploadService,
       );
-      const requestBody: RawApplicantSubmissionBody =
-        applicantSubmissionGenerator.getAPIRequestBody(1);
+      const requestBody: RawApplicantSubmissionBody = getAPIRequestBody(1);
 
       await expect(
         applicantController.createSubmission(
@@ -1075,8 +1082,7 @@ describe('Applicant Controller', () => {
         new DummyEmailService(new DummySESService(), getMockConfig()),
         dummyUploadService,
       );
-      const requestBody =
-        applicantSubmissionGenerator.getAPIRequestBody(applicantId);
+      const requestBody = getAPIRequestBody(applicantId);
 
       await expect(
         applicantController.createSubmission(
