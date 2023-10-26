@@ -20,7 +20,7 @@ The API application runs in an ECS cluster. There is currently one EC2 instance 
 
 ## Container images
 
-When code is merged into the `main` branch a build and deploy is triggered through github actions. A new container image is built and pushed to AWS ECR. This image will then be deployed to the `capp-api` cluster, starting with dev. The same image is used for all three environments.
+When code is merged into the `main` branch a build and deploy is triggered through github actions. A new container image is built and pushed to an AWS ECR repository in the dev account. This image will then be deployed to the `capp-api` cluster, starting with dev. The same image is used for all three environments. For prod deployment, the image is copied from the dev-account ECR repository to a prod-account ECR repository.
 
 ## Database
 
