@@ -8,7 +8,7 @@ The infrastructure for all three Tekalo API environments (dev, staging, prod) is
 
 ## Configuration
 
-We use infrastructure as code (IaC) to configure the infrastructure of the Tekalo API, and avoid making manual edits in the AWS console as much as possible. Most of the infrastructure configuration is in the form of terraform code, and can be found in [the terraform directory](../tf) in this repo. The configuration for the ECS cluster, the vpc, and other related infrastructure is configured using CloudFormation, and can be found in the [aws-infrastructure](https://github.com/schmidtfutures/aws-infrastructure/fan-apps-prod) repository.
+We use infrastructure as code (IaC) to configure the infrastructure of the Tekalo API, and avoid making manual edits in the AWS console as much as possible. Most of the infrastructure configuration is in the form of terraform code, and can be found in [the terraform directory](../tf) in this repo. The configuration for the ECS cluster, the vpc, and other related infrastructure is configured using CloudFormation, and can be found in the [aws-infrastructure](https://github.com/schmidtfutures/aws-infrastructure/tree/main/fan-prod-external) repository.
 
 ## DNS
 
