@@ -4,7 +4,7 @@
 
 ## AWS
 
-The infrastructure for all three Tekalo API environments (dev, staging, prod) is deployed to AWS. Dev and staging are deployed to the same AWS account, while prod is isolated in its own AWS account.
+The infrastructure for all three Tekalo API environments (dev, staging, prod) is deployed to AWS. The diagram above reflects the infra for each of the environments. The major differences between the environments are that alerts are not enabled for the dev and staging environments and the default number of api tasks is higher for production. Dev and staging are deployed to the same AWS account, while prod is isolated in its own AWS account. One peculiarity to note is that the prod cluster is deployed as `prod-ext` while dev and staging are just `dev` and `staging`. This is to differentiate it from the `prod` cluster deployed in the dev / staging aws account.
 
 ## Configuration
 
