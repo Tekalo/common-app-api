@@ -14,7 +14,7 @@
   "scripts": {
     "check": "tsc --noEmit",
     "container-build": "docker compose run --rm api pnpm build",
-    "build": "pnpm -r --filter ./packages/schemas run build && pnpm check && swc src --copy-files --out-dir build",
+    "build": "pnpm -r --filter ./packages/schemas run build && pnpm check && swc src --source-maps true --copy-files --out-dir build",
     "start": "node --es-module-specifier-resolution=node ./build/server.js",
     "start:debug": "node --es-module-specifier-resolution=node --inspect=0.0.0.0:9229 ./build/server.js | pino-pretty -c",
     "dev": "pnpm run '/^(watch|dev):.*/'",
