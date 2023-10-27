@@ -6,4 +6,4 @@ At it's core, Tekalo is about getting data about candidates and opportunities to
 
 Below is a diagram describing the tools we use for our ETL process. This entire pipeline is replicated for each of our three deployment environments (dev, staging, prod).
 
-![ETL Architecture Diagram](./media/tekalo_etl_architecture.png 'ETL Architecture')
+![ETL Infrastructure Diagram](./media/tekalo_etl_infrastructure.png 'ETL Infrastructure')
