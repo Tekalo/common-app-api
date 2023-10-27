@@ -136,6 +136,11 @@ resource "aws_ecs_task_definition" "api" {
           containerPort = var.api_port
         }
       ]
+
+      # These are fargate-specific
+      networkMode              = "awsvpc"
+      requires_compatibilities = [ "FARGATE" ]
+
       healthCheck = {
         retries     = 10
         command     = ["CMD-SHELL", "curl -f http://localhost:3000/health || exit 1"]
@@ -230,6 +235,11 @@ resource "aws_ecs_task_definition" "cli" {
       memory                 = 512
       essential              = true
       readonlyRootFilesystem = true
+
+      # These are fargate-specific
+      networkMode              = "awsvpc"
+      requires_compatibilities = [ "FARGATE" ]
+
       logConfiguration = {
         logDriver = "awslogs"
         options = {
