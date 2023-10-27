@@ -9,7 +9,7 @@ class DummyAuth0UsersManager extends UsersManager {
       data: auth0ResponseGenerator.getMockUserCreateResponse('auth0|12345'),
       status: 200,
       statusText: '',
-      headers: '',
+      headers: new Headers(),
     });
   }
 }
