@@ -77,6 +77,13 @@ resource "aws_ecs_service" "api" {
   enable_ecs_managed_tags           = true
   propagate_tags                    = "SERVICE"
 
+  # Fargate-specific params
+  launch_type                       = "FARGATE"
+  network_configuration             = {
+    subnets         = var.task_subnet_ids
+    security_groups = [var.task_security_group]
+  }
+
   # Preserve the existing containers until new ones are deemed healthy
   deployment_minimum_healthy_percent = 100
   deployment_maximum_percent         = 200

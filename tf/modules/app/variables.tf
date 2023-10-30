@@ -89,6 +89,16 @@ variable "rotation_vpc_security_group_id" {
   description = "Security Group ID to use for RDS rotation lambda (must have access to RDS)"
 }
 
+variable "task_subnet_ids" {
+  type        = list(string)
+  description = "Subnet IDs where ECS tasks/services should be assigned when using VPC networking mode"
+}
+
+variable "task_security_group" {
+  type        = string
+  description = "Security Group ID to use for tasks/services in VPC networking mode"
+}
+
 variable "alarms_enabled" {
   type        = bool
   description = "Allow cloudwatch alarms to take actions"

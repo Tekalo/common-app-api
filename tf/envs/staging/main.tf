@@ -60,6 +60,9 @@ module "app" {
   rotation_vpc_security_group_id = module.envconfig.database_ingress_security_group_id
   rotation_vpc_subnet_ids        = module.envconfig.private_subnet_ids
 
+  task_security_group  = module.envconfig.database_ingress_security_group_id
+  task_subnet_ids      = module.envconfig.private_subnet_ids
+
   uploads_cors_allowed_origins = var.uploads_cors_allowed_origins
 
   additional_env_vars = {
