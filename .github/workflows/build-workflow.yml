@@ -101,3 +101,4 @@ jobs:
           # TODO: not sure if we should finalize here. Maybe better to do it in the deploy?
           finalize: true
           sourcemaps: ./build
+          fetch-depth: 0
