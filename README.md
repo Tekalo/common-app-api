@@ -241,6 +241,8 @@ Additional hooks should be [added](https://typicode.github.io/husky/#/?id=create
 
 The Tekalo api runs in AWS. The infrastructure configured in terraform files. [More information](tf/README.md).
 
+More detailed information about the infrastructure can be found [here](docs/Infrastructure.md).
+
 ## Operations / Troubleshooting
 
 [Supporting the Tekalo API in production](docs/Operations.md)
