@@ -14,6 +14,8 @@ import {
   ParsedApplicantSubmissionBody,
   RawApplicantDraftSubmissionBody,
   RawApplicantSubmissionBody,
+  ApplicantStateResponseBody,
+  ApplicantGetResponseBody,
 } from '@App/resources/types/applicants.js';
 import {
   UploadResponseBody,
@@ -28,6 +30,7 @@ import UploadService from '@App/services/UploadService.js';
 import { Claims } from '@App/resources/types/auth0.js';
 import { Applicants } from '@capp/schemas';
 import { z } from 'zod';
+import { IdOnly } from '@App/resources/types/shared.js';
 
 class ApplicantController {
   private auth0Service: AuthService;
@@ -249,7 +252,10 @@ class ApplicantController {
     });
   }
 
-  async pauseApplicant(applicantId: number, pauseStatus: boolean) {
+  async pauseApplicant(
+    applicantId: number,
+    pauseStatus: boolean,
+  ): Promise<ApplicantStateResponseBody> {
     try {
       const { id, isPaused } = await this.prisma.applicant.update({
         data: { isPaused: pauseStatus },
@@ -363,7 +369,7 @@ class ApplicantController {
 
   // Deletes specified applicant without making deletion request entry or sending emails
   // Meant to be used by E2E tests and admins
-  async deleteApplicantForce(applicantId: number) {
+  async deleteApplicantForce(applicantId: number): Promise<IdOnly> {
     const applicantToDelete = await this.prisma.applicant.findUniqueOrThrow({
       where: { id: applicantId },
     });
@@ -536,7 +542,7 @@ class ApplicantController {
     }
   }
 
-  async getApplicant(id: number) {
+  async getApplicant(id: number): Promise<ApplicantGetResponseBody> {
     try {
       const { name, email, isPaused } =
         await this.prisma.applicant.findFirstOrThrow({

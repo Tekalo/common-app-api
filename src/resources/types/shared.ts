@@ -10,7 +10,7 @@ export type Problem = {
   stack?: string;
 };
 
-export type SessionCookie = {
+export type IdOnly = {
   id: number;
 };
 
@@ -18,6 +18,6 @@ export type BaseConfig = z.infer<typeof ConfigSchema>;
 
 declare module 'express-session' {
   interface Session {
-    applicant: SessionCookie;
+    applicant: IdOnly;
   }
 }

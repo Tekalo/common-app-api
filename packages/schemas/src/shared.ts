@@ -12,4 +12,6 @@ const UTMPayload = z.object({
   ga_session_id: z.string().max(200).nullish(),
 });
 
-export default UTMPayload;
+const IdOnly = z.object({ id: z.number() });
+
+export default { IdOnly, UTMPayload };

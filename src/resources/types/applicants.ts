@@ -47,8 +47,12 @@ export type ApplicantResponseBody = z.infer<
   typeof Applicants.ApplicantCreateResponseBodySchema
 >;
 
-export type ApplicantStateBody = z.infer<
+export type ApplicantStateRequestBody = z.infer<
   typeof Applicants.ApplicantStateRequestBodySchema
+>;
+
+export type ApplicantStateResponseBody = z.infer<
+  typeof Applicants.ApplicantStateResponseBodySchema
 >;
 
 export type ResumeUpload = {
@@ -64,6 +68,10 @@ export type ApplicantCreateSubmissionResponse = z.infer<
 
 export type ApplicantGetSubmissionResponse = z.infer<
   typeof Applicants.ApplicantGetSubmissionsResponseBodySchema
+>;
+
+export type ApplicantGetResponseBody = z.infer<
+  typeof Applicants.ApplicantGetResponseBodySchema
 >;
 
 // Custom type to represent Prisma query on ApplicantSubmission with a JOIN on Upload table

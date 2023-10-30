@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import UTMPayload from './shared.js';
+import SharedSchemas from './shared.js';
 
 const PreferredContact = z.enum(['sms', 'whatsapp', 'email']);
 const SearchStatus = z.enum(['active', 'passive', 'future']);
@@ -50,7 +50,7 @@ const ApplicantCreateRequestBodySchema = z.object({
   acceptedTerms: z.literal(true),
   acceptedPrivacy: z.literal(true),
   followUpOptIn: z.boolean().optional(),
-  utmParams: UTMPayload.nullish(),
+  utmParams: SharedSchemas.UTMPayload.nullish(),
 });
 
 const ApplicantGetResponseBodySchema = z.object({
@@ -62,6 +62,11 @@ const ApplicantGetResponseBodySchema = z.object({
 
 const ApplicantStateRequestBodySchema = z.object({
   pause: z.boolean(),
+});
+
+const ApplicantStateResponseBodySchema = z.object({
+  id: z.number(),
+  isPaused: z.boolean(),
 });
 
 const ApplicantUpdateRequestBodySchema = z.object({
@@ -117,7 +122,7 @@ const ApplicantCreateSubmissionRequestBody = z.object({
     .transform((val) => val || []),
   previousImpactExperience: z.boolean(),
   essayResponse: z.string().max(5000),
-  utmParams: UTMPayload.nullish(),
+  utmParams: SharedSchemas.UTMPayload.nullish(),
   referenceAttribution: z.string().nullable(),
   // Conditional field: referenceAttributionOther can be undefined if referenceAttribution is not 'Other'
   referenceAttributionOther: z.string().nullish().default(null),
@@ -247,7 +252,7 @@ const ApplicantDraftSubmissionRequestBodySchema = z.object({
     .transform((val) => val || []),
   previousImpactExperience: z.boolean().nullish(),
   essayResponse: z.string().max(5000).nullish(),
-  utmParams: UTMPayload.nullish(),
+  utmParams: SharedSchemas.UTMPayload.nullish(),
   referenceAttribution: z.string().nullish(),
   referenceAttributionOther: z.string().nullish(),
 });
@@ -282,6 +287,7 @@ export default {
   ApplicantCreateSubmissionResponseBodySchema,
   ApplicantDraftSubmissionRequestBodySchema,
   ApplicantStateRequestBodySchema,
+  ApplicantStateResponseBodySchema,
   ApplicantDraftSubmissionResponseBodySchema,
   ApplicantUpdateRequestBodySchema,
   ApplicantGetSubmissionsResponseBodySchema,
