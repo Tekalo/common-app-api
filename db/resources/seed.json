@@ -2,13 +2,22 @@
   "opportunityBatches": [
     {
       "id": 1,
-      "orgName": "Bobs Burgers Foundation",
-      "orgType": "nonprofit",
-      "orgSize": "<50",
-      "contactName": "Bob Boberson",
-      "contactEmail": "bboberson@gmail.com",
-      "impactAreas": ["Clean Energy"],
-      "equalOpportunityEmployer": true,
+      "organization": {
+        "name": "Bobs Burgers Foundation",
+        "type": "501(c)(3)",
+        "size": "20-50",
+        "impactAreas": ["Clean Energy"],
+        "eoe": true
+      },
+      "contact": {
+        "name": "Bob Boberson",
+        "email": "bboberson@gmail.com",
+        "phone": "777-888-9999"
+      },
+      "acceptedPrivacy": true,
+      "utmParams": {
+        "utm_source": "Instagram"
+      },
       "submissions": [
         {
           "fullyRemote": false,
@@ -18,7 +27,9 @@
           "positionTitle": "First Flipper",
           "pitchEssay": "Come flip burgers for Bob",
           "source": "Commercial",
-          "employmentType": "contractor"
+          "employmentType": "contractor",
+          "desiredYoe": ["0-2"],
+          "similarStaffed": true
         },
         {
           "fullyRemote": false,
@@ -28,19 +39,30 @@
           "positionTitle": "First Fryer",
           "pitchEssay": "Come fry somem fries for Bob",
           "source": "",
-          "employmentType": "full-time employee"
+          "employmentType": "full-time employee",
+          "desiredYoe": ["0-2", "3-5"],
+          "similarStaffed": false
         }
       ]
     },
     {
       "id": 2,
-      "orgName": "Mozilla Foundation",
-      "orgType": "nonprofit",
-      "orgSize": ">50",
-      "contactName": "Moz Illa",
-      "contactEmail": "milla@mozilla.org",
-      "impactAreas": ["Internet Freedom"],
-      "equalOpportunityEmployer": true,
+      "organization": {
+        "name": "Mozilla Foundation",
+        "type": "501(c)(4)",
+        "size": "51-100",
+        "impactAreas": ["Clean Energy"],
+        "eoe": true
+      },
+      "contact": {
+        "name": "Moz Illa",
+        "email": "milla@mozilla.org",
+        "phone": "111-222-3333"
+      },
+      "acceptedPrivacy": true,
+      "utmParams": {
+        "utm_source": "Linkedin"
+      },
       "submissions": [
         {
           "fullyRemote": true,
@@ -50,79 +72,175 @@
           "positionTitle": "Sr Backend Engineer 2",
           "pitchEssay": "Support and collectively lead the open source Mozilla project",
           "source": "All Tech is Human",
-          "employmentType": "other"
+          "employmentType": "full-time employee",
+          "desiredYoe": ["13-15", "15+"],
+          "similarStaffed": false
         }
       ]
     }
   ],
+  "resumes": [
+    {
+      "id": 1,
+      "applicantId": 1,
+      "originalFilename": "my_resume.pdf",
+      "contentType": "application/pdf",
+      "status": "SUCCESS"
+    },
+    {
+      "id": 2,
+      "applicantId": 2,
+      "originalFilename": "my_resume_2.pdf",
+      "contentType": "application/pdf",
+      "status": "SUCCESS"
+    },
+    {
+      "id": 3,
+      "applicantId": 3,
+      "originalFilename": "my_resume_3.jpg",
+      "contentType": "image/jpg",
+      "status": "SUCCESS"
+    }
+  ],
   "applicants": [
     {
+      "id": 1,
       "name": "Robin Williams",
-      "auth0Id": "auth0|123456",
+      "auth0Id": "auth0|d4ad39ca6136076c64860633",
       "email": "rwilliams@robinwilliams.com",
       "preferredContact": "sms",
       "pronoun": "he/his",
       "searchStatus": "future",
+      "acceptedTerms": true,
+      "acceptedPrivacy": true,
+      "followUpOptIn": false,
+      "utmParams": { "utm_content": "foo" },
       "application": {
-        "originTag": "SF",
-        "resumeUrl": "www.myresume.com",
-        "lastOrg": "Apfel",
-        "lastRole": "Just some guy",
+        "id": 1,
+        "originTag": "",
+        "lastRole": "senior software engineer",
+        "lastOrg": "mozilla",
         "yoe": ">11",
+        "skills": ["react", "python"],
+        "otherSkills": ["juggling", "curling"],
+        "linkedInUrl": "https://www.linkedin.com/in/bob-bobberson",
+        "githubUrl": "https://github.com/bboberson",
+        "portfolioUrl": "https://bobsportfolio.com",
+        "portfolioPassword": "bobsTheWord",
+        "hoursPerWeek": "40 ish",
+        "interestEmploymentType": ["full"],
+        "interestWorkArrangement": null,
+        "interestRoles": [
+          "software engineer - frontend",
+          "software engineer - backend"
+        ],
         "currentLocation": "The Moon",
-        "interestGovt": true,
-        "interestGovtEmplTypes": ["paid"],
         "openToRelocate": "not sure",
         "openToRemoteMulti": ["in-person", "hybrid"],
-        "previousImpactExperience": true,
-        "workAuthorization": "authorized",
-        "essayResponse": "Flubber was the greatest movie of all time"
+        "desiredSalary": "100,000",
+        "interestCauses": ["climate change", "responsible AI"],
+        "otherCauses": ["animal rights"],
+        "workAuthorization": "sponsorship",
+        "interestGovt": true,
+        "interestGovtEmplTypes": ["paid"],
+        "previousImpactExperience": false,
+        "essayResponse": "Flubber was the greatest movie of all time",
+        "referenceAttribution": "other",
+        "referenceAttributionOther": "My friend bob told me about Tekalo",
+        "resumeUpload": { "id": 1 }
       }
     },
     {
+      "id": 2,
       "name": "X Æ A-12",
-      "auth0Id": "auth0|789999",
-      "email": "X Æ A-12@tesla.com",
+      "auth0Id": "auth0|16398778c78772954c549166",
+      "email": "XA-12@tesla.com",
       "preferredContact": "whatsapp",
-      "searchStatus": "future",
+      "searchStatus": "active",
+      "acceptedTerms": true,
+      "acceptedPrivacy": true,
+      "followUpOptIn": false,
+      "utmParams": { "utm_content": "bar" },
       "application": {
+        "id": 2,
         "originTag": "TSLA",
         "resumeUrl": "www.mydadsresume.com",
         "lastOrg": "Illuminati",
         "lastRole": "Supreme Emperor",
         "yoe": "1",
+        "skills": ["user research", "prototyping"],
+        "otherSkills": [],
+        "linkedInUrl": null,
+        "githubUrl": null,
+        "portfolioUrl": null,
+        "portfolioPassword": null,
+        "hoursPerWeek": "10",
+        "interestEmploymentType": ["part"],
+        "interestWorkArrangement": ["volunteer", "advisor", "contractor"],
+        "interestRoles": [
+          "software engineer - frontend",
+          "software engineer - backend"
+        ],
         "currentLocation": "Mars",
         "desiredSalary": "$3",
+        "interestCauses": ["human rights"],
+        "otherCauses": ["none - thats it"],
         "interestGovt": false,
+        "interestGovtEmplTypes": null,
         "openToRelocate": "not sure",
         "openToRemoteMulti": ["not sure"],
         "previousImpactExperience": false,
         "workAuthorization": "authorized",
-        "essayResponse": "Good ideas are always crazy until they're not."
+        "essayResponse": "Good ideas are always crazy until they're not.",
+        "referenceAttribution": null,
+        "resumeUpload": { "id": 2 }
       }
     },
     {
+      "id": 3,
       "name": "Test User",
       "auth0Id": "auth0|646e229228a6a8d001632860",
       "email": "testuser-develop@schmidtfutures.com",
       "preferredContact": "email",
       "pronoun": "he/his",
-      "searchStatus": "future",
+      "searchStatus": "passive",
+      "acceptedTerms": true,
+      "acceptedPrivacy": true,
+      "followUpOptIn": false,
       "application": {
-        "originTag": "SF",
+        "id": 3,
+        "originTag": "IG",
         "resumeUrl": null,
         "resumeUploadId": null,
-        "lastOrg": "",
-        "lastRole": "Just some guy",
-        "yoe": ">11",
-        "currentLocation": "The Moon",
+        "lastOrg": "Bobs Burgers Foundation",
+        "lastRole": "Just being Bob",
+        "yoe": "8",
+        "skills": ["project management"],
+        "otherSkills": [],
+        "linkedInUrl": null,
+        "githubUrl": null,
+        "portfolioUrl": null,
+        "portfolioPassword": null,
+        "hoursPerWeek": "90",
+        "interestEmploymentType": ["full"],
+        "interestWorkArrangement": null,
+        "interestRoles": [
+          "software engineer - frontend",
+          "software engineer - backend"
+        ],
+        "currentLocation": "West Bobbersville, Louisiana",
+        "desiredSalary": ">100,000",
+        "interestCauses": ["education"],
+        "otherCauses": [],
         "interestGovt": true,
         "interestGovtEmplTypes": ["paid"],
-        "openToRelocate": "not sure",
+        "openToRelocate": "yes",
         "openToRemoteMulti": ["remote", "hybrid"],
         "previousImpactExperience": true,
         "workAuthorization": "authorized",
-        "essayResponse": "Flubber was the greatest movie of all time"
+        "essayResponse": "Bob can build it",
+        "referenceAttribution": null,
+        "resumeUpload": { "id": 3 }
       }
     }
   ]
