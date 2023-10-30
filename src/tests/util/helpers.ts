@@ -14,6 +14,7 @@ const itif = (condition: boolean) => (condition ? it : it.skip);
 const getRandomString = () => Math.random().toString(36).slice(2);
 
 const getMockConfig = (overrides: Partial<BaseConfig> = {}): BaseConfig => ({
+  github_sha: 'test123',
   env: '',
   port: 1,
   auth0: {
@@ -50,4 +51,4 @@ const getMockConfig = (overrides: Partial<BaseConfig> = {}): BaseConfig => ({
   },
 });
 
-export { itif, getRandomString, getMockConfig };
+export { getMockConfig, getRandomString, itif };

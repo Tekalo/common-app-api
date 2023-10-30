@@ -36,8 +36,13 @@ USER node
 COPY --chown=node:node . .
 RUN pnpm build
 
+FROM scratch AS artifact
+COPY --from=build /api/build /
+
 # Start the server
 FROM build AS production
+ARG GITHUB_SHA
+ENV GITHUB_SHA=${GITHUB_SHA}
 ENV NODE_ENV production
 CMD pnpm start
 ENTRYPOINT [ "/api/scripts/ensure-db-url.sh" ]

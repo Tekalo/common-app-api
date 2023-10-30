@@ -32,6 +32,7 @@ jobs:
       - test
     with:
       env: 'dev'
+    secrets: inherit
 
   deploy:
     name: 'Deploy to dev'

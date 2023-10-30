@@ -900,7 +900,7 @@ describe('Applicant Controller', () => {
             { name: mockUser.name, email: mockUser.email },
           ),
           status: 200,
-          headers: '',
+          headers: new Headers(),
           statusText: '',
         });
 
