@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import SharedSchemas from './shared.js';
+import Shared from './shared.js';
 
 const PreferredContact = z.enum(['sms', 'whatsapp', 'email']);
 const SearchStatus = z.enum(['active', 'passive', 'future']);
@@ -50,7 +50,7 @@ const ApplicantCreateRequestBodySchema = z.object({
   acceptedTerms: z.literal(true),
   acceptedPrivacy: z.literal(true),
   followUpOptIn: z.boolean().optional(),
-  utmParams: SharedSchemas.UTMPayload.nullish(),
+  utmParams: Shared.UTMPayload.nullish(),
 });
 
 const ApplicantGetResponseBodySchema = z.object({
@@ -122,7 +122,7 @@ const ApplicantCreateSubmissionRequestBody = z.object({
     .transform((val) => val || []),
   previousImpactExperience: z.boolean(),
   essayResponse: z.string().max(5000),
-  utmParams: SharedSchemas.UTMPayload.nullish(),
+  utmParams: Shared.UTMPayload.nullish(),
   referenceAttribution: z.string().nullable(),
   // Conditional field: referenceAttributionOther can be undefined if referenceAttribution is not 'Other'
   referenceAttributionOther: z.string().nullish().default(null),
@@ -252,7 +252,7 @@ const ApplicantDraftSubmissionRequestBodySchema = z.object({
     .transform((val) => val || []),
   previousImpactExperience: z.boolean().nullish(),
   essayResponse: z.string().max(5000).nullish(),
-  utmParams: SharedSchemas.UTMPayload.nullish(),
+  utmParams: Shared.UTMPayload.nullish(),
   referenceAttribution: z.string().nullish(),
   referenceAttributionOther: z.string().nullish(),
 });
