@@ -1,6 +1,6 @@
 # CommonApp
 
-The Common App API is used to support the Common App Application, a tool for matching tech talent to opportunities at non-profit, philanthropic, and government organizations.
+The Common App API is used to support Tekalo, a tool for matching tech talent to opportunities at non-profit, philanthropic, and government organizations. A diagram depicting the backend architecture can be found [here](./docs/media/tekalo_backend_architecture.png)
 
 ## Getting Started
 
@@ -92,6 +92,12 @@ pnpm container-install --save-dev pino-pretty # same as: pnpm install --save-dev
 
 If you do accidentally run `pnpm install` or otherwise mess up your node modules, deleting your `.pnpm-store` and `node_modules` folders should bring you back to a good state.
 
+## Architecture
+
+Below is a diagram depicting the high-level architecture of the API and its related services.
+
+![API Architecture Diagram](./docs/media/tekalo_api_architecture.png 'API Architecture')
+
 ## Database
 
 We make use of Prisma as an ORM over our Postgres database
@@ -112,6 +118,12 @@ If you want to merge changes to `schema.prisma` into main, you must create a new
 
 ```bash
 pnpm prisma:migrate
+```
+
+To use the [`Prisma Studio`](https://www.prisma.io/studio) GUI to view/edit/update your local Postgres database, execute the command below and navigate to `localhost:5555`. This will spin up an instance of Prisma Studio in a separate docker container.
+
+```bash
+docker-compose up prisma-studio
 ```
 
 ### Packages
@@ -234,6 +246,8 @@ Additional hooks should be [added](https://typicode.github.io/husky/#/?id=create
 ## Infrastructure
 
 The Tekalo api runs in AWS. The infrastructure configured in terraform files. [More information](tf/README.md).
+
+More detailed information about the infrastructure can be found [here](docs/Infrastructure.md).
 
 ## Operations / Troubleshooting
 

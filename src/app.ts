@@ -1,24 +1,24 @@
-import { randomUUID } from 'crypto';
-import express, { Application, Handler, NextFunction, Response } from 'express';
-import * as swaggerUi from 'swagger-ui-express';
-import { pinoHttp } from 'pino-http';
-import session from 'express-session';
-import { auth } from 'express-oauth2-jwt-bearer';
-import logger from '@App/services/logger.js';
 import spec from '@App/resources/spec/spec.json' assert { type: 'json' };
 import {
   applicantRoutes,
   healthRoutes,
   opportunitiesRoutes,
 } from '@App/routes/index.js';
-import { sessionStore } from './resources/client.js';
+import logger from '@App/services/logger.js';
+import { randomUUID } from 'crypto';
+import express, { Application, Handler, NextFunction, Response } from 'express';
+import { auth } from 'express-oauth2-jwt-bearer';
+import session from 'express-session';
+import { pinoHttp } from 'pino-http';
+import * as swaggerUi from 'swagger-ui-express';
 import errorHandler from './middleware/errorHandler.js';
+import { sessionStore } from './resources/client.js';
+import { AuthRequest } from './resources/types/auth0.js';
+import { BaseConfig } from './resources/types/shared.js';
 import AuthService from './services/AuthService.js';
+import EmailService from './services/EmailService.js';
 import MonitoringService from './services/MonitoringService.js';
 import UploadService from './services/UploadService.js';
-import { BaseConfig } from './resources/types/shared.js';
-import EmailService from './services/EmailService.js';
-import { AuthRequest } from './resources/types/auth0.js';
 
 const getApp = (
   authService: AuthService,
@@ -28,6 +28,7 @@ const getApp = (
   config: BaseConfig,
 ): Application => {
   const app: Application = express();
+  logger.info({ github_sha: config.github_sha }, 'Booting application');
 
   monitoringService.sentryInit(app);
 

@@ -7,7 +7,7 @@ class DummyAuthService extends AuthService {
   async generatePasswordReset(auth0Id: string) {
     return {
       data: { ticket: 'fake-ticket' },
-      headers: '',
+      headers: new Headers(),
       status: 200,
       statusText: '',
     };
@@ -15,7 +15,9 @@ class DummyAuthService extends AuthService {
 
   // eslint-disable-next-line
   async deleteUsers(email: string, auth0Id: string) {
-    return [{ data: undefined, headers: '', status: 200, statusText: '' }];
+    return [
+      { data: undefined, headers: new Headers(), status: 200, statusText: '' },
+    ];
   }
 
   // eslint-disable-next-line
@@ -24,7 +26,7 @@ class DummyAuthService extends AuthService {
       data: auth0Generator.getMockUserCreateResponse(
         `auth0|${getRandomString()}`,
       ),
-      headers: '',
+      headers: new Headers(),
       status: 200,
       statusText: '',
     };
@@ -39,7 +41,12 @@ class DummyAuthService extends AuthService {
   // eslint-disable-next-line
   async getUser(auth0Id: string) {
     const mockUser = auth0Generator.getMockUserCreateResponse(auth0Id);
-    return { data: mockUser, headers: '', status: 200, statusText: '' };
+    return {
+      data: mockUser,
+      headers: new Headers(),
+      status: 200,
+      statusText: '',
+    };
   }
 }
 
