@@ -65,7 +65,7 @@ const specJson = createDocument({
           required: true,
           content: {
             'application/json': {
-              schema: z.object({ ApplicantCreateRequestBodySchema }),
+              schema: ApplicantCreateRequestBodySchema,
             },
           },
         },
@@ -74,7 +74,7 @@ const specJson = createDocument({
             description: 'Success',
             content: {
               'application/json': {
-                schema: z.object({ ApplicantCreateResponseBodySchema }),
+                schema: ApplicantCreateResponseBodySchema,
               },
             },
           },
@@ -176,7 +176,7 @@ const specJson = createDocument({
           required: true,
           content: {
             'application/json': {
-              schema: z.object({ ApplicantStateRequestBodySchema }),
+              schema: ApplicantStateRequestBodySchema,
             },
           },
         },
@@ -208,7 +208,7 @@ const specJson = createDocument({
             description: 'Success',
             content: {
               'application/json': {
-                schema: z.object({ ApplicantGetSubmissionsResponseBodySchema }),
+                schema: ApplicantGetSubmissionsResponseBodySchema,
               },
             },
           },
@@ -220,7 +220,7 @@ const specJson = createDocument({
           required: true,
           content: {
             'application/json': {
-              schema: z.object({ ApplicantCreateSubmissionRequestBodySchema }),
+              schema: ApplicantCreateSubmissionRequestBodySchema,
             },
           },
         },
@@ -229,9 +229,7 @@ const specJson = createDocument({
             description: 'Success',
             content: {
               'application/json': {
-                schema: z.object({
-                  ApplicantCreateSubmissionResponseBodySchema,
-                }),
+                schema: ApplicantCreateSubmissionResponseBodySchema,
               },
             },
           },
@@ -253,7 +251,7 @@ const specJson = createDocument({
           required: true,
           content: {
             'application/json': {
-              schema: z.object({ ApplicantCreateSubmissionRequestBodySchema }),
+              schema: ApplicantCreateSubmissionRequestBodySchema,
             },
           },
         },
@@ -262,9 +260,7 @@ const specJson = createDocument({
             description: 'Success',
             content: {
               'application/json': {
-                schema: z.object({
-                  ApplicantCreateSubmissionResponseBodySchema,
-                }),
+                schema: ApplicantCreateSubmissionResponseBodySchema,
               },
             },
           },
@@ -288,7 +284,7 @@ const specJson = createDocument({
           required: true,
           content: {
             'application/json': {
-              schema: z.object({ ApplicantDraftSubmissionRequestBodySchema }),
+              schema: ApplicantDraftSubmissionRequestBodySchema,
             },
           },
         },
@@ -297,9 +293,7 @@ const specJson = createDocument({
             description: 'Success',
             content: {
               'application/json': {
-                schema: z.object({
-                  ApplicantDraftSubmissionResponseBodySchema,
-                }),
+                schema: ApplicantDraftSubmissionResponseBodySchema,
               },
             },
           },
@@ -323,7 +317,7 @@ const specJson = createDocument({
           required: true,
           content: {
             'application/json': {
-              schema: z.object({ OpportunityBatchRequestBodySchema }),
+              schema: OpportunityBatchRequestBodySchema,
             },
           },
         },
@@ -332,7 +326,7 @@ const specJson = createDocument({
             description: 'Success',
             content: {
               'application/json': {
-                schema: z.object({ OpportunityBatchResponseBodySchema }),
+                schema: OpportunityBatchResponseBodySchema,
               },
             },
           },
@@ -346,7 +340,7 @@ const specJson = createDocument({
           required: true,
           content: {
             'application/json': {
-              schema: z.object({ UploadRequestBodySchema }),
+              schema: UploadRequestBodySchema,
             },
           },
         },
@@ -355,7 +349,7 @@ const specJson = createDocument({
             description: 'Success',
             content: {
               'application/json': {
-                schema: z.object({ UploadResponseBodySchema }),
+                schema: UploadResponseBodySchema,
               },
             },
           },
@@ -378,7 +372,7 @@ const specJson = createDocument({
           required: true,
           content: {
             'application/json': {
-              schema: z.object({ UploadStateRequestBodySchema }),
+              schema: UploadStateRequestBodySchema,
             },
           },
         },
@@ -387,7 +381,7 @@ const specJson = createDocument({
             description: 'Success',
             content: {
               'application/json': {
-                schema: z.object({ UploadStateResponseBodySchema }),
+                schema: UploadStateResponseBodySchema,
               },
             },
           },
@@ -411,7 +405,7 @@ const specJson = createDocument({
             description: 'Success',
             content: {
               'application/json': {
-                schema: z.object({ UploadResponseBodySchema }),
+                schema: UploadResponseBodySchema,
               },
             },
           },
