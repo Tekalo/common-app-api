@@ -114,6 +114,12 @@ If you want to merge changes to `schema.prisma` into main, you must create a new
 pnpm prisma:migrate
 ```
 
+To use the [`Prisma Studio`](https://www.prisma.io/studio) GUI to view/edit/update your local Postgres database, execute the command below and navigate to `localhost:5555`. This will spin up an instance of Prisma Studio in a separate docker container.
+
+```bash
+docker-compose up prisma-studio
+```
+
 ### Packages
 
 The `/packages` directory is where any additional modules will be stored that are not meant to be part of the larger API module.
