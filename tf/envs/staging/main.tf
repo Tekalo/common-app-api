@@ -61,6 +61,11 @@ module "app" {
   rotation_vpc_subnet_ids        = module.envconfig.private_subnet_ids
 
   uploads_cors_allowed_origins = var.uploads_cors_allowed_origins
+
+  additional_env_vars = {
+    # Temporarily enabling this while we role out POST-based uploads.
+    "PRESIGNER_STRATEGY" = "both"
+  }
 }
 
 module "env_defns" {

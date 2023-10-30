@@ -26,7 +26,7 @@ describe('Auth Service', () => {
           ],
           status: 200,
           statusText: '',
-          headers: '',
+          headers: new Headers(),
         });
       return dummyAuth0ManagementClient;
     });

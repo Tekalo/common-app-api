@@ -12,6 +12,12 @@ import logger from '@App/services/logger.js';
 import CAPPError from '@App/resources/shared/CAPPError.js';
 import { Upload } from '@prisma/client';
 
+/** Smallest size in bytes that we will accept for an upload. */
+const UPLOAD_SIZE_MIN = 100;
+
+/** Largest size (in bytes) that we will accept for an upload. */
+const UPLOAD_SIZE_MAX = 10 * 1024 * 1024;
+
 class S3Service {
   constructor(public s3Client: S3Client = S3Service.getS3Client()) {}
 
@@ -45,7 +51,7 @@ class S3Service {
       Bucket: bucket,
       Key: key,
       Expires: 600,
-      Conditions: [['content-length-range', 1048576, 10485760]],
+      Conditions: [['content-length-range', UPLOAD_SIZE_MIN, UPLOAD_SIZE_MAX]],
       Fields: {
         acl: 'bucket-owner-full-control',
         'Content-Type': contentType,
