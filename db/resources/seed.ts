@@ -1,16 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/**
- * Seed configuration data
- * Grant/Program/System Role types, Lines of Effort, Grant Stage/Status
- */
-
 import { randomInt } from 'crypto';
 import { PrismaClient, Prisma, UploadStatus } from '@prisma/client';
 import { Applicants, Opportunities, Uploads } from '@capp/schemas';
 import CAPPError from '../../src/resources/shared/CAPPError.js';
 import { Problem } from '../../src/resources/types/shared.js';
 import seedData from './seed.json' assert { type: 'json' };
-import { getRandomString } from '../../src/tests/util/helpers.js';
 
 const prisma = new PrismaClient();
 
@@ -88,7 +82,7 @@ async function seedApplicantSubmissions() {
       update: {},
       create: {
         name,
-        auth0Id: `auth0|${getRandomString()}`,
+        auth0Id: app.auth0Id,
         email,
         pronoun: pronoun || undefined,
         preferredContact,
