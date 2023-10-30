@@ -79,7 +79,7 @@ resource "aws_ecs_service" "api" {
 
   # Fargate-specific params
   launch_type                       = "FARGATE"
-  network_configuration             = {
+  network_configuration {
     subnets         = var.task_subnet_ids
     security_groups = [var.task_security_group]
   }
