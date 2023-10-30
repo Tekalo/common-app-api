@@ -1,11 +1,7 @@
-/**
- * Seed configuration data
- * Grant/Program/System Role types, Lines of Effort, Grant Stage/Status
- */
-
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { randomInt } from 'crypto';
-import { PrismaClient, Prisma } from '@prisma/client';
+import { PrismaClient, Prisma, UploadStatus } from '@prisma/client';
+import { Applicants, Opportunities, Uploads } from '@capp/schemas';
 import CAPPError from '../../src/resources/shared/CAPPError.js';
 import { Problem } from '../../src/resources/types/shared.js';
 import seedData from './seed.json' assert { type: 'json' };
@@ -67,73 +63,97 @@ async function doUpsert(
   return successful;
 }
 
-async function seedApplicantsAndApplicantSubmissions() {
-  const { applicants } = seedData;
+async function seedApplicantSubmissions() {
+  const { applicants, resumes } = seedData;
   const applicantsUpserts: Array<Promise<any>> = [];
-  applicants.forEach((app) => {
-    const {
-      name,
-      email,
-      preferredContact,
-      auth0Id,
-      pronoun,
-      searchStatus,
-      application,
-    } = app;
+  const submissionUpserts: Array<Promise<any>> = [];
+  const resumeUploadUpserts: Array<Promise<any>> = [];
+  applicants.forEach((app, idx) => {
+    const validatedApp = Applicants.ApplicantCreateRequestBodySchema.parse(app);
+    const validatedSubmission =
+      Applicants.ApplicantCreateSubmissionRequestBodySchema.parse(
+        app.application,
+      );
+    const { status, applicantId, ...restOfResume } = resumes[idx];
+    const validatedResume = Uploads.UploadRequestBodySchema.parse(restOfResume);
+    const { name, email, preferredContact, pronoun, searchStatus } =
+      validatedApp;
     const applicantUpsert = prisma.applicant.upsert({
-      update: {
-        phone: String(randomInt(1000000)),
-      },
+      update: {},
       create: {
         name,
-        auth0Id,
+        auth0Id: app.auth0Id,
         email,
         pronoun: pronoun || undefined,
         preferredContact,
         searchStatus,
         phone: String(randomInt(1000000)),
-        applications: {
-          create: {
-            ...application,
-          },
-        },
       },
-      where: { email: app.email },
+      where: { email },
+    });
+    const resumeUploadUpsert = prisma.upload.upsert({
+      update: {},
+      create: {
+        originalFilename: validatedResume.originalFilename,
+        contentType: validatedResume.contentType,
+        type: 'RESUME',
+        applicantId,
+        status: status as UploadStatus,
+      },
+      where: { id: resumes[idx].id },
+    });
+    const submissionUpsert = prisma.applicantSubmission.upsert({
+      update: {},
+      where: { id: app.application.id },
+      create: {
+        ...validatedSubmission,
+        resumeUpload: {
+          connect: { id: validatedSubmission.resumeUpload.id },
+        },
+        utmParams: undefined,
+        applicant: { connect: { id: app.application.id } },
+      },
     });
     applicantsUpserts.push(applicantUpsert);
+    resumeUploadUpserts.push(resumeUploadUpsert);
+    submissionUpserts.push(submissionUpsert);
   });
   await doUpsert(applicantsUpserts);
+  await doUpsert(resumeUploadUpserts);
+  await doUpsert(submissionUpserts);
 }
 
 async function seedOpportunitySubmissionBatches() {
   const { opportunityBatches } = seedData;
-  const opportunityBatchUpserts = opportunityBatches.map((batch) =>
-    prisma.opportunityBatch.upsert({
+  const opportunityBatchUpserts = opportunityBatches.map((batch) => {
+    const { organization, submissions, contact } =
+      Opportunities.OpportunityBatchRequestBodySchema.parse(batch);
+    return prisma.opportunityBatch.upsert({
       create: {
         id: batch.id,
-        orgName: batch.orgName,
-        orgSize: batch.orgSize,
-        orgType: batch.orgType,
-        contactEmail: batch.contactEmail,
-        contactName: batch.contactName,
+        orgName: organization.name,
+        orgSize: organization.size,
+        orgType: organization.type,
+        contactEmail: contact.email,
+        contactName: contact.name,
         contactPhone: String(randomInt(1000000)),
-        impactAreas: batch.impactAreas,
-        equalOpportunityEmployer: batch.equalOpportunityEmployer,
+        impactAreas: organization.impactAreas,
+        equalOpportunityEmployer: organization.eoe,
         opportunitySubmissions: {
           createMany: {
-            data: batch.submissions,
+            data: submissions,
           },
         },
       },
-      update: { contactPhone: String(randomInt(1000000)) },
+      update: {},
       where: { id: batch.id },
-    }),
-  );
+    });
+  });
   await doUpsert(opportunityBatchUpserts);
 }
 
 async function main() {
-  await seedApplicantsAndApplicantSubmissions();
+  await seedApplicantSubmissions();
   await seedOpportunitySubmissionBatches();
 }
 

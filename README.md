@@ -120,6 +120,12 @@ If you want to merge changes to `schema.prisma` into main, you must create a new
 pnpm prisma:migrate
 ```
 
+To use the [`Prisma Studio`](https://www.prisma.io/studio) GUI to view/edit/update your local Postgres database, execute the command below and navigate to `localhost:5555`. This will spin up an instance of Prisma Studio in a separate docker container.
+
+```bash
+docker-compose up prisma-studio
+```
+
 ### Packages
 
 The `/packages` directory is where any additional modules will be stored that are not meant to be part of the larger API module.
@@ -240,6 +246,8 @@ Additional hooks should be [added](https://typicode.github.io/husky/#/?id=create
 ## Infrastructure
 
 The Tekalo api runs in AWS. The infrastructure configured in terraform files. [More information](tf/README.md).
+
+More detailed information about the infrastructure can be found [here](docs/Infrastructure.md).
 
 ## Operations / Troubleshooting
 
