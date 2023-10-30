@@ -4,6 +4,7 @@ import { z } from 'zod';
 const PresignerStrategy = z.enum(['post', 'put', 'both']);
 
 const ConfigSchema = z.object({
+  github_sha: z.string().default('UNKNOWN'),
   env: z.string(),
   port: z.number(),
   auth0: z.object({
