@@ -7,6 +7,7 @@ import { BaseConfig } from '@App/resources/types/shared.js';
 
 function loadConfig(): BaseConfig {
   const validatedConfig = ConfigSchema.parse({
+    github_sha: process.env.GITHUB_SHA,
     env: process.env.APP_ENV || 'dev',
     port: Number(process.env.PORT) || 3000,
     auth0: {
