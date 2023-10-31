@@ -22,7 +22,7 @@ exports.onExecutePostLogin = async (event, api) => {
     let userEmail;
     try {
       userEmail = event.user.email;
-      const existingUsers = await management.getUsersByEmail(userEmail);
+      const { data: existingUsers } = await management.usersByEmail.getByEmail({ email: userEmail });
       for (let i = 0; i < existingUsers.length; i++) {
         const user = existingUsers[i];
         // Find our shell user
@@ -38,7 +38,7 @@ exports.onExecutePostLogin = async (event, api) => {
       }
       if (shellUserId){
         try {
-          await management.deleteUser({id:shellUserId})
+          await management.users.delete({id:shellUserId})
           // Set flag on our social user that we have already deleted their shell account
           api.user.setAppMetadata("has_cleaned_shell_accounts", true);
           api.idToken.setCustomClaim('exists_in_db', true)
