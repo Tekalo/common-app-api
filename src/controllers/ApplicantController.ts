@@ -28,7 +28,7 @@ import EmailService from '@App/services/EmailService.js';
 import MonitoringService from '@App/services/MonitoringService.js';
 import UploadService from '@App/services/UploadService.js';
 import { Claims } from '@App/resources/types/auth0.js';
-import { Applicants } from '@capp/schemas';
+import { Applicants, Uploads, Shared } from '@capp/schemas';
 import { z } from 'zod';
 import { IdOnly } from '@App/resources/types/shared.js';
 
@@ -261,7 +261,10 @@ class ApplicantController {
         data: { isPaused: pauseStatus },
         where: { id: applicantId },
       });
-      return { id, isPaused };
+      return Applicants.ApplicantStateResponseBodySchema.parse({
+        id,
+        isPaused,
+      });
     } catch (e) {
       if (
         e instanceof Prisma.PrismaClientKnownRequestError &&
@@ -378,7 +381,7 @@ class ApplicantController {
     const { email, auth0Id } = applicantToDelete;
     await this.auth0Service.deleteUsers(email, auth0Id);
     await this.uploadService.deleteApplicantResumes(applicantId);
-    return { id: applicantId };
+    return Shared.IdOnlySchema.parse({ id: applicantId });
   }
 
   async validResume(
@@ -591,11 +594,11 @@ class ApplicantController {
         },
         data: { status },
       });
-      return {
+      return Uploads.UploadStateResponseBodySchema.parse({
         id: uploadUpdate.id,
         originalFilename: uploadUpdate.originalFilename,
         status: uploadUpdate.status,
-      };
+      });
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         throw new CAPPError(
@@ -630,7 +633,7 @@ class ApplicantController {
         data.originalFilename,
         data.contentType,
       );
-    return resumeUrlResponse;
+    return Uploads.UploadResponseBodySchema.parse(resumeUrlResponse);
   }
 
   async getResumeDownloadUrl(applicantId: number): Promise<UploadResponseBody> {
@@ -655,7 +658,7 @@ class ApplicantController {
       submission.resumeUpload.id,
       submission.resumeUpload.contentType,
     );
-    return url;
+    return Uploads.UploadResponseBodySchema.parse(url);
   }
 }
 

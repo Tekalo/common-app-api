@@ -71,7 +71,7 @@ const OpportunityBatchRequestBodySchema = z.object({
   referenceAttribution: z.string().nullable().optional(),
   referenceAttributionOther: z.string().nullable().optional(),
   submissions: z.array(OpportunitySubmissionSchema),
-  utmParams: Shared.UTMPayload.nullish(),
+  utmParams: Shared.UTMPayloadSchema.nullish(),
 });
 
 const OpportunityBatchResponseBodySchema = z.object({
