@@ -14,5 +14,5 @@
     "strict": true,
     "target": "ES2022" // All of the code that is transpiled EXCEPT for the import/export statements. AKA what runtime env are we targetting.
   },
-  "include": ["src", "db"]
+  "include": ["src", "db", "scripts"]
 }

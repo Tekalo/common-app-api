@@ -1,5 +1,5 @@
 import fs from 'fs';
-import specJson from './specGenerator.js';
+import specJson from '../src/resources/spec/definition.js';
 
 const filePath = `${process.cwd()}/src/resources/spec/spec.json`;
 
