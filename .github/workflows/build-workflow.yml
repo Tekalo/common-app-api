@@ -78,7 +78,7 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |
-            GITHUB_SHA=${{ env.GITHUB_SHA_SHORT}}
+            GITHUB_SHA=${{ env.GITHUB_SHA }}
           # disabling provenance because it creates a lot of untagged-seeming images in ECR
           # and we aren't making use of it
           provenance: false
