@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-const UTMPayload = z.object({
+const UTMPayloadSchema = z.object({
   utm_source: z.string().max(200).nullish(),
   utm_medium: z.string().max(200).nullish(),
   utm_campaign: z.string().max(200).nullish(),
@@ -12,4 +12,6 @@ const UTMPayload = z.object({
   ga_session_id: z.string().max(200).nullish(),
 });
 
-export default UTMPayload;
+const IdOnlySchema = z.object({ id: z.number() });
+
+export default { IdOnlySchema, UTMPayloadSchema };

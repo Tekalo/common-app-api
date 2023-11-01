@@ -9,7 +9,7 @@ import { Applicants, Uploads } from '@capp/schemas';
 import {
   ApplicantRequestBody,
   RawApplicantDraftSubmissionBody,
-  ApplicantStateBody,
+  ApplicantStateRequestBody,
   ApplicantUpdateBody,
   RawApplicantSubmissionBody,
   ParsedApplicantSubmissionBody,
@@ -100,7 +100,7 @@ const applicantRoutes = (
     '/me/state',
     authenticator.validateJwt.bind(authenticator) as RequestHandler,
     (req: Request, res: Response, next) => {
-      const appBody = req.body as ApplicantStateBody;
+      const appBody = req.body as ApplicantStateRequestBody;
       const reqWithAuth = req as RequestWithJWT;
       const applicantID = reqWithAuth.auth.payload.id;
       const { pause } =
