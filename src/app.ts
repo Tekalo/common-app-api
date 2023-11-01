@@ -1,4 +1,4 @@
-import spec from '@App/resources/spec.json' assert { type: 'json' };
+import spec from '@App/resources/spec/spec.json' assert { type: 'json' };
 import {
   applicantRoutes,
   healthRoutes,
