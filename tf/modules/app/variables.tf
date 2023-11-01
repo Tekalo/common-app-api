@@ -142,14 +142,14 @@ output "slack_username" {
   value       = var.slack_username
 }
 
-variable "auth0_domain" {
+variable "auth0_domain_cname" {
   description = "Auth0 subdomain for CNAME record"
   type        = string
 }
 
-output "auth0_domain" {
+output "auth0_domain_cname" {
   description = "Auth0 subdomain for CNAME record"
-  value       = var.auth0_domain
+  value       = var.auth0_domain_cname
 }
 
 variable "sentry_dsn" {
@@ -199,7 +199,7 @@ variable "ses_whitelist" {
 
 output "ses_whitelist" {
   description = "Email addresses SES is permitted to send to only in non-prod environments"
-  value        = var.ses_whitelist
+  value       = var.ses_whitelist
 }
 
 variable "uploads_cors_allowed_origins" {

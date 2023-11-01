@@ -33,14 +33,14 @@ output "cli_image" {
   value       = module.app.cli_image
 }
 
-variable "auth0_domain" {
+variable "auth0_domain_cname" {
   description = "Auth0 subdomain for CNAME record"
   type        = string
 }
 
-output "auth0_domain" {
+output "auth0_domain_cname" {
   description = "Auth0 subdomain for CNAME record"
-  value       = module.app.auth0_domain
+  value       = module.app.auth0_domain_cname
 }
 
 variable "sentry_dsn" {
