@@ -1,7 +1,7 @@
 import { Request } from 'express';
 import CAPPError from '@App/resources/shared/CAPPError.js';
 import { ApplicantResponseBody } from '@App/resources/types/applicants.js';
-import { SessionCookie } from '@App/resources/types/shared.js';
+import { IdOnly } from '@App/resources/types/shared.js';
 
 function verifyCookie(req: Request) {
   if (!req.session.applicant || !req.session.applicant.id) {
@@ -13,7 +13,7 @@ function verifyCookie(req: Request) {
   }
 }
 
-function setCookie(applicant: ApplicantResponseBody): SessionCookie {
+function setCookie(applicant: ApplicantResponseBody): IdOnly {
   return { id: applicant.id };
 }
 
