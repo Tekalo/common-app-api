@@ -1,13 +1,9 @@
-import { prisma, sessionStore } from '@App/resources/client.js';
+import { prisma } from '@App/resources/client.js';
 import {
   ApplicantResponseBody,
   RawApplicantSubmissionBody,
 } from '@App/resources/types/applicants.js';
 import { Upload } from '@prisma/client';
-
-afterAll(async () => {
-  await sessionStore.shutdown();
-});
 
 /**
  * Get API request body for a new applicant submission.
