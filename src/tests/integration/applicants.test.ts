@@ -14,7 +14,7 @@ import {
 } from '@App/resources/types/applicants.js';
 import getDummyApp from '@App/tests/fixtures/appGenerator.js';
 import { itif, getRandomString } from '@App/tests/util/helpers.js';
-import { prisma, sessionStore } from '@App/resources/client.js';
+import { prisma } from '@App/resources/client.js';
 import AuthService from '@App/services/AuthService.js';
 import configLoader from '@App/services/configLoader.js';
 
@@ -46,10 +46,6 @@ afterEach(async () => {
   await prisma.applicant.deleteMany();
   await prisma.applicantDeletionRequests.deleteMany();
   jest.restoreAllMocks();
-});
-
-afterAll(async () => {
-  await sessionStore.shutdown();
 });
 
 const dummyApp = getDummyApp();
