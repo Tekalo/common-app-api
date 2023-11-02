@@ -1,5 +1,4 @@
-import { GetUsers200ResponseOneOfInner, UsersManager } from 'auth0';
-import { ApiResponse } from 'node_modules/auth0/dist/esm/lib/runtime.js';
+import { ApiResponse, GetUsers200ResponseOneOfInner, UsersManager } from 'auth0';
 import auth0ResponseGenerator from './auth0ManagementAPIResponseGenerator.js';
 
 class DummyAuth0UsersManager extends UsersManager {
