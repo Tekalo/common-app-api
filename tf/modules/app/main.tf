@@ -131,6 +131,10 @@ resource "aws_ecs_task_definition" "api" {
   execution_role_arn = aws_iam_role.ecs_execution_role.arn
   task_role_arn      = aws_iam_role.ecs_task_role.arn
 
+  # These are fargate-specific
+  network_mode             = "awsvpc"
+  requires_compatibilities = [ "FARGATE" ]
+
   container_definitions = jsonencode([
     {
       name                   = "capp-api"
@@ -143,10 +147,6 @@ resource "aws_ecs_task_definition" "api" {
           containerPort = var.api_port
         }
       ]
-
-      # These are fargate-specific
-      networkMode              = "awsvpc"
-      requires_compatibilities = [ "FARGATE" ]
 
       healthCheck = {
         retries     = 10
@@ -235,6 +235,10 @@ resource "aws_ecs_task_definition" "cli" {
 
   execution_role_arn = aws_iam_role.ecs_execution_role.arn
 
+  # These are fargate-specific
+  network_mode             = "awsvpc"
+  requires_compatibilities = [ "FARGATE" ]
+
   container_definitions = jsonencode([
     {
       name                   = "capp-cli"
@@ -242,10 +246,6 @@ resource "aws_ecs_task_definition" "cli" {
       memory                 = 512
       essential              = true
       readonlyRootFilesystem = true
-
-      # These are fargate-specific
-      networkMode              = "awsvpc"
-      requires_compatibilities = [ "FARGATE" ]
 
       logConfiguration = {
         logDriver = "awslogs"
