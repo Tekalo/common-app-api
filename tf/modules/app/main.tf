@@ -134,12 +134,14 @@ resource "aws_ecs_task_definition" "api" {
   # These are fargate-specific
   network_mode             = "awsvpc"
   requires_compatibilities = [ "FARGATE" ]
+  cpu                      = 256
+  memory                   = 512
 
   container_definitions = jsonencode([
     {
       name                   = "capp-api"
       image                  = "${var.image}"
-      memory                 = 256
+      memory                 = 512
       essential              = true
       readonlyRootFilesystem = true
       portMappings = [
@@ -238,6 +240,8 @@ resource "aws_ecs_task_definition" "cli" {
   # These are fargate-specific
   network_mode             = "awsvpc"
   requires_compatibilities = [ "FARGATE" ]
+  cpu                      = 256
+  memory                   = 512
 
   container_definitions = jsonencode([
     {
