@@ -1,9 +1,8 @@
 import { randomBytes } from 'node:crypto';
-import { ManagementClient } from 'auth0';
+import { ManagementClient, ApiResponse } from 'auth0';
 import CAPPError from '@App/resources/shared/CAPPError.js';
 import { Auth0UserBody, Auth0ApiConfig } from '@App/resources/types/auth0.js';
 // TODO - is this import right?
-import { ApiResponse } from 'node_modules/auth0/dist/esm/lib/runtime.js';
 import configLoader from './configLoader.js';
 
 class AuthService {
