@@ -95,7 +95,7 @@ resource "aws_ecs_service" "api" {
   }
 
   load_balancer {
-    target_group_arn = aws_lb_target_group.api.arn
+    target_group_arn = aws_lb_target_group.api_v2.arn
     container_name   = "capp-api"
     container_port   = var.api_port
   }
@@ -272,10 +272,27 @@ resource "aws_cloudwatch_log_group" "api" {
   retention_in_days = 90
 }
 
+# XXX: For cleanup, post Fargate migration
 resource "aws_lb_target_group" "api" {
   port     = 80
   protocol = "HTTP"
   vpc_id   = data.aws_vpc.main.id
+  health_check {
+    healthy_threshold = 2
+    interval          = 10
+    timeout           = 5
+    path              = "/health"
+    protocol          = "HTTP"
+    matcher           = "200-299"
+  }
+  deregistration_delay = 30
+}
+
+resource "aws_lb_target_group" "api_v2" {
+  port     = 80
+  protocol = "HTTP"
+  vpc_id   = data.aws_vpc.main.id
+  target_type = "ip" # Required by Fargate
   health_check {
     healthy_threshold = 2
     interval          = 10
@@ -306,7 +323,7 @@ resource "aws_lb_listener_rule" "api" {
 
   action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.api.arn
+    target_group_arn = aws_lb_target_group.api_v2.arn
   }
 }
 
@@ -463,7 +480,7 @@ resource "aws_cloudwatch_dashboard" "main" {
     service_name  = aws_ecs_service.api.name,
     aws_region    = data.aws_region.current.name,
     lb_arn_suffix = data.aws_lb.main.arn_suffix,
-    tg_arn_suffix = aws_lb_target_group.api.arn_suffix,
+    tg_arn_suffix = aws_lb_target_group.api_v2.arn_suffix,
     db_cluster_id = aws_rds_cluster.main.id
   })
 }
