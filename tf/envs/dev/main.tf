@@ -42,6 +42,8 @@ module "app" {
   dns_zone_id          = module.envconfig.dns_zone_id
   load_balancer_arn    = module.envconfig.load_balancer_arn
   vpc_id               = module.envconfig.vpc_id
+  task_subnet_ids      = module.envconfig.private_subnet_ids
+  task_security_group  = module.envconfig.database_ingress_security_group_id
   db_subnet_name       = module.envconfig.db_subnet_name
   db_security_group_id = module.envconfig.db_security_group_id
   ecs_cluster          = module.envconfig.ecs_cluster

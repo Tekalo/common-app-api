@@ -77,6 +77,13 @@ resource "aws_ecs_service" "api" {
   enable_ecs_managed_tags           = true
   propagate_tags                    = "SERVICE"
 
+  # Fargate-specific params
+  launch_type                       = "FARGATE"
+  network_configuration {
+    subnets         = var.task_subnet_ids
+    security_groups = [var.task_security_group]
+  }
+
   # Preserve the existing containers until new ones are deemed healthy
   deployment_minimum_healthy_percent = 100
   deployment_maximum_percent         = 200
@@ -136,6 +143,11 @@ resource "aws_ecs_task_definition" "api" {
           containerPort = var.api_port
         }
       ]
+
+      # These are fargate-specific
+      networkMode              = "awsvpc"
+      requires_compatibilities = [ "FARGATE" ]
+
       healthCheck = {
         retries     = 10
         command     = ["CMD-SHELL", "curl -f http://localhost:3000/health || exit 1"]
@@ -230,6 +242,11 @@ resource "aws_ecs_task_definition" "cli" {
       memory                 = 512
       essential              = true
       readonlyRootFilesystem = true
+
+      # These are fargate-specific
+      networkMode              = "awsvpc"
+      requires_compatibilities = [ "FARGATE" ]
+
       logConfiguration = {
         logDriver = "awslogs"
         options = {
