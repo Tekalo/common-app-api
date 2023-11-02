@@ -1,5 +1,4 @@
 import { PrismaClient } from '@prisma/client';
-import { PrismaSessionStore } from '@quixo3/prisma-session-store';
 import logger from '@App/services/logger.js';
 
 const PASSWORD_AUTH_ERROR: string =
@@ -27,8 +26,4 @@ prisma.$on('error', (err) => {
   }
 });
 
-const sessionStore = new PrismaSessionStore(prisma, {
-  checkPeriod: 2 * 60 * 1000, // 2 minutes
-});
-
-export { authErrorHandler, prisma, sessionStore };
+export { authErrorHandler, prisma };
