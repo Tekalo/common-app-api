@@ -21,39 +21,39 @@ resource "aws_cloudwatch_metric_alarm" "rds_instance0_cpu" {
 
 # Alerts when the average read latency for the DB is over 250ms for 5 minutes
 resource "aws_cloudwatch_metric_alarm" "rds_read_latency" {
-  alarm_name                = "capp-${var.env}-rds-read-latency"
-  comparison_operator       = "GreaterThanOrEqualToThreshold"
-  threshold                 = "250"
-  period                    = "60"
-  evaluation_periods        = "5"
-  metric_name               = "ReadLatency"
-  namespace                 = "AWS/RDS"
-  statistic                 = "Average"
-  alarm_description         = "Average RDS Read Latency"
+  alarm_name          = "capp-${var.env}-rds-read-latency"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  threshold           = "250"
+  period              = "60"
+  evaluation_periods  = "5"
+  metric_name         = "ReadLatency"
+  namespace           = "AWS/RDS"
+  statistic           = "Average"
+  alarm_description   = "Average RDS Read Latency"
   dimensions = {
-    DBInstanceIdentifier    = aws_rds_cluster_instance.instance0.identifier
+    DBInstanceIdentifier = aws_rds_cluster_instance.instance0.identifier
   }
   actions_enabled           = var.alarms_enabled
   alarm_actions             = [aws_sns_topic.capp_api_alerts.arn]
   ok_actions                = [aws_sns_topic.capp_api_alerts.arn]
   insufficient_data_actions = [aws_sns_topic.capp_api_alerts.arn]
   treat_missing_data        = "notBreaching"
-  
+
 }
 # Alerts when the average write latency for the DB is over 250ms for 5 minutes
 resource "aws_cloudwatch_metric_alarm" "rds_write_latency" {
-  alarm_name                = "capp-${var.env}-rds-write-latency"
-  comparison_operator       = "GreaterThanOrEqualToThreshold"
-  threshold                 = "250"
-  period                    = "60"
-  evaluation_periods        = "5"
-  metric_name               = "WriteLatency"
-  namespace                 = "AWS/RDS"
-  statistic                 = "Average"
-  alarm_description         = "Average RDS Write Latency"
-  
+  alarm_name          = "capp-${var.env}-rds-write-latency"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  threshold           = "250"
+  period              = "60"
+  evaluation_periods  = "5"
+  metric_name         = "WriteLatency"
+  namespace           = "AWS/RDS"
+  statistic           = "Average"
+  alarm_description   = "Average RDS Write Latency"
+
   dimensions = {
-    DBInstanceIdentifier    = aws_rds_cluster_instance.instance0.identifier
+    DBInstanceIdentifier = aws_rds_cluster_instance.instance0.identifier
   }
 
   actions_enabled           = var.alarms_enabled
@@ -65,25 +65,26 @@ resource "aws_cloudwatch_metric_alarm" "rds_write_latency" {
 
 # Application ELB Target Group
 # Alerts when there are no healthy hosts in the load balancer target group
-resource "aws_cloudwatch_metric_alarm" "api_targetgroup_healthy_hosts_count" {
-  alarm_name          = "capp-${var.env}-api-healthy-hosts"
-  alarm_description   = "Ensures at least 1 healthy host in the TargetGroup"
-  comparison_operator = "LessThanThreshold"
-  evaluation_periods  = 5
-  period              = 60
-  statistic           = "Minimum"
-  threshold           = "1"
-  metric_name         = "HealthyHostCount"
-  namespace           = "AWS/ApplicationELB"
-  dimensions = {
-    TargetGroup  = aws_lb_target_group.api.arn_suffix
-    LoadBalancer = data.aws_lb.main.arn_suffix
-  }
-  actions_enabled           = var.alarms_enabled
-  alarm_actions             = [aws_sns_topic.capp_api_alerts.arn]
-  ok_actions                = [aws_sns_topic.capp_api_alerts.arn]
-  insufficient_data_actions = [aws_sns_topic.capp_api_alerts.arn]
-}
+# TODO: delete or update for Fargate
+# resource "aws_cloudwatch_metric_alarm" "api_targetgroup_healthy_hosts_count" {
+#   alarm_name          = "capp-${var.env}-api-healthy-hosts"
+#   alarm_description   = "Ensures at least 1 healthy host in the TargetGroup"
+#   comparison_operator = "LessThanThreshold"
+#   evaluation_periods  = 5
+#   period              = 60
+#   statistic           = "Minimum"
+#   threshold           = "1"
+#   metric_name         = "HealthyHostCount"
+#   namespace           = "AWS/ApplicationELB"
+#   dimensions = {
+#     TargetGroup  = aws_lb_target_group.api.arn_suffix
+#     LoadBalancer = data.aws_lb.main.arn_suffix
+#   }
+#   actions_enabled           = var.alarms_enabled
+#   alarm_actions             = [aws_sns_topic.capp_api_alerts.arn]
+#   ok_actions                = [aws_sns_topic.capp_api_alerts.arn]
+#   insufficient_data_actions = [aws_sns_topic.capp_api_alerts.arn]
+# }
 
 # Alerts when the sum of 5xx responses is greater than 10 for 5 minutes
 resource "aws_cloudwatch_metric_alarm" "api_targetgroup_500_errors" {
@@ -109,26 +110,26 @@ resource "aws_cloudwatch_metric_alarm" "api_targetgroup_500_errors" {
 
 # Sends a slack message when there are either unusually high or unusually low requests coming in to the ELB
 resource "aws_cloudwatch_metric_alarm" "api_targetgroup_requests_anomaly" {
-  alarm_name                = "capp-${var.env}-application-lb-requests"
-  comparison_operator       = "LessThanLowerOrGreaterThanUpperThreshold"
-  threshold_metric_id       = "exp1"
-  evaluation_periods        = "5"
-  alarm_description         = "ELB request count anomaly"
+  alarm_name          = "capp-${var.env}-application-lb-requests"
+  comparison_operator = "LessThanLowerOrGreaterThanUpperThreshold"
+  threshold_metric_id = "exp1"
+  evaluation_periods  = "5"
+  alarm_description   = "ELB request count anomaly"
   metric_query {
-    id                      = "exp1"
-    expression              = "ANOMALY_DETECTION_BAND(m1)"
-    label                   = "ELB Requests (Expected)"
-    return_data             = "true"
+    id          = "exp1"
+    expression  = "ANOMALY_DETECTION_BAND(m1)"
+    label       = "ELB Requests (Expected)"
+    return_data = "true"
   }
   metric_query {
-    id                      = "m1"
-    return_data             = "true"
+    id          = "m1"
+    return_data = "true"
     metric {
-      metric_name           = "RequestCount"
-      namespace             = "AWS/ApplicationELB"
-      period                = "60"
-      stat                  = "Sum"
-      unit                  = "Count"
+      metric_name = "RequestCount"
+      namespace   = "AWS/ApplicationELB"
+      period      = "60"
+      stat        = "Sum"
+      unit        = "Count"
       dimensions = {
         TargetGroup  = aws_lb_target_group.api.arn_suffix
         LoadBalancer = data.aws_lb.main.arn_suffix
@@ -145,15 +146,15 @@ resource "aws_cloudwatch_metric_alarm" "api_targetgroup_requests_anomaly" {
 
 # Alerts when the average response time of the ELB is over 1 second for 5 minutes
 resource "aws_cloudwatch_metric_alarm" "api_targetgroup_latency" {
-  alarm_name                = "capp-${var.env}-application-lb-latency"
-  comparison_operator       = "GreaterThanOrEqualToThreshold"
-  threshold                 = "1"
-  period                    = "60"
-  evaluation_periods        = "5"
-  metric_name               = "TargetResponseTime"
-  namespace                 = "AWS/ApplicationELB"
-  statistic                 = "Average"
-  alarm_description         = "Application Load Balancer request latency"
+  alarm_name          = "capp-${var.env}-application-lb-latency"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  threshold           = "1"
+  period              = "60"
+  evaluation_periods  = "5"
+  metric_name         = "TargetResponseTime"
+  namespace           = "AWS/ApplicationELB"
+  statistic           = "Average"
+  alarm_description   = "Application Load Balancer request latency"
   dimensions = {
     TargetGroup  = aws_lb_target_group.api.arn_suffix
     LoadBalancer = data.aws_lb.main.arn_suffix
@@ -167,21 +168,21 @@ resource "aws_cloudwatch_metric_alarm" "api_targetgroup_latency" {
 }
 # Sends a message to slack when there are on average more than 50 4xx errors over 5 minutes
 resource "aws_cloudwatch_metric_alarm" "api_targetgroup_4XX_errors" {
-  alarm_name                = "capp-${var.env}-api-4XX-errors"
-  alarm_description         = "API 4xx errors are elevated"
-  comparison_operator       = "GreaterThanOrEqualToThreshold"
-  evaluation_periods        = 5
-  period                    = 60
-  threshold                 = "50"
-  statistic                 = "Average"
-  metric_name               = "HTTPCode_Target_4XX_Count"
-  namespace                 = "AWS/ApplicationELB"
-  
-  actions_enabled           = var.alarms_enabled
-  alarm_actions             = [aws_sns_topic.capp_api_notifications.arn]
-  ok_actions                = [aws_sns_topic.capp_api_notifications.arn]
-  treat_missing_data        = "notBreaching"
-  
+  alarm_name          = "capp-${var.env}-api-4XX-errors"
+  alarm_description   = "API 4xx errors are elevated"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  evaluation_periods  = 5
+  period              = 60
+  threshold           = "50"
+  statistic           = "Average"
+  metric_name         = "HTTPCode_Target_4XX_Count"
+  namespace           = "AWS/ApplicationELB"
+
+  actions_enabled    = var.alarms_enabled
+  alarm_actions      = [aws_sns_topic.capp_api_notifications.arn]
+  ok_actions         = [aws_sns_topic.capp_api_notifications.arn]
+  treat_missing_data = "notBreaching"
+
   dimensions = {
     TargetGroup  = aws_lb_target_group.api.arn_suffix
     LoadBalancer = data.aws_lb.main.arn_suffix
@@ -193,45 +194,45 @@ data "aws_iam_policy_document" "alerts_topic_policy" {
   statement {
     sid = "1"
     principals {
-       type = "Service"
-       identifiers = ["cloudwatch.amazonaws.com"]
+      type        = "Service"
+      identifiers = ["cloudwatch.amazonaws.com"]
     }
-    actions = [ "sns:Publish" ]
-    resources = [ "arn:aws:sns:us-east-1:${data.aws_caller_identity.current.account_id}:capp-${var.env}-api-alerts" ]
+    actions   = ["sns:Publish"]
+    resources = ["arn:aws:sns:us-east-1:${data.aws_caller_identity.current.account_id}:capp-${var.env}-api-alerts"]
   }
 }
 resource "aws_sns_topic" "capp_api_alerts" {
-  name        = "capp-${var.env}-api-alerts"
-  tags        = {
-    Name      = "capp-${var.env}-api-alerts"
+  name = "capp-${var.env}-api-alerts"
+  tags = {
+    Name = "capp-${var.env}-api-alerts"
   }
-  policy     = data.aws_iam_policy_document.alerts_topic_policy.json
+  policy = data.aws_iam_policy_document.alerts_topic_policy.json
 }
 # Send lower urgency alarms here
 data "aws_iam_policy_document" "notifications_topic_policy" {
   statement {
     sid = "1"
     principals {
-       type = "Service"
-       identifiers = ["cloudwatch.amazonaws.com"]
+      type        = "Service"
+      identifiers = ["cloudwatch.amazonaws.com"]
     }
-    actions = [ "sns:Publish" ]
-    resources = [ "arn:aws:sns:us-east-1:${data.aws_caller_identity.current.account_id}:capp-${var.env}-api-notifications" ]
+    actions   = ["sns:Publish"]
+    resources = ["arn:aws:sns:us-east-1:${data.aws_caller_identity.current.account_id}:capp-${var.env}-api-notifications"]
   }
 }
 
 resource "aws_sns_topic" "capp_api_notifications" {
-  name        = "capp-${var.env}-api-notifications"
-  tags        = {
+  name = "capp-${var.env}-api-notifications"
+  tags = {
     Name = "capp-${var.env}-api-notifications"
   }
-  policy      = data.aws_iam_policy_document.notifications_topic_policy.json
+  policy = data.aws_iam_policy_document.notifications_topic_policy.json
 }
 
 resource "aws_sns_topic_subscription" "pagerduty" {
-  topic_arn   = aws_sns_topic.capp_api_alerts.arn
-  protocol    = "https"
-  endpoint    = var.pagerduty_integration_url
+  topic_arn = aws_sns_topic.capp_api_alerts.arn
+  protocol  = "https"
+  endpoint  = var.pagerduty_integration_url
 }
 
 module "notify_slack" {

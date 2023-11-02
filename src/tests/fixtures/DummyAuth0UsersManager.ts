@@ -1,4 +1,8 @@
-import { ApiResponse, GetUsers200ResponseOneOfInner, UsersManager } from 'auth0';
+import {
+  ApiResponse,
+  GetUsers200ResponseOneOfInner,
+  UsersManager,
+} from 'auth0';
 import auth0ResponseGenerator from './auth0ManagementAPIResponseGenerator.js';
 
 class DummyAuth0UsersManager extends UsersManager {
