@@ -24,8 +24,8 @@ For why we use this instead of the default install command, see [important note 
 ```bash
 # Values for Auth0 client when running tests
 AUTH0_CLIENT_SECRET={Auth0 Tenant Client Secret}
-AUTH0_CLIENT_ID={Auth0 Tenant Client ID}
-AUTH0_DOMAIN={Auth0 Tenant Domain}
+AUTH0_CLIENT_ID=AzRVLnVmcru9u0hR5dl5VW84c21GLNEM
+AUTH0_DOMAIN=sf-capp-dev.us.auth0.com
 
 # Values will be used to hit the actual Auth0 Service in dev/prod
 AUTH0_AUDIENCE="auth0.capp.com"
@@ -162,6 +162,8 @@ It is recommended to make changes in the Auth0 UI first. The configuration in th
 
    ```bash
    # values are the same as those set in .env
+   export AUTH0_CLIENT_ID=AzRVLnVmcru9u0hR5dl5VW84c21GLNEM
+   export AUTH0_DOMAIN=sf-capp-dev.us.auth0.com
    export AUTH0_CLIENT_SECRET={auth0-secret-for-dev-tenant}
    a0deploy export -c=auth0/config-dev.json --output_folder=auth0/dev --format=yaml
    ```
@@ -171,6 +173,8 @@ It is recommended to make changes in the Auth0 UI first. The configuration in th
 5. Export changes from Auth0 prod tenant:
 
    ```bash
+   export AUTH0_CLIENT_ID=tO0yP1uA12VhqWCBjSh1fIRFJug4b4GF
+   export AUTH0_DOMAIN=sf-futuresengine-prod.us.auth0.com
    export AUTH0_CLIENT_SECRET={auth0-secret-for-prod-tenant}
    a0deploy export -c=auth0/config-prod.json --output_folder=auth0/prod --format=yaml
    ```
