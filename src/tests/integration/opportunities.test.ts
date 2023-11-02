@@ -1,5 +1,5 @@
 import request from 'supertest';
-import { prisma, sessionStore } from '@App/resources/client.js';
+import { prisma } from '@App/resources/client.js';
 import { OpportunityBatchResponseBody } from '@App/resources/types/opportunities.js';
 import { OpportunityBatch } from '@prisma/client';
 import opportunitySubmissionGenerator from '../fixtures/OpportunitySubmissionGenerator.js';
@@ -13,10 +13,6 @@ const { oppBatchPayload } = opportunitySubmissionGenerator;
 afterEach(async () => {
   await prisma.opportunitySubmission.deleteMany();
   await prisma.opportunityBatch.deleteMany();
-});
-
-afterAll(async () => {
-  await sessionStore.shutdown();
 });
 
 describe('DELETE /opportunities/batch/:id', () => {

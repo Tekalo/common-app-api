@@ -5,7 +5,7 @@ import { getRandomString } from '@App/tests/util/helpers.js';
 import CAPPError from '@App/resources/shared/CAPPError.js';
 import configLoader from '@App/services/configLoader.js';
 import MonitoringService from '@App/services/MonitoringService.js';
-import { prisma, sessionStore } from '@App/resources/client.js';
+import { prisma } from '@App/resources/client.js';
 import request from 'supertest';
 import DummyAuthService from '../fixtures/DummyAuthService.js';
 import DummyEmailService from '../fixtures/DummyEmailService.js';
@@ -53,7 +53,6 @@ describe('Monitoring Service', () => {
 
   afterAll(async () => {
     await MonitoringService.exitHandler();
-    await sessionStore.shutdown();
   });
 
   afterEach(() => testkit.reset());

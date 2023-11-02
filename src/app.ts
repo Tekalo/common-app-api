@@ -5,6 +5,7 @@ import {
   opportunitiesRoutes,
 } from '@App/routes/index.js';
 import logger from '@App/services/logger.js';
+import { PrismaSessionStore } from '@quixo3/prisma-session-store';
 import { randomUUID } from 'crypto';
 import express, { Application, Handler, NextFunction, Response } from 'express';
 import { auth } from 'express-oauth2-jwt-bearer';
@@ -12,7 +13,7 @@ import session from 'express-session';
 import { pinoHttp } from 'pino-http';
 import * as swaggerUi from 'swagger-ui-express';
 import errorHandler from './middleware/errorHandler.js';
-import { sessionStore } from './resources/client.js';
+import { prisma } from './resources/client.js';
 import { AuthRequest } from './resources/types/auth0.js';
 import { BaseConfig } from './resources/types/shared.js';
 import AuthService from './services/AuthService.js';
@@ -58,7 +59,9 @@ const getApp = (
   const { clientSecret } = config.auth0.api;
   app.use(
     session({
-      store: sessionStore,
+      store: new PrismaSessionStore(prisma, {
+        checkPeriod: process.env.NODE_ENV === 'test' ? 0 : 2 * 60 * 1000, // 2 minutes in non-test envs
+      }),
       secret: clientSecret,
       resave: false,
       saveUninitialized: true,

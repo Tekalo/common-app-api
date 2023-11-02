@@ -35,7 +35,7 @@
     "prisma:migrate": "docker compose run --rm api pnpx prisma migrate dev",
     "prisma:seed": "docker compose run --rm api pnpx prisma db seed",
     "prisma:update": "docker compose run --rm api pnpx prisma db push",
-    "generate-spec": "docker compose run --rm api pnpx ts-node /api/scripts/writeSpec.ts"
+    "generate-spec": "docker compose run -T --rm api pnpx ts-node /api/scripts/writeSpec.ts"
   },
   "repository": {
     "type": "git",
