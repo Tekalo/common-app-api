@@ -29,7 +29,7 @@ AUTH0_DOMAIN={Auth0 Tenant Domain}
 
 # Values will be used to hit the actual Auth0 Service in dev/prod
 AUTH0_AUDIENCE="auth0.capp.com"
-AUTH0_ISSUER="https://capp-auth.dev.apps.futurestech.cloud"
+AUTH0_ISSUER="https://auth.dev.tekalo.io"
 
 AWS_SES_FROM_ADDRESS="tekalo@dev.apps.futurestech.cloud"
 AWS_ACCESS_KEY_ID={AWS Access Key}

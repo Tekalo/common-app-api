@@ -49,7 +49,7 @@ module "app" {
   cert_arn             = module.envconfig.cert_arn
   image                = var.image
   cli_image            = var.cli_image
-  auth0_domain         = var.auth0_domain
+  auth0_domain_cname   = var.auth0_domain_cname
   sentry_dsn           = var.sentry_dsn
   web_url              = var.web_url
   email_from_address   = var.email_from_address
