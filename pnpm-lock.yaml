@@ -48,8 +48,8 @@ importers:
         specifier: 0.5.3
         version: 0.5.3
       auth0:
-        specifier: 4.0.2
-        version: 4.0.2
+        specifier: 4.1.0
+        version: 4.1.0
       express:
         specifier: 4.18.2
         version: 4.18.2
@@ -2950,8 +2950,8 @@ packages:
     resolution: {integrity: sha512-kNOjDqAh7px0XWNI+4QbzoiR/nTkHAWNud2uvnJquD1/x5a7EQZMJT0AczqK0Qn67oY/TTQ1LbUKajZpp3I9tQ==}
     engines: {node: '>=8.0.0'}
 
-  /auth0@4.0.2:
-    resolution: {integrity: sha512-VCyYspHBp5ZigLgF8w0s5UwufIIWVJ+UGX+s+YUN50RRP24znnhKGK1q4k3d3PLzTJSyrqnpdJNRdabzzEKORA==}
+  /auth0@4.1.0:
+    resolution: {integrity: sha512-1CpjWPOuWPAhQZy46/T/jOViy1WXhytmdlZji693ZpBfugYw181+JXfKLzjea59oKmo4HFctD05cec7xGdysfQ==}
     engines: {node: '>=18'}
     dependencies:
       jose: 4.15.4
