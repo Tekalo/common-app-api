@@ -10,6 +10,9 @@
     "watch:build": "swc watches the src folder, if there's any changes at all, build our .js files + source maps and save them to /build dir",
     "watch:check": "nodemon watches the src folder, if any changes detected on .ts files, re-running the type checker to detect errors (but not generating output files)"
   },
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "check": "tsc --noEmit",
     "container-build": "docker compose run --rm api pnpm build",
