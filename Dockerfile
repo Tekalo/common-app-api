@@ -1,4 +1,4 @@
-FROM node:20-slim AS base
+FROM node:20.9.0-slim AS base
 WORKDIR /api
 RUN chown node:node /api
 RUN apt-get update && apt-get install -y \
