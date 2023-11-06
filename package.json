@@ -116,6 +116,6 @@
   },
   "prisma": {
     "schema": "db/prisma/schema.prisma",
-    "seed": "pnpx node --no-warnings=ExperimentalWarning --loader ts-node/esm ./db/resources/seed.ts"
+    "seed": "node --no-warnings=ExperimentalWarning --loader ts-node/esm ./db/resources/seed.ts"
   }
 }
