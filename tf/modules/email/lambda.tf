@@ -54,7 +54,7 @@ resource "aws_lambda_function" "mailer" {
   source_code_hash = filebase64sha256("email-sender.zip")
   handler          = "index.handler"
   role             = aws_iam_role.mailer_lambda_role.arn
-  runtime          = "nodejs20.x"
+  runtime          = "nodejs18.x"
   // save artifacts to s3?
 }
 
