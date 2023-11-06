@@ -2,7 +2,8 @@
   // how our import statements are transpiled from TS to JS
   // EX: using commonJS will add Object.defineProperty(exports, "__esModule".. to our compiled JS
   "module": {
-    "type": "es6"
+    "type": "es6",
+    "resolveFully": true // allows us to import index.js files from repo dirs https://github.com/swc-project/swc/pull/7945
   },
   "jsc": {
     "baseUrl": "./",
@@ -12,9 +13,9 @@
     // All of the code that is transpiled EXCEPT for the import/export statements
     "target": "es2022",
     // These options ensure that our transpiler emits JS that is compatible with the
-    // node runtime we are expecting. At time of writing, node 18.
+    // node runtime we are expecting. At time of writing, node 20.
     // This should have all the NodeNext features in it, since we are using
-    // NodeNext in our tsconfig, which at time of writing points to Node v18
+    // NodeNext in our tsconfig.
     "experimental": {
       "keepImportAttributes": true,
       "emitAssertForImportAttributes": true
