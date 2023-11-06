@@ -1,10 +1,10 @@
 import spec from '@App/resources/spec/spec.json' assert { type: 'json' };
-import logger from '@App/services/logger.js';
 import {
   applicantRoutes,
   healthRoutes,
   opportunitiesRoutes,
 } from '@App/routes/index.js';
+import logger from '@App/services/logger.js';
 import { PrismaSessionStore } from '@quixo3/prisma-session-store';
 import { randomUUID } from 'crypto';
 import express, { Application, Handler, NextFunction, Response } from 'express';
