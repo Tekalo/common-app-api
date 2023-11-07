@@ -244,3 +244,7 @@ model Upload {
   ApplicantSubmission      ApplicantSubmission?
   ApplicantDraftSubmission ApplicantDraftSubmission?
 }
+
+model Skill {
+  name                       String                       @unique
+}

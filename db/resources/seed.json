@@ -243,5 +243,19 @@
         "resumeUpload": { "id": 3 }
       }
     }
+  ],
+  "skills": [
+    {
+      "name": "Python"
+    },
+    {
+      "name": "JS"
+    },
+    {
+      "name": "type3script"
+    },
+    {
+      "name": "horse training"
+    }
   ]
 }
