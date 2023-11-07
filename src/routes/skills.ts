@@ -5,21 +5,16 @@ import express, {
     Response,
   } from 'express';
 import SkillController from "@App/controllers/SkillController.js";
-import { Skills } from "@capp/schemas"; 
-import { SkillGetResponseBody } from "@App/resources/types/skills.js";
-import AuthService from '@App/services/AuthService.js';
 import { prisma } from '@App/resources/client.js';
 import Authenticator from '@App/middleware/authenticator.js';
 import { BaseConfig } from '@App/resources/types/shared.js';
-import { RequestWithJWT } from '@App/resources/types/auth0.js';
+
 
 const skillRoutes = (
-    authService: AuthService,
     config: BaseConfig,
   ) => {
     const router = express.Router();
     const skillController = new SkillController(
-      authService,
       prisma,
     );
 
@@ -38,6 +33,7 @@ const skillRoutes = (
             .then((result) => {
               res.status(200).json(result);
               console.log("set code successfully");
+              console.log(result);
             })
             .catch((err) => next(err));
         },

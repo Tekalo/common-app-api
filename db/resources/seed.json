@@ -244,18 +244,20 @@
       }
     }
   ],
-  "skills": [
-    {
-      "name": "Python"
-    },
-    {
-      "name": "JS"
-    },
-    {
-      "name": "type3script"
-    },
-    {
-      "name": "horse training"
-    }
-  ]
+  "skills": {
+    "data": [
+      {
+        "name": "Python"
+      },
+      {
+        "name": "JS"
+      },
+      {
+        "name": "type3script"
+      },
+      {
+        "name": "horse training"
+      }
+    ]
+  }
 }

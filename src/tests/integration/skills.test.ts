@@ -27,7 +27,9 @@ describe('GET /skills', () => {
             .get('/skills')
             .set('Authorization', `Bearer ${token}`)
             .expect(200);
-        expect(body).toHaveProperty('name');
+        expect(body).toHaveProperty('data');
+        const {data} = body;
+        console.log(data);
     });
 
 });

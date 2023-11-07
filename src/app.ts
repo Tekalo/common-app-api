@@ -92,7 +92,7 @@ const getApp = (
     applicantRoutes(authService, emailService, uploadService, config),
   );
   app.use('/opportunities', opportunitiesRoutes(emailService, config));
-  app.use('/skills', skillRoutes(authService,config));
+  app.use('/skills', skillRoutes(config));
 
   /**
    * Swagger UI documentation endpoint

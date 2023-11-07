@@ -155,9 +155,10 @@ async function seedOpportunitySubmissionBatches() {
 async function seedSkills() {
   const { skills } = seedData;
   const skillsUpserts: Array<Promise<any>> = [];
-  skills.forEach((skill, idx) => {
-    const validatedSkill = Skills.SkillGetResponseBodySchema.parse(skill);
-    const { name } = validatedSkill;
+  const validatedSkill = Skills.SkillGetResponseBodySchema.parse(skills);
+  const { data } = validatedSkill;
+  data.forEach((skill, idx) => {
+    const { name } = skill;
     const skillUpsert = prisma.skill.upsert({
       update: {},
       create: {

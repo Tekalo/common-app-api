@@ -1,7 +1,11 @@
 import { z } from 'zod'
 
-const SkillGetResponseBodySchema = z.object({
+const SkillGetResponseUnitSchema = z.object({
     name: z.string(),
+});
+
+const SkillGetResponseBodySchema = z.object({
+    data: z.array(SkillGetResponseUnitSchema),
 });
 
 export default {

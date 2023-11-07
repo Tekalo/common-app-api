@@ -2,28 +2,25 @@ import { SkillGetResponseBody } from "@App/resources/types/skills.js";
 import { PrismaClient, Prisma } from "@prisma/client";
 import { Skills } from '@capp/schemas';
 import CAPPError from '@App/resources/shared/CAPPError.js';
-import AuthService from '@App/services/AuthService.js';
 
 class SkillController {
-
-    private auth0Service: AuthService;
 
     private prisma: PrismaClient;
 
     constructor(
-        auth0Service: AuthService,
         prisma: PrismaClient,
     ) {
-        this.auth0Service = auth0Service;
         this.prisma = prisma;
     }
 
     async getSkill(): Promise<SkillGetResponseBody> {
         try {
-          const name =
-            await this.prisma.skill.findMany();
+          const skills =
+            await this.prisma.skill.findMany(); 
+          console.log("raw rows");
+          console.log(skills);
           return Skills.SkillGetResponseBodySchema.parse({
-            name,
+            data: skills,
           });
         } catch (e) {
           if (e instanceof Prisma.PrismaClientKnownRequestError) {
