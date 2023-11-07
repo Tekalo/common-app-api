@@ -172,9 +172,9 @@ async function seedSkills() {
 }
 
 async function main() {
+  await seedSkills();
   await seedApplicantSubmissions();
   await seedOpportunitySubmissionBatches();
-  await seedSkills();
 }
 
 main()

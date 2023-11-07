@@ -37,6 +37,7 @@ const skillRoutes = (
             .getSkill()
             .then((result) => {
               res.status(200).json(result);
+              console.log("set code successfully");
             })
             .catch((err) => next(err));
         },
