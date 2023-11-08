@@ -63,29 +63,6 @@ resource "aws_cloudwatch_metric_alarm" "rds_write_latency" {
   treat_missing_data        = "notBreaching"
 }
 
-# Application ELB Target Group
-# Alerts when there are no healthy hosts in the load balancer target group
-# TODO: delete or update for Fargate
-# resource "aws_cloudwatch_metric_alarm" "api_targetgroup_healthy_hosts_count" {
-#   alarm_name          = "capp-${var.env}-api-healthy-hosts"
-#   alarm_description   = "Ensures at least 1 healthy host in the TargetGroup"
-#   comparison_operator = "LessThanThreshold"
-#   evaluation_periods  = 5
-#   period              = 60
-#   statistic           = "Minimum"
-#   threshold           = "1"
-#   metric_name         = "HealthyHostCount"
-#   namespace           = "AWS/ApplicationELB"
-#   dimensions = {
-#     TargetGroup  = aws_lb_target_group.api.arn_suffix
-#     LoadBalancer = data.aws_lb.main.arn_suffix
-#   }
-#   actions_enabled           = var.alarms_enabled
-#   alarm_actions             = [aws_sns_topic.capp_api_alerts.arn]
-#   ok_actions                = [aws_sns_topic.capp_api_alerts.arn]
-#   insufficient_data_actions = [aws_sns_topic.capp_api_alerts.arn]
-# }
-
 # Alerts when the sum of 5xx responses is greater than 10 for 5 minutes
 resource "aws_cloudwatch_metric_alarm" "api_targetgroup_500_errors" {
   alarm_name          = "capp-${var.env}-api-500-errors"
