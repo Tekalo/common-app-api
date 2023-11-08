@@ -1,13 +1,13 @@
-import { z } from 'zod'
+import { z } from 'zod';
 
 const SkillGetResponseUnitSchema = z.object({
-    name: z.string(),
+  name: z.string(),
 });
 
 const SkillGetResponseBodySchema = z.object({
-    data: z.array(SkillGetResponseUnitSchema),
+  data: z.array(SkillGetResponseUnitSchema),
 });
 
 export default {
-    SkillGetResponseBodySchema,
+  SkillGetResponseBodySchema,
 };

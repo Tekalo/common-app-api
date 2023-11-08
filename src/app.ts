@@ -3,7 +3,7 @@ import {
   applicantRoutes,
   healthRoutes,
   opportunitiesRoutes,
-  skillRoutes
+  skillRoutes,
 } from '@App/routes/index.js';
 import logger from '@App/services/logger.js';
 import { PrismaSessionStore } from '@quixo3/prisma-session-store';

@@ -157,14 +157,15 @@ async function seedSkills() {
   const skillsUpserts: Array<Promise<any>> = [];
   const validatedSkill = Skills.SkillGetResponseBodySchema.parse(skills);
   const { data } = validatedSkill;
-  data.forEach((skill, idx) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  data.forEach((skill, _idx) => {
     const { name } = skill;
     const skillUpsert = prisma.skill.upsert({
       update: {},
       create: {
         name,
       },
-      where: { name },  // unique key
+      where: { name }, // unique key
     });
     skillsUpserts.push(skillUpsert);
   });
