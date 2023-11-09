@@ -307,7 +307,7 @@ const applicantRoutes = (
       .bind(authenticator) as RequestHandler,
     (req: Request, res: Response, next: NextFunction) => {
       applicantController
-        .deleteTestApplicants()
+        .deleteTestApplicants() // TODO: Handle each return of the inner promises individually
         .then((result) => {
           res.status(200).json(result);
         })

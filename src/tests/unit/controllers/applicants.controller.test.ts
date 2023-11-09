@@ -706,6 +706,11 @@ describe('Applicant Controller', () => {
     });
   });
 
+  describe('Cleanup Test Applicants (Admin functionality)', () => {
+    test('Should return error if any of the applicants fails to be deleted', async () => {});
+    test('Should delete test applicants and not delete regular applicants', async () => {});
+  });
+
   describe('Test white list functionality in EmailService to avoid too many email bounces in dev', () => {
     test('Should not send email if email not on white list in dev env', async () => {
       mockCtx.prisma.applicant.findUniqueOrThrow.mockResolvedValue({
