@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { randomInt } from 'crypto';
 import { PrismaClient, Prisma, UploadStatus } from '@prisma/client';
-import { Applicants, Opportunities, Uploads, Skills } from '@capp/schemas';
+import { Applicants, Opportunities, Uploads } from '@capp/schemas';
 import CAPPError from '../../src/resources/shared/CAPPError.js';
 import { Problem } from '../../src/resources/types/shared.js';
 import seedData from './seed.json' assert { type: 'json' };
@@ -155,11 +155,8 @@ async function seedOpportunitySubmissionBatches() {
 async function seedSkills() {
   const { skills } = seedData;
   const skillsUpserts: Array<Promise<any>> = [];
-  const validatedSkill = Skills.SkillGetResponseBodySchema.parse(skills);
-  const { data } = validatedSkill;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  data.forEach((skill, _idx) => {
-    const { name } = skill;
+  skills.forEach((name, _idx) => {
     const skillUpsert = prisma.skill.upsert({
       update: {},
       create: {

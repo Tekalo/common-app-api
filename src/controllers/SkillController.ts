@@ -10,7 +10,7 @@ class SkillController {
     this.prisma = prisma;
   }
 
-  async getSkill(): Promise<SkillGetResponseBody> {
+  async getSkills(): Promise<SkillGetResponseBody> {
     try {
       const skills = await this.prisma.skill.findMany();
       return Skills.SkillGetResponseBodySchema.parse({

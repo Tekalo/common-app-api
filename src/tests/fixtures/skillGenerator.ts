@@ -18,9 +18,14 @@ const skills = {
 };
 
 const seedSkillsUpload = async () => {
-  await Promise.all(
-    skills.data.map((skill) => prisma.skill.create({ data: skill })),
-  );
+  const { data } = skills;
+  await prisma.skill.createMany({
+    data,
+  });
 };
 
-export default seedSkillsUpload;
+const seedSkillsDelete = async () => {
+  await prisma.skill.deleteMany();
+};
+
+export { seedSkillsUpload, seedSkillsDelete };
