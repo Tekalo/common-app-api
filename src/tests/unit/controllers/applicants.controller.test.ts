@@ -707,8 +707,12 @@ describe('Applicant Controller', () => {
   });
 
   describe('Cleanup Test Applicants (Admin functionality)', () => {
-    test('Should return error if any of the applicants fails to be deleted', async () => {});
-    test('Should delete test applicants and not delete regular applicants', async () => {});
+    test('Should return error if any of the applicants fails to be deleted', async () => {
+      // TODO: Write test
+    });
+    test('Should delete test applicants and not delete regular applicants', async () => {
+      // TODO: Write test
+    });
   });
 
   describe('Test white list functionality in EmailService to avoid too many email bounces in dev', () => {
