@@ -300,6 +300,21 @@ const applicantRoutes = (
     },
   );
 
+  router.delete(
+    '/cleanup',
+    authenticator
+      .validateJwtRole('admin')
+      .bind(authenticator) as RequestHandler,
+    (req: Request, res: Response, next: NextFunction) => {
+      applicantController
+        .deleteTestApplicants()
+        .then((result) => {
+          res.status(200).json(result);
+        })
+        .catch((err) => next(err));
+    },
+  );
+
   return router;
 };
 

@@ -384,6 +384,14 @@ class ApplicantController {
     return Shared.IdOnlySchema.parse({ id: applicantId });
   }
 
+  // Deletes all applicants that match a known email pattern only used for testing
+  async deleteTestApplicants(): Promise<Promise<IdOnly>[]> {
+    const applicantsToDelete = await this.prisma.$queryRaw<
+      IdOnly[]
+    >`SELECT id FROM "Applicants" WHERE email LIKE 'test-user%@schmidtfutures.com' OR email LIKE 'success+test-user%@simulator.amazonses.com'`;
+    return applicantsToDelete.map((x) => this.deleteApplicantForce(x.id));
+  }
+
   async validResume(
     submission:
       | ParsedApplicantSubmissionBody
