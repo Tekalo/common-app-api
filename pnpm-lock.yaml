@@ -1,9 +1,5 @@
 lockfileVersion: '6.0'
 
-settings:
-  autoInstallPeers: true
-  excludeLinksFromLockfile: false
-
 importers:
 
   .:
@@ -185,6 +181,10 @@ importers:
         version: 5.2.2
 
   packages/email-sender:
+    dependencies:
+      '@aws-sdk/client-ses':
+        specifier: 3.445.0
+        version: 3.445.0
     devDependencies:
       '@types/aws-lambda':
         specifier: ^8.10.122
@@ -6945,3 +6945,7 @@ packages:
   /zod@3.22.4:
     resolution: {integrity: sha512-iC+8Io04lddc+mVqQ9AZ7OQ2MrUKGN+oIQyq1vemgt46jwCwLfhq7/pwnBnNXXXZb8VTVLKwp9EDkx+ryxIWmg==}
     dev: false
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
