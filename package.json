@@ -50,15 +50,15 @@
   },
   "homepage": "https://github.com/schmidtfutures/common-app-api#readme",
   "dependencies": {
-    "@aws-sdk/client-s3": "3.445.0",
-    "@aws-sdk/client-ses": "3.445.0",
-    "@aws-sdk/s3-presigned-post": "3.445.0",
-    "@aws-sdk/s3-request-presigner": "3.445.0",
+    "@aws-sdk/client-s3": "3.449.0",
+    "@aws-sdk/client-ses": "3.449.0",
+    "@aws-sdk/s3-presigned-post": "3.449.0",
+    "@aws-sdk/s3-request-presigner": "3.449.0",
     "@capp/schemas": "workspace:*",
     "@prisma/client": "5.5.2",
     "@quixo3/prisma-session-store": "3.1.13",
-    "@sentry/node": "7.79.0",
-    "@sentry/types": "7.79.0",
+    "@sentry/node": "7.80.0",
+    "@sentry/types": "7.80.0",
     "@tsconfig/node20": "20.1.2",
     "@types/auth0": "3.3.9",
     "@types/cookie": "0.5.4",
@@ -73,7 +73,7 @@
     "pino-http": "8.5.1",
     "swagger-ui-express": "5.0.0",
     "zod": "3.22.4",
-    "zod-openapi": "2.10.0"
+    "zod-openapi": "2.11.0"
   },
   "devDependencies": {
     "@jest/globals": "29.7.0",
@@ -112,7 +112,7 @@
   },
   "//": "added to resolve a critical vulnerability in @babel/traverse 7.23.0",
   "peerDependencies": {
-    "@babel/core": "7.23.2"
+    "@babel/core": "7.23.3"
   },
   "prisma": {
     "schema": "db/prisma/schema.prisma",
