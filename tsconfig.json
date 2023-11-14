@@ -6,7 +6,8 @@
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
-      "@App/*": ["src/*"]
+      "@App/*": ["src/*"],
+      "@capp/*": ["packages/*"]
     },
     "module": "NodeNext", // what kind of JS IMPORTS will our TS compile to? see https://stackoverflow.com/questions/71463698/why-we-need-nodenext-typescript-compiler-option-when-we-have-esnext
     "moduleResolution": "NodeNext", // what directory should I look in to find these imports?

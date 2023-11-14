@@ -8,7 +8,8 @@
   "jsc": {
     "baseUrl": "./",
     "paths": {
-      "@App/*": ["src/*"]
+      "@App/*": ["src/*"],
+      "@capp/*": ["packages/*"]
     },
     // All of the code that is transpiled EXCEPT for the import/export statements
     "target": "es2022",
