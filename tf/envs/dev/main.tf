@@ -84,3 +84,15 @@ module "email" {
   env                = module.envconfig.env
   email_from_address = var.email_from_address
 }
+
+# DNS for auth0
+data "aws_route53_zone" "auth0" {
+  zone_id = var.auth0_zone_id
+}
+resource "aws_route53_record" "auth" {
+  zone_id = var.auth0_zone_id
+  name    = "auth.${data.aws_route53_zone.auth0.name}"
+  type    = "CNAME"
+  ttl     = "300"
+  records = [var.auth0_domain_cname]
+}
