@@ -2,11 +2,13 @@
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  extensions = [citext]
 }
 
 model Session {
@@ -246,5 +248,5 @@ model Upload {
 }
 
 model Skill {
-  name                       String                       @unique
+  name                       String                  @unique @db.Citext
 }

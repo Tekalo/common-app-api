@@ -1,6 +1,9 @@
+-- CreateExtension
+CREATE EXTENSION IF NOT EXISTS "citext";
+
 -- CreateTable
 CREATE TABLE "Skill" (
-    "name" TEXT NOT NULL
+    "name" CITEXT NOT NULL
 );
 
 -- CreateIndex

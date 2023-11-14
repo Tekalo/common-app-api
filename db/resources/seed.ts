@@ -154,21 +154,34 @@ async function seedOpportunitySubmissionBatches() {
 
 async function seedSkills() {
   const { skills } = seedData;
-  const skillsUpserts: Array<Promise<any>> = [];
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  skills.forEach((name, _idx) => {
-    const skillUpsert = prisma.skill.upsert({
+  const skillsUpserts: Array<Promise<any>> = skills.map((skill) =>
+    prisma.skill.upsert({
       update: {},
       create: {
-        name,
+        name: skill,
       },
-      where: { name }, // unique key
-    });
-    skillsUpserts.push(skillUpsert);
-  });
-
+      where: { name: skill }, // unique key
+    }),
+  );
   await doUpsert(skillsUpserts);
 }
+
+//   const { skills } = seedData;
+//   const skillsUpserts: Array<Promise<any>> = [];
+//   // eslint-disable-next-line @typescript-eslint/no-unused-vars
+//   skills.forEach((name, _idx) => {
+//     const skillUpsert = prisma.skill.upsert({
+//       update: {},
+//       create: {
+//         name,
+//       },
+//       where: { name }, // unique key
+//     });
+//     skillsUpserts.push(skillUpsert);
+//   });
+
+//   await doUpsert(skillsUpserts);
+// }
 
 async function main() {
   await seedSkills();
