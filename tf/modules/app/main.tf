@@ -78,7 +78,7 @@ resource "aws_ecs_service" "api" {
   propagate_tags                    = "SERVICE"
 
   # Fargate-specific params
-  launch_type                       = "FARGATE"
+  launch_type = "FARGATE"
   network_configuration {
     subnets         = var.task_subnet_ids
     security_groups = [var.task_security_group]
@@ -133,7 +133,7 @@ resource "aws_ecs_task_definition" "api" {
 
   # These are fargate-specific
   network_mode             = "awsvpc"
-  requires_compatibilities = [ "FARGATE" ]
+  requires_compatibilities = ["FARGATE"]
   cpu                      = 256
   memory                   = 512
 
@@ -239,7 +239,7 @@ resource "aws_ecs_task_definition" "cli" {
 
   # These are fargate-specific
   network_mode             = "awsvpc"
-  requires_compatibilities = [ "FARGATE" ]
+  requires_compatibilities = ["FARGATE"]
   cpu                      = 256
   memory                   = 512
 
@@ -289,9 +289,9 @@ resource "aws_lb_target_group" "api" {
 }
 
 resource "aws_lb_target_group" "api_v2" {
-  port     = 80
-  protocol = "HTTP"
-  vpc_id   = data.aws_vpc.main.id
+  port        = 80
+  protocol    = "HTTP"
+  vpc_id      = data.aws_vpc.main.id
   target_type = "ip" # Required by Fargate
   health_check {
     healthy_threshold = 2
@@ -310,6 +310,10 @@ data "aws_vpc" "main" {
 
 data "aws_route53_zone" "main" {
   zone_id = var.dns_zone_id
+}
+
+data "aws_route53_zone" "auth0" {
+  zone_id = var.auth0_zone_id
 }
 
 resource "aws_lb_listener_rule" "api" {
@@ -349,8 +353,8 @@ resource "aws_route53_record" "api" {
 
 # DNS for auth0
 resource "aws_route53_record" "auth" {
-  zone_id = var.dns_zone_id
-  name    = "capp-auth.${data.aws_route53_zone.main.name}"
+  zone_id = var.auth0_zone_id
+  name    = "auth.${data.aws_route53_zone.auth0.name}"
   type    = "CNAME"
   ttl     = "300"
   records = [var.auth0_domain_cname]

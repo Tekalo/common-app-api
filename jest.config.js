@@ -1,6 +1,7 @@
 export default {
   moduleNameMapper: {
     '^(\\.{1,2}/.*)\\.js$': '$1',
+    '@capp/(.*)$': `<rootDir>/packages/$1/src`, // map imported @capp/* modules with the actual source code
   },
   extensionsToTreatAsEsm: ['.ts'],
   transform: {
