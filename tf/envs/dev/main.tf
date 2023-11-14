@@ -84,19 +84,3 @@ module "email" {
   env                = module.envconfig.env
   email_from_address = var.email_from_address
 }
-
-# DNS for auth0
-# Dev and staging share an Auth0 tenant, which is configured with a custom domain.
-# In order to validate that we own the domain, Auth0 requires us to host a CNAME record
-# that points back to the Auth0 tenant. This CNAME is currently configured in the dev environment (here).
-# For production, the CNAME is configured in Cloudflare.
-data "aws_route53_zone" "auth0" {
-  zone_id = var.auth0_zone_id
-}
-resource "aws_route53_record" "auth" {
-  zone_id = var.auth0_zone_id
-  name    = "auth.${data.aws_route53_zone.auth0.name}"
-  type    = "CNAME"
-  ttl     = "300"
-  records = [var.auth0_domain_cname]
-}

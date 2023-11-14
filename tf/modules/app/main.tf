@@ -312,6 +312,10 @@ data "aws_route53_zone" "main" {
   zone_id = var.dns_zone_id
 }
 
+data "aws_route53_zone" "auth0" {
+  zone_id = var.auth0_zone_id
+}
+
 resource "aws_lb_listener_rule" "api" {
   listener_arn = data.aws_lb_listener.main443.arn
 
@@ -345,6 +349,15 @@ resource "aws_route53_record" "api" {
     zone_id                = data.aws_lb.main.zone_id
     evaluate_target_health = true
   }
+}
+
+# DNS for auth0
+resource "aws_route53_record" "auth" {
+  zone_id = var.auth0_zone_id
+  name    = "auth.${data.aws_route53_zone.auth0.name}"
+  type    = "CNAME"
+  ttl     = "300"
+  records = [var.auth0_domain_cname]
 }
 
 resource "aws_secretsmanager_secret" "auth0_express_config" {
