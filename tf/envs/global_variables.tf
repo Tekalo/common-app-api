@@ -33,6 +33,16 @@ output "cli_image" {
   value       = module.app.cli_image
 }
 
+variable "auth0_zone_id" {
+  description = "Hosted Zone Id for Auth0 CNAME record"
+  type        = string
+}
+
+output "auth0_zone_id" {
+  description = "Hosted Zone Id for Auth0 CNAME record"
+  value       = module.app.auth0_zone_id
+}
+
 variable "auth0_domain_cname" {
   description = "Auth0 subdomain for CNAME record"
   type        = string
