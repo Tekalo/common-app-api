@@ -2,11 +2,13 @@
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  extensions = [citext]
 }
 
 model Session {
@@ -243,4 +245,8 @@ model Upload {
   status                   UploadStatus              @default(REQUESTED)
   ApplicantSubmission      ApplicantSubmission?
   ApplicantDraftSubmission ApplicantDraftSubmission?
+}
+
+model Skill {
+  name                       String                  @unique @db.Citext
 }

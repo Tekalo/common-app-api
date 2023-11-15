@@ -152,7 +152,22 @@ async function seedOpportunitySubmissionBatches() {
   await doUpsert(opportunityBatchUpserts);
 }
 
+async function seedSkills() {
+  const { skills } = seedData;
+  const skillsUpserts: Array<Promise<any>> = skills.map((skill) =>
+    prisma.skill.upsert({
+      update: {},
+      create: {
+        name: skill,
+      },
+      where: { name: skill }, // unique key
+    }),
+  );
+  await doUpsert(skillsUpserts);
+}
+
 async function main() {
+  await seedSkills();
   await seedApplicantSubmissions();
   await seedOpportunitySubmissionBatches();
 }
