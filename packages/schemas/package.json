@@ -8,6 +8,7 @@
   "scripts": {
     "check": "tsc --noEmit",
     "build": "swc src --copy-files --out-dir build",
+    "watch:build": "swc src --watch --source-maps true --copy-files --out-dir build",
     "container-build": "docker compose run -w /api/packages/schemas --rm api pnpm build"
   },
   "keywords": [],
