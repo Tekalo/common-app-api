@@ -23,7 +23,7 @@ on:
 env:
   AWS_REGION: us-east-1
   ECS_CLUSTER: "${{ inputs.env == 'prod' && format('{0}-ext', inputs.env) || format('{0}',inputs.env) }}"
-  VPC_STACK_NAME: "${{ inputs.env == 'prod' && format('{0}-ext-vpc', inputs.env) || format('{0}-vpc',inputs.env) }}"
+  VPC_STACK_NAME: ${{ inputs.env }}-vpc
   ECS_CLI_TASK: capp-${{ inputs.env }}-cli
   ECS_API_TASK: capp-${{ inputs.env }}-api
 
