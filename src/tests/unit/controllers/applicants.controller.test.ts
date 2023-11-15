@@ -707,10 +707,13 @@ describe('Applicant Controller', () => {
   });
 
   describe('Cleanup Test Applicants (Admin functionality)', () => {
-    test('Should return error if any of the applicants fails to be deleted', async () => {
+    test('Should return error if any of the test applicants fail to be deleted', async () => {
       // TODO: Write test
     });
     test('Should delete test applicants and not delete regular applicants', async () => {
+      // TODO: Write test
+    });
+    test('Should resolve gracefully when there are no test values to delete', async () => {
       // TODO: Write test
     });
   });
