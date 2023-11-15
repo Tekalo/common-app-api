@@ -20,7 +20,7 @@ import {
   PrismaApplicantSubmissionWithResume,
   RawApplicantSubmissionBody,
 } from '@App/resources/types/applicants.js';
-import { Applicants } from '@capp/schemas';
+import { Applicants, Shared } from '@capp/schemas';
 import { ZodError, ZodIssueCode } from 'zod';
 import auth0ResponseGenerator from '@App/tests/fixtures/auth0ManagementAPIResponseGenerator.js';
 import { getMockConfig } from '../../util/helpers.js';
@@ -707,14 +707,104 @@ describe('Applicant Controller', () => {
   });
 
   describe('Cleanup Test Applicants (Admin functionality)', () => {
-    test('Should return error if any of the test applicants fail to be deleted', async () => {
-      // TODO: Write test
+    test('Should call deleteApplicantForce for each test applicant it finds', async () => {
+      // Mock deleteApplicantForce
+      const applicantController = new ApplicantController(
+        new DummyAuthService(),
+        ctx.prisma,
+        new DummyEmailService(new DummySESService(), getMockConfig()),
+        new DummyUploadService(
+          ctx.prisma,
+          new DummyS3Service(),
+          getMockConfig(),
+        ),
+      );
+
+      // deleteApplicantForce should succeed every time
+      const deleteForceSpy = jest
+        .spyOn(applicantController, 'deleteApplicantForce')
+        .mockImplementation((applicantId: number) =>
+          Promise.resolve(Shared.IdOnlySchema.parse({ id: applicantId })),
+        );
+
+      // Mock IDs for test applicants
+      mockCtx.prisma.$queryRaw.mockResolvedValueOnce([
+        { id: 1 },
+        { id: 2 },
+        { id: 3 },
+      ]);
+
+      await applicantController.deleteTestApplicants();
+      expect(deleteForceSpy).toHaveBeenCalledTimes(3);
+      deleteForceSpy.mockRestore();
     });
-    test('Should delete test applicants and not delete regular applicants', async () => {
-      // TODO: Write test
-    });
+
     test('Should resolve gracefully when there are no test values to delete', async () => {
-      // TODO: Write test
+      // Mock deleteApplicantForce
+      const applicantController = new ApplicantController(
+        new DummyAuthService(),
+        ctx.prisma,
+        new DummyEmailService(new DummySESService(), getMockConfig()),
+        new DummyUploadService(
+          ctx.prisma,
+          new DummyS3Service(),
+          getMockConfig(),
+        ),
+      );
+
+      // deleteApplicantForce should succeed every time
+      const deleteForceSpy = jest
+        .spyOn(applicantController, 'deleteApplicantForce')
+        .mockImplementation((applicantId: number) =>
+          Promise.resolve(Shared.IdOnlySchema.parse({ id: applicantId })),
+        );
+      // Mock IDs for test applicants
+      mockCtx.prisma.$queryRaw.mockResolvedValueOnce([]);
+
+      await applicantController.deleteTestApplicants();
+      expect(deleteForceSpy).not.toHaveBeenCalled();
+      deleteForceSpy.mockRestore();
+    });
+
+    test('Should return error if any of the test applicants fail to be deleted', async () => {
+      // Mock deleteApplicantForce
+      const applicantController = new ApplicantController(
+        new DummyAuthService(),
+        ctx.prisma,
+        new DummyEmailService(new DummySESService(), getMockConfig()),
+        new DummyUploadService(
+          ctx.prisma,
+          new DummyS3Service(),
+          getMockConfig(),
+        ),
+      );
+
+      // Should succeed the first time and fail subsequent times
+      const deleteForceSpy = jest
+        .spyOn(applicantController, 'deleteApplicantForce')
+        .mockImplementationOnce((applicantId: number) =>
+          Promise.resolve(Shared.IdOnlySchema.parse({ id: applicantId })),
+        )
+        .mockImplementation(() => {
+          throw new CAPPError({
+            detail: 'Mock Delete Applicant Force Error',
+            title: 'Mock Error',
+          });
+        });
+
+      mockCtx.prisma.$queryRaw.mockResolvedValueOnce([
+        { id: 1 },
+        { id: 2 },
+        { id: 3 },
+      ]);
+
+      await expect(
+        applicantController.deleteTestApplicants(),
+      ).rejects.toHaveProperty(
+        'problem.detail',
+        'Mock Delete Applicant Force Error',
+      );
+      deleteForceSpy.mockRestore();
     });
   });
 
