@@ -91,4 +91,5 @@ FROM
   PUBLIC."ApplicantSubmission" appsub
   LEFT JOIN PUBLIC."Applicant" apl ON appsub."applicantId" = apl.id
 WHERE
-  apl.email NOT LIKE 'test-user%@schmidtfutures.com';
+  apl.email NOT LIKE 'test-user%@schmidtfutures.com'
+  AND apl.email NOT LIKE 'success+test-user%@simulator.amazonses.com';

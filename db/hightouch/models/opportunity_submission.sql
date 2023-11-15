@@ -66,4 +66,5 @@ FROM
   "OpportunitySubmission" os
   LEFT JOIN "OpportunityBatch" ob ON os."opportunityBatchId" = ob.id
 WHERE
-  ob."contactEmail" != 'test-user-contact@schmidtfutures.com';
+  ob."contactEmail" != 'test-user-contact@schmidtfutures.com'
+  AND ob."contactEmail" != 'success+test-user-contact@simulator.amazonses.com';
