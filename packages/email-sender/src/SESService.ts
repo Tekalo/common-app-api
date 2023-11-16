@@ -1,3 +1,7 @@
+// the aws sdk is baked into the lambda runtime and including
+// the dependencies in the project will cause errors
+
+// eslint-disable-next-line import/no-extraneous-dependencies
 import {
   SendEmailCommand,
   SendEmailCommandInput,
