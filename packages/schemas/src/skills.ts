@@ -10,11 +10,12 @@ const SkillGetResponseBodySchema = z.object({
 
 const ReferenceSkillsCreateRequestBodySchema = z.object({
   name: z.string(),
+  referenceId: z.string(),
 });
 
 const ReferenceSkillsCreateResponseBodySchema = z.object({
   name: z.string(),
-  referenceId: z.number(),
+  referenceId: z.string(),
 });
 
 export default {

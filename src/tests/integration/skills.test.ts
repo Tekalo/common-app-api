@@ -37,6 +37,7 @@ describe('POST /skills/referenceSet', () => {
       .post('/skills/referenceSet')
       .send({
         name: 'TypeScript',
+        referenceId: 'ET3B93055220D592C8',
       })
       .expect(401);
   });
@@ -50,6 +51,7 @@ describe('POST /skills/referenceSet', () => {
       .post('/skills/referenceSet')
       .send({
         name: 'TypeScript',
+        referenceId: 'ET3B93055220D592C8',
       })
       .set('Authorization', `Bearer ${token}`)
       .expect(401);
@@ -68,6 +70,7 @@ describe('POST /skills/referenceSet', () => {
       .post('/skills/referenceSet')
       .send({
         name: 'TypeScript',
+        referenceId: 'ET3B93055220D592C8',
       })
       .set('Authorization', `Bearer ${token}`)
       .expect(200);
