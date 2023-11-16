@@ -284,23 +284,6 @@ const applicantRoutes = (
   );
 
   router.delete(
-    '/:id',
-    authenticator
-      .validateJwtRole('admin')
-      .bind(authenticator) as RequestHandler,
-    (req: Request, res: Response, next: NextFunction) => {
-      const reqWithAuth = req as RequestWithJWT;
-      const { id } = reqWithAuth.params;
-      applicantController
-        .deleteApplicantForce(Number(id))
-        .then((result) => {
-          res.status(200).json(result);
-        })
-        .catch((err) => next(err));
-    },
-  );
-
-  router.delete(
     '/cleanup',
     authenticator
       .validateJwtRole('admin')
@@ -315,6 +298,23 @@ const applicantRoutes = (
               res.status(200).json(values);
             })
             .catch((err) => next(err));
+        })
+        .catch((err) => next(err));
+    },
+  );
+
+  router.delete(
+    '/:id',
+    authenticator
+      .validateJwtRole('admin')
+      .bind(authenticator) as RequestHandler,
+    (req: Request, res: Response, next: NextFunction) => {
+      const reqWithAuth = req as RequestWithJWT;
+      const { id } = reqWithAuth.params;
+      applicantController
+        .deleteApplicantForce(Number(id))
+        .then((result) => {
+          res.status(200).json(result);
         })
         .catch((err) => next(err));
     },

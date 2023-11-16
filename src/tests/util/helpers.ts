@@ -13,6 +13,8 @@ const itif = (condition: boolean) => (condition ? it : it.skip);
 
 const getRandomString = () => Math.random().toString(36).slice(2);
 
+const getRandomInt = () => Math.floor(Math.random() * 100);
+
 const getMockConfig = (overrides: Partial<BaseConfig> = {}): BaseConfig => ({
   github_sha: 'test123',
   env: '',
@@ -51,4 +53,4 @@ const getMockConfig = (overrides: Partial<BaseConfig> = {}): BaseConfig => ({
   },
 });
 
-export { getMockConfig, getRandomString, itif };
+export { getMockConfig, getRandomString, getRandomInt, itif };

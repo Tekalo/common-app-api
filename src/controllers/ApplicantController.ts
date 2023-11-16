@@ -388,7 +388,7 @@ class ApplicantController {
   async deleteTestApplicants(): Promise<Promise<IdOnly>[]> {
     const applicantsToDelete = await this.prisma.$queryRaw<
       IdOnly[]
-    >`SELECT id FROM "Applicants" WHERE email LIKE 'test-user%@schmidtfutures.com' OR email LIKE 'success+test-user%@simulator.amazonses.com'`;
+    >`SELECT id FROM "Applicant" WHERE email LIKE 'test-user%@schmidtfutures.com' OR email LIKE 'success+test-user%@simulator.amazonses.com'`;
     return applicantsToDelete.map((x) => this.deleteApplicantForce(x.id));
   }
 
