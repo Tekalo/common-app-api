@@ -251,7 +251,7 @@ model Skill {
   name                       String                  @unique @db.Citext
 }
 
-model RefeneceSkills {
+model ReferenceSkills {
   referenceId              String                    @id
   name                     String
 }

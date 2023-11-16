@@ -3,7 +3,7 @@ import {
   ReferenceSkillsCreateResponseBody,
   SkillGetResponseBody,
 } from '@App/resources/types/skills.js';
-import { PrismaClient, RefeneceSkills } from '@prisma/client';
+import { PrismaClient, ReferenceSkills } from '@prisma/client';
 import { Skills } from '@capp/schemas';
 
 class SkillController {
@@ -24,8 +24,8 @@ class SkillController {
     data: ReferenceSkillsCreateRequestBody,
   ): Promise<ReferenceSkillsCreateResponseBody> {
     const { name, referenceId } = data;
-    const returnReferenceSkill: RefeneceSkills =
-      await this.prisma.refeneceSkills.create({
+    const returnReferenceSkill: ReferenceSkills =
+      await this.prisma.referenceSkills.create({
         data: { name, referenceId },
       });
     return Skills.ReferenceSkillsCreateResponseBodySchema.parse({
