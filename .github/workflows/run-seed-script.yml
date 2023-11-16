@@ -20,7 +20,7 @@ env:
   ECS_CLI_TASK: capp-${{ inputs.env }}-cli
   ECS_API_TASK: capp-${{ inputs.env }}-api
   ECS_CLUSTER: ${{ inputs.env }}
-  VPC_STACK_NAME: "${{ inputs.env == 'prod' && format('{0}-ext-vpc', inputs.env) || format('{0}-vpc',inputs.env) }}"
+  VPC_STACK_NAME: ${{ inputs.env }}-vpc
 
 permissions:
   id-token: write

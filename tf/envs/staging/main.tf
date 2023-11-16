@@ -49,6 +49,7 @@ module "app" {
   cert_arn             = module.envconfig.cert_arn
   image                = var.image
   cli_image            = var.cli_image
+  auth0_zone_id        = var.auth0_zone_id
   auth0_domain_cname   = var.auth0_domain_cname
   sentry_dsn           = var.sentry_dsn
   load_test            = var.load_test
@@ -60,8 +61,8 @@ module "app" {
   rotation_vpc_security_group_id = module.envconfig.database_ingress_security_group_id
   rotation_vpc_subnet_ids        = module.envconfig.private_subnet_ids
 
-  task_security_group  = module.envconfig.database_ingress_security_group_id
-  task_subnet_ids      = module.envconfig.private_subnet_ids
+  task_security_group = module.envconfig.database_ingress_security_group_id
+  task_subnet_ids     = module.envconfig.private_subnet_ids
 
   uploads_cors_allowed_origins = var.uploads_cors_allowed_origins
 
@@ -113,3 +114,8 @@ module "autoscaling" {
     }
   }
 }
+
+# Dev and staging share an Auth0 tenant, which is configured with a custom domain
+# In order to validate that we own the domain, Auth0 requires us to host a CNAME record
+# that points back to the Auth0 tenant. This CNAME is currently configured in the dev environment.
+# For production, the CNAME is configured in Cloudflare.
