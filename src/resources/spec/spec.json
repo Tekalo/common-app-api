@@ -303,6 +303,7 @@
                   "type": "object",
                   "properties": {
                     "submission": {
+                      "nullable": true,
                       "anyOf": [
                         {
                           "type": "object",
@@ -729,9 +730,6 @@
                             "referenceAttribution",
                             "referenceAttributionOther"
                           ]
-                        },
-                        {
-                          "nullable": true
                         }
                       ]
                     },

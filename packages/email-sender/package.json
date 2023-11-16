@@ -9,7 +9,7 @@
     "build": "swc src --copy-files --out-dir build",
     "check": "tsc --noEmit",
     "container-build": "docker compose run -w /api/packages/email-sender --rm api pnpm build",
-    "copy": "cp -r node_modules build/",
+    "copy": "cp -r node_modules package.json build/",
     "package": "pnpm run container-build && pnpm run copy && pnpm run zip && pnpm run tf-dev",
     "tf-dev": "cp email-sender.zip ../../tf/envs/dev/.",
     "zip": "cd build && zip -r ../email-sender.zip ."
@@ -24,6 +24,7 @@
     "typescript": "5.2.2"
   },
   "dependencies": {
-    "@aws-sdk/client-ses": "3.445.0"
+    "@aws-sdk/client-ses": "3.445.0",
+    "@tsconfig/node18": "^18.2.2"
   }
 }
