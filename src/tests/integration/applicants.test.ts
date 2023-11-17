@@ -13,11 +13,7 @@ import {
   RawApplicantSubmissionBody,
 } from '@App/resources/types/applicants.js';
 import getDummyApp from '@App/tests/fixtures/appGenerator.js';
-import {
-  itif,
-  getRandomString,
-  getRandomInt,
-} from '@App/tests/util/helpers.js';
+import { itif, getRandomString } from '@App/tests/util/helpers.js';
 import { prisma } from '@App/resources/client.js';
 import AuthService from '@App/services/AuthService.js';
 import configLoader from '@App/services/configLoader.js';
@@ -1425,7 +1421,6 @@ describe('DELETE /applicants/cleanup', () => {
 
   it('should delete test email accounts and leave normal accounts alone', async () => {
     const randomString = getRandomString();
-    const randomInt = getRandomInt();
 
     // Generate admin token
     const partialTokenOptions: TokenOptions = {
@@ -1437,18 +1432,18 @@ describe('DELETE /applicants/cleanup', () => {
     );
 
     // Seed database
-    const testId = randomInt;
-    const nontestId = randomInt + 1;
-    await seedApplicantWithIDs(
-      `success+test-user-${randomString}@simulator.amazonses.com`,
-      `auth0|test${randomString}`,
-      testId,
-    );
-    await seedApplicantWithIDs(
-      `real-bob-${randomString}@gmail.com`,
-      `auth0|nontest${randomString}`,
-      nontestId,
-    );
+    const testId = (
+      await seedApplicantWithIDs(
+        `success+test-user-${randomString}@simulator.amazonses.com`,
+        `auth0|test${randomString}`,
+      )
+    ).id;
+    const nontestId = (
+      await seedApplicantWithIDs(
+        `real-bob-${randomString}@gmail.com`,
+        `auth0|nontest${randomString}`,
+      )
+    ).id;
 
     const prismaSpy = jest.spyOn(prisma.applicant, 'delete');
 

@@ -63,11 +63,9 @@ const seedResumeUpload = async (applicantId: number): Promise<Upload> =>
 const seedApplicantWithIDs = async (
   email: string,
   auth0Id: string,
-  applicantId?: number,
 ): Promise<ApplicantResponseBody> => {
   const applicant = await prisma.applicant.create({
     data: {
-      id: applicantId,
       name: 'Bob Boberson',
       auth0Id,
       pronoun: 'he/his',
