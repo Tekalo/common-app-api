@@ -45,6 +45,7 @@ afterEach(async () => {
   await prisma.applicantSubmission.deleteMany();
   await prisma.applicant.deleteMany();
   await prisma.applicantDeletionRequests.deleteMany();
+  await prisma.userSkills.deleteMany();
   jest.restoreAllMocks();
 });
 
@@ -536,6 +537,41 @@ describe('POST /applicants/me/submissions', () => {
         include: { utmParams: true },
       });
       expect(submission?.utmParams).toHaveProperty('params', utmParams);
+    });
+
+    it('should save skills when final submission includes new skills that dont exist yet in DB', async () => {
+      const randomString = getRandomString();
+      const token = await authHelper.getToken(
+        `bboberson${randomString}@gmail.com`,
+      );
+
+      const applicant = await seedApplicant(randomString);
+      const { id: resumeId } = await seedResumeUpload(applicant.id);
+      const testSubmission = getAPIRequestBody(resumeId);
+      testSubmission.skills = ['New    skill   #1', 'New    skill  #2']; // TODO: Once we have reference skills table, change this to have one reference skill in the payload
+      const { body: submissionBody }: { body: ApplicantGetSubmissionResponse } =
+        await request(dummyApp)
+          .post('/applicants/me/submissions')
+          .send({ ...testSubmission })
+          .set('Authorization', `Bearer ${token}`)
+          .expect(200);
+      const submission = await prisma.applicantSubmission.findUnique({
+        where: { id: submissionBody?.submission?.id },
+        include: { utmParams: true },
+      });
+      const skills = await prisma.userSkills.findMany({
+        where: { OR: [{ name: 'New skill #1' }, { name: 'New skill #2' }] },
+      });
+      expect(skills).toEqual(
+        expect.arrayContaining([
+          { name: 'New skill #1' },
+          { name: 'New skill #2' },
+        ]),
+      );
+      expect(submission?.skills).toEqual(
+        expect.arrayContaining(['New skill #1', 'New skill #2']),
+      );
+      // expect(submission?.skills).toHaveProperty('skills', ['new skill #1', 'new skill #2']);
     });
 
     it('should save a complete draft submission, fetch draft, and use response as final submission body', async () => {

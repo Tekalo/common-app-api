@@ -250,3 +250,7 @@ model Upload {
 model Skill {
   name                       String                  @unique @db.Citext
 }
+
+model UserSkills {
+  name                       String                  @unique @db.Citext
+}

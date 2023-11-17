@@ -18,7 +18,7 @@ const getAPIRequestBody = (
   lastRole: 'senior software engineer',
   lastOrg: 'mozilla',
   yoe: '>11',
-  skills: ['react', 'python'], // enum
+  skills: ['react', 'python'], // TODO: Make this custom + reference skills
   otherSkills: ['juggling', 'curling'],
   linkedInUrl: 'https://www.linkedin.com/in/bob-bobberson',
   githubUrl: 'https://github.com/bboberson',
