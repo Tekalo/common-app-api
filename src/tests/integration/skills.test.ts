@@ -58,7 +58,7 @@ describe('POST /skills/referenceSet', () => {
       .expect(401);
   });
 
-  it('should return 200 code for request with JWT and admin role', async () => {
+  it('should successfully insert then update skills with 200 code for request with JWT and admin role', async () => {
     const randomString = getRandomString();
     const partialTokenOptions: TokenOptions = {
       roles: ['admin'],

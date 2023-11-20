@@ -34,7 +34,7 @@ const referenceSkillsDummy = [
 
 const referenceSkillsDummyDuplicateId = [
   {
-    name: 'MongoDB',
+    name: 'TypeScript (TS)',
     referenceId: 'ET3B93055220D592C8',
   },
 ];
