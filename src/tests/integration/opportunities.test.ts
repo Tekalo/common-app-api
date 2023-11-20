@@ -11,7 +11,6 @@ import { getRandomString } from '../util/helpers.js';
 import authHelper, { TokenOptions } from '../util/auth.js';
 
 const dummyApp = getDummyApp();
-// const { oppBatchPayload } = opportunitySubmissionGenerator;
 
 afterEach(async () => {
   await prisma.opportunitySubmission.deleteMany();
