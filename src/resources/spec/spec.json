@@ -303,6 +303,7 @@
                   "type": "object",
                   "properties": {
                     "submission": {
+                      "nullable": true,
                       "anyOf": [
                         {
                           "type": "object",
@@ -729,9 +730,6 @@
                             "referenceAttribution",
                             "referenceAttributionOther"
                           ]
-                        },
-                        {
-                          "nullable": true
                         }
                       ]
                     },
@@ -796,22 +794,7 @@
                     "type": "array",
                     "items": {
                       "type": "string",
-                      "enum": [
-                        "react",
-                        "javascript",
-                        "python",
-                        "java",
-                        "sql",
-                        "privacy",
-                        "security",
-                        "devops",
-                        "figma",
-                        "sketch",
-                        "prototyping",
-                        "user research",
-                        "product development",
-                        "project management"
-                      ]
+                      "maxLength": 255
                     }
                   },
                   "otherSkills": {
@@ -1310,22 +1293,7 @@
                     "type": "array",
                     "items": {
                       "type": "string",
-                      "enum": [
-                        "react",
-                        "javascript",
-                        "python",
-                        "java",
-                        "sql",
-                        "privacy",
-                        "security",
-                        "devops",
-                        "figma",
-                        "sketch",
-                        "prototyping",
-                        "user research",
-                        "product development",
-                        "project management"
-                      ]
+                      "maxLength": 255
                     }
                   },
                   "otherSkills": {
@@ -1833,22 +1801,7 @@
                     "nullable": true,
                     "items": {
                       "type": "string",
-                      "enum": [
-                        "react",
-                        "javascript",
-                        "python",
-                        "java",
-                        "sql",
-                        "privacy",
-                        "security",
-                        "devops",
-                        "figma",
-                        "sketch",
-                        "prototyping",
-                        "user research",
-                        "product development",
-                        "project management"
-                      ]
+                      "maxLength": 255
                     }
                   },
                   "otherSkills": {
