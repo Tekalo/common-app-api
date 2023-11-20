@@ -14,10 +14,7 @@ const skillsRoutes = (config: BaseConfig) => {
     skillController
       .getSkills()
       .then((result) => {
-        res
-          .status(200)
-          .set('Cache-Control', 'public, max-age=3600')
-          .json(result);
+        res.status(200).set('Cache-Control', 'max-age=3600').json(result);
       })
       .catch((err) => next(err));
   });

@@ -20,7 +20,7 @@ describe('GET /skills', () => {
     const { body, headers } = await request(dummyApp)
       .get('/skills')
       .expect(200);
-    expect(headers).toHaveProperty('cache-control', 'public, max-age=3600');
+    expect(headers).toHaveProperty('cache-control', 'max-age=3600');
     expect(body).toEqual({
       data: expect.arrayContaining([
         { name: 'Python' },
