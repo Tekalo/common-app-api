@@ -284,26 +284,6 @@ const applicantRoutes = (
   );
 
   router.delete(
-    '/cleanup',
-    authenticator
-      .validateJwtRole('admin')
-      .bind(authenticator) as RequestHandler,
-    (req: Request, res: Response, next: NextFunction) => {
-      applicantController
-        .deleteTestApplicants()
-        .then((result) => {
-          // Resolve the inner promises
-          Promise.all(result)
-            .then((values) => {
-              res.status(200).json(values);
-            })
-            .catch((err) => next(err));
-        })
-        .catch((err) => next(err));
-    },
-  );
-
-  router.delete(
     '/:id',
     authenticator
       .validateJwtRole('admin')
