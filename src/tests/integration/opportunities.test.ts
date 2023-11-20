@@ -2,13 +2,16 @@ import request from 'supertest';
 import { prisma } from '@App/resources/client.js';
 import { OpportunityBatchResponseBody } from '@App/resources/types/opportunities.js';
 import { OpportunityBatch } from '@prisma/client';
-import opportunitySubmissionGenerator from '../fixtures/OpportunitySubmissionGenerator.js';
+import {
+  oppBatchPayload,
+  seedOpportunityBatch,
+} from '../fixtures/OpportunitySubmissionGenerator.js';
 import getDummyApp from '../fixtures/appGenerator.js';
 import { getRandomString } from '../util/helpers.js';
 import authHelper, { TokenOptions } from '../util/auth.js';
 
 const dummyApp = getDummyApp();
-const { oppBatchPayload } = opportunitySubmissionGenerator;
+// const { oppBatchPayload } = opportunitySubmissionGenerator;
 
 afterEach(async () => {
   await prisma.opportunitySubmission.deleteMany();
@@ -174,5 +177,70 @@ describe('POST /opportunities', () => {
       .send([missingOrgType])
       .expect(400);
     expect(body).toHaveProperty('title', 'Validation Error');
+  });
+});
+
+describe('DELETE /cleanup/testopportunities', () => {
+  it('should return a 401 status code and NOT allow a user without an admin JWT to call this endpoint', async () => {
+    const badToken = await authHelper.getToken(
+      `notAnAdmin${getRandomString()}@gmail.com`,
+      { roles: ['notAnAdmin'] },
+    );
+    await request(dummyApp)
+      .delete('/cleanup/testopportunities')
+      .set('Authorization', `Bearer ${badToken}`)
+      .expect(401);
+  });
+
+  it('should return a 200 status code and allow a user with an admin JWT to call this endpoint', async () => {
+    const randomString = getRandomString();
+    const partialTokenOptions: TokenOptions = {
+      roles: ['admin'],
+    };
+    const token = await authHelper.getToken(
+      `admin-bob-${randomString}@gmail.com`,
+      partialTokenOptions,
+    );
+
+    await request(dummyApp)
+      .delete('/cleanup/testopportunities')
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200);
+  });
+
+  it('should delete test email opportunity batches and leave normal opportunity batches alone', async () => {
+    const randomString = getRandomString();
+
+    // Generate admin token
+    const partialTokenOptions: TokenOptions = {
+      roles: ['admin'],
+    };
+    const token = await authHelper.getToken(
+      `admin-bob-${randomString}@gmail.com`,
+      partialTokenOptions,
+    );
+
+    // Seed database
+    const testId = (
+      await seedOpportunityBatch(
+        'success+test-user-contact@simulator.amazonses.com',
+      )
+    ).id;
+    const nontestId = (
+      await seedOpportunityBatch(`real-bob-${randomString}@gmail.com`)
+    ).id;
+
+    // Run request and check success
+    const { body } = await request(dummyApp)
+      .delete('/cleanup/testopportunities')
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200);
+    expect(body).toEqual({ count: 1 });
+
+    // Check that we left the right data
+    const opps = await prisma.opportunityBatch.findMany();
+    expect(opps).toHaveLength(1);
+    expect(opps[0].id).not.toEqual(testId);
+    expect(opps[0].id).toEqual(nontestId);
   });
 });
