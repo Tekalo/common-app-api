@@ -8,14 +8,17 @@ const SkillGetResponseBodySchema = z.object({
   data: z.array(SkillGetResponseUnitSchema),
 });
 
-const ReferenceSkillsCreateRequestBodySchema = z.object({
+const ReferenceSkillsCreateRequestUnitSchema = z.object({
   name: z.string(),
   referenceId: z.string(),
 });
 
+const ReferenceSkillsCreateRequestBodySchema = z.array(
+  ReferenceSkillsCreateRequestUnitSchema,
+);
+
 const ReferenceSkillsCreateResponseBodySchema = z.object({
-  name: z.string(),
-  referenceId: z.string(),
+  successCounts: z.number(),
 });
 
 export default {

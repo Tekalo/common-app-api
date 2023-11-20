@@ -34,9 +34,11 @@ const skillsRoutes = (config: BaseConfig) => {
       .validateJwtRole('admin')
       .bind(authenticator) as RequestHandler,
     (req: Request, res: Response, next) => {
-      const referenceSkillBody = req.body as ReferenceSkillsCreateRequestBody;
+      const referenceSkillsBody = req.body as ReferenceSkillsCreateRequestBody;
       const validatedBody =
-        Skills.ReferenceSkillsCreateRequestBodySchema.parse(referenceSkillBody);
+        Skills.ReferenceSkillsCreateRequestBodySchema.parse(
+          referenceSkillsBody,
+        );
       skillController
         .createReferenceSkills(validatedBody)
         .then((result) => {

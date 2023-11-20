@@ -1,3 +1,4 @@
+import { ReferenceSkillsCreateResponseBody } from '@App/resources/types/skills.js';
 import request from 'supertest';
 import getDummyApp from '@App/tests/fixtures/appGenerator.js';
 import {
@@ -6,6 +7,25 @@ import {
 } from '../fixtures/skillGenerator.js';
 import { getRandomString } from '../util/helpers.js';
 import authHelper, { TokenOptions } from '../util/auth.js';
+
+const referenceSkillsDummy = [
+  {
+    name: 'TypeScript',
+    referenceId: 'ET3B93055220D592C8',
+  },
+  {
+    name: 'JavaScript',
+    referenceId: 'ET3B93055220D592C9',
+  },
+  {
+    name: 'Python',
+    referenceId: 'ET3B93055220D592C10',
+  },
+  {
+    name: 'MongoDB',
+    referenceId: 'ET3B93055220D592C8', // duplicate Id
+  },
+];
 
 beforeAll(async () => {
   await seedSkillsUpload();
@@ -35,10 +55,7 @@ describe('POST /skills/referenceSet', () => {
   it('should return 401 code for request without JWT', async () => {
     await request(dummyApp)
       .post('/skills/referenceSet')
-      .send({
-        name: 'TypeScript',
-        referenceId: 'ET3B93055220D592C8',
-      })
+      .send(referenceSkillsDummy)
       .expect(401);
   });
 
@@ -49,10 +66,7 @@ describe('POST /skills/referenceSet', () => {
     );
     await request(dummyApp)
       .post('/skills/referenceSet')
-      .send({
-        name: 'TypeScript',
-        referenceId: 'ET3B93055220D592C8',
-      })
+      .send(referenceSkillsDummy)
       .set('Authorization', `Bearer ${token}`)
       .expect(401);
   });
@@ -66,16 +80,15 @@ describe('POST /skills/referenceSet', () => {
       `bboberson${randomString}@gmail.com`,
       partialTokenOptions,
     );
-    const { body } = await request(dummyApp)
+    const { body }: { body: ReferenceSkillsCreateResponseBody } = await request(
+      dummyApp,
+    )
       .post('/skills/referenceSet')
-      .send({
-        name: 'TypeScript',
-        referenceId: 'ET3B93055220D592C8',
-      })
+      .send(referenceSkillsDummy)
       .set('Authorization', `Bearer ${token}`)
       .expect(200);
 
-    expect(body).toHaveProperty('referenceId');
-    expect(body).toHaveProperty('name');
+    expect(body).toHaveProperty('successCounts');
+    expect(body.successCounts).toBe(3);
   });
 });
