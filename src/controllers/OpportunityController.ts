@@ -106,6 +106,16 @@ class OpportunityController {
     });
     return { id: opportunityBatchId };
   }
+
+  // Deletes opportunity batches with known test contact email
+  // Meant to be used by admins manualy
+  async deleteTestOpportunities() {
+    const testEmail = 'test-user-contact@schmidtfutures.com';
+    // Delete opportunity batches with test email
+    return this.prisma.opportunityBatch.deleteMany({
+      where: { contactEmail: testEmail },
+    });
+  }
 }
 
 export default OpportunityController;
