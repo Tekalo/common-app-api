@@ -23,7 +23,10 @@ const dummyApp = getDummyApp();
 
 describe('GET /skills', () => {
   it('should return all skill names in Skills table with no JWT required', async () => {
-    const { body } = await request(dummyApp).get('/skills').expect(200);
+    const { body, headers } = await request(dummyApp)
+      .get('/skills')
+      .expect(200);
+    expect(headers).toHaveProperty('cache-control', 'public, max-age=3600');
     expect(body).toEqual({
       data: expect.arrayContaining([
         { name: 'Python' },
