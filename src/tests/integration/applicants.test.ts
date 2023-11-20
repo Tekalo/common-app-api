@@ -26,6 +26,7 @@ import { ApiResponse } from 'node_modules/auth0/dist/esm/lib/models.js';
 import {
   getAPIRequestBody,
   seedApplicant,
+  seedApplicantWithIDs,
   seedResumeUpload,
 } from '../fixtures/applicantSubmissionGenerator.js';
 import DummyAuthService from '../fixtures/DummyAuthService.js';
@@ -1863,5 +1864,85 @@ describe('GET /applicants/:id/resume', () => {
       .get('/applicants/123456/resume')
       .set('Authorization', `Bearer ${bobToken}`)
       .expect(404);
+  });
+});
+
+describe('DELETE /cleanup/testusers', () => {
+  it('should return a 401 status code and NOT allow a user without an admin JWT to call this endpoint', async () => {
+    const badToken = await authHelper.getToken(
+      `notAnAdmin${getRandomString()}@gmail.com`,
+      { roles: ['notAnAdmin'] },
+    );
+    await request(dummyApp)
+      .delete('/cleanup/testusers')
+      .set('Authorization', `Bearer ${badToken}`)
+      .expect(401);
+  });
+
+  it('should return a 200 status code and allow a user with an admin JWT to call this endpoint', async () => {
+    const randomString = getRandomString();
+    const partialTokenOptions: TokenOptions = {
+      roles: ['admin'],
+    };
+    const token = await authHelper.getToken(
+      `admin-bob-${randomString}@gmail.com`,
+      partialTokenOptions,
+    );
+
+    await request(dummyApp)
+      .delete('/cleanup/testusers')
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200);
+  });
+
+  it('should delete test email accounts and leave normal accounts alone', async () => {
+    const randomString = getRandomString();
+
+    // Generate admin token
+    const partialTokenOptions: TokenOptions = {
+      roles: ['admin'],
+    };
+    const token = await authHelper.getToken(
+      `admin-bob-${randomString}@gmail.com`,
+      partialTokenOptions,
+    );
+
+    // Seed database
+    const testId = (
+      await seedApplicantWithIDs(
+        `success+test-user-${randomString}@simulator.amazonses.com`,
+        `auth0|test${randomString}`,
+      )
+    ).id;
+    const nontestId = (
+      await seedApplicantWithIDs(
+        `real-bob-${randomString}@gmail.com`,
+        `auth0|nontest${randomString}`,
+      )
+    ).id;
+
+    const prismaSpy = jest.spyOn(prisma.applicant, 'delete');
+
+    // Run request and check success
+    const { body } = await request(dummyApp)
+      .delete('/cleanup/testusers')
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200);
+    expect(body).toEqual([{ id: testId }]);
+
+    // Check that delete was called on the right values
+    expect(prismaSpy).toHaveBeenCalledWith({
+      where: {
+        id: testId,
+      },
+    });
+
+    expect(prismaSpy).not.toHaveBeenCalledWith({
+      where: {
+        id: nontestId,
+      },
+    });
+
+    prismaSpy.mockRestore();
   });
 });
