@@ -18,7 +18,7 @@ const ReferenceSkillsCreateRequestBodySchema = z.array(
 );
 
 const ReferenceSkillsCreateResponseBodySchema = z.object({
-  successCounts: z.number(),
+  successCount: z.number(),
 });
 
 export default {

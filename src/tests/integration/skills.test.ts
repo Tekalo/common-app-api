@@ -1,31 +1,15 @@
+import { prisma } from '@App/resources/client.js';
 import { ReferenceSkillsCreateResponseBody } from '@App/resources/types/skills.js';
 import request from 'supertest';
 import getDummyApp from '@App/tests/fixtures/appGenerator.js';
 import {
   seedSkillsUpload,
   seedSkillsDelete,
+  referenceSkillsDummy,
+  referenceSkillsDummyDuplicateId,
 } from '../fixtures/skillGenerator.js';
 import { getRandomString } from '../util/helpers.js';
 import authHelper, { TokenOptions } from '../util/auth.js';
-
-const referenceSkillsDummy = [
-  {
-    name: 'TypeScript',
-    referenceId: 'ET3B93055220D592C8',
-  },
-  {
-    name: 'JavaScript',
-    referenceId: 'ET3B93055220D592C9',
-  },
-  {
-    name: 'Python',
-    referenceId: 'ET3B93055220D592C10',
-  },
-  {
-    name: 'MongoDB',
-    referenceId: 'ET3B93055220D592C8', // duplicate Id
-  },
-];
 
 beforeAll(async () => {
   await seedSkillsUpload();
@@ -80,15 +64,30 @@ describe('POST /skills/referenceSet', () => {
       `bboberson${randomString}@gmail.com`,
       partialTokenOptions,
     );
-    const { body }: { body: ReferenceSkillsCreateResponseBody } = await request(
-      dummyApp,
-    )
-      .post('/skills/referenceSet')
-      .send(referenceSkillsDummy)
-      .set('Authorization', `Bearer ${token}`)
-      .expect(200);
+    // upsert tuples to db
+    const { body: body1 }: { body: ReferenceSkillsCreateResponseBody } =
+      await request(dummyApp)
+        .post('/skills/referenceSet')
+        .send(referenceSkillsDummy)
+        .set('Authorization', `Bearer ${token}`)
+        .expect(200);
+    expect(body1).toHaveProperty('successCount');
+    expect(body1.successCount).toBe(3);
 
-    expect(body).toHaveProperty('successCounts');
-    expect(body.successCounts).toBe(3);
+    // upsert tuple with duplicate id
+    const { body: body2 }: { body: ReferenceSkillsCreateResponseBody } =
+      await request(dummyApp)
+        .post('/skills/referenceSet')
+        .send(referenceSkillsDummyDuplicateId)
+        .set('Authorization', `Bearer ${token}`)
+        .expect(200);
+    expect(body2).toHaveProperty('successCount');
+    expect(body2.successCount).toBe(1);
+    const foundElement = await prisma.referenceSkills.findUnique({
+      where: {
+        referenceId: referenceSkillsDummyDuplicateId[0].referenceId,
+      },
+    });
+    expect(foundElement?.name).toBe(referenceSkillsDummyDuplicateId[0].name);
   });
 });
