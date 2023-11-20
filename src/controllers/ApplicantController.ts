@@ -379,8 +379,8 @@ class ApplicantController {
     // Delete from applicant table
     await this.prisma.applicant.delete({ where: { id: applicantId } });
     const { email, auth0Id } = applicantToDelete;
-    await this.auth0Service.deleteUsers(email, auth0Id);
     await this.uploadService.deleteApplicantResumes(applicantId);
+    await this.auth0Service.deleteUsers(email, auth0Id);
     return Shared.IdOnlySchema.parse({ id: applicantId });
   }
 

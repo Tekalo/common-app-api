@@ -1869,7 +1869,14 @@ describe('GET /applicants/:id/resume', () => {
 
 describe('DELETE /cleanup/testusers', () => {
   it('should return a 401 status code and NOT allow a user without an admin JWT to call this endpoint', async () => {
-    await request(dummyApp).delete('/cleanup/testusers').expect(401);
+    const badToken = await authHelper.getToken(
+      `notAnAdmin${getRandomString()}@gmail.com`,
+      { roles: ['notAnAdmin'] },
+    );
+    await request(dummyApp)
+      .delete('/cleanup/testusers')
+      .set('Authorization', `Bearer ${badToken}`)
+      .expect(401);
   });
 
   it('should return a 200 status code and allow a user with an admin JWT to call this endpoint', async () => {
@@ -1921,7 +1928,7 @@ describe('DELETE /cleanup/testusers', () => {
       .delete('/cleanup/testusers')
       .set('Authorization', `Bearer ${token}`)
       .expect(200);
-    expect(body).toEqual([{ id: expect.any(Number) }]);
+    expect(body).toEqual([{ id: testId }]);
 
     // Check that delete was called on the right values
     expect(prismaSpy).toHaveBeenCalledWith({
