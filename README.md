@@ -40,7 +40,7 @@ AWS_SESSION_TOKEN={AWS Session Token}
 SENTRY_DSN="https://c38ab9f98fd0404f9d2bfb95d015da8d@o4504962952724480.ingest.sentry.io/4504963428777984"
 UPLOAD_BUCKET="capp-dev-api-uploads"
 
-# Create an account on https://lightcast.io/, and use the provided client ID and secret sent to your email.
+# Necessary to execute `pnpm sync-skills`. Create an account on https://lightcast.io/, and use the provided client ID and secret sent to your email.
 LIGHTCAST_CLIENT_ID=""
 LIGHTCAST_CLIENT_SECRET=""
 ```
