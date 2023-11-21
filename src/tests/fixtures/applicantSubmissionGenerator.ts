@@ -60,16 +60,17 @@ const seedResumeUpload = async (applicantId: number): Promise<Upload> =>
     },
   });
 
-const seedApplicant = async (
-  emailSuffix?: string,
+const seedApplicantWithIDs = async (
+  email: string,
+  auth0Id: string,
 ): Promise<ApplicantResponseBody> => {
   const applicant = await prisma.applicant.create({
     data: {
       name: 'Bob Boberson',
-      auth0Id: 'auth0|123456',
+      auth0Id,
       pronoun: 'he/his',
       phone: '123-456-7899',
-      email: `bboberson${emailSuffix}@gmail.com`,
+      email,
       preferredContact: 'email',
       searchStatus: 'active',
       acceptedTerms: new Date(Date.now()),
@@ -83,4 +84,14 @@ const seedApplicant = async (
   };
 };
 
-export { getAPIRequestBody, seedResumeUpload, seedApplicant };
+const seedApplicant = async (
+  emailSuffix?: string,
+): Promise<ApplicantResponseBody> =>
+  seedApplicantWithIDs(`bboberson${emailSuffix}@gmail.com`, 'auth0|123456');
+
+export {
+  getAPIRequestBody,
+  seedResumeUpload,
+  seedApplicant,
+  seedApplicantWithIDs,
+};

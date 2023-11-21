@@ -4,6 +4,7 @@ import {
   healthRoutes,
   opportunitiesRoutes,
   skillsRoutes,
+  cleanupRoutes,
 } from '@App/routes/index.js';
 import logger from '@App/services/logger.js';
 import { PrismaSessionStore } from '@quixo3/prisma-session-store';
@@ -93,6 +94,10 @@ const getApp = (
   );
   app.use('/opportunities', opportunitiesRoutes(emailService, config));
   app.use('/skills', skillsRoutes(config));
+  app.use(
+    '/cleanup',
+    cleanupRoutes(authService, emailService, uploadService, config),
+  );
 
   /**
    * Swagger UI documentation endpoint
