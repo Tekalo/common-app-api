@@ -23,10 +23,9 @@ type LightcastTokenResponse = {
 
 type LightcastSkill = {
   id: string;
-  infoUrl: string;
   name: string;
-  type: {
-    id: string;
+  category: {
+    id: number;
     name: string;
   };
 };
@@ -64,10 +63,16 @@ const getLightcastSkills = async () => {
   }
   const tokenResponseJson =
     (await tokenResponse.json()) as LightcastTokenResponse;
-  // Returns all Specialized Skills (S1) excluding Common Skills (S2)
-  const queryParams = 'typeIds=ST1';
+  /**
+   * Filters for only Specialized Skills (S1) described as:
+   * Skills that are primarily required within a subset of occupations or equip one to perform a specific task.
+   * Also known as technical skills or hard skills excluding Common Skills (S2)
+   */
+  //
+  const queryParams = 'typeIds=ST1&fields=id,name,category';
+  const apiVersion = 9.4;
   const getSkillsResponse = await fetch(
-    `https://emsiservices.com/skills/versions/latest/skills?${queryParams}`,
+    `https://emsiservices.com/skills/versions/${apiVersion}/skills?${queryParams}`,
     {
       headers: new Headers({
         Authorization: `Bearer ${tokenResponseJson.access_token}`,
@@ -76,12 +81,18 @@ const getLightcastSkills = async () => {
   );
   const getSkillsResponseJson =
     (await getSkillsResponse.json()) as LightcastSkillsResponse;
-  return getSkillsResponseJson.data;
+  // As of version 9.3 in Lightcast API, "Information Technology" category ID is 17
+  const ITSkills = getSkillsResponseJson.data.filter(
+    (skill) => skill.category.id === 17,
+  );
+  return ITSkills;
 };
 
 const insertSkillsIntoDatabase = async (skills: Array<LightcastSkill>) => {
+  // eslint-disable-next-line no-console
+  console.log(`Inserting ${skills.length} skills`);
   const skillsController = new SkillController(prisma);
-  const promises = [];
+  const insertReferenceSkillPromises = [];
   for (let i = 0; i < skills.length; i += chunkSize) {
     const chunk = skills.slice(i, i + chunkSize);
     const skillsPayload = chunk.map((skill) => ({
@@ -90,9 +101,9 @@ const insertSkillsIntoDatabase = async (skills: Array<LightcastSkill>) => {
     }));
     const createReferenceSkillPromise =
       skillsController.createReferenceSkills(skillsPayload);
-    promises.push(createReferenceSkillPromise);
+    insertReferenceSkillPromises.push(createReferenceSkillPromise);
   }
-  await Promise.all(promises);
+  await Promise.all(insertReferenceSkillPromises);
 };
 
 const syncLightcastSkills = async () => {
