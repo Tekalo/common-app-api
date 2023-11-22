@@ -2,9 +2,6 @@ import { PrismaClient } from '@prisma/client';
 import CAPPError from '../src/resources/shared/CAPPError.js';
 import SkillController from '../src/controllers/SkillController.js';
 
-// Number of skills to insert into DB at once
-const chunkSize = 500;
-
 const prisma = new PrismaClient({
   log: [
     {
@@ -81,7 +78,7 @@ const getLightcastSkills = async () => {
   );
   const getSkillsResponseJson =
     (await getSkillsResponse.json()) as LightcastSkillsResponse;
-  // As of version 9.3 in Lightcast API, "Information Technology" category ID is 17
+  // As of version 9.4 in Lightcast API, "Information Technology" category ID is 17
   const ITSkills = getSkillsResponseJson.data.filter(
     (skill) => skill.category.id === 17,
   );
@@ -92,18 +89,11 @@ const insertSkillsIntoDatabase = async (skills: Array<LightcastSkill>) => {
   // eslint-disable-next-line no-console
   console.log(`Inserting ${skills.length} skills`);
   const skillsController = new SkillController(prisma);
-  const insertReferenceSkillPromises = [];
-  for (let i = 0; i < skills.length; i += chunkSize) {
-    const chunk = skills.slice(i, i + chunkSize);
-    const skillsPayload = chunk.map((skill) => ({
-      name: skill.name,
-      referenceId: skill.id,
-    }));
-    const createReferenceSkillPromise =
-      skillsController.createReferenceSkills(skillsPayload);
-    insertReferenceSkillPromises.push(createReferenceSkillPromise);
-  }
-  await Promise.all(insertReferenceSkillPromises);
+  const skillsPayload = skills.map((skill) => ({
+    name: skill.name,
+    referenceId: skill.id,
+  }));
+  await skillsController.createReferenceSkills(skillsPayload);
 };
 
 const syncLightcastSkills = async () => {
