@@ -50,14 +50,6 @@ jobs:
         id: validate
         run: terraform validate -no-color
 
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1-node16
-        with:
-          aws-region: us-east-1
-          role-to-assume: ${{ vars[format('{0}_AWS_PLAN_ROLE', inputs.env)] }}
-          role-session-name: GithubActions
-          mask-aws-account-id: false
-
       - name: Get current image
         id: current-image
         continue-on-error: true
