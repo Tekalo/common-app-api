@@ -9,17 +9,17 @@ importers:
   .:
     dependencies:
       '@aws-sdk/client-s3':
-        specifier: 3.454.0
-        version: 3.454.0
+        specifier: 3.456.0
+        version: 3.456.0
       '@aws-sdk/client-ses':
         specifier: 3.454.0
         version: 3.454.0
       '@aws-sdk/s3-presigned-post':
-        specifier: 3.454.0
-        version: 3.454.0
+        specifier: 3.456.0
+        version: 3.456.0
       '@aws-sdk/s3-request-presigner':
-        specifier: 3.454.0
-        version: 3.454.0
+        specifier: 3.456.0
+        version: 3.456.0
       '@babel/core':
         specifier: 7.23.3
         version: 7.23.3
@@ -295,8 +295,8 @@ packages:
       tslib: 1.14.1
     dev: false
 
-  /@aws-sdk/client-s3@3.454.0:
-    resolution: {integrity: sha512-vBx4iB1c4mEz+twMnl6angC1/IpnmXaT8L6Kl9uNiurFsb6N4tCyrJ24kECdsOSTM7ePXvE1fKst8zAh6MW5ZA==}
+  /@aws-sdk/client-s3@3.456.0:
+    resolution: {integrity: sha512-987Mls+9w+mpdq4Vpc/OEQ93afkM12H7l97lIejcidZySuLVo5tdOM9ErekmgjAuotFzBgu2ExL83XtYIMgA0g==}
     engines: {node: '>=14.0.0'}
     dependencies:
       '@aws-crypto/sha1-browser': 3.0.0
@@ -733,11 +733,11 @@ packages:
       tslib: 2.6.2
     dev: false
 
-  /@aws-sdk/s3-presigned-post@3.454.0:
-    resolution: {integrity: sha512-R5xlC2GSX9SeAjuB4qhuavA+DDITm0cuwBKZwuAiwNMN1PkVzcsEjfHzqI4TCb3xQB2BKAsICAqsPTe/buaEVQ==}
+  /@aws-sdk/s3-presigned-post@3.456.0:
+    resolution: {integrity: sha512-fVxe+PHgG4apo83/V9as0D8t8+OLzaRtdlnfDCIk/aadc/txsf5YG7jM+EmF9Wdc+XlnSrbHQCDRg0nI8fguYA==}
     engines: {node: '>=14.0.0'}
     dependencies:
-      '@aws-sdk/client-s3': 3.454.0
+      '@aws-sdk/client-s3': 3.456.0
       '@aws-sdk/types': 3.451.0
       '@aws-sdk/util-format-url': 3.451.0
       '@smithy/middleware-endpoint': 2.2.0
@@ -750,8 +750,8 @@ packages:
       - aws-crt
     dev: false
 
-  /@aws-sdk/s3-request-presigner@3.454.0:
-    resolution: {integrity: sha512-2Lr5bZkpSfl0Ixaylbv/ZGgimdzkw0I7akXwosWagnCAWRnWBnWGlWkAnHdnpHjQVamyVr0C6gST7+Y3fKh5Sg==}
+  /@aws-sdk/s3-request-presigner@3.456.0:
+    resolution: {integrity: sha512-f7xATU5D4Gn5CzdS1jWUv5LUoO8LInP1zLIIRX2jmwamIfIOBdix8jvEr6NQLGg2Bp7/ygNb9dbgQ6y0vmlWIA==}
     engines: {node: '>=14.0.0'}
     dependencies:
       '@aws-sdk/signature-v4-multi-region': 3.451.0
