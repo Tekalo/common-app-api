@@ -7,6 +7,7 @@ import EmailService, {
   removeAliasLowercaseEmail,
 } from '@App/services/EmailService.js';
 import DummySESService from '../../fixtures/DummySesService.js';
+import DummySQSService from '../../fixtures/DummySQSService.js';
 import { getMockConfig } from '../../util/helpers.js';
 
 describe('Email Service', () => {
@@ -14,12 +15,14 @@ describe('Email Service', () => {
     const dummySesService = new DummySESService();
     const emailService = new EmailService(
       dummySesService,
+      new DummySQSService(),
       getMockConfig({
         aws: {
           sesFromAddress: 'baz@futurestech.com',
           sesReplyToAddress: 'replies@futurestech.com',
           region: 'us-east-1',
           sesWhiteList: [],
+          emailQueueUrl: '',
         },
       }),
     );
@@ -59,12 +62,14 @@ describe('Email Service', () => {
     const mockSesSendEmailFunc = jest.spyOn(dummySesService, 'sendEmail');
     const emailService = new EmailService(
       dummySesService,
+      new DummySQSService(),
       getMockConfig({
         aws: {
           sesFromAddress: 'baz@futurestech.com',
           sesReplyToAddress: 'replies@futurestech.com',
           region: 'us-east-1',
           sesWhiteList: [],
+          emailQueueUrl: '',
         },
         env: 'prod',
       }),
@@ -82,12 +87,14 @@ describe('Email Service', () => {
     const dummySesService = new DummySESService();
     const emailService = new EmailService(
       dummySesService,
+      new DummySQSService(),
       getMockConfig({
         aws: {
           sesFromAddress: 'baz@futurestech.com',
           sesReplyToAddress: 'replies@futurestech.com',
           region: 'us-east-1',
           sesWhiteList: [],
+          emailQueueUrl: '',
         },
       }),
     );
@@ -119,12 +126,14 @@ describe('Email Service', () => {
     const mockSesSendEmailFunc = jest.spyOn(dummySesService, 'sendEmail');
     const emailService = new EmailService(
       dummySesService,
+      new DummySQSService(),
       getMockConfig({
         aws: {
           sesFromAddress: 'baz@futurestech.com',
           sesReplyToAddress: 'replies@futurestech.com',
           region: 'us-east-1',
           sesWhiteList: [],
+          emailQueueUrl: '',
         },
         env: 'prod',
       }),
@@ -141,12 +150,14 @@ describe('Email Service', () => {
     const dummySesService = new DummySESService();
     const emailService = new EmailService(
       dummySesService,
+      new DummySQSService(),
       getMockConfig({
         aws: {
           sesFromAddress: 'baz@futurestech.com',
           sesReplyToAddress: 'replies@futurestech.com',
           region: 'us-east-1',
           sesWhiteList: [],
+          emailQueueUrl: '',
         },
       }),
     );

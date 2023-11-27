@@ -11,8 +11,8 @@ const sesService = new SESService();
 
 const processMessage = async (message: SQSRecord) => {
   try {
-    // eslint-disable-next-line no-console
     const emailToSend = message.body;
+    // eslint-disable-next-line no-console
     console.log(`Processed message ${emailToSend}`);
     // const parsedMessage: SendEmailCommandInput = JSON.parse(
     //   message.body,

@@ -7,6 +7,7 @@ import DummyAuthService from './DummyAuthService.js';
 import DummyEmailService from './DummyEmailService.js';
 import DummyMonitoringService from './DummyMonitoringService.js';
 import DummySESService from './DummySesService.js';
+import DummySQSService from './DummySQSService.js';
 import DummyUploadService from './DummyUploadService.js';
 import DummyS3Service from './DummyS3Service.js';
 
@@ -22,7 +23,11 @@ const getDummyApp = (
     dummyAuthService || new DummyAuthService(),
     dummyMonitoringService || new DummyMonitoringService(prisma),
     dummyEmailService ||
-      new DummyEmailService(new DummySESService(), appConfig),
+      new DummyEmailService(
+        new DummySESService(),
+        new DummySQSService(),
+        appConfig,
+      ),
     dummyUploadService ||
       new DummyUploadService(prisma, new DummyS3Service(), appConfig),
     mockConfig || appConfig,
