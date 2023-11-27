@@ -1,6 +1,6 @@
 node_modules
 build
 .pnpm-store
-scripts/auth0/*
+scripts/*.sh
 auth0
 packages/**/*.d.ts
