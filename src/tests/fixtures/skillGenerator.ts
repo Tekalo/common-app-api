@@ -17,6 +17,28 @@ const skills = {
   ],
 };
 
+const referenceSkillsDummy = [
+  {
+    name: 'TypeScript',
+    referenceId: 'ET3B93055220D592C8',
+  },
+  {
+    name: 'JavaScript',
+    referenceId: 'ET3B93055220D592C9',
+  },
+  {
+    name: 'Python',
+    referenceId: 'ET3B93055220D592C10',
+  },
+];
+
+const referenceSkillsDummyDuplicateId = [
+  {
+    name: 'TypeScript (TS)',
+    referenceId: 'ET3B93055220D592C8',
+  },
+];
+
 const seedSkillsUpload = async () => {
   const { data } = skills;
   await prisma.skill.createMany({
@@ -28,4 +50,9 @@ const seedSkillsDelete = async () => {
   await prisma.skill.deleteMany();
 };
 
-export { seedSkillsUpload, seedSkillsDelete };
+export {
+  seedSkillsUpload,
+  seedSkillsDelete,
+  referenceSkillsDummy,
+  referenceSkillsDummyDuplicateId,
+};

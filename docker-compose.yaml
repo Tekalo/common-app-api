@@ -25,6 +25,8 @@ services:
       - WEB_URL=https://head.common-app-frontend.pages.dev
       - AWS_REGION=us-east-1
       - APP_ENV=dev
+      - LIGHTCAST_CLIENT_SECRET=${LIGHTCAST_CLIENT_SECRET}
+      - LIGHTCAST_CLIENT_ID=${LIGHTCAST_CLIENT_ID}
     ports:
       - "3000:3000"
     command: "pnpm debug"
