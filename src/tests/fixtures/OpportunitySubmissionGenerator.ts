@@ -1,4 +1,8 @@
-import { OpportunitySubmission } from '@App/resources/types/opportunities.js';
+import { prisma } from '@App/resources/client.js';
+import {
+  OpportunityBatchResponseBody,
+  OpportunitySubmission,
+} from '@App/resources/types/opportunities.js';
 
 /**
  * Generate opportunity batch payload for a new opportunity submission.
@@ -47,8 +51,40 @@ const oppBatchPayload = {
   submissions,
 };
 
-const opportunitySubmissionGenerator = {
-  oppBatchPayload,
+const seedOpportunityBatch = async (
+  email: string,
+): Promise<OpportunityBatchResponseBody> => {
+  const batch = await prisma.opportunityBatch.create({
+    data: {
+      orgName: "Bob's Business",
+      orgType: 'Burgering',
+      orgSize: '5',
+      impactAreas: ['burgers, food'],
+      contactName: 'bob',
+      contactEmail: email,
+      equalOpportunityEmployer: true,
+      opportunitySubmissions: {
+        createMany: {
+          data: [
+            {
+              source: 'nada',
+              employmentType: 'just do it',
+              paid: true,
+              roleType: 'flippin burgers',
+              positionTitle: 'burger flipper',
+              fullyRemote: false,
+              pitchEssay: "you'll be flippin burgers",
+            },
+          ],
+        },
+      },
+    },
+  });
+  const returnBatch: OpportunityBatchResponseBody = {
+    eoe: batch.equalOpportunityEmployer,
+    ...batch,
+  };
+  return returnBatch;
 };
 
-export default opportunitySubmissionGenerator;
+export { oppBatchPayload, seedOpportunityBatch };

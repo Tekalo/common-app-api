@@ -5,6 +5,7 @@ import express, {
   Response,
 } from 'express';
 import ApplicantController from '@App/controllers/ApplicantController.js';
+import OpportunityController from '@App/controllers/OpportunityController.js';
 
 import AuthService from '@App/services/AuthService.js';
 import { prisma } from '@App/resources/client.js';
@@ -26,6 +27,7 @@ const cleanupRoutes = (
     emailService,
     uploadService,
   );
+  const opportunityController = new OpportunityController(prisma, emailService);
 
   const appConfig = config;
   appConfig.auth0.express.cacheMaxAge = 12 * 60 * 60 * 1000; // 12 hours
@@ -46,6 +48,21 @@ const cleanupRoutes = (
               res.status(200).json(values);
             })
             .catch((err) => next(err));
+        })
+        .catch((err) => next(err));
+    },
+  );
+
+  router.delete(
+    '/testopportunities',
+    authenticator
+      .validateJwtRole('admin')
+      .bind(authenticator) as RequestHandler,
+    (re: Request, res: Response, next: NextFunction) => {
+      opportunityController
+        .deleteTestOpportunities()
+        .then((result) => {
+          res.status(200).json(result);
         })
         .catch((err) => next(err));
     },
