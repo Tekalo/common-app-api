@@ -540,41 +540,6 @@ describe('POST /applicants/me/submissions', () => {
       expect(submission?.utmParams).toHaveProperty('params', utmParams);
     });
 
-    it('should save skills when final submission includes new skills that dont exist yet in DB', async () => {
-      const randomString = getRandomString();
-      const token = await authHelper.getToken(
-        `bboberson${randomString}@gmail.com`,
-      );
-
-      const applicant = await seedApplicant(randomString);
-      const { id: resumeId } = await seedResumeUpload(applicant.id);
-      const testSubmission = getAPIRequestBody(resumeId);
-      testSubmission.skills = ['New    skill   #1', 'New    skill  #2']; // TODO: Once we have reference skills table, change this to have one reference skill in the payload
-      const { body: submissionBody }: { body: ApplicantGetSubmissionResponse } =
-        await request(dummyApp)
-          .post('/applicants/me/submissions')
-          .send({ ...testSubmission })
-          .set('Authorization', `Bearer ${token}`)
-          .expect(200);
-      const submission = await prisma.applicantSubmission.findUnique({
-        where: { id: submissionBody?.submission?.id },
-        include: { utmParams: true },
-      });
-      const skills = await prisma.userSkills.findMany({
-        where: { OR: [{ name: 'New skill #1' }, { name: 'New skill #2' }] },
-      });
-      expect(skills).toEqual(
-        expect.arrayContaining([
-          { name: 'New skill #1' },
-          { name: 'New skill #2' },
-        ]),
-      );
-      expect(submission?.skills).toEqual(
-        expect.arrayContaining(['New skill #1', 'New skill #2']),
-      );
-      // expect(submission?.skills).toHaveProperty('skills', ['new skill #1', 'new skill #2']);
-    });
-
     it('should save a complete draft submission, fetch draft, and use response as final submission body', async () => {
       const randomString = getRandomString();
       const token = await authHelper.getToken(
@@ -620,6 +585,78 @@ describe('POST /applicants/me/submissions', () => {
           updatedAt: finalSubmissionResponse.submission.updatedAt,
         },
         isFinal: true,
+      });
+    });
+
+    describe('Submission skills', () => {
+      it('should save skills when final submission includes new skills that dont exist yet in DB', async () => {
+        const randomString = getRandomString();
+        const token = await authHelper.getToken(
+          `bboberson${randomString}@gmail.com`,
+        );
+
+        const applicant = await seedApplicant(randomString);
+        const { id: resumeId } = await seedResumeUpload(applicant.id);
+        const testSubmission = getAPIRequestBody(resumeId);
+        testSubmission.skills = ['New    skill   #1', 'New    skill  #2']; // TODO: Once we have reference skills table, change this to have one reference skill in the payload
+        const {
+          body: submissionBody,
+        }: { body: ApplicantGetSubmissionResponse } = await request(dummyApp)
+          .post('/applicants/me/submissions')
+          .send({ ...testSubmission })
+          .set('Authorization', `Bearer ${token}`);
+        // .expect(200);
+        const submission = await prisma.applicantSubmission.findUnique({
+          where: { id: submissionBody?.submission?.id },
+          include: { utmParams: true },
+        });
+        const skills = await prisma.userSkills.findMany({
+          where: { OR: [{ name: 'New skill #1' }, { name: 'New skill #2' }] },
+        });
+        expect(skills).toEqual(
+          expect.arrayContaining([
+            { name: 'New skill #1' },
+            { name: 'New skill #2' },
+          ]),
+        );
+        expect(submission?.skills).toEqual(
+          expect.arrayContaining(['New skill #1', 'New skill #2']),
+        );
+      });
+
+      it('should return 200 when final submission includes skills that already exist in DB', async () => {
+        const bobRandomString = getRandomString();
+        const ahmadRandomString = getRandomString();
+        const bobToken = await authHelper.getToken(
+          `bboberson${bobRandomString}@gmail.com`,
+        );
+        const ahmadToken = await authHelper.getToken(
+          `bboberson${ahmadRandomString}@gmail.com`,
+        );
+        const applicantBob = await seedApplicantWithIDs(
+          `bboberson${bobRandomString}@gmail.com`,
+          'auth0|123456',
+        );
+        const applicantAhmad = await seedApplicantWithIDs(
+          `bboberson${ahmadRandomString}@gmail.com`,
+          'auth0|456789',
+        );
+        const { id: bobResumeId } = await seedResumeUpload(applicantBob.id);
+        const { id: ahmadResumeId } = await seedResumeUpload(applicantAhmad.id);
+        const bobTestSubmission = getAPIRequestBody(bobResumeId);
+        const ahmadTestSubmission = getAPIRequestBody(ahmadResumeId);
+        bobTestSubmission.skills = ['React', 'Python'];
+        ahmadTestSubmission.skills = ['React', 'Python'];
+        await request(dummyApp)
+          .post('/applicants/me/submissions')
+          .send({ ...bobTestSubmission })
+          .set('Authorization', `Bearer ${bobToken}`)
+          .expect(200);
+        await request(dummyApp)
+          .post('/applicants/me/submissions')
+          .send({ ...ahmadTestSubmission })
+          .set('Authorization', `Bearer ${ahmadToken}`)
+          .expect(200);
       });
     });
   });
