@@ -9,7 +9,7 @@ import { prisma } from '@App/resources/client.js';
 import { BaseConfig } from '@App/resources/types/shared.js';
 import Authenticator from '@App/middleware/authenticator.js';
 import { ReferenceSkillsCreateRequestBody } from '@App/resources/types/skills.js';
-import { Skills } from '@capp/schemas/src/index.js';
+import { Skills } from '@capp/schemas';
 
 const skillsRoutes = (config: BaseConfig) => {
   const router = express.Router();
