@@ -4,22 +4,6 @@ import Shared from './shared.js';
 const PreferredContact = z.enum(['sms', 'whatsapp', 'email']);
 const SearchStatus = z.enum(['active', 'passive', 'future']);
 const InterestGovtEmplTypes = z.enum(['paid', 'unpaid']);
-const Skills = z.enum([
-  'react',
-  'javascript',
-  'python',
-  'java',
-  'sql',
-  'privacy',
-  'security',
-  'devops',
-  'figma',
-  'sketch',
-  'prototyping',
-  'user research',
-  'product development',
-  'project management',
-]);
 const YOE = z.enum([
   '<1',
   '1',
@@ -91,7 +75,14 @@ const ApplicantCreateSubmissionRequestBody = z.object({
   }),
   lastOrg: z.string().max(255),
   yoe: YOE,
-  skills: z.array(Skills),
+  skills: z.array(z.string().max(255)).transform((skillsArray) =>
+    skillsArray.map((skill) =>
+      skill
+        .trim()
+        .split(/[\s,\t]+/)
+        .join(' '),
+    ),
+  ),
   otherSkills: z.array(z.string().max(255)),
   linkedInUrl: z.string().max(500).nullable(),
   githubUrl: z.string().max(500).nullable(),
@@ -205,7 +196,7 @@ const ApplicantDraftSubmissionRequestBodySchema = z.object({
   lastOrg: z.string().max(255).nullish(),
   yoe: YOE.nullish(),
   skills: z
-    .array(Skills)
+    .array(z.string().max(255))
     .nullish()
     .transform((val) => val || []),
   otherSkills: z

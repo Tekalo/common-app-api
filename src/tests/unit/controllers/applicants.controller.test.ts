@@ -1094,7 +1094,7 @@ describe('Applicant Controller', () => {
         isPaused: false,
         followUpOptIn: false,
       });
-
+      mockCtx.prisma.$transaction.mockResolvedValue([resolvedValue, []]);
       mockCtx.prisma.upload.findFirst.mockResolvedValue({
         id: 1,
         applicantId,

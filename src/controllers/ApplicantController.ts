@@ -177,7 +177,7 @@ class ApplicantController {
       data,
       Applicants.ApplicantCreateSubmissionRequestBodySchema,
     );
-    const applicantSubmission = await this.prisma.applicantSubmission.create({
+    const createApplicantSubmission = this.prisma.applicantSubmission.create({
       data: {
         ...validatedSubmission,
         resumeUpload: { connect: { id: validatedSubmission.resumeUpload.id } },
@@ -195,6 +195,16 @@ class ApplicantController {
         resumeUpload: { select: { id: true, originalFilename: true } },
       },
     });
+
+    const createSkills = this.prisma.userSkills.createMany({
+      data: validatedSubmission.skills.map((skill) => ({ name: skill })),
+      skipDuplicates: true,
+    });
+
+    const [applicantSubmission] = await this.prisma.$transaction([
+      createApplicantSubmission,
+      createSkills,
+    ]);
     try {
       const applicant = await this.prisma.applicant.findUniqueOrThrow({
         where: { id: applicantId },
