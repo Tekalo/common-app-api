@@ -34,9 +34,6 @@ importers:
       '@sentry/types':
         specifier: 7.81.1
         version: 7.81.1
-      '@tsconfig/node18':
-        specifier: ^18.2.2
-        version: 18.2.2
       '@tsconfig/node20':
         specifier: 20.1.2
         version: 20.1.2
@@ -186,11 +183,11 @@ importers:
   packages/email-sender:
     dependencies:
       '@tsconfig/node18':
-        specifier: ^18.2.2
+        specifier: 18.2.2
         version: 18.2.2
     devDependencies:
       '@types/aws-lambda':
-        specifier: ^8.10.122
+        specifier: 8.10.122
         version: 8.10.122
       prettier:
         specifier: 3.1.0
