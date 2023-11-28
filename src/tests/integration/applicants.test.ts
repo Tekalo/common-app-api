@@ -26,6 +26,7 @@ import { ApiResponse } from 'node_modules/auth0/dist/esm/lib/models.js';
 import {
   getAPIRequestBody,
   seedApplicant,
+  seedApplicantWithIDs,
   seedResumeUpload,
 } from '../fixtures/applicantSubmissionGenerator.js';
 import DummyAuthService from '../fixtures/DummyAuthService.js';
@@ -46,6 +47,7 @@ afterEach(async () => {
   await prisma.applicantSubmission.deleteMany();
   await prisma.applicant.deleteMany();
   await prisma.applicantDeletionRequests.deleteMany();
+  await prisma.userSkills.deleteMany();
   jest.restoreAllMocks();
 });
 
@@ -588,6 +590,78 @@ describe('POST /applicants/me/submissions', () => {
           updatedAt: finalSubmissionResponse.submission.updatedAt,
         },
         isFinal: true,
+      });
+    });
+
+    describe('Submission skills', () => {
+      it('should save skills when final submission includes new skills that dont exist yet in DB', async () => {
+        const randomString = getRandomString();
+        const token = await authHelper.getToken(
+          `bboberson${randomString}@gmail.com`,
+        );
+
+        const applicant = await seedApplicant(randomString);
+        const { id: resumeId } = await seedResumeUpload(applicant.id);
+        const testSubmission = getAPIRequestBody(resumeId);
+        testSubmission.skills = ['New    skill   #1', 'New    skill  #2']; // TODO: Once we have reference skills table, change this to have one reference skill in the payload
+        const {
+          body: submissionBody,
+        }: { body: ApplicantGetSubmissionResponse } = await request(dummyApp)
+          .post('/applicants/me/submissions')
+          .send({ ...testSubmission })
+          .set('Authorization', `Bearer ${token}`);
+        // .expect(200);
+        const submission = await prisma.applicantSubmission.findUnique({
+          where: { id: submissionBody?.submission?.id },
+          include: { utmParams: true },
+        });
+        const skills = await prisma.userSkills.findMany({
+          where: { OR: [{ name: 'New skill #1' }, { name: 'New skill #2' }] },
+        });
+        expect(skills).toEqual(
+          expect.arrayContaining([
+            { name: 'New skill #1' },
+            { name: 'New skill #2' },
+          ]),
+        );
+        expect(submission?.skills).toEqual(
+          expect.arrayContaining(['New skill #1', 'New skill #2']),
+        );
+      });
+
+      it('should return 200 when final submission includes skills that already exist in DB', async () => {
+        const bobRandomString = getRandomString();
+        const ahmadRandomString = getRandomString();
+        const bobToken = await authHelper.getToken(
+          `bboberson${bobRandomString}@gmail.com`,
+        );
+        const ahmadToken = await authHelper.getToken(
+          `bboberson${ahmadRandomString}@gmail.com`,
+        );
+        const applicantBob = await seedApplicantWithIDs(
+          `bboberson${bobRandomString}@gmail.com`,
+          'auth0|123456',
+        );
+        const applicantAhmad = await seedApplicantWithIDs(
+          `bboberson${ahmadRandomString}@gmail.com`,
+          'auth0|456789',
+        );
+        const { id: bobResumeId } = await seedResumeUpload(applicantBob.id);
+        const { id: ahmadResumeId } = await seedResumeUpload(applicantAhmad.id);
+        const bobTestSubmission = getAPIRequestBody(bobResumeId);
+        const ahmadTestSubmission = getAPIRequestBody(ahmadResumeId);
+        bobTestSubmission.skills = ['React', 'Python'];
+        ahmadTestSubmission.skills = ['React', 'Python'];
+        await request(dummyApp)
+          .post('/applicants/me/submissions')
+          .send({ ...bobTestSubmission })
+          .set('Authorization', `Bearer ${bobToken}`)
+          .expect(200);
+        await request(dummyApp)
+          .post('/applicants/me/submissions')
+          .send({ ...ahmadTestSubmission })
+          .set('Authorization', `Bearer ${ahmadToken}`)
+          .expect(200);
       });
     });
   });
@@ -1880,5 +1954,85 @@ describe('GET /applicants/:id/resume', () => {
       .get('/applicants/123456/resume')
       .set('Authorization', `Bearer ${bobToken}`)
       .expect(404);
+  });
+});
+
+describe('DELETE /cleanup/testusers', () => {
+  it('should return a 401 status code and NOT allow a user without an admin JWT to call this endpoint', async () => {
+    const badToken = await authHelper.getToken(
+      `notAnAdmin${getRandomString()}@gmail.com`,
+      { roles: ['notAnAdmin'] },
+    );
+    await request(dummyApp)
+      .delete('/cleanup/testusers')
+      .set('Authorization', `Bearer ${badToken}`)
+      .expect(401);
+  });
+
+  it('should return a 200 status code and allow a user with an admin JWT to call this endpoint', async () => {
+    const randomString = getRandomString();
+    const partialTokenOptions: TokenOptions = {
+      roles: ['admin'],
+    };
+    const token = await authHelper.getToken(
+      `admin-bob-${randomString}@gmail.com`,
+      partialTokenOptions,
+    );
+
+    await request(dummyApp)
+      .delete('/cleanup/testusers')
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200);
+  });
+
+  it('should delete test email accounts and leave normal accounts alone', async () => {
+    const randomString = getRandomString();
+
+    // Generate admin token
+    const partialTokenOptions: TokenOptions = {
+      roles: ['admin'],
+    };
+    const token = await authHelper.getToken(
+      `admin-bob-${randomString}@gmail.com`,
+      partialTokenOptions,
+    );
+
+    // Seed database
+    const testId = (
+      await seedApplicantWithIDs(
+        `success+test-user-${randomString}@simulator.amazonses.com`,
+        `auth0|test${randomString}`,
+      )
+    ).id;
+    const nontestId = (
+      await seedApplicantWithIDs(
+        `real-bob-${randomString}@gmail.com`,
+        `auth0|nontest${randomString}`,
+      )
+    ).id;
+
+    const prismaSpy = jest.spyOn(prisma.applicant, 'delete');
+
+    // Run request and check success
+    const { body } = await request(dummyApp)
+      .delete('/cleanup/testusers')
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200);
+    expect(body).toEqual([{ id: testId }]);
+
+    // Check that delete was called on the right values
+    expect(prismaSpy).toHaveBeenCalledWith({
+      where: {
+        id: testId,
+      },
+    });
+
+    expect(prismaSpy).not.toHaveBeenCalledWith({
+      where: {
+        id: nontestId,
+      },
+    });
+
+    prismaSpy.mockRestore();
   });
 });

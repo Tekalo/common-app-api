@@ -9,36 +9,43 @@ import SESService from './SESService.js';
 
 const sesService = new SESService();
 
+type EmailMessage = {
+  recipientEmail: string;
+  subject: string;
+  htmlBody: string;
+  textBody: string | undefined;
+};
+
 const processMessage = async (message: SQSRecord) => {
   try {
-    const emailToSend = message.body;
-    // eslint-disable-next-line no-console
-    console.log(`Processed message ${emailToSend}`);
-    // const parsedMessage: SendEmailCommandInput = JSON.parse(
-    //   message.body,
-    // ) as SendEmailCommandInput;
+    const emailToSend: EmailMessage = JSON.parse(message.body) as EmailMessage;
 
-    const htmlBody =
-      '<html><head></head><body><h1>Thank you for creating your Futures Engine account!</h1></body></html>';
+    // todo: env variable
+    const sesFromAddress = 'tekalo@dev.apps.futurestech.cloud';
+    const friendlyFromAddress = `Tekalo <${sesFromAddress}>`;
     const parsedMessage: SendEmailCommandInput = {
       Destination: {
-        ToAddresses: ['aarmentrout@schmidtfutures.com'],
+        ToAddresses: [emailToSend.recipientEmail],
       },
-      ReplyToAddresses: ['replies@futurestech.com'],
+      // todo: env variable
+      ReplyToAddresses: [sesFromAddress],
       Message: {
         Body: {
           Html: {
             Charset: 'UTF-8',
-            Data: htmlBody,
+            Data: emailToSend.htmlBody,
           },
-          Text: undefined,
+          Text:
+            emailToSend.textBody === undefined
+              ? undefined
+              : { Charset: 'UTF-8', Data: emailToSend.textBody },
         },
         Subject: {
           Charset: 'UTF-8',
-          Data: 'Thanks for creating your Futures Engine account!',
+          Data: emailToSend.subject,
         },
       },
-      Source: 'Tekalo <tekalo@dev.apps.futurestech.cloud>',
+      Source: friendlyFromAddress,
     };
 
     return await sesService.sendEmail(parsedMessage);

@@ -177,7 +177,7 @@ class ApplicantController {
       data,
       Applicants.ApplicantCreateSubmissionRequestBodySchema,
     );
-    const applicantSubmission = await this.prisma.applicantSubmission.create({
+    const createApplicantSubmission = this.prisma.applicantSubmission.create({
       data: {
         ...validatedSubmission,
         resumeUpload: { connect: { id: validatedSubmission.resumeUpload.id } },
@@ -195,6 +195,16 @@ class ApplicantController {
         resumeUpload: { select: { id: true, originalFilename: true } },
       },
     });
+
+    const createSkills = this.prisma.userSkills.createMany({
+      data: validatedSubmission.skills.map((skill) => ({ name: skill })),
+      skipDuplicates: true,
+    });
+
+    const [applicantSubmission] = await this.prisma.$transaction([
+      createApplicantSubmission,
+      createSkills,
+    ]);
     try {
       const applicant = await this.prisma.applicant.findUniqueOrThrow({
         where: { id: applicantId },
@@ -379,9 +389,17 @@ class ApplicantController {
     // Delete from applicant table
     await this.prisma.applicant.delete({ where: { id: applicantId } });
     const { email, auth0Id } = applicantToDelete;
-    await this.auth0Service.deleteUsers(email, auth0Id);
     await this.uploadService.deleteApplicantResumes(applicantId);
+    await this.auth0Service.deleteUsers(email, auth0Id);
     return Shared.IdOnlySchema.parse({ id: applicantId });
+  }
+
+  // Deletes all applicants that match a known email pattern only used for testing
+  async deleteTestApplicants(): Promise<Promise<IdOnly>[]> {
+    const applicantsToDelete = await this.prisma.$queryRaw<
+      IdOnly[]
+    >`SELECT id FROM "Applicant" WHERE email LIKE 'test-user%@schmidtfutures.com' OR email LIKE 'success+test-user%@simulator.amazonses.com'`;
+    return applicantsToDelete.map((x) => this.deleteApplicantForce(x.id));
   }
 
   async validResume(

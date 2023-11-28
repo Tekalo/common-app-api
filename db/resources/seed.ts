@@ -155,7 +155,7 @@ async function seedOpportunitySubmissionBatches() {
 async function seedSkills() {
   const { skills } = seedData;
   const skillsUpserts: Array<Promise<any>> = skills.map((skill) =>
-    prisma.skill.upsert({
+    prisma.userSkills.upsert({
       update: {},
       create: {
         name: skill,
