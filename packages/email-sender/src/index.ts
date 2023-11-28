@@ -19,8 +19,6 @@ type EmailMessage = {
 const processMessage = async (message: SQSRecord) => {
   try {
     const emailToSend: EmailMessage = JSON.parse(message.body) as EmailMessage;
-    // eslint-disable-next-line no-console
-    console.log(`Processed message ${emailToSend}`);
 
     // todo: env variable
     const sesFromAddress = 'tekalo@dev.apps.futurestech.cloud';
