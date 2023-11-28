@@ -259,3 +259,10 @@ model ReferenceSkills {
   referenceId              String                    @id
   name                     String
 }
+
+model SkillsAnnotation {
+  name                    String                    @unique @db.Citext
+  canonicalSkill          String                    
+  suggest                 Boolean
+  rejectAs                String
+}
