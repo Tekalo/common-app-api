@@ -11,22 +11,6 @@ const OrgSize = z.enum([
   '500+',
 ]);
 const VisaSponsorship = z.enum(['yes', 'no', 'sometimes']);
-const Skills = z.enum([
-  'react',
-  'javascript',
-  'python',
-  'java',
-  'sql',
-  'privacy',
-  'security',
-  'devops',
-  'figma',
-  'sketch',
-  'prototyping',
-  'user research',
-  'product development',
-  'project management',
-]);
 
 const YOE = z.enum(['0-2', '3-5', '6-8', '9-12', '13-15', '15+']);
 
@@ -46,7 +30,14 @@ const OpportunitySubmissionSchema = z.object({
   desiredEndDate: z.coerce.date().optional(),
   jdUrl: z.string().max(500).optional(),
   desiredYoe: z.array(YOE),
-  desiredSkills: z.array(Skills).optional(),
+  desiredSkills: z.array(z.string().max(255)).transform((skillsArray) =>
+  skillsArray.map((skill) =>
+    skill
+      .trim()
+      .split(/[\s,\t]+/)
+      .join(' '),
+  ),
+),
   desiredOtherSkills: z.array(z.string()).optional(),
   visaSponsorship: VisaSponsorship.optional(),
   similarStaffed: z.boolean(),

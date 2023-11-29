@@ -2,10 +2,7 @@ import request from 'supertest';
 import { prisma } from '@App/resources/client.js';
 import { OpportunityBatchResponseBody } from '@App/resources/types/opportunities.js';
 import { OpportunityBatch } from '@prisma/client';
-import {
-  oppBatchPayload,
-  seedOpportunityBatch,
-} from '../fixtures/OpportunitySubmissionGenerator.js';
+import { oppBatchPayload, seedOpportunityBatch } from '../fixtures/OpportunitySubmissionGenerator.js';
 import getDummyApp from '../fixtures/appGenerator.js';
 import { getRandomString } from '../util/helpers.js';
 import authHelper, { TokenOptions } from '../util/auth.js';
@@ -98,6 +95,29 @@ describe('POST /opportunities', () => {
       .send(secondOppSubmissionPayload)
       .expect(200);
     expect(body).toEqual(expect.objectContaining({ id: expect.any(Number) }));
+  });
+  it('should save new desiredSkills in a new batch of opportunities', async () => {
+    // All outside/inside whitespaces should be trimmed
+    oppBatchPayload.submissions[0].desiredSkills = ['  New    Skill   #1 '];
+    await request(dummyApp)
+      .post('/opportunities/batch')
+      .send(oppBatchPayload)
+      .expect(200);
+    const skills = await prisma.orgSkills.findFirst({
+      where: { name: 'Supah Coo Skill' },
+    });
+    expect(skills).toEqual({ name: 'Supah Coo Skill' });
+  });
+  it('should return 200 when opportunity submission includes skills that already exist in DB', async () => {
+    const duplicateSkill = 'Duplicate Skill';
+    await prisma.orgSkills.create({
+      data: { name: duplicateSkill },
+    });
+    oppBatchPayload.submissions[0].desiredSkills = [duplicateSkill];
+    await request(dummyApp)
+      .post('/opportunities/batch')
+      .send(oppBatchPayload)
+      .expect(200);
   });
   it('should save UTM parameters', async () => {
     const { body }: { body: OpportunityBatch } = await request(dummyApp)

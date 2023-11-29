@@ -4,6 +4,7 @@ import { Opportunities } from '@capp/schemas';
 import {
   OpportunityBatchRequestBody,
   OpportunityBatchResponseBody,
+  OpportunitySubmission,
 } from '@App/resources/types/opportunities.js';
 import EmailService from '@App/services/EmailService.js';
 import MonitoringService from '@App/services/MonitoringService.js';
@@ -21,35 +22,42 @@ class OpportunityController {
   async createOpportunityBatch(
     data: OpportunityBatchRequestBody,
   ): Promise<OpportunityBatchResponseBody> {
-    const opportunitySubmissions = data.submissions.map((submission) => ({
-      source: submission.source,
-      paid: submission.paid,
-      location: submission.location,
-      pitchEssay: submission.pitchEssay,
-      employmentType: submission.employmentType,
-      roleType: submission.roleType,
-      otherRoleType: submission.otherRoleType,
-      positionTitle: submission.positionTitle,
-      fullyRemote: submission.fullyRemote,
-      salaryRange: submission.salaryRange,
-      desiredHoursPerWeek: submission.desiredHoursPerWeek,
-      desiredStartDate: submission.desiredStartDate,
-      desiredEndDate: submission.desiredEndDate,
-      jdUrl: submission.jdUrl,
-      desiredYoe: submission.desiredYoe,
-      desiredSkills: submission.desiredSkills,
-      desiredOtherSkills: submission.desiredOtherSkills,
-      visaSponsorship: submission.visaSponsorship,
-      similarStaffed: submission.similarStaffed,
-      desiredImpactExp: submission.desiredImpactExp,
-    }));
+    const opportunitySubmissions: Array<OpportunitySubmission> = [];
+    const batchDesiredSkills: Array<string> = [];
+    data.submissions.forEach((submission) => {
+      opportunitySubmissions.push({
+        source: submission.source,
+        paid: submission.paid,
+        location: submission.location,
+        pitchEssay: submission.pitchEssay,
+        employmentType: submission.employmentType,
+        roleType: submission.roleType,
+        otherRoleType: submission.otherRoleType,
+        positionTitle: submission.positionTitle,
+        fullyRemote: submission.fullyRemote,
+        salaryRange: submission.salaryRange,
+        desiredHoursPerWeek: submission.desiredHoursPerWeek,
+        desiredStartDate: submission.desiredStartDate,
+        desiredEndDate: submission.desiredEndDate,
+        jdUrl: submission.jdUrl,
+        desiredYoe: submission.desiredYoe,
+        desiredSkills: submission.desiredSkills,
+        desiredOtherSkills: submission.desiredOtherSkills,
+        visaSponsorship: submission.visaSponsorship,
+        similarStaffed: submission.similarStaffed,
+        desiredImpactExp: submission.desiredImpactExp,
+      });
+      batchDesiredSkills.push(...submission.desiredSkills);
+    });
+
     const {
       organization,
       contact,
       referenceAttribution,
       referenceAttributionOther,
     } = data;
-    const batch = await this.prisma.opportunityBatch.create({
+
+    const batchCreate = this.prisma.opportunityBatch.create({
       data: {
         orgName: organization.name,
         orgType: organization.type,
@@ -77,6 +85,13 @@ class OpportunityController {
           : undefined,
       },
     });
+
+    const skillsCreate = this.prisma.orgSkills.createMany({ data: batchDesiredSkills.map((skill) => ({ name: skill })), skipDuplicates: true });
+
+    const [ batch, skills ] = await this.prisma.$transaction([
+      batchCreate, skillsCreate,
+    ]);
+
     const returnBatch: OpportunityBatchResponseBody = {
       eoe: batch.equalOpportunityEmployer,
       ...batch,
