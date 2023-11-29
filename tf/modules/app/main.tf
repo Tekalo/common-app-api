@@ -220,10 +220,6 @@ resource "aws_ecs_task_definition" "api" {
         {
           name  = "AWS_REGION"
           value = data.aws_region.current.name
-        },
-        {
-          name  = "AWS_EMAIL_QUEUE_URL"
-          value = modules.email.email_queue_url != null ? modules.email.email_queue_url : ""
         }
       ], )
     }
