@@ -169,12 +169,13 @@ class EmailService {
   }
 
   async enqueueEmail(emailQueueUrl: string, emailToSend: SendEmailCommandInput): Promise<SendMessageCommandOutput> {
+    const recipientEmail = emailToSend.Destination?.ToAddresses ? emailToSend.Destination.ToAddresses[0] : '';
     const message = {
-      recipientEmail: emailToSend.Destination?.ToAddresses?[0]:'',
+      recipientEmail,
       subject: emailToSend.Message?.Subject?.Data,
       htmlBody: emailToSend.Message?.Body?.Html?.Data,
-      textBody: emailToSend.Message?.Body?.Text?.Data
-    }
+      textBody: emailToSend.Message?.Body?.Text?.Data,
+    };
     const messageOutput = await this.sqsService.enqueueMessage(
       emailQueueUrl,
       JSON.stringify(message),

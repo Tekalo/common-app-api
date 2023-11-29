@@ -883,7 +883,7 @@ describe('Applicant Controller', () => {
           sesReplyToAddress: 'replies@futurestech.com',
           region: 'us-east-1',
           sesWhiteList: ['bboberson@gmail.com'],
-          emailQueueUrl: undefined
+          emailQueueUrl: undefined,
         },
         env: 'dev',
         useEmailWhiteList: true,
