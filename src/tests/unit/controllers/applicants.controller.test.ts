@@ -763,7 +763,7 @@ describe('Applicant Controller', () => {
       const applicantController = new ApplicantController(
         new DummyAuthService(),
         ctx.prisma,
-        new DummyEmailService(new DummySESService(), getMockConfig()),
+        new DummyEmailService(new DummySESService(), new DummySQSService(), getMockConfig()),
         new DummyUploadService(
           ctx.prisma,
           new DummyS3Service(),
@@ -795,7 +795,7 @@ describe('Applicant Controller', () => {
       const applicantController = new ApplicantController(
         new DummyAuthService(),
         ctx.prisma,
-        new DummyEmailService(new DummySESService(), getMockConfig()),
+        new DummyEmailService(new DummySESService(), new DummySQSService(), getMockConfig()),
         new DummyUploadService(
           ctx.prisma,
           new DummyS3Service(),
@@ -822,7 +822,7 @@ describe('Applicant Controller', () => {
       const applicantController = new ApplicantController(
         new DummyAuthService(),
         ctx.prisma,
-        new DummyEmailService(new DummySESService(), getMockConfig()),
+        new DummyEmailService(new DummySESService(), new DummySQSService(), getMockConfig()),
         new DummyUploadService(
           ctx.prisma,
           new DummyS3Service(),
@@ -883,6 +883,7 @@ describe('Applicant Controller', () => {
           sesReplyToAddress: 'replies@futurestech.com',
           region: 'us-east-1',
           sesWhiteList: ['bboberson@gmail.com'],
+          emailQueueUrl: undefined
         },
         env: 'dev',
         useEmailWhiteList: true,
@@ -929,6 +930,7 @@ describe('Applicant Controller', () => {
           sesReplyToAddress: 'replies@futurestech.com',
           region: 'us-east-1',
           sesWhiteList: ['bboberson@gmail.com'],
+          emailQueueUrl: undefined,
         },
         env: 'dev',
         useEmailWhiteList: true,

@@ -189,12 +189,14 @@ describe('Email Service', () => {
     const mockSesSendEmailFunc = jest.spyOn(dummySesService, 'sendEmail');
     const emailService = new EmailService(
       dummySesService,
+      new DummySQSService(),
       getMockConfig({
         aws: {
           sesFromAddress: 'baz@futurestech.com',
           sesReplyToAddress: 'replies@futurestech.com',
           region: 'us-east-1',
           sesWhiteList: [],
+          emailQueueUrl: undefined,
         },
         env: 'prod',
       }),
@@ -213,6 +215,7 @@ describe('Email Service', () => {
     const mockSesSendEmailFunc = jest.spyOn(dummySesService, 'sendEmail');
     const emailService = new EmailService(
       dummySesService,
+      new DummySQSService(),
       getMockConfig({
         aws: {
           sesFromAddress: 'baz@futurestech.com',
@@ -234,6 +237,7 @@ describe('Email Service', () => {
     const mockSesSendEmailFunc = jest.spyOn(dummySesService, 'sendEmail');
     const emailService = new EmailService(
       dummySesService,
+      new DummySQSService(),
       getMockConfig({
         aws: {
           sesFromAddress: 'baz@futurestech.com',
@@ -254,6 +258,7 @@ describe('Email Service', () => {
     const dummySesService = new DummySESService();
     const emailService = new EmailService(
       dummySesService,
+      new DummySQSService(),
       getMockConfig({
         aws: {
           sesFromAddress: 'baz@futurestech.com',
@@ -291,6 +296,7 @@ describe('Email Service', () => {
     const mockSesSendEmailFunc = jest.spyOn(dummySesService, 'sendEmail');
     const emailService = new EmailService(
       dummySesService,
+      new DummySQSService(),
       getMockConfig({
         aws: {
           sesFromAddress: 'baz@futurestech.com',

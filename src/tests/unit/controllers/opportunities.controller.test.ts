@@ -10,6 +10,7 @@ import OpportunityController from '@App/controllers/OpportunityController.js';
 import EmailService from '@App/services/EmailService.js';
 import DummyEmailService from '@App/tests/fixtures/DummyEmailService.js';
 import DummySESService from '@App/tests/fixtures/DummySesService.js';
+import DummySQSService from '@App/tests/fixtures/DummySQSService.js';
 import { getMockConfig } from '../../util/helpers.js';
 
 let mockCtx: MockContext;
@@ -26,7 +27,7 @@ describe('Opportunity Controller', () => {
   test('Should create a new batch of opportunities', async () => {
     const opportunityController = new OpportunityController(
       ctx.prisma,
-      new DummyEmailService(new DummySESService(), getMockConfig()),
+      new DummyEmailService(new DummySESService(), new DummySQSService(), getMockConfig()),
     );
     const reqPayload: OpportunityBatchRequestBody = {
       acceptedPrivacy: true,
@@ -98,7 +99,7 @@ describe('Opportunity Controller', () => {
     mockCtx.prisma.opportunityBatch.create.mockRejectedValue(mockError);
     const opportunityController = new OpportunityController(
       ctx.prisma,
-      new DummyEmailService(new DummySESService(), getMockConfig()),
+      new DummyEmailService(new DummySESService(), new DummySQSService(), getMockConfig()),
     );
     const reqPayload: OpportunityBatchRequestBody = {
       acceptedPrivacy: true,
@@ -147,6 +148,7 @@ describe('Opportunity Controller', () => {
   test('Should send org welcome email after organization submits a batch of opportunities', async () => {
     const emailService = new EmailService(
       new DummySESService(),
+      new DummySQSService(),
       getMockConfig(),
     );
 

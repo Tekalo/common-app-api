@@ -160,17 +160,26 @@ class EmailService {
       }
       if (emailToSend.Destination.ToAddresses.length !== 0) {
         if (this.config.aws.emailQueueUrl) {
-          // TODO: should this be more definitive?
-          const messageOutput = await this.sqsService.enqueueMessage(
-            this.config.aws.emailQueueUrl,
-            emailToSend,
-          );
-          return messageOutput;
+          return this.enqueueEmail(this.config.aws.emailQueueUrl, emailToSend);
         }
         const emailOutput = await this.sesService.sendEmail(emailToSend);
         return emailOutput;
       }
     }
+  }
+
+  async enqueueEmail(emailQueueUrl: string, emailToSend: SendEmailCommandInput): Promise<SendMessageCommandOutput> {
+    const message = {
+      recipientEmail: emailToSend.Destination?.ToAddresses?[0]:'',
+      subject: emailToSend.Message?.Subject?.Data,
+      htmlBody: emailToSend.Message?.Body?.Html?.Data,
+      textBody: emailToSend.Message?.Body?.Text?.Data
+    }
+    const messageOutput = await this.sqsService.enqueueMessage(
+      emailQueueUrl,
+      JSON.stringify(message),
+    );
+    return messageOutput;
   }
 }
 

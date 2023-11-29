@@ -16,7 +16,7 @@ const ConfigSchema = z.object({
     sesReplyToAddress: z.string(),
     region: z.string(),
     sesWhiteList: z.array(z.string()),
-    emailQueueUrl: z.string(),
+    emailQueueUrl: z.string().optional(),
   }),
   sentryDSN: z.string(),
   uploadBucket: z.string(),
