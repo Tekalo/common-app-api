@@ -57,7 +57,11 @@ const processMessage = async (message: SQSRecord) => {
 };
 
 export const handler: SQSHandler = async (event: SQSEvent) => {
-  await processMessage(event.Records[0]);
+  await Promise.all(
+    event.Records.map(async (record) => {
+      await processMessage(record);
+    }),
+  );
   // eslint-disable-next-line no-console
   console.info('done');
 };
