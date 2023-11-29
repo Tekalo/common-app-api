@@ -34,6 +34,12 @@ module "envconfig" {
   env = var.env
 }
 
+module "email" {
+  source             = "../../modules/email"
+  env                = module.envconfig.env
+  email_from_address = var.email_from_address
+}
+
 module "app" {
   source = "../../modules/app"
 
@@ -80,11 +86,6 @@ module "auth0_ses" {
   env                      = module.envconfig.env
 }
 
-module "email" {
-  source             = "../../modules/email"
-  env                = module.envconfig.env
-  email_from_address = var.email_from_address
-}
 
 # DNS for auth0
 # Dev and staging share an Auth0 tenant, which is configured with a custom domain.
