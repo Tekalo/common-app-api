@@ -86,7 +86,7 @@ class OpportunityController {
       },
     });
 
-    const skillsCreate = this.prisma.orgSkills.createMany({ data: submissionDesiredSkills.map((skill) => ({ name: skill })), skipDuplicates: true });
+    const skillsCreate = this.prisma.opportunitySkills.createMany({ data: submissionDesiredSkills.map((skill) => ({ name: skill })), skipDuplicates: true });
 
     const [ batch ] = await this.prisma.$transaction([
       batchCreate, skillsCreate,

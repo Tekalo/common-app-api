@@ -103,14 +103,14 @@ describe('POST /opportunities', () => {
       .post('/opportunities/batch')
       .send(oppBatchPayload)
       .expect(200);
-    const skills = await prisma.orgSkills.findFirst({
+    const skills = await prisma.opportunitySkills.findFirst({
       where: { name: 'Supah Coo Skill' },
     });
     expect(skills).toEqual({ name: 'Supah Coo Skill' });
   });
   it('should return 200 when opportunity submission includes skills that already exist in DB', async () => {
     const duplicateSkill = 'Duplicate Skill';
-    await prisma.orgSkills.create({
+    await prisma.opportunitySkills.create({
       data: { name: duplicateSkill },
     });
     oppBatchPayload.submissions[0].desiredSkills = [duplicateSkill];

@@ -255,7 +255,7 @@ model UserSkills {
   name                       String                  @unique @db.Citext
 }
 
-model OrgSkills {
+model OpportunitySkills {
   name                       String                  @unique @db.Citext
 }
 
