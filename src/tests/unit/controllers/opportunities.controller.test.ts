@@ -84,7 +84,7 @@ describe('Opportunity Controller', () => {
       referenceAttribution: 'linkedin',
       referenceAttributionOther: null,
     };
-    mockCtx.prisma.$transaction.mockResolvedValue([mockResolvedBatch])
+    mockCtx.prisma.$transaction.mockResolvedValue([mockResolvedBatch]);
     const response =
       await opportunityController.createOpportunityBatch(reqPayload);
     const { equalOpportunityEmployer, ...restOfReolved } = mockResolvedBatch;
@@ -208,7 +208,7 @@ describe('Opportunity Controller', () => {
       referenceAttribution: 'linkedin',
       referenceAttributionOther: null,
     };
-    mockCtx.prisma.$transaction.mockResolvedValue([mockResolvedBatch])
+    mockCtx.prisma.$transaction.mockResolvedValue([mockResolvedBatch]);
 
     const opportunityController = new OpportunityController(
       ctx.prisma,
