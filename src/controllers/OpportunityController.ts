@@ -23,7 +23,7 @@ class OpportunityController {
     data: OpportunityBatchRequestBody,
   ): Promise<OpportunityBatchResponseBody> {
     const opportunitySubmissions: Array<OpportunitySubmission> = [];
-    const batchDesiredSkills: Array<string> = [];
+    const submissionDesiredSkills: Array<string> = [];
     data.submissions.forEach((submission) => {
       opportunitySubmissions.push({
         source: submission.source,
@@ -47,7 +47,7 @@ class OpportunityController {
         similarStaffed: submission.similarStaffed,
         desiredImpactExp: submission.desiredImpactExp,
       });
-      batchDesiredSkills.push(...submission.desiredSkills);
+      submissionDesiredSkills.push(...submission.desiredSkills);
     });
 
     const {
@@ -86,9 +86,9 @@ class OpportunityController {
       },
     });
 
-    const skillsCreate = this.prisma.orgSkills.createMany({ data: batchDesiredSkills.map((skill) => ({ name: skill })), skipDuplicates: true });
+    const skillsCreate = this.prisma.orgSkills.createMany({ data: submissionDesiredSkills.map((skill) => ({ name: skill })), skipDuplicates: true });
 
-    const [ batch, skills ] = await this.prisma.$transaction([
+    const [ batch ] = await this.prisma.$transaction([
       batchCreate, skillsCreate,
     ]);
 
