@@ -14,7 +14,12 @@ class SkillController {
   }
 
   async getSkills(): Promise<SkillGetResponseBody> {
-    const skills = await this.prisma.skill.findMany();
+    const skills = await this.prisma.$queryRaw`
+      SELECT canonical
+      FROM "SkillsView"
+      WHERE suggest = true;
+    `;
+
     return Skills.SkillGetResponseBodySchema.parse({
       data: skills,
     });

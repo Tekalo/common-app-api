@@ -1,22 +1,3 @@
-import { prisma } from '@App/resources/client.js';
-
-const skills = {
-  data: [
-    {
-      name: 'Python',
-    },
-    {
-      name: 'JS',
-    },
-    {
-      name: 'type3script',
-    },
-    {
-      name: 'horse training',
-    },
-  ],
-};
-
 const referenceSkillsDummy = [
   {
     name: 'TypeScript',
@@ -32,6 +13,27 @@ const referenceSkillsDummy = [
   },
 ];
 
+const skillsAnnotationDummy = [
+  {
+    name: 'Typescript',
+    canonical: 'TypeScript',
+    suggest: true,
+    rejectAs: null,
+  },
+  {
+    name: 'JAVAScript',
+    canonical: null,
+    suggest: null,
+    rejectAs: null,
+  },
+  {
+    name: 'python',
+    canonical: null,
+    suggest: true,
+    rejectAs: null,
+  },
+];
+
 const referenceSkillsDummyDuplicateId = [
   {
     name: 'TypeScript (TS)',
@@ -39,20 +41,8 @@ const referenceSkillsDummyDuplicateId = [
   },
 ];
 
-const seedSkillsUpload = async () => {
-  const { data } = skills;
-  await prisma.skill.createMany({
-    data,
-  });
-};
-
-const seedSkillsDelete = async () => {
-  await prisma.skill.deleteMany();
-};
-
 export {
-  seedSkillsUpload,
-  seedSkillsDelete,
   referenceSkillsDummy,
   referenceSkillsDummyDuplicateId,
+  skillsAnnotationDummy,
 };

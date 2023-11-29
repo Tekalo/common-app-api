@@ -3,36 +3,64 @@ import { ReferenceSkillsCreateResponseBody } from '@App/resources/types/skills.j
 import request from 'supertest';
 import getDummyApp from '@App/tests/fixtures/appGenerator.js';
 import {
-  seedSkillsUpload,
-  seedSkillsDelete,
   referenceSkillsDummy,
   referenceSkillsDummyDuplicateId,
+  skillsAnnotationDummy,
 } from '../fixtures/skillGenerator.js';
 import { getRandomString } from '../util/helpers.js';
 import authHelper, { TokenOptions } from '../util/auth.js';
 
-beforeAll(async () => {
-  await seedSkillsUpload();
-});
-
-afterAll(async () => {
-  await seedSkillsDelete();
-});
-
 const dummyApp = getDummyApp();
 
 describe('GET /skills', () => {
-  it('should return all skill names in Skills table with no JWT required', async () => {
+  it('should return name field with suggest==true from the Skills View generated from ReferenceSkills table and SkillsAnnotation table', async () => {
+    const randomString = getRandomString();
+    const partialTokenOptions: TokenOptions = {
+      roles: ['admin'],
+    };
+    const token = await authHelper.getToken(
+      `bboberson${randomString}@gmail.com`,
+      partialTokenOptions,
+    );
+    // upsert dummy data to ReferenceSkills table
+    const { body: body1 }: { body: ReferenceSkillsCreateResponseBody } =
+      await request(dummyApp)
+        .post('/skills/referenceSet')
+        .send(referenceSkillsDummy)
+        .set('Authorization', `Bearer ${token}`)
+        .expect(200);
+    expect(body1).toHaveProperty('successCount');
+    expect(body1.successCount).toBe(3);
+
+    // upsert dummy data to SkillsAnnotation table
+    await prisma.skillsAnnotation.createMany({
+      data: skillsAnnotationDummy,
+    });
+
+    // execute SQL command to create the view
+    await prisma.$executeRaw`
+        CREATE VIEW "SkillsView" AS
+        SELECT
+          sa.name as name,
+          COALESCE(sa.canonical, rs.name, sa.name) as canonical,
+          CASE
+            WHEN sa.suggest IS NOT NULL THEN sa.suggest
+            WHEN rs.name IS NOT NULL THEN true
+            ELSE false
+          END as suggest,
+          sa."rejectAs" as "rejectAs"
+        FROM "SkillsAnnotation" sa
+        LEFT JOIN "ReferenceSkills" rs ON LOWER(sa.name) = LOWER(rs.name)
+    `;
+
     const { body, headers } = await request(dummyApp)
       .get('/skills')
       .expect(200);
     expect(headers).toHaveProperty('cache-control', 'public, max-age=3600');
     expect(body).toEqual({
       data: expect.arrayContaining([
-        { name: 'Python' },
-        { name: 'JS' },
-        { name: 'type3script' },
-        { name: 'horse training' },
+        { canonical: 'Python' },
+        { canonical: 'TypeScript' },
       ]),
     });
   });

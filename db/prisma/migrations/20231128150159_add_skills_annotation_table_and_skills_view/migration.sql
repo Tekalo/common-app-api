@@ -8,3 +8,4 @@ CREATE TABLE "SkillsAnnotation" (
 
 -- CreateIndex
 CREATE UNIQUE INDEX "SkillsAnnotation_name_key" ON "SkillsAnnotation"("name");
+
