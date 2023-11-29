@@ -11,3 +11,6 @@ auth0_from_email_address = "futuresengine-auth0@dev.apps.futurestech.cloud"
 ses_whitelist            = "nnikkhoui@schmidtfutures.com,acook@schmidtfutures.com,aarmentrout@schmidtfutures.com,cwegrzyn@schmidtfutures.com,cgong@schmidtfutures.com,eperakis@schmidtfutures.com,lgittelson@schmidtfutures.com,smartin@schmidtfutures.com,thawkins@schmidtfutures.com"
 
 uploads_cors_allowed_origins = ["*"]
+
+image     = "297530360210.dkr.ecr.us-east-1.amazonaws.com/capp/api:e0e4a41"
+cli_image = "297530360210.dkr.ecr.us-east-1.amazonaws.com/capp/api:e0e4a41"
