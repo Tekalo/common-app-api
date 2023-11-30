@@ -42,7 +42,7 @@ const OpportunitySubmissionSchema = z.object({
               .split(/[\s,\t]+/)
               .join(' '),
           )
-        : undefined,
+        : [],
     ),
   desiredOtherSkills: z.array(z.string()).optional(),
   visaSponsorship: VisaSponsorship.optional(),
