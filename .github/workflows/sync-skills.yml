@@ -54,7 +54,7 @@ jobs:
           run_result=$(aws ecs run-task \
             --cluster "$ECS_CLUSTER" \
             --task-definition "$ECS_CLI_TASK" \
-            --overrides "{\"containerOverrides\": [{\"name\": \"capp-cli\", \"command\": [ \"node\", \"-v\"]}]}" \
+            --overrides "{\"containerOverrides\": [{\"name\": \"capp-cli\", \"command\": [ \"node\", \"--loader\", \"ts-node/esm\", \"./scripts/skillSync.ts\"]}]}" \
             --launch-type FARGATE \
             --network-configuration "{\"awsvpcConfiguration\":{\"subnets\":[\"${SUBNET0}\"], \"securityGroups\":[\"${SECURITY_GROUP}\"]}}" )
           echo ${run_result}
@@ -65,5 +65,3 @@ jobs:
           exit $(aws ecs describe-tasks \
             --cluster "$ECS_CLUSTER" \
             --tasks "${container_arn}" | jq -r .tasks[0].containers[0].exitCode)
-
-
