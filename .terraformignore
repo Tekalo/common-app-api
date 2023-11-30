@@ -1,0 +1,3 @@
+# Deny everything, except for the tf folder
+*
+!tf/
