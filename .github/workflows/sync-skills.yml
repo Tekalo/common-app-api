@@ -16,7 +16,7 @@ env:
   ECS_CLI_TASK: capp-${{ inputs.env }}-cli
   # ECS_API_TASK: capp-${{ inputs.env }}-api
   ECS_CLUSTER: ${{ inputs.env }}
-  VPC_STACK_NAME: ${{ inputs.env }}-vpc
+  # VPC_STACK_NAME: ${{ inputs.env }}-vpc
   LIGHTCAST_CLIENT_ID: ${{ secrets.LIGHTCAST_CLIENT_ID }}
   LIGHTCAST_CLIENT_SECRET: ${{ secrets.LIGHTCAST_CLIENT_SECRET }}
 
@@ -48,16 +48,12 @@ jobs:
         id: sync-skills
         run: |
           set -euo pipefail
-          SUBNET0=$(aws cloudformation describe-stacks --stack-name $VPC_STACK_NAME \
-            --query 'Stacks[0].Outputs[?OutputKey==`PrivateSubnet0`].OutputValue' --output text)
-          SECURITY_GROUP=$(aws cloudformation describe-stacks --stack-name $VPC_STACK_NAME \
-            --query 'Stacks[0].Outputs[?OutputKey==`LBHostSecurityGroup`].OutputValue' --output text)
+          raw_command=(${{ inputs.command }})
+          printf -v formatted_command ', "%s"' "${raw_command[@]}"
           run_result=$(aws ecs run-task \
             --cluster "$ECS_CLUSTER" \
             --task-definition "$ECS_CLI_TASK" \
             --overrides '{"containerOverrides": [{"name": "capp-cli", "command": ["pnpm", "sync-skills"]}]}' \
-            --launch-type FARGATE \
-            --network-configuration "{\"awsvpcConfiguration\":{\"subnets\":[\"${SUBNET0}\"], \"securityGroups\":[\"${SECURITY_GROUP}\"]}}" )
           echo ${run_result}
           container_arn=$(echo $run_result | jq -r '.tasks[0].taskArn')
           aws ecs wait tasks-stopped \
