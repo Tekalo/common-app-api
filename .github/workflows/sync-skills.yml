@@ -41,19 +41,19 @@ jobs:
           role-to-assume: "${{ vars[format('{0}_AWS_PLAN_ROLE', inputs.env)] }}"
           role-session-name: GithubActions
 
-      # - name: Run sync skills script
-      #   id: sync-skills
-      #   run: |
-      #     set -euo pipefail
-      #     run_result=$(aws ecs run-task \
-      #       --cluster "$ECS_CLUSTER" \
-      #       --task-definition "$ECS_CLI_TASK" \
-      #       --overrides '{"containerOverrides": [{"name": "capp-cli", "command": ["node", "--loader", "ts-node\/esm", "./scripts/skillSync.ts"]}]}' \
-      #     echo ${run_result}
-      #     container_arn=$(echo $run_result | jq -r '.tasks[0].taskArn')
-      #     aws ecs wait tasks-stopped \
-      #         --cluster "$ECS_CLUSTER" \
-      #         --tasks "${container_arn}"
-      #     exit $(aws ecs describe-tasks \
-      #       --cluster "$ECS_CLUSTER" \
-      #       --tasks "${container_arn}" | jq -r .tasks[0].containers[0].exitCode)
+      - name: Run sync skills script
+        id: sync-skills
+        run: |
+          set -euo pipefail
+          run_result=$(aws ecs run-task \
+            --cluster "$ECS_CLUSTER" \
+            --task-definition "$ECS_CLI_TASK" \
+            --overrides '{"containerOverrides": [{"name": "capp-cli", "command": ["node", "--loader", "ts-node\/esm", ".\/scripts\/skillSync.ts"]}]}' \
+          echo ${run_result}
+          container_arn=$(echo $run_result | jq -r '.tasks[0].taskArn')
+          aws ecs wait tasks-stopped \
+              --cluster "$ECS_CLUSTER" \
+              --tasks "${container_arn}"
+          exit $(aws ecs describe-tasks \
+            --cluster "$ECS_CLUSTER" \
+            --tasks "${container_arn}" | jq -r .tasks[0].containers[0].exitCode)
