@@ -1,18 +1,34 @@
 /*
   Warnings:
 
-  - You are about to drop the column `canonicalSkill` on the `SkillsAnnotation` table. All the data in the column will be lost.
   - You are about to drop the `Skill` table. If the table is not empty, all the data it contains will be lost.
+  - You are about to drop the `UserSkills` table. If the table is not empty, all the data it contains will be lost.
 
 */
--- AlterTable
-ALTER TABLE "SkillsAnnotation" DROP COLUMN "canonicalSkill",
-ADD COLUMN     "canonical" TEXT,
-ALTER COLUMN "suggest" DROP NOT NULL,
-ALTER COLUMN "rejectAs" DROP NOT NULL;
-
 -- DropTable
 DROP TABLE "Skill";
+
+-- DropTable
+DROP TABLE "UserSkills";
+
+-- CreateTable
+CREATE TABLE "ApplicantSkills" (
+    "name" CITEXT NOT NULL
+);
+
+-- CreateTable
+CREATE TABLE "SkillsAnnotation" (
+    "name" CITEXT NOT NULL,
+    "canonical" TEXT,
+    "suggest" BOOLEAN,
+    "rejectAs" TEXT
+);
+
+-- CreateIndex
+CREATE UNIQUE INDEX "ApplicantSkills_name_key" ON "ApplicantSkills"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "SkillsAnnotation_name_key" ON "SkillsAnnotation"("name");
 
 -- Create SkillsView table view
 CREATE VIEW "SkillsView" AS
@@ -27,3 +43,4 @@ CREATE VIEW "SkillsView" AS
         sa."rejectAs" as "rejectAs"
     FROM "SkillsAnnotation" sa
     LEFT JOIN "ReferenceSkills" rs ON LOWER(sa.name) = LOWER(rs.name)
+

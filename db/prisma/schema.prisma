@@ -2,7 +2,7 @@
 
 generator client {
   provider = "prisma-client-js"
-  previewFeatures = ["postgresqlExtensions"]
+  previewFeatures = ["postgresqlExtensions","views"]
 }
 
 datasource db {
@@ -247,7 +247,7 @@ model Upload {
   ApplicantDraftSubmission ApplicantDraftSubmission?
 }
 
-model UserSkills {
+model ApplicantSkills {
   name                       String                  @unique @db.Citext
 }
 
@@ -261,4 +261,11 @@ model SkillsAnnotation {
   canonical               String?                    
   suggest                 Boolean?
   rejectAs                String?
+}
+
+view SkillsView {
+  name String @unique
+  canonical String?
+  suggest Boolean?
+  rejectAs String?
 }

@@ -13,7 +13,8 @@ import authHelper, { TokenOptions } from '../util/auth.js';
 const dummyApp = getDummyApp();
 
 describe('GET /skills', () => {
-  it('should return name field with suggest==true from the Skills View generated from ReferenceSkills table and SkillsAnnotation table', async () => {
+  it('should return suggested skills from the Skills View', async () => {
+    // Will specifically return canonical field of all rows where suggest==true and rejectAs==null from the Skills View, which is generated from ReferenceSkills table and SkillsAnnotation table
     const randomString = getRandomString();
     const partialTokenOptions: TokenOptions = {
       roles: ['admin'],
@@ -37,6 +38,7 @@ describe('GET /skills', () => {
       data: skillsAnnotationDummy,
     });
 
+    // uncomment the below codes for local testing
     // execute SQL command to create the view
     await prisma.$executeRaw`
         CREATE VIEW "SkillsView" AS
@@ -61,6 +63,7 @@ describe('GET /skills', () => {
       data: expect.arrayContaining([
         { canonical: 'Python' },
         { canonical: 'TypeScript' },
+        { canonical: 'Node.js' },
       ]),
     });
   });

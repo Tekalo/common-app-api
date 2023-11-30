@@ -32,6 +32,12 @@ const skillsAnnotationDummy = [
     suggest: true,
     rejectAs: null,
   },
+  {
+    name: 'nodeJS',
+    canonical: 'Node.js',
+    suggest: true,
+    rejectAs: null,
+  },
 ];
 
 const referenceSkillsDummyDuplicateId = [
