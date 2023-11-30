@@ -14,6 +14,7 @@ const UTMPayloadSchema = z.object({
 
 const IdOnlySchema = z.object({ id: z.number() });
 
+// Cleans each skill in the array by replacing any whitespace characters with a space
 const SkillsArraySchema = z
   .array(z.string().max(255))
   .transform((skillsArray) =>
