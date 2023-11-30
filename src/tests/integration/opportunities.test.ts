@@ -101,6 +101,8 @@ describe('POST /opportunities', () => {
   });
   it('should save new desiredSkills in a new batch of opportunities', async () => {
     // All outside/inside whitespaces should be trimmed
+    const uncleanSkill = '  Supah   Coo   Skill '
+    const cleanSkill = 'Supah Coo Skill'
     oppBatchPayload.submissions[0].desiredSkills = ['  Supah   Coo   Skill '];
     await request(dummyApp)
       .post('/opportunities/batch')
