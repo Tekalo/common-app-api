@@ -40,20 +40,20 @@ describe('GET /skills', () => {
 
     // uncomment the below codes for local testing
     // execute SQL command to create the view
-    await prisma.$executeRaw`
-        CREATE VIEW "SkillsView" AS
-        SELECT
-          sa.name as name,
-          COALESCE(sa.canonical, rs.name, sa.name) as canonical,
-          CASE
-            WHEN sa.suggest IS NOT NULL THEN sa.suggest
-            WHEN rs.name IS NOT NULL THEN true
-            ELSE false
-          END as suggest,
-          sa."rejectAs" as "rejectAs"
-        FROM "SkillsAnnotation" sa
-        LEFT JOIN "ReferenceSkills" rs ON LOWER(sa.name) = LOWER(rs.name)
-    `;
+    // await prisma.$executeRaw`
+    //     CREATE VIEW "SkillsView" AS
+    //     SELECT
+    //       sa.name as name,
+    //       COALESCE(sa.canonical, rs.name, sa.name) as canonical,
+    //       CASE
+    //         WHEN sa.suggest IS NOT NULL THEN sa.suggest
+    //         WHEN rs.name IS NOT NULL THEN true
+    //         ELSE false
+    //       END as suggest,
+    //       sa."rejectAs" as "rejectAs"
+    //     FROM "SkillsAnnotation" sa
+    //     LEFT JOIN "ReferenceSkills" rs ON LOWER(sa.name) = LOWER(rs.name)
+    // `;
 
     const { body, headers } = await request(dummyApp)
       .get('/skills')
