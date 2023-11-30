@@ -13,6 +13,7 @@ on:
 
 env:
   AWS_REGION: us-east-1
+  ECS_API_TASK: capp-${{ inputs.env }}-api
   ECS_CLI_TASK: capp-${{ inputs.env }}-cli
   ECS_CLUSTER: ${{ inputs.env }}
   LIGHTCAST_CLIENT_ID: ${{ secrets.LIGHTCAST_CLIENT_ID }}
@@ -45,10 +46,16 @@ jobs:
         id: sync-skills
         run: |
           set -euo pipefail
+          SUBNET0=$(aws cloudformation describe-stacks --stack-name $VPC_STACK_NAME \
+            --query 'Stacks[0].Outputs[?OutputKey==`PrivateSubnet0`].OutputValue' --output text)
+          SECURITY_GROUP=$(aws cloudformation describe-stacks --stack-name $VPC_STACK_NAME \
+            --query 'Stacks[0].Outputs[?OutputKey==`LBHostSecurityGroup`].OutputValue' --output text)
           run_result=$(aws ecs run-task \
             --cluster "$ECS_CLUSTER" \
             --task-definition "$ECS_CLI_TASK" \
             --overrides "{\"containerOverrides\": [{\"name\": \"capp-cli\", \"command\": [ \"node\", \"-v\"]}]}")
+            --launch-type FARGATE \
+            --network-configuration "{\"awsvpcConfiguration\":{\"subnets\":[\"${SUBNET0}\"], \"securityGroups\":[\"${SECURITY_GROUP}\"]}}" )
           echo ${run_result}
           container_arn=$(echo $run_result | jq -r '.tasks[0].taskArn')
           aws ecs wait tasks-stopped \
