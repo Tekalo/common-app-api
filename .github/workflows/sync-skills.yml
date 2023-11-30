@@ -48,7 +48,7 @@ jobs:
           run_result=$(aws ecs run-task \
             --cluster "$ECS_CLUSTER" \
             --task-definition "$ECS_CLI_TASK" \
-            --overrides '{"containerOverrides": [{"name": "capp-cli", "command": ["node", "--loader", "ts-node\/esm", ".\/scripts\/skillSync.ts"]}]}' \
+            --overrides '{"containerOverrides": [{"name": "capp-cli", "command": ["node", "-v"]}]}' \
           echo ${run_result}
           container_arn=$(echo $run_result | jq -r '.tasks[0].taskArn')
           aws ecs wait tasks-stopped \
