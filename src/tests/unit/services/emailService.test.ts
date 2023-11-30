@@ -314,6 +314,15 @@ describe('Email Service', () => {
   });
 });
 
+describe('Email Service sending to SQS queue', () => {
+   test('should send email as a message to email sender SQS queue when queue is configured', async () => {
+
+   });
+   test('should send email directly via SES when email sender SQS queue is not configured', async () => {
+
+   });
+});
+
 describe('should lowercase email addresses and remove the right part of +', () => {
   const arrInput = [
     'Aboberson@schmidtfutures.com',
