@@ -47,8 +47,6 @@ jobs:
         id: sync-skills
         run: |
           set -euo pipefail
-          raw_command=(${{ inputs.command }})
-          printf -v formatted_command ', "%s"' "${raw_command[@]}"
           run_result=$(aws ecs run-task \
             --cluster "$ECS_CLUSTER" \
             --task-definition "$ECS_CLI_TASK" \
