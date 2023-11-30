@@ -15,7 +15,7 @@ importers:
         specifier: 3.454.0
         version: 3.454.0
       '@aws-sdk/client-sqs':
-        specifier: ^3.461.0
+        specifier: 3.462.0
         version: 3.462.0
       '@aws-sdk/s3-presigned-post':
         specifier: 3.456.0
@@ -236,7 +236,7 @@ packages:
     resolution: {integrity: sha512-IzSgsrxUcsrejQbPVilIKy16kAT52EwB6zSaI+M3xxIhKh5+aldEyvI+z6erM7TCLB2BJsFrtHjp6/4/sr+3dA==}
     dependencies:
       '@aws-crypto/util': 3.0.0
-      '@aws-sdk/types': 3.451.0
+      '@aws-sdk/types': 3.460.0
       tslib: 1.14.1
     dev: false
 
@@ -244,7 +244,7 @@ packages:
     resolution: {integrity: sha512-ENNPPManmnVJ4BTXlOjAgD7URidbAznURqD0KvfREyc4o20DPYdEldU1f5cQ7Jbj0CJJSPaMIk/9ZshdB3210w==}
     dependencies:
       '@aws-crypto/util': 3.0.0
-      '@aws-sdk/types': 3.451.0
+      '@aws-sdk/types': 3.460.0
       tslib: 1.14.1
     dev: false
 
