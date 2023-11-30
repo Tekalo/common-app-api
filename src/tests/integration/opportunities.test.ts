@@ -101,17 +101,17 @@ describe('POST /opportunities', () => {
   });
   it('should save new desiredSkills in a new batch of opportunities', async () => {
     // All outside/inside whitespaces should be trimmed
-    const uncleanSkill = '  Supah   Coo   Skill '
-    const cleanSkill = 'Supah Coo Skill'
-    oppBatchPayload.submissions[0].desiredSkills = ['  Supah   Coo   Skill '];
+    const uncleanSkill = '  Supah   Coo   Skill ';
+    const cleanSkill = 'Supah Coo Skill';
+    oppBatchPayload.submissions[0].desiredSkills = [uncleanSkill];
     await request(dummyApp)
       .post('/opportunities/batch')
       .send(oppBatchPayload)
       .expect(200);
     const skills = await prisma.opportunitySkills.findFirst({
-      where: { name: 'Supah Coo Skill' },
+      where: { name: cleanSkill },
     });
-    expect(skills).toEqual({ name: 'Supah Coo Skill' });
+    expect(skills).toEqual({ name: cleanSkill });
   });
   it('should return 200 when opportunity submission includes skills that already exist in DB', async () => {
     const duplicateSkill = 'Duplicate Skill';
