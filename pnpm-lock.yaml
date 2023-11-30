@@ -38,9 +38,6 @@ importers:
       '@sentry/types':
         specifier: 7.81.1
         version: 7.81.1
-      '@tsconfig/node20':
-        specifier: 20.1.2
-        version: 20.1.2
       '@types/auth0':
         specifier: 3.3.10
         version: 3.3.10
@@ -96,6 +93,9 @@ importers:
       '@swc/jest':
         specifier: 0.2.29
         version: 0.2.29(@swc/core@1.3.99)
+      '@tsconfig/node20':
+        specifier: 20.1.2
+        version: 20.1.2
       '@types/aws-lambda':
         specifier: ^8.10.122
         version: 8.10.122
@@ -2449,7 +2449,7 @@ packages:
 
   /@tsconfig/node20@20.1.2:
     resolution: {integrity: sha512-madaWq2k+LYMEhmcp0fs+OGaLFk0OenpHa4gmI4VEmCKX4PJntQ6fnnGADVFrVkBj0wIdAlQnK/MrlYTHsa1gQ==}
-    dev: false
+    dev: true
 
   /@types/auth0@3.3.10:
     resolution: {integrity: sha512-9tS0Y2igWxw+Dx5uCHkIUCu6tG0oRkwpE322dOJPwZMLXQMx49n/gDmUz7YJSe1iVjrWW+ffVYmlPShVIEwjkg==}
