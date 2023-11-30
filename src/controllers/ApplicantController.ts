@@ -395,20 +395,20 @@ class ApplicantController {
   }
 
   // Deletes all applicants that match a known email pattern only used for testing
-  async deleteTestApplicants(): Promise<number> {
+  async deleteTestApplicants(): Promise<IdOnly[]> {
     const applicantsToDelete = await this.prisma.$queryRaw<
       IdOnly[]
     >`SELECT id FROM "Applicant" WHERE email LIKE 'test-user%@schmidtfutures.com' OR email LIKE 'success+test-user%@simulator.amazonses.com'`;
-    let deletedCount = 0;
+    const deletedApps: IdOnly[] = [];
 
     await Promise.all(
       applicantsToDelete.map(async (x: IdOnly) => {
-        await this.deleteApplicantForce(x.id);
-        deletedCount += 1;
+        const res = await this.deleteApplicantForce(x.id);
+        deletedApps.push(res);
       }),
     );
 
-    return deletedCount;
+    return deletedApps;
   }
 
   async validResume(
