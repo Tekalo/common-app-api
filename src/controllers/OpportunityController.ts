@@ -4,7 +4,6 @@ import { Opportunities } from '@capp/schemas';
 import {
   OpportunityBatchRequestBody,
   OpportunityBatchResponseBody,
-  OpportunitySubmission,
 } from '@App/resources/types/opportunities.js';
 import EmailService from '@App/services/EmailService.js';
 import MonitoringService from '@App/services/MonitoringService.js';
@@ -22,10 +21,8 @@ class OpportunityController {
   async createOpportunityBatch(
     data: OpportunityBatchRequestBody,
   ): Promise<OpportunityBatchResponseBody> {
-    const opportunitySubmissions: Array<OpportunitySubmission> = [];
-    const submissionDesiredSkills: Array<string> = [];
-    data.submissions.forEach((submission) => {
-      opportunitySubmissions.push({
+    const opportunitySubmissions = data.submissions.map((submission) => {
+      return {
         source: submission.source,
         paid: submission.paid,
         location: submission.location,
@@ -46,9 +43,9 @@ class OpportunityController {
         visaSponsorship: submission.visaSponsorship,
         similarStaffed: submission.similarStaffed,
         desiredImpactExp: submission.desiredImpactExp,
-      });
-      submissionDesiredSkills.push(...submission.desiredSkills);
+      }
     });
+    const submissionDesiredSkills = data.submissions.flatMap((submission) => submission.desiredSkills)
 
     const {
       organization,

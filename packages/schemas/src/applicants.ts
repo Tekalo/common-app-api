@@ -75,14 +75,7 @@ const ApplicantCreateSubmissionRequestBody = z.object({
   }),
   lastOrg: z.string().max(255),
   yoe: YOE,
-  skills: z.array(z.string().max(255)).transform((skillsArray) =>
-    skillsArray.map((skill) =>
-      skill
-        .trim()
-        .split(/[\s,\t]+/)
-        .join(' '),
-    ),
-  ),
+  skills: Shared.SkillsArraySchema,
   otherSkills: z.array(z.string().max(255)),
   linkedInUrl: z.string().max(500).nullable(),
   githubUrl: z.string().max(500).nullable(),
