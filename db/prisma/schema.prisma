@@ -251,6 +251,12 @@ model ApplicantSkills {
   name                       String                  @unique @db.Citext
 }
 
+// custom skills submitted in opportunity submissions
+model OpportunitySkills {
+  name                       String                  @unique @db.Citext
+}
+
+// imported skills from 3rd party sources (at time of writing, Lightcast)
 model ReferenceSkills {
   referenceId              String                    @id
   name                     String
