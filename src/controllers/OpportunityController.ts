@@ -21,31 +21,31 @@ class OpportunityController {
   async createOpportunityBatch(
     data: OpportunityBatchRequestBody,
   ): Promise<OpportunityBatchResponseBody> {
-    const opportunitySubmissions = data.submissions.map((submission) => {
-      return {
-        source: submission.source,
-        paid: submission.paid,
-        location: submission.location,
-        pitchEssay: submission.pitchEssay,
-        employmentType: submission.employmentType,
-        roleType: submission.roleType,
-        otherRoleType: submission.otherRoleType,
-        positionTitle: submission.positionTitle,
-        fullyRemote: submission.fullyRemote,
-        salaryRange: submission.salaryRange,
-        desiredHoursPerWeek: submission.desiredHoursPerWeek,
-        desiredStartDate: submission.desiredStartDate,
-        desiredEndDate: submission.desiredEndDate,
-        jdUrl: submission.jdUrl,
-        desiredYoe: submission.desiredYoe,
-        desiredSkills: submission.desiredSkills,
-        desiredOtherSkills: submission.desiredOtherSkills,
-        visaSponsorship: submission.visaSponsorship,
-        similarStaffed: submission.similarStaffed,
-        desiredImpactExp: submission.desiredImpactExp,
-      }
-    });
-    const submissionDesiredSkills = data.submissions.flatMap((submission) => submission.desiredSkills)
+    const opportunitySubmissions = data.submissions.map((submission) => ({
+      source: submission.source,
+      paid: submission.paid,
+      location: submission.location,
+      pitchEssay: submission.pitchEssay,
+      employmentType: submission.employmentType,
+      roleType: submission.roleType,
+      otherRoleType: submission.otherRoleType,
+      positionTitle: submission.positionTitle,
+      fullyRemote: submission.fullyRemote,
+      salaryRange: submission.salaryRange,
+      desiredHoursPerWeek: submission.desiredHoursPerWeek,
+      desiredStartDate: submission.desiredStartDate,
+      desiredEndDate: submission.desiredEndDate,
+      jdUrl: submission.jdUrl,
+      desiredYoe: submission.desiredYoe,
+      desiredSkills: submission.desiredSkills,
+      desiredOtherSkills: submission.desiredOtherSkills,
+      visaSponsorship: submission.visaSponsorship,
+      similarStaffed: submission.similarStaffed,
+      desiredImpactExp: submission.desiredImpactExp,
+    }));
+    const submissionDesiredSkills = data.submissions.flatMap(
+      (submission) => submission.desiredSkills,
+    );
 
     const {
       organization,
@@ -83,11 +83,12 @@ class OpportunityController {
       },
     });
 
-    const skillsCreate = this.prisma.opportunitySkills.createMany({ data: submissionDesiredSkills.map((skill) => ({ name: skill })), skipDuplicates: true });
+    const skillsCreate = this.prisma.opportunitySkills.createMany({
+      data: submissionDesiredSkills.map((skill) => ({ name: skill })),
+      skipDuplicates: true,
+    });
 
-    const [ batch ] = await this.prisma.$transaction([
-      batchCreate, skillsCreate,
-    ]);
+    const [batch] = await this.prisma.$transaction([batchCreate, skillsCreate]);
 
     const returnBatch: OpportunityBatchResponseBody = {
       eoe: batch.equalOpportunityEmployer,
