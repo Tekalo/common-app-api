@@ -99,6 +99,31 @@ describe('POST /opportunities', () => {
       .expect(200);
     expect(body).toEqual(expect.objectContaining({ id: expect.any(Number) }));
   });
+  it('should save new desiredSkills in a new batch of opportunities', async () => {
+    // All outside/inside whitespaces should be trimmed
+    const uncleanSkill = '  Supah   Coo   Skill ';
+    const cleanSkill = 'Supah Coo Skill';
+    oppBatchPayload.submissions[0].desiredSkills = [uncleanSkill];
+    await request(dummyApp)
+      .post('/opportunities/batch')
+      .send(oppBatchPayload)
+      .expect(200);
+    const skills = await prisma.opportunitySkills.findFirst({
+      where: { name: cleanSkill },
+    });
+    expect(skills).toEqual({ name: cleanSkill });
+  });
+  it('should return 200 when opportunity submission includes skills that already exist in DB', async () => {
+    const duplicateSkill = 'Duplicate Skill';
+    await prisma.opportunitySkills.create({
+      data: { name: duplicateSkill },
+    });
+    oppBatchPayload.submissions[0].desiredSkills = [duplicateSkill];
+    await request(dummyApp)
+      .post('/opportunities/batch')
+      .send(oppBatchPayload)
+      .expect(200);
+  });
   it('should save UTM parameters', async () => {
     const { body }: { body: OpportunityBatch } = await request(dummyApp)
       .post('/opportunities/batch')

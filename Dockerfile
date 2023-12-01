@@ -19,6 +19,7 @@ CMD pnpm dev
 
 FROM base AS development
 ENV NODE_ENV development
+ENV PATH /api/node_modules/.bin:$PATH
 # pnpm install has prefer-frozen-lockfile set to true by default
 RUN pnpm install
 COPY . .

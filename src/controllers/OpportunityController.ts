@@ -43,13 +43,18 @@ class OpportunityController {
       similarStaffed: submission.similarStaffed,
       desiredImpactExp: submission.desiredImpactExp,
     }));
+    const submissionDesiredSkills = data.submissions.flatMap(
+      (submission) => submission.desiredSkills,
+    );
+
     const {
       organization,
       contact,
       referenceAttribution,
       referenceAttributionOther,
     } = data;
-    const batch = await this.prisma.opportunityBatch.create({
+
+    const batchCreate = this.prisma.opportunityBatch.create({
       data: {
         orgName: organization.name,
         orgType: organization.type,
@@ -77,6 +82,14 @@ class OpportunityController {
           : undefined,
       },
     });
+
+    const skillsCreate = this.prisma.opportunitySkills.createMany({
+      data: submissionDesiredSkills.map((skill) => ({ name: skill })),
+      skipDuplicates: true,
+    });
+
+    const [batch] = await this.prisma.$transaction([batchCreate, skillsCreate]);
+
     const returnBatch: OpportunityBatchResponseBody = {
       eoe: batch.equalOpportunityEmployer,
       ...batch,

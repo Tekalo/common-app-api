@@ -70,7 +70,7 @@ describe('Opportunity Controller', () => {
       ],
     };
     const { organization, contact } = reqPayload;
-    const mockResolved = {
+    const mockResolvedBatch = {
       id: 1,
       acceptedPrivacy: new Date('2023-01-01'),
       orgName: organization.name,
@@ -85,10 +85,10 @@ describe('Opportunity Controller', () => {
       referenceAttribution: 'linkedin',
       referenceAttributionOther: null,
     };
-    mockCtx.prisma.opportunityBatch.create.mockResolvedValue(mockResolved);
+    mockCtx.prisma.$transaction.mockResolvedValue([mockResolvedBatch]);
     const response =
       await opportunityController.createOpportunityBatch(reqPayload);
-    const { equalOpportunityEmployer, ...restOfReolved } = mockResolved;
+    const { equalOpportunityEmployer, ...restOfReolved } = mockResolvedBatch;
     expect(response).toEqual({ eoe: organization.eoe, ...restOfReolved });
   });
   test('Should return error when Prisma throws an invalid input error', async () => {
@@ -96,7 +96,7 @@ describe('Opportunity Controller', () => {
       code: '101',
       clientVersion: '1.0',
     });
-    mockCtx.prisma.opportunityBatch.create.mockRejectedValue(mockError);
+    mockCtx.prisma.$transaction.mockRejectedValue(mockError);
     const opportunityController = new OpportunityController(
       ctx.prisma,
       new DummyEmailService(new DummySESService(), new DummySQSService(), getMockConfig()),
@@ -195,7 +195,7 @@ describe('Opportunity Controller', () => {
       ],
     };
     const { organization, contact } = reqPayload;
-    const mockResolved = {
+    const mockResolvedBatch = {
       id: 1,
       acceptedPrivacy: new Date('2023-01-01'),
       orgName: organization.name,
@@ -210,7 +210,7 @@ describe('Opportunity Controller', () => {
       referenceAttribution: 'linkedin',
       referenceAttributionOther: null,
     };
-    mockCtx.prisma.opportunityBatch.create.mockResolvedValue(mockResolved);
+    mockCtx.prisma.$transaction.mockResolvedValue([mockResolvedBatch]);
 
     const opportunityController = new OpportunityController(
       ctx.prisma,
