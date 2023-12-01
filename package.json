@@ -38,7 +38,7 @@
     "prisma:seed": "docker compose run --rm api prisma db seed",
     "prisma:update": "docker compose run --rm api prisma db push",
     "generate-spec": "docker compose run api tsx /api/scripts/writeSpec.ts",
-    "sync-skills": "docker compose run -T --rm api tsx node --no-warnings=ExperimentalWarning --loader @swc-node/register/esm ./scripts/skillSync.ts"
+    "sync-skills": "docker compose run -T --rm api tsx ./scripts/skillSync.ts"
   },
   "repository": {
     "type": "git",
@@ -118,6 +118,6 @@
   },
   "prisma": {
     "schema": "db/prisma/schema.prisma",
-    "seed": "node --no-warnings=ExperimentalWarning --loader ts-node/esm ./db/resources/seed.ts"
+    "seed": "tsx ./db/resources/seed.ts"
   }
 }
