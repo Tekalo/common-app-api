@@ -75,14 +75,17 @@ const ApplicantCreateSubmissionRequestBody = z.object({
   }),
   lastOrg: z.string().max(255),
   yoe: YOE,
-  skills: z.array(z.string().max(255)).transform((skillsArray) =>
-    skillsArray.map((skill) =>
-      skill
-        .trim()
-        .split(/[\s,\t]+/)
-        .join(' '),
+  skills: z
+    .array(z.string().max(255))
+    // Cleans each skill in the array by replacing any whitespace characters with a space
+    .transform((skillsArray) =>
+      skillsArray.map((skill) =>
+        skill
+          .trim()
+          .split(/[\s,\t]+/)
+          .join(' '),
+      ),
     ),
-  ),
   otherSkills: z.array(z.string().max(255)),
   linkedInUrl: z.string().max(500).nullable(),
   githubUrl: z.string().max(500).nullable(),
