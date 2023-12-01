@@ -341,9 +341,9 @@ describe('Email Service sending to SQS queue', () => {
       emailService.generateOrgWelcomeEmail(recipientEmail);
     const expectedMessage = JSON.stringify({
       recipientEmail,
-      subject: welcomeEmailBody.Message.Subject.Data,
-      htmlBody: welcomeEmailBody.Message.Body.Html.Data,
-      textBody: welcomeEmailBody.Message.Body.Text?.Data,
+      subject: welcomeEmailBody.Message?.Subject?.Data,
+      htmlBody: welcomeEmailBody.Message?.Body?.Html?.Data,
+      textBody: welcomeEmailBody.Message?.Body?.Text?.Data,
     });
     await emailService.sendEmail(welcomeEmailBody);
     expect(mockSesSendEmailFunc).not.toHaveBeenCalled();
