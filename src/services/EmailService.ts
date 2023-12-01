@@ -168,8 +168,13 @@ class EmailService {
     }
   }
 
-  async enqueueEmail(emailQueueUrl: string, emailToSend: SendEmailCommandInput): Promise<SendMessageCommandOutput> {
-    const recipientEmail = emailToSend.Destination?.ToAddresses ? emailToSend.Destination.ToAddresses[0] : '';
+  async enqueueEmail(
+    emailQueueUrl: string,
+    emailToSend: SendEmailCommandInput,
+  ): Promise<SendMessageCommandOutput> {
+    const recipientEmail = emailToSend.Destination?.ToAddresses
+      ? emailToSend.Destination.ToAddresses[0]
+      : '';
     const message = {
       recipientEmail,
       subject: emailToSend.Message?.Subject?.Data,

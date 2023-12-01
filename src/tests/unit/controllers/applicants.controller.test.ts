@@ -763,7 +763,11 @@ describe('Applicant Controller', () => {
       const applicantController = new ApplicantController(
         new DummyAuthService(),
         ctx.prisma,
-        new DummyEmailService(new DummySESService(), new DummySQSService(), getMockConfig()),
+        new DummyEmailService(
+          new DummySESService(),
+          new DummySQSService(),
+          getMockConfig(),
+        ),
         new DummyUploadService(
           ctx.prisma,
           new DummyS3Service(),
@@ -795,7 +799,11 @@ describe('Applicant Controller', () => {
       const applicantController = new ApplicantController(
         new DummyAuthService(),
         ctx.prisma,
-        new DummyEmailService(new DummySESService(), new DummySQSService(), getMockConfig()),
+        new DummyEmailService(
+          new DummySESService(),
+          new DummySQSService(),
+          getMockConfig(),
+        ),
         new DummyUploadService(
           ctx.prisma,
           new DummyS3Service(),
@@ -822,7 +830,11 @@ describe('Applicant Controller', () => {
       const applicantController = new ApplicantController(
         new DummyAuthService(),
         ctx.prisma,
-        new DummyEmailService(new DummySESService(), new DummySQSService(), getMockConfig()),
+        new DummyEmailService(
+          new DummySESService(),
+          new DummySQSService(),
+          getMockConfig(),
+        ),
         new DummyUploadService(
           ctx.prisma,
           new DummyS3Service(),

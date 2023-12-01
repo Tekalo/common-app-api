@@ -27,7 +27,11 @@ describe('Opportunity Controller', () => {
   test('Should create a new batch of opportunities', async () => {
     const opportunityController = new OpportunityController(
       ctx.prisma,
-      new DummyEmailService(new DummySESService(), new DummySQSService(), getMockConfig()),
+      new DummyEmailService(
+        new DummySESService(),
+        new DummySQSService(),
+        getMockConfig(),
+      ),
     );
     const reqPayload: OpportunityBatchRequestBody = {
       acceptedPrivacy: true,
@@ -99,7 +103,11 @@ describe('Opportunity Controller', () => {
     mockCtx.prisma.$transaction.mockRejectedValue(mockError);
     const opportunityController = new OpportunityController(
       ctx.prisma,
-      new DummyEmailService(new DummySESService(), new DummySQSService(), getMockConfig()),
+      new DummyEmailService(
+        new DummySESService(),
+        new DummySQSService(),
+        getMockConfig(),
+      ),
     );
     const reqPayload: OpportunityBatchRequestBody = {
       acceptedPrivacy: true,

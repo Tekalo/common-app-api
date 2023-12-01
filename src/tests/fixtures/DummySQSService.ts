@@ -2,7 +2,7 @@
 import SQSService from '@App/services/SQSService.js';
 
 class DummySQSService extends SQSService {
-  async sendEmail() {
+  async enqueueMessage() {
     return Promise.resolve({ $metadata: {}, MessageId: '' });
   }
 }
