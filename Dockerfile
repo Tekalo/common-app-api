@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y \
 
 COPY package.json pnpm-lock.yaml tsconfig.json ./
 COPY db/ db/
+ENV PATH /api/node_modules/.bin:$PATH
 
 FROM base AS test
 ENV NODE_ENV test
@@ -19,7 +20,6 @@ CMD pnpm dev
 
 FROM base AS development
 ENV NODE_ENV development
-ENV PATH /api/node_modules/.bin:$PATH
 # pnpm install has prefer-frozen-lockfile set to true by default
 RUN pnpm install
 COPY . .
