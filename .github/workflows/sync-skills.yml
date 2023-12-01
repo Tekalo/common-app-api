@@ -1,5 +1,5 @@
 ---
-name: Skills Sync Script
+name: Run Skills Sync Script
 
 run-name: Run skills sync script in ${{ inputs.env }}
 
@@ -13,7 +13,6 @@ on:
 
 env:
   AWS_REGION: us-east-1
-  ECS_API_TASK: capp-${{ inputs.env }}-api
   ECS_CLI_TASK: capp-${{ inputs.env }}-cli
   ECS_CLUSTER: ${{ inputs.env }}
   VPC_STACK_NAME: ${{ inputs.env }}-vpc
