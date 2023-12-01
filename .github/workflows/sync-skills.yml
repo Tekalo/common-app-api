@@ -53,7 +53,7 @@ jobs:
           run_result=$(aws ecs run-task \
             --cluster "$ECS_CLUSTER" \
             --task-definition "$ECS_CLI_TASK" \
-            --overrides "{\"containerOverrides\": [{\"name\": \"capp-cli\", \"command\": [ \"pnpx\", \"tsx\", \"./scripts/skillSync.ts\"]}]}" \
+            --overrides "{\"containerOverrides\": [{\"name\": \"capp-cli\", \"command\": [ \"tsx\", \"./scripts/skillSync.ts\"]}]}" \
             --launch-type FARGATE \
             --network-configuration "{\"awsvpcConfiguration\":{\"subnets\":[\"${SUBNET0}\"], \"securityGroups\":[\"${SECURITY_GROUP}\"]}}" )
           echo ${run_result}
