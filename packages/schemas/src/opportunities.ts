@@ -30,7 +30,20 @@ const OpportunitySubmissionSchema = z.object({
   desiredEndDate: z.coerce.date().optional(),
   jdUrl: z.string().max(500).optional(),
   desiredYoe: z.array(YOE),
-  desiredSkills: Shared.SkillsArraySchema,
+  desiredSkills: z
+    .array(z.string().max(255))
+    .optional()
+    // Cleans each skill in the array by replacing any whitespace characters with a space
+    .transform((skillsArray) =>
+      skillsArray
+        ? skillsArray.map((skill) =>
+            skill
+              .trim()
+              .split(/[\s,\t]+/)
+              .join(' '),
+          )
+        : [],
+    ),
   desiredOtherSkills: z.array(z.string()).optional(),
   visaSponsorship: VisaSponsorship.optional(),
   similarStaffed: z.boolean(),
