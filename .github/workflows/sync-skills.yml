@@ -50,6 +50,7 @@ jobs:
             --query 'Stacks[0].Outputs[?OutputKey==`PrivateSubnet0`].OutputValue' --output text)
           SECURITY_GROUP=$(aws cloudformation describe-stacks --stack-name $VPC_STACK_NAME \
             --query 'Stacks[0].Outputs[?OutputKey==`LBHostSecurityGroup`].OutputValue' --output text)
+          PATH=/api/node_modules/.bin:$PATH
           run_result=$(aws ecs run-task \
             --cluster "$ECS_CLUSTER" \
             --task-definition "$ECS_CLI_TASK" \
