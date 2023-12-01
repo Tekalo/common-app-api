@@ -412,6 +412,66 @@ const specJson = createDocument({
         },
       },
     },
+    '/cleanup/testusers': {
+      delete: {
+        description: 'Delete all test applicants',
+        responses: {
+          '200': {
+            description: 'Success',
+          },
+          '400': {
+            description: 'Bad Input',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                },
+              },
+            },
+          },
+          '500': {
+            description: 'Error',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    '/cleanup/testopportunities': {
+      delete: {
+        description: 'Delete all test opportunities',
+        responses: {
+          '200': {
+            description: 'Success',
+          },
+          '400': {
+            description: 'Bad Input',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                },
+              },
+            },
+          },
+          '500': {
+            description: 'Error',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                },
+              },
+            },
+          },
+        },
+      },
+    },
   },
 });
 
