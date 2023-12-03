@@ -109,7 +109,7 @@
     "sentry-testkit": "5.0.8",
     "supertest": "6.3.3",
     "ts-node": "10.9.1",
-    "tsx": "4.6.1",
+    "tsx": "4.6.2",
     "typescript": "5.3.2"
   },
   "//": "added to resolve a critical vulnerability in @babel/traverse 7.23.0",
