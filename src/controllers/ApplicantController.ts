@@ -250,7 +250,7 @@ class ApplicantController {
     });
 
     // Throws error if applicantID doesn't exist
-    const createApplicantSubmission = this.prisma.applicantSubmission.update({
+    const updatedApplicantSubmission = this.prisma.applicantSubmission.update({
       data: {
         ...restOfSubmission,
         resumeUpload: {
@@ -264,7 +264,7 @@ class ApplicantController {
     });
 
     const [applicantSubmission] = await this.prisma.$transaction([
-      createApplicantSubmission,
+      updatedApplicantSubmission,
       createSkills,
     ]);
 
