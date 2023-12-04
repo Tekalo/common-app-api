@@ -8,8 +8,8 @@ const logger = pino({
   },
   // Suppress logs during testing since it's noisy
   // Ideal would be to find a mechanism to grab the logs and only display them if a test fails
-  enabled: process.env.NODE_ENV !== 'test',
-  // enabled: true,
+  // enabled: process.env.NODE_ENV !== 'test',
+  enabled: true,
   level: process.env.LOG_LEVEL || 'info',
   timestamp: pino.stdTimeFunctions.isoTime,
   redact: {

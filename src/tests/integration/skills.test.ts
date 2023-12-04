@@ -12,6 +12,7 @@ import {
 } from '../fixtures/skillGenerator.js';
 import { getRandomString } from '../util/helpers.js';
 import authHelper, { TokenOptions } from '../util/auth.js';
+import logger from '@App/services/logger.js';
 
 const dummyApp = getDummyApp();
 
@@ -48,20 +49,20 @@ describe('GET /skills', () => {
 
     // uncomment the below codes for local testing
     // execute SQL command to create the view; once created, view will automatically be updated whenever there are changes in source tables
-    // await prisma.$executeRaw`
-    //     CREATE VIEW "SkillsView" AS
-    //     SELECT
-    //       COALESCE(sa.name::citext, rs.name::citext) as name,
-    //       COALESCE(sa.canonical, rs.name, sa.name) as canonical,
-    //       CASE
-    //         WHEN sa.suggest IS NOT NULL THEN sa.suggest
-    //         WHEN rs.name IS NOT NULL THEN true
-    //         ELSE false
-    //       END as suggest,
-    //       sa."rejectAs" as "rejectAs"
-    //     FROM "SkillsAnnotation" sa
-    //     FULL JOIN "ReferenceSkills" rs ON sa.name = rs.name
-    // `;
+    await prisma.$executeRaw`
+        CREATE VIEW "SkillsView" AS
+        SELECT
+          COALESCE(sa.name::citext, rs.name::citext) as name,
+          COALESCE(sa.canonical, rs.name, sa.name) as canonical,
+          CASE
+            WHEN sa.suggest IS NOT NULL THEN sa.suggest
+            WHEN rs.name IS NOT NULL THEN true
+            ELSE false
+          END as suggest,
+          sa."rejectAs" as "rejectAs"
+        FROM "SkillsAnnotation" sa
+        FULL JOIN "ReferenceSkills" rs ON sa.name = rs.name
+    `;
 
     const { body, headers } = await request(dummyApp)
       .get('/skills')
@@ -235,11 +236,11 @@ describe('GET /skills', () => {
         ],
       });
 
-      // const ret = await prisma.$queryRaw`
-      //   SELECT * FROM "SkillsView"
-      // `;
+      const ret = await prisma.$queryRaw`
+        SELECT * FROM "SkillsView"
+      `;
 
-      // logger.info({ret}, "case 1-3");
+      logger.info({ret}, "case 1-3");
 
       const { body, headers } = await request(dummyApp)
         .get('/skills')
@@ -248,6 +249,8 @@ describe('GET /skills', () => {
       expect(body).toEqual({
         data: expect.arrayContaining([{ canonical: 'TypeScript' }]),
       });
+
+      logger.info({body}, "case 1-3");
     });
 
     it('Skills which have canonical but suggest is false should not be suggested', async () => {
