@@ -2,6 +2,7 @@ import {
   SendEmailCommandInput,
   SendEmailCommandOutput,
 } from '@aws-sdk/client-ses';
+import { SendMessageCommandOutput } from '@aws-sdk/client-sqs';
 import { BaseConfig } from '@App/resources/types/shared.js';
 import {
   getApplicantWelcomeEmail,
@@ -11,6 +12,7 @@ import {
   getOrgWelcomeEmail,
 } from '@App/resources/emails/index.js';
 import SESService from './SESService.js';
+import SQSService from './SQSService.js';
 
 // shall process roger+123ty@gmail.com into roger@gmail.com
 export function removeAliasLowercaseEmail(emailRaw: string): string {
@@ -36,10 +38,17 @@ export function removeAliasLowercaseEmail(emailRaw: string): string {
 class EmailService {
   private sesService: SESService;
 
+  private sqsService: SQSService;
+
   private config: BaseConfig;
 
-  constructor(sesService: SESService, config: BaseConfig) {
+  constructor(
+    sesService: SESService,
+    sqsService: SQSService,
+    config: BaseConfig,
+  ) {
     this.sesService = sesService;
+    this.sqsService = sqsService;
     this.config = config;
   }
 
@@ -135,7 +144,7 @@ class EmailService {
   /* eslint-disable consistent-return */
   async sendEmail(
     emailToSend: SendEmailCommandInput,
-  ): Promise<void | SendEmailCommandOutput> {
+  ): Promise<void | SendEmailCommandOutput | SendMessageCommandOutput> {
     if (emailToSend.Destination?.ToAddresses !== undefined) {
       const { sesWhiteList } = this.config.aws;
       // Use hashset for quicker lookup
@@ -150,10 +159,33 @@ class EmailService {
         }
       }
       if (emailToSend.Destination.ToAddresses.length !== 0) {
+        if (this.config.aws.emailQueueUrl) {
+          return this.enqueueEmail(this.config.aws.emailQueueUrl, emailToSend);
+        }
         const emailOutput = await this.sesService.sendEmail(emailToSend);
         return emailOutput;
       }
     }
+  }
+
+  async enqueueEmail(
+    emailQueueUrl: string,
+    emailToSend: SendEmailCommandInput,
+  ): Promise<SendMessageCommandOutput> {
+    const recipientEmail = emailToSend.Destination?.ToAddresses
+      ? emailToSend.Destination.ToAddresses[0]
+      : '';
+    const message = {
+      recipientEmail,
+      subject: emailToSend.Message?.Subject?.Data,
+      htmlBody: emailToSend.Message?.Body?.Html?.Data,
+      textBody: emailToSend.Message?.Body?.Text?.Data,
+    };
+    const messageOutput = await this.sqsService.enqueueMessage(
+      emailQueueUrl,
+      JSON.stringify(message),
+    );
+    return messageOutput;
   }
 }
 
