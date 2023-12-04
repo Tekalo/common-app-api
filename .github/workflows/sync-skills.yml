@@ -53,7 +53,7 @@ jobs:
           run_result=$(aws ecs run-task \
             --cluster "$ECS_CLUSTER" \
             --task-definition "$ECS_CLI_TASK" \
-            --overrides "{\"containerOverrides\": [{\"name\": \"capp-cli\", \"environment\": [{ \"LIGHTCAST_CLIENT_ID\": \"$LIGHTCAST_CLIENT_ID\", \"LIGHTCAST_CLIENT_SECRET\": \"$LIGHTCAST_CLIENT_SECRET\" }], \"command\": [ \"pnpx\", \"tsx\", \"./scripts/skillSync.ts\"]}]}" \
+            --overrides "{\"containerOverrides\": [{\"name\": \"capp-cli\", \"environment\": [{ \"name\": \"LIGHTCAST_CLIENT_ID\", \"value\": \"$LIGHTCAST_CLIENT_ID\" }, {\"name\": \"LIGHTCAST_CLIENT_SECRET\", \"value\": \"$LIGHTCAST_CLIENT_SECRET\" }], \"command\": [ \"pnpx\", \"tsx\", \"./scripts/skillSync.ts\"]}]}" \
             --launch-type FARGATE \
             --network-configuration "{\"awsvpcConfiguration\":{\"subnets\":[\"${SUBNET0}\"], \"securityGroups\":[\"${SECURITY_GROUP}\"]}}" )
           echo ${run_result}
