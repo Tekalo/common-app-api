@@ -48,20 +48,20 @@ describe('GET /skills', () => {
 
     // uncomment the below codes for local testing
     // execute SQL command to create the view; once created, view will automatically be updated whenever there are changes in source tables
-    // await prisma.$executeRaw`
-    //     CREATE VIEW "SkillsView" AS
-    //     SELECT
-    //       COALESCE(sa.name::citext, rs.name::citext) as name,
-    //       COALESCE(sa.canonical, rs.name, sa.name) as canonical,
-    //       CASE
-    //         WHEN sa.suggest IS NOT NULL THEN sa.suggest
-    //         WHEN rs.name IS NOT NULL THEN true
-    //         ELSE false
-    //       END as suggest,
-    //       sa."rejectAs" as "rejectAs"
-    //     FROM "SkillsAnnotation" sa
-    //     FULL JOIN "ReferenceSkills" rs ON sa.name = rs.name
-    // `;
+    await prisma.$executeRaw`
+        CREATE VIEW "SkillsView" AS
+        SELECT
+          COALESCE(sa.name::citext, rs.name::citext) as name,
+          COALESCE(sa.canonical, rs.name, sa.name) as canonical,
+          CASE
+            WHEN sa.suggest IS NOT NULL THEN sa.suggest
+            WHEN rs.name IS NOT NULL THEN true
+            ELSE false
+          END as suggest,
+          sa."rejectAs" as "rejectAs"
+        FROM "SkillsAnnotation" sa
+        FULL JOIN "ReferenceSkills" rs ON sa.name = rs.name
+    `;
 
     const { body, headers } = await request(dummyApp)
       .get('/skills')
@@ -191,64 +191,72 @@ describe('GET /skills', () => {
     //   });
     // });
 
-    // it('Skills which have no canonical and suggest is true should be suggested', async () => {
-    //   const randomString = getRandomString();
-    //   const partialTokenOptions: TokenOptions = {
-    //     roles: ['admin'],
-    //   };
-    //   const token = await authHelper.getToken(
-    //     `bboberson${randomString}@gmail.com`,
-    //     partialTokenOptions,
-    //   );
+    it('Skills which have no canonical and suggest is true should be suggested', async () => {
+      const randomString = getRandomString();
+      const partialTokenOptions: TokenOptions = {
+        roles: ['admin'],
+      };
+      const token = await authHelper.getToken(
+        `bboberson${randomString}@gmail.com`,
+        partialTokenOptions,
+      );
 
-    //   // upsert dummy data to ReferenceSkills table
-    //   const { body: body1 }: { body: ReferenceSkillsCreateResponseBody } =
-    //     await request(dummyApp)
-    //       .post('/skills/referenceSet')
-    //       .send(referenceSkillsDummy)
-    //       .set('Authorization', `Bearer ${token}`)
-    //       .expect(200);
-    //   expect(body1).toHaveProperty('successCount');
-    //   expect(body1.successCount).toBe(3);
+      // upsert dummy data to ReferenceSkills table
+      const { body: body1 }: { body: ReferenceSkillsCreateResponseBody } =
+        await request(dummyApp)
+          .post('/skills/referenceSet')
+          .send(referenceSkillsDummy)
+          .set('Authorization', `Bearer ${token}`)
+          .expect(200);
+      expect(body1).toHaveProperty('successCount');
+      expect(body1.successCount).toBe(3);
 
-    //   // upsert dummy data to SkillsAnnotation table
-    //   await prisma.skillsAnnotation.createMany({
-    //     data: [
-    //       {
-    //         name: 'Typescript',
-    //         canonical: null,
-    //         suggest: true,
-    //         rejectAs: null,
-    //       },
-    //       {
-    //         name: 'JAVAScript',
-    //         canonical: null,
-    //         suggest: true,
-    //         rejectAs: null,
-    //       },
-    //       {
-    //         name: 'python',
-    //         canonical: null,
-    //         suggest: true,
-    //         rejectAs: null,
-    //       },
-    //     ],
-    //   });
+      // upsert dummy data to SkillsAnnotation table
+      await prisma.skillsAnnotation.createMany({
+        data: [
+          {
+            name: 'Typescript',
+            canonical: null,
+            suggest: true,
+            rejectAs: null,
+          },
+          {
+            name: 'JAVAScript',
+            canonical: null,
+            suggest: false,
+            rejectAs: null,
+          },
+          {
+            name: 'python',
+            canonical: null,
+            suggest: true,
+            rejectAs: 'spam',
+          },
+        ],
+      });
 
-    //   const { body, headers } = await request(dummyApp)
-    //     .get('/skills')
-    //     .expect(200);
-    //   expect(headers).toHaveProperty('cache-control', 'public, max-age=3600');
-    //   expect(body).toEqual({
-    //     data: expect.arrayContaining([
-    //       { canonical: 'Python' },
-    //       { canonical: 'TypeScript' },
-    //       { canonical: 'JavaScript' },
-    //     ]),
-    //   });
-    // });
+      // const ret = await prisma.$queryRaw`
+      //   SELECT * FROM "SkillsView"
+      // `;
+
+      // logger.info({ret}, "case 1-3");
+
+      const { body, headers } = await request(dummyApp)
+        .get('/skills')
+        .expect(200);
+      expect(headers).toHaveProperty('cache-control', 'public, max-age=3600');
+      expect(body).toEqual({
+        data: expect.arrayContaining([{ canonical: 'TypeScript' }]),
+      });
+    });
 
     it('Skills which have canonical but suggest is false should not be suggested', async () => {
+      // let ret = await prisma.$queryRaw`
+      //   SELECT * FROM "SkillsView"
+      // `;
+
+      // logger.info({ret}, "init case 1-4");
+
       const randomString = getRandomString();
       const partialTokenOptions: TokenOptions = {
         roles: ['admin'],
@@ -292,14 +300,26 @@ describe('GET /skills', () => {
         ],
       });
 
+      // ret = await prisma.$queryRaw`
+      //   SELECT * FROM "SkillsView"
+      // `;
+
+      // logger.info({ret},"case 1-4");
+
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { body, headers }: { body: SkillGetResponseBody, headers: any } =
+      const { body, headers }: { body: SkillGetResponseBody; headers: any } =
         await request(dummyApp).get('/skills').expect(200);
       expect(headers).toHaveProperty('cache-control', 'public, max-age=3600');
       expect(body.data).toEqual([]);
     });
 
     it('Skills where suggest is true but rejectAs is not null should not be suggested', async () => {
+      // let ret = await prisma.$queryRaw`
+      //   SELECT * FROM "SkillsView"
+      // `;
+
+      // logger.info({ret}, "init case 1-5");
+
       const randomString = getRandomString();
       const partialTokenOptions: TokenOptions = {
         roles: ['admin'],
@@ -343,8 +363,14 @@ describe('GET /skills', () => {
         ],
       });
 
+      // ret = await prisma.$queryRaw`
+      //   SELECT * FROM "SkillsView"
+      // `;
+
+      // logger.info({ret},"case 1-5");
+
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { body, headers }: { body: SkillGetResponseBody, headers: any } =
+      const { body, headers }: { body: SkillGetResponseBody; headers: any } =
         await request(dummyApp).get('/skills').expect(200);
       expect(headers).toHaveProperty('cache-control', 'public, max-age=3600');
       expect(body.data).toEqual([]);
@@ -547,6 +573,12 @@ describe('GET /skills', () => {
         ],
       });
 
+      // const ret = await prisma.$queryRaw`
+      //   SELECT * FROM "SkillsView"
+      // `;
+
+      // logger.info({ret},"case 2-4");
+
       const { body, headers } = await request(dummyApp)
         .get('/skills')
         .expect(200);
@@ -597,6 +629,12 @@ describe('GET /skills', () => {
           },
         ],
       });
+
+      // const ret = await prisma.$queryRaw`
+      //   SELECT * FROM "SkillsView"
+      // `;
+
+      // logger.info({ret},"case 2-5");
 
       const { body, headers } = await request(dummyApp)
         .get('/skills')
