@@ -788,6 +788,31 @@ describe('PUT /applicants/me/submissions', () => {
     expect(body.submission.createdAt).not.toEqual(body.submission.updatedAt);
   });
 
+  it('should save skills when updating final submission includes new skills that dont exist yet in DB', async () => {
+    const randomString = getRandomString();
+    const token = await authHelper.getToken(
+      `bboberson${randomString}@gmail.com`,
+    );
+    const applicant = await seedApplicant(randomString);
+    const { id: resumeId } = await seedResumeUpload(applicant.id);
+    const testSubmission = getAPIRequestBody(resumeId);
+    testSubmission.skills = ['   acroyoga  ']; // TODO: Once we have reference skills table, change this to have one reference skill in the payload
+
+    await request(dummyApp)
+      .post('/applicants/me/submissions')
+      .send(testSubmission)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200);
+    const { body }: { body: ApplicantCreateSubmissionResponse } = await request(
+      dummyApp,
+    )
+      .put('/applicants/me/submissions')
+      .send({ ...testSubmission, skills: ['acroyoga', ' flame throwing    '] })
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200);
+    expect(body.submission.skills).toEqual(['acroyoga', 'flame throwing']);
+  });
+
   it('should return 500 error if applicant does not have an existing final submission', async () => {
     const randomString = getRandomString();
     const token = await authHelper.getToken(
