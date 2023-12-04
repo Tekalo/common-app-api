@@ -401,13 +401,15 @@ class ApplicantController {
     >`SELECT id FROM "Applicant" WHERE email LIKE 'test-user%@schmidtfutures.com' OR email LIKE 'success+test-user%@simulator.amazonses.com'`;
     const deletedApps: IdOnly[] = [];
 
-    // Sequentially resolve each applicant delete. This is intentionally not parallel to avoid creating too many connections at once
-    await Promise.all(
-      applicantsToDelete.map(async (x: IdOnly) => {
-        const res = await this.deleteApplicantForce(x.id);
-        deletedApps.push(res);
-      }),
-    );
+    // Sequentially execute each delete. This intentionally is not parallel as to avoid using too many connections at once
+    /* eslint-disable no-await-in-loop */
+    /* eslint-disable no-restricted-syntax */
+    for (const x of applicantsToDelete) {
+      const res = await this.deleteApplicantForce(x.id);
+      deletedApps.push(res);
+    }
+    /* eslint-enable no-await-in-loop */
+    /* eslint-enable no-restricted-syntax */
 
     return deletedApps;
   }
