@@ -34,7 +34,7 @@ const cleanupRoutes = (
   const authenticator = new Authenticator(prisma, appConfig);
 
   router.delete(
-    '/testusers',
+    '/testapplicants',
     authenticator
       .validateJwtRole('admin')
       .bind(authenticator) as RequestHandler,

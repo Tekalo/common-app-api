@@ -412,7 +412,7 @@ const specJson = createDocument({
         },
       },
     },
-    '/cleanup/testusers': {
+    '/cleanup/testapplicants': {
       delete: {
         description: 'Delete all test applicants',
         responses: {

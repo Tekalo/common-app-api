@@ -1940,14 +1940,14 @@ describe('GET /applicants/:id/resume', () => {
   });
 });
 
-describe('DELETE /cleanup/testusers', () => {
+describe('DELETE /cleanup/testapplicants', () => {
   it('should return a 401 status code and NOT allow a user without an admin JWT to call this endpoint', async () => {
     const badToken = await authHelper.getToken(
       `notAnAdmin${getRandomString()}@gmail.com`,
       { roles: ['notAnAdmin'] },
     );
     await request(dummyApp)
-      .delete('/cleanup/testusers')
+      .delete('/cleanup/testapplicants')
       .set('Authorization', `Bearer ${badToken}`)
       .expect(401);
   });
@@ -1963,12 +1963,12 @@ describe('DELETE /cleanup/testusers', () => {
     );
 
     await request(dummyApp)
-      .delete('/cleanup/testusers')
+      .delete('/cleanup/testapplicants')
       .set('Authorization', `Bearer ${token}`)
       .expect(200);
   });
 
-  it('should delete test email accounts and leave normal accounts alone', async () => {
+  it('should delete test email applicants and leave normal accounts alone', async () => {
     const randomString = getRandomString();
 
     // Generate admin token
@@ -1998,7 +1998,7 @@ describe('DELETE /cleanup/testusers', () => {
 
     // Run request and check success
     const { body } = await request(dummyApp)
-      .delete('/cleanup/testusers')
+      .delete('/cleanup/testapplicants')
       .set('Authorization', `Bearer ${token}`)
       .expect(200);
     expect(body).toEqual([{ id: testId }]);
