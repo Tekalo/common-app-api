@@ -293,7 +293,7 @@ describe('GET /skills', () => {
       });
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { body, headers }: { body: SkillGetResponseBody; headers: any } =
+      const { body, headers }: { body: SkillGetResponseBody, headers: any } =
         await request(dummyApp).get('/skills').expect(200);
       expect(headers).toHaveProperty('cache-control', 'public, max-age=3600');
       expect(body.data).toEqual([]);
@@ -344,7 +344,7 @@ describe('GET /skills', () => {
       });
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { body, headers }: { body: SkillGetResponseBody; headers: any } =
+      const { body, headers }: { body: SkillGetResponseBody, headers: any } =
         await request(dummyApp).get('/skills').expect(200);
       expect(headers).toHaveProperty('cache-control', 'public, max-age=3600');
       expect(body.data).toEqual([]);
