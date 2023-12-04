@@ -36,6 +36,7 @@ const getMockConfig = (overrides: Partial<BaseConfig> = {}): BaseConfig => ({
     sesReplyToAddress: '',
     region: '',
     sesWhiteList: [],
+    emailQueueUrl: undefined,
   },
   sentryDSN: '',
   uploadBucket: '',

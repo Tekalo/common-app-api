@@ -10,6 +10,7 @@ import request from 'supertest';
 import DummyAuthService from '../fixtures/DummyAuthService.js';
 import DummyEmailService from '../fixtures/DummyEmailService.js';
 import DummySESService from '../fixtures/DummySesService.js';
+import DummySQSService from '../fixtures/DummySQSService.js';
 import DummyUploadService from '../fixtures/DummyUploadService.js';
 import DummyS3Service from '../fixtures/DummyS3Service.js';
 
@@ -32,6 +33,7 @@ describe('Monitoring Service', () => {
   );
   const dummyEmailService = new DummyEmailService(
     new DummySESService(),
+    new DummySQSService(),
     appConfig,
   );
 
