@@ -1,7 +1,6 @@
 import { prisma } from '@App/resources/client.js';
 import {
   ReferenceSkillsCreateResponseBody,
-  SkillGetResponseBody,
 } from '@App/resources/types/skills.js';
 import request from 'supertest';
 import getDummyApp from '@App/tests/fixtures/appGenerator.js';
