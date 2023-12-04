@@ -396,27 +396,37 @@ class ApplicantController {
 
   // Deletes all applicants that match a known email pattern only used for testing
   async deleteTestApplicants(): Promise<IdOnly[]> {
+    const batchSize = 10;
+    const deletedApps: IdOnly[] = [];
+
     const applicantsToDelete = await this.prisma.$queryRaw<
       IdOnly[]
     >`SELECT id FROM "Applicant" WHERE email LIKE 'test-user%@schmidtfutures.com' OR email LIKE 'success+test-user%@simulator.amazonses.com'`;
 
-    const deletedApps: IdOnly[] = await applicantsToDelete.reduce(
-      async (promiseChain, x) => {
-        const results = await promiseChain;
-        const res = await this.deleteApplicantForce(x.id);
-        return [...results, res];
-      },
-      Promise.resolve([] as IdOnly[]),
-    );
-    // Sequentially execute each delete. This intentionally is not parallel as to avoid using too many connections at once
+    // Sequentially execute each batch of deletes. This intentionally is not massively parallel as to avoid using too many connections at once
     /* eslint-disable no-await-in-loop */
-    /* eslint-disable no-restricted-syntax */
-    // for (const x of applicantsToDelete) {
-    //   const res = await this.deleteApplicantForce(x.id);
-    //   deletedApps.push(res);
-    // }
+    /* eslint-disable no-console */
+    for (
+      let batchStart = 0;
+      batchStart < applicantsToDelete.length;
+      batchStart += batchSize
+    ) {
+      const batchEnd = Math.min(
+        batchStart + batchSize,
+        applicantsToDelete.length,
+      );
+      console.log(
+        'Deleting: %O',
+        applicantsToDelete.slice(batchStart, batchEnd),
+      );
+      const newDeletes = applicantsToDelete
+        .slice(batchStart, batchEnd)
+        .map((x) => this.deleteApplicantForce(x.id));
+      const res = await Promise.all(newDeletes);
+      deletedApps.push(...res);
+    }
     /* eslint-enable no-await-in-loop */
-    /* eslint-enable no-restricted-syntax */
+    /* eslint-enable no-console */
 
     return deletedApps;
   }
