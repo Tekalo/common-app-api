@@ -12,7 +12,6 @@ import {
 } from '../fixtures/skillGenerator.js';
 import { getRandomString } from '../util/helpers.js';
 import authHelper, { TokenOptions } from '../util/auth.js';
-import logger from '@App/services/logger.js';
 
 const dummyApp = getDummyApp();
 
@@ -236,11 +235,11 @@ describe('GET /skills', () => {
         ],
       });
 
-      const ret = await prisma.$queryRaw`
-        SELECT * FROM "SkillsView"
-      `;
+      // const ret = await prisma.$queryRaw`
+      //   SELECT * FROM "SkillsView"
+      // `;
 
-      logger.info({ret}, "case 1-3");
+      // logger.info({ ret }, 'case 1-3');
 
       const { body, headers } = await request(dummyApp)
         .get('/skills')
@@ -250,7 +249,7 @@ describe('GET /skills', () => {
         data: expect.arrayContaining([{ canonical: 'TypeScript' }]),
       });
 
-      logger.info({body}, "case 1-3");
+      // logger.info({ body }, 'case 1-3');
     });
 
     it('Skills which have canonical but suggest is false should not be suggested', async () => {
