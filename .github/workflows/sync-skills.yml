@@ -14,7 +14,7 @@ on:
 env:
   AWS_REGION: us-east-1
   ECS_CLI_TASK: capp-${{ inputs.env }}-cli
-  ECS_CLUSTER: ${{ inputs.env }}
+  ECS_CLUSTER: "${{ inputs.env == 'prod' && format('{0}-ext', inputs.env) || format('{0}',inputs.env) }}"
   VPC_STACK_NAME: ${{ inputs.env }}-vpc
   LIGHTCAST_CLIENT_ID: ${{ secrets.LIGHTCAST_CLIENT_ID }}
   LIGHTCAST_CLIENT_SECRET: ${{ secrets.LIGHTCAST_CLIENT_SECRET }}
