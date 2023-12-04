@@ -246,6 +246,7 @@ resource "aws_ecs_task_definition" "cli" {
   container_definitions = jsonencode([
     {
       name                   = "capp-cli"
+      user                   = "node"
       image                  = "${var.cli_image}"
       memory                 = 512
       essential              = true
