@@ -793,7 +793,7 @@ describe('PUT /applicants/me/submissions', () => {
     expect(body.submission.createdAt).not.toEqual(body.submission.updatedAt);
   });
 
-  it('should save skills when updating final submission includes new skills that dont exist yet in DB', async () => {
+  it('should save skills when updating a final submission with new skills that dont exist yet in DB', async () => {
     const randomString = getRandomString();
     const token = await authHelper.getToken(
       `bboberson${randomString}@gmail.com`,
