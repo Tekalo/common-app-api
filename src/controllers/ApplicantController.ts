@@ -243,8 +243,14 @@ class ApplicantController {
       Applicants.ApplicantCreateSubmissionRequestBodySchema,
     );
     const { resumeUpload, ...restOfSubmission } = validatedSubmission;
+
+    const createSkills = this.prisma.userSkills.createMany({
+      data: validatedSubmission.skills.map((skill) => ({ name: skill })),
+      skipDuplicates: true,
+    });
+
     // Throws error if applicantID doesn't exist
-    const applicantSubmission = await this.prisma.applicantSubmission.update({
+    const updatedApplicantSubmission = this.prisma.applicantSubmission.update({
       data: {
         ...restOfSubmission,
         resumeUpload: {
@@ -256,6 +262,12 @@ class ApplicantController {
       },
       where: { applicantId },
     });
+
+    const [applicantSubmission] = await this.prisma.$transaction([
+      updatedApplicantSubmission,
+      createSkills,
+    ]);
+
     return Applicants.ApplicantCreateSubmissionResponseBodySchema.parse({
       submission: applicantSubmission,
       isFinal: true,
