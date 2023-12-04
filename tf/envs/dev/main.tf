@@ -102,4 +102,3 @@ resource "aws_route53_record" "auth" {
   ttl     = "300"
   records = [var.auth0_domain_cname]
 }
-
