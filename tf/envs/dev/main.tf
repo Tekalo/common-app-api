@@ -103,16 +103,3 @@ resource "aws_route53_record" "auth" {
   records = [var.auth0_domain_cname]
 }
 
-# Right now we only have an sqs queue in dev. This should eventually move to modules/app/main
-resource "aws_iam_role_policy" "sqs_policy" {
-  name   = "sqs-policy"
-  role   = aws_iam_role.ecs_task_role.id
-  policy = data.aws_iam_policy_document.task_sqs_policy.json
-}
-
-data "aws_iam_policy_document" "task_sqs_policy" {
-  statement {
-    actions   = ["sqs:SendMessage"]
-    resources = [aws_sqs_queue.email_sqs_queue.arn]
-  }
-}
