@@ -107,7 +107,7 @@ resource "aws_route53_record" "auth" {
 resource "aws_iam_role_policy" "sqs_policy" {
   name   = "sqs-policy"
   role   = aws_iam_role.ecs_task_role.id
-  policy = data.aws_iam_policy_document.task.sqs.policy.json
+  policy = data.aws_iam_policy_document.task_sqs_policy.json
 }
 
 data "aws_iam_policy_document" "task_sqs_policy" {
