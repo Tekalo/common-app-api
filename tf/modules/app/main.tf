@@ -250,7 +250,7 @@ resource "aws_ecs_task_definition" "cli" {
       image                  = "${var.cli_image}"
       memory                 = 512
       essential              = true
-      readonlyRootFilesystem = true
+      readonlyRootFilesystem = false
 
       logConfiguration = {
         logDriver = "awslogs"
