@@ -401,6 +401,7 @@ class ApplicantController {
     >`SELECT id FROM "Applicant" WHERE email LIKE 'test-user%@schmidtfutures.com' OR email LIKE 'success+test-user%@simulator.amazonses.com'`;
     const deletedApps: IdOnly[] = [];
 
+    // Sequentially resolve each applicant delete. This is intentionally not parallel to avoid creating too many connections at once
     await Promise.all(
       applicantsToDelete.map(async (x: IdOnly) => {
         const res = await this.deleteApplicantForce(x.id);
