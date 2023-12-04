@@ -48,20 +48,20 @@ describe('GET /skills', () => {
 
     // uncomment the below codes for local testing
     // execute SQL command to create the view; once created, view will automatically be updated whenever there are changes in source tables
-    await prisma.$executeRaw`
-        CREATE VIEW "SkillsView" AS
-        SELECT
-          COALESCE(sa.name::citext, rs.name::citext) as name,
-          COALESCE(sa.canonical, rs.name, sa.name) as canonical,
-          CASE
-            WHEN sa.suggest IS NOT NULL THEN sa.suggest
-            WHEN rs.name IS NOT NULL THEN true
-            ELSE false
-          END as suggest,
-          sa."rejectAs" as "rejectAs"
-        FROM "SkillsAnnotation" sa
-        FULL JOIN "ReferenceSkills" rs ON sa.name = rs.name
-    `;
+    // await prisma.$executeRaw`
+    //     CREATE VIEW "SkillsView" AS
+    //     SELECT
+    //       COALESCE(sa.name::citext, rs.name::citext) as name,
+    //       COALESCE(sa.canonical, rs.name, sa.name) as canonical,
+    //       CASE
+    //         WHEN sa.suggest IS NOT NULL THEN sa.suggest
+    //         WHEN rs.name IS NOT NULL THEN true
+    //         ELSE false
+    //       END as suggest,
+    //       sa."rejectAs" as "rejectAs"
+    //     FROM "SkillsAnnotation" sa
+    //     FULL JOIN "ReferenceSkills" rs ON sa.name = rs.name
+    // `;
 
     const { body, headers } = await request(dummyApp)
       .get('/skills')
