@@ -473,7 +473,7 @@ resource "aws_iam_role_policy" "sqs_policy" {
 data "aws_iam_policy_document" "task_sqs_policy" {
   statement {
     actions   = ["sqs:SendMessage"]
-    resources = [module.email.email_queue_arn]
+    resources = ["*"] # TODO: limit to email queue
   }
 }
 
