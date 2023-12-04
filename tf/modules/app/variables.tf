@@ -235,7 +235,7 @@ variable "additional_env_vars" {
 
   # Requiring that variables are "registered" here to help avoid accidental typos
   validation {
-    condition     = alltrue([for k, v in var.additional_env_vars : contains(["PRESIGNER_STRATEGY", "AWS_EMAIL_QUEUE_URL"], k)])
+    condition     = alltrue([for k, v in var.additional_env_vars : contains(["PRESIGNER_STRATEGY", "AWS_EMAIL_SQS_URL"], k)])
     error_message = "Must be a supported env variable"
   }
 }
