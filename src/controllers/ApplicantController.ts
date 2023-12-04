@@ -395,8 +395,7 @@ class ApplicantController {
   }
 
   // Deletes all applicants that match a known email pattern only used for testing
-  async deleteTestApplicants(): Promise<IdOnly[]> {
-    const batchSize = 10;
+  async deleteTestApplicants(batchSize: number = 10): Promise<IdOnly[]> {
     const deletedApps: IdOnly[] = [];
 
     const applicantsToDelete = await this.prisma.$queryRaw<
