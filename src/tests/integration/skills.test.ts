@@ -1,5 +1,8 @@
 import { prisma } from '@App/resources/client.js';
-import { ReferenceSkillsCreateResponseBody } from '@App/resources/types/skills.js';
+import {
+  ReferenceSkillsCreateResponseBody,
+  SkillGetResponseBody,
+} from '@App/resources/types/skills.js';
 import request from 'supertest';
 import getDummyApp from '@App/tests/fixtures/appGenerator.js';
 import {
@@ -12,8 +15,13 @@ import authHelper, { TokenOptions } from '../util/auth.js';
 
 const dummyApp = getDummyApp();
 
+afterEach(async () => {
+  await prisma.skillsAnnotation.deleteMany();
+  await prisma.referenceSkills.deleteMany();
+});
+
 describe('GET /skills', () => {
-  it('should return suggested skills from the Skills View', async () => {
+  it('Should return suggested skills from the Skills View', async () => {
     // Will specifically return canonical field of all rows where suggest==true and rejectAs==null from the Skills View, which is generated from ReferenceSkills table and SkillsAnnotation table
     const randomString = getRandomString();
     const partialTokenOptions: TokenOptions = {
@@ -39,11 +47,11 @@ describe('GET /skills', () => {
     });
 
     // uncomment the below codes for local testing
-    // execute SQL command to create the view
+    // execute SQL command to create the view; once created, view will automatically be updated whenever there are changes in source tables
     // await prisma.$executeRaw`
     //     CREATE VIEW "SkillsView" AS
     //     SELECT
-    //       sa.name as name,
+    //       COALESCE(sa.name::citext, rs.name::citext) as name,
     //       COALESCE(sa.canonical, rs.name, sa.name) as canonical,
     //       CASE
     //         WHEN sa.suggest IS NOT NULL THEN sa.suggest
@@ -52,7 +60,7 @@ describe('GET /skills', () => {
     //       END as suggest,
     //       sa."rejectAs" as "rejectAs"
     //     FROM "SkillsAnnotation" sa
-    //     LEFT JOIN "ReferenceSkills" rs ON LOWER(sa.name) = LOWER(rs.name)
+    //     FULL JOIN "ReferenceSkills" rs ON sa.name = rs.name
     // `;
 
     const { body, headers } = await request(dummyApp)
@@ -65,6 +73,595 @@ describe('GET /skills', () => {
         { canonical: 'TypeScript' },
         { canonical: 'Node.js' },
       ]),
+    });
+  });
+
+  describe('Skills appear in both SkillsAnnotation(SA) and ReferenceSkills(RS) table', () => {
+    it('Skills where all fields besides name are null should be suggested', async () => {
+      const randomString = getRandomString();
+      const partialTokenOptions: TokenOptions = {
+        roles: ['admin'],
+      };
+      const token = await authHelper.getToken(
+        `bboberson${randomString}@gmail.com`,
+        partialTokenOptions,
+      );
+
+      // upsert dummy data to ReferenceSkills table
+      const { body: body1 }: { body: ReferenceSkillsCreateResponseBody } =
+        await request(dummyApp)
+          .post('/skills/referenceSet')
+          .send(referenceSkillsDummy)
+          .set('Authorization', `Bearer ${token}`)
+          .expect(200);
+      expect(body1).toHaveProperty('successCount');
+      expect(body1.successCount).toBe(3);
+
+      // upsert dummy data to SkillsAnnotation table
+      await prisma.skillsAnnotation.createMany({
+        data: [
+          {
+            name: 'Typescript',
+            canonical: null,
+            suggest: null,
+            rejectAs: null,
+          },
+          {
+            name: 'JAVAScript',
+            canonical: null,
+            suggest: null,
+            rejectAs: null,
+          },
+          {
+            name: 'python',
+            canonical: null,
+            suggest: null,
+            rejectAs: null,
+          },
+        ],
+      });
+
+      const { body, headers } = await request(dummyApp)
+        .get('/skills')
+        .expect(200);
+      expect(headers).toHaveProperty('cache-control', 'public, max-age=3600');
+      expect(body).toEqual({
+        data: expect.arrayContaining([
+          { canonical: 'Python' },
+          { canonical: 'TypeScript' },
+          { canonical: 'JavaScript' },
+        ]),
+      });
+    });
+
+    it('Skills which have canonical and suggest is true should be suggested', async () => {
+      const randomString = getRandomString();
+      const partialTokenOptions: TokenOptions = {
+        roles: ['admin'],
+      };
+      const token = await authHelper.getToken(
+        `bboberson${randomString}@gmail.com`,
+        partialTokenOptions,
+      );
+
+      // upsert dummy data to ReferenceSkills table
+      const { body: body1 }: { body: ReferenceSkillsCreateResponseBody } =
+        await request(dummyApp)
+          .post('/skills/referenceSet')
+          .send(referenceSkillsDummy)
+          .set('Authorization', `Bearer ${token}`)
+          .expect(200);
+      expect(body1).toHaveProperty('successCount');
+      expect(body1.successCount).toBe(3);
+
+      // upsert dummy data to SkillsAnnotation table
+      await prisma.skillsAnnotation.createMany({
+        data: [
+          {
+            name: 'Typescript',
+            canonical: 'TypeScript',
+            suggest: true,
+            rejectAs: null,
+          },
+          {
+            name: 'JAVAScript',
+            canonical: 'JavaScript',
+            suggest: true,
+            rejectAs: null,
+          },
+          {
+            name: 'python',
+            canonical: 'Python',
+            suggest: true,
+            rejectAs: null,
+          },
+        ],
+      });
+
+      const { body, headers } = await request(dummyApp)
+        .get('/skills')
+        .expect(200);
+      expect(headers).toHaveProperty('cache-control', 'public, max-age=3600');
+      expect(body).toEqual({
+        data: expect.arrayContaining([
+          { canonical: 'Python' },
+          { canonical: 'TypeScript' },
+          { canonical: 'JavaScript' },
+        ]),
+      });
+    });
+
+    it('Skills which have no canonical and suggest is true should be suggested', async () => {
+      const randomString = getRandomString();
+      const partialTokenOptions: TokenOptions = {
+        roles: ['admin'],
+      };
+      const token = await authHelper.getToken(
+        `bboberson${randomString}@gmail.com`,
+        partialTokenOptions,
+      );
+
+      // upsert dummy data to ReferenceSkills table
+      const { body: body1 }: { body: ReferenceSkillsCreateResponseBody } =
+        await request(dummyApp)
+          .post('/skills/referenceSet')
+          .send(referenceSkillsDummy)
+          .set('Authorization', `Bearer ${token}`)
+          .expect(200);
+      expect(body1).toHaveProperty('successCount');
+      expect(body1.successCount).toBe(3);
+
+      // upsert dummy data to SkillsAnnotation table
+      await prisma.skillsAnnotation.createMany({
+        data: [
+          {
+            name: 'Typescript',
+            canonical: null,
+            suggest: true,
+            rejectAs: null,
+          },
+          {
+            name: 'JAVAScript',
+            canonical: null,
+            suggest: true,
+            rejectAs: null,
+          },
+          {
+            name: 'python',
+            canonical: null,
+            suggest: true,
+            rejectAs: null,
+          },
+        ],
+      });
+
+      const { body, headers } = await request(dummyApp)
+        .get('/skills')
+        .expect(200);
+      expect(headers).toHaveProperty('cache-control', 'public, max-age=3600');
+      expect(body).toEqual({
+        data: expect.arrayContaining([
+          { canonical: 'Python' },
+          { canonical: 'TypeScript' },
+          { canonical: 'JavaScript' },
+        ]),
+      });
+    });
+
+    it('Skills which have canonical but suggest is false should not be suggested', async () => {
+      const randomString = getRandomString();
+      const partialTokenOptions: TokenOptions = {
+        roles: ['admin'],
+      };
+      const token = await authHelper.getToken(
+        `bboberson${randomString}@gmail.com`,
+        partialTokenOptions,
+      );
+
+      // upsert dummy data to ReferenceSkills table
+      const { body: body1 }: { body: ReferenceSkillsCreateResponseBody } =
+        await request(dummyApp)
+          .post('/skills/referenceSet')
+          .send(referenceSkillsDummy)
+          .set('Authorization', `Bearer ${token}`)
+          .expect(200);
+      expect(body1).toHaveProperty('successCount');
+      expect(body1.successCount).toBe(3);
+
+      // upsert dummy data to SkillsAnnotation table
+      await prisma.skillsAnnotation.createMany({
+        data: [
+          {
+            name: 'Typescript',
+            canonical: 'TypeScript',
+            suggest: false,
+            rejectAs: null,
+          },
+          {
+            name: 'JAVAScript',
+            canonical: 'JavaScript',
+            suggest: false,
+            rejectAs: null,
+          },
+          {
+            name: 'python',
+            canonical: 'Python',
+            suggest: false,
+            rejectAs: null,
+          },
+        ],
+      });
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { body, headers }: { body: SkillGetResponseBody; headers: any } =
+        await request(dummyApp).get('/skills').expect(200);
+      expect(headers).toHaveProperty('cache-control', 'public, max-age=3600');
+      expect(body.data).toEqual([]);
+    });
+
+    it('Skills where suggest is true but rejectAs is not null should not be suggested', async () => {
+      const randomString = getRandomString();
+      const partialTokenOptions: TokenOptions = {
+        roles: ['admin'],
+      };
+      const token = await authHelper.getToken(
+        `bboberson${randomString}@gmail.com`,
+        partialTokenOptions,
+      );
+
+      // upsert dummy data to ReferenceSkills table
+      const { body: body1 }: { body: ReferenceSkillsCreateResponseBody } =
+        await request(dummyApp)
+          .post('/skills/referenceSet')
+          .send(referenceSkillsDummy)
+          .set('Authorization', `Bearer ${token}`)
+          .expect(200);
+      expect(body1).toHaveProperty('successCount');
+      expect(body1.successCount).toBe(3);
+
+      // upsert dummy data to SkillsAnnotation table
+      await prisma.skillsAnnotation.createMany({
+        data: [
+          {
+            name: 'Typescript',
+            canonical: 'TypeScript',
+            suggest: true,
+            rejectAs: 'spam',
+          },
+          {
+            name: 'JAVAScript',
+            canonical: 'JavaScript',
+            suggest: true,
+            rejectAs: 'spam',
+          },
+          {
+            name: 'python',
+            canonical: 'Python',
+            suggest: true,
+            rejectAs: 'spam',
+          },
+        ],
+      });
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { body, headers }: { body: SkillGetResponseBody; headers: any } =
+        await request(dummyApp).get('/skills').expect(200);
+      expect(headers).toHaveProperty('cache-control', 'public, max-age=3600');
+      expect(body.data).toEqual([]);
+    });
+  });
+
+  describe('Skills appear in SkillsAnnotation(SA) table but not in ReferenceSkills(RS) table', () => {
+    it('Skills where all fields besides name are null should not be suggested', async () => {
+      const randomString = getRandomString();
+      const partialTokenOptions: TokenOptions = {
+        roles: ['admin'],
+      };
+      const token = await authHelper.getToken(
+        `bboberson${randomString}@gmail.com`,
+        partialTokenOptions,
+      );
+
+      // upsert dummy data to ReferenceSkills table
+      const { body: body1 }: { body: ReferenceSkillsCreateResponseBody } =
+        await request(dummyApp)
+          .post('/skills/referenceSet')
+          .send(referenceSkillsDummy)
+          .set('Authorization', `Bearer ${token}`)
+          .expect(200);
+      expect(body1).toHaveProperty('successCount');
+      expect(body1.successCount).toBe(3);
+
+      // upsert dummy data to SkillsAnnotation table
+      await prisma.skillsAnnotation.createMany({
+        data: [
+          {
+            name: 'Database',
+            canonical: null,
+            suggest: null,
+            rejectAs: null,
+          },
+          {
+            name: 'nodejs',
+            canonical: null,
+            suggest: null,
+            rejectAs: null,
+          },
+        ],
+      });
+
+      const { body, headers } = await request(dummyApp)
+        .get('/skills')
+        .expect(200);
+      expect(headers).toHaveProperty('cache-control', 'public, max-age=3600');
+      expect(body).toEqual({
+        data: expect.arrayContaining([
+          { canonical: 'Python' },
+          { canonical: 'TypeScript' },
+          { canonical: 'JavaScript' },
+        ]),
+      });
+    });
+
+    it('Skills which have canonical and suggest is true should be suggested', async () => {
+      const randomString = getRandomString();
+      const partialTokenOptions: TokenOptions = {
+        roles: ['admin'],
+      };
+      const token = await authHelper.getToken(
+        `bboberson${randomString}@gmail.com`,
+        partialTokenOptions,
+      );
+
+      // upsert dummy data to ReferenceSkills table
+      const { body: body1 }: { body: ReferenceSkillsCreateResponseBody } =
+        await request(dummyApp)
+          .post('/skills/referenceSet')
+          .send(referenceSkillsDummy)
+          .set('Authorization', `Bearer ${token}`)
+          .expect(200);
+      expect(body1).toHaveProperty('successCount');
+      expect(body1.successCount).toBe(3);
+
+      // upsert dummy data to SkillsAnnotation table
+      await prisma.skillsAnnotation.createMany({
+        data: [
+          {
+            name: 'Database',
+            canonical: 'Database',
+            suggest: true,
+            rejectAs: null,
+          },
+          {
+            name: 'nodejs',
+            canonical: 'Node.js',
+            suggest: true,
+            rejectAs: null,
+          },
+        ],
+      });
+
+      const { body, headers } = await request(dummyApp)
+        .get('/skills')
+        .expect(200);
+      expect(headers).toHaveProperty('cache-control', 'public, max-age=3600');
+      expect(body).toEqual({
+        data: expect.arrayContaining([
+          { canonical: 'Python' },
+          { canonical: 'TypeScript' },
+          { canonical: 'JavaScript' },
+          { canonical: 'Node.js' },
+          { canonical: 'Database' },
+        ]),
+      });
+    });
+
+    it('Skills which have no canonical but suggest is true should be suggested', async () => {
+      const randomString = getRandomString();
+      const partialTokenOptions: TokenOptions = {
+        roles: ['admin'],
+      };
+      const token = await authHelper.getToken(
+        `bboberson${randomString}@gmail.com`,
+        partialTokenOptions,
+      );
+
+      // upsert dummy data to ReferenceSkills table
+      const { body: body1 }: { body: ReferenceSkillsCreateResponseBody } =
+        await request(dummyApp)
+          .post('/skills/referenceSet')
+          .send(referenceSkillsDummy)
+          .set('Authorization', `Bearer ${token}`)
+          .expect(200);
+      expect(body1).toHaveProperty('successCount');
+      expect(body1.successCount).toBe(3);
+
+      // upsert dummy data to SkillsAnnotation table
+      await prisma.skillsAnnotation.createMany({
+        data: [
+          {
+            name: 'Database',
+            canonical: null,
+            suggest: true,
+            rejectAs: null,
+          },
+          {
+            name: 'nodejs',
+            canonical: null,
+            suggest: true,
+            rejectAs: null,
+          },
+        ],
+      });
+
+      const { body, headers } = await request(dummyApp)
+        .get('/skills')
+        .expect(200);
+      expect(headers).toHaveProperty('cache-control', 'public, max-age=3600');
+      expect(body).toEqual({
+        data: expect.arrayContaining([
+          { canonical: 'Python' },
+          { canonical: 'TypeScript' },
+          { canonical: 'JavaScript' },
+          { canonical: 'nodejs' },
+          { canonical: 'Database' },
+        ]),
+      });
+    });
+
+    it('Skills which have canonical but suggest is false should not be suggested', async () => {
+      const randomString = getRandomString();
+      const partialTokenOptions: TokenOptions = {
+        roles: ['admin'],
+      };
+      const token = await authHelper.getToken(
+        `bboberson${randomString}@gmail.com`,
+        partialTokenOptions,
+      );
+
+      // upsert dummy data to ReferenceSkills table
+      const { body: body1 }: { body: ReferenceSkillsCreateResponseBody } =
+        await request(dummyApp)
+          .post('/skills/referenceSet')
+          .send(referenceSkillsDummy)
+          .set('Authorization', `Bearer ${token}`)
+          .expect(200);
+      expect(body1).toHaveProperty('successCount');
+      expect(body1.successCount).toBe(3);
+
+      // upsert dummy data to SkillsAnnotation table
+      await prisma.skillsAnnotation.createMany({
+        data: [
+          {
+            name: 'Database',
+            canonical: 'Database',
+            suggest: false,
+            rejectAs: null,
+          },
+          {
+            name: 'nodejs',
+            canonical: 'Node.js',
+            suggest: false,
+            rejectAs: null,
+          },
+        ],
+      });
+
+      const { body, headers } = await request(dummyApp)
+        .get('/skills')
+        .expect(200);
+      expect(headers).toHaveProperty('cache-control', 'public, max-age=3600');
+      expect(body).toEqual({
+        data: expect.arrayContaining([
+          { canonical: 'Python' },
+          { canonical: 'TypeScript' },
+          { canonical: 'JavaScript' },
+        ]),
+      });
+    });
+
+    it('Skills where suggest is true but rejectAs is not null should not be suggested', async () => {
+      const randomString = getRandomString();
+      const partialTokenOptions: TokenOptions = {
+        roles: ['admin'],
+      };
+      const token = await authHelper.getToken(
+        `bboberson${randomString}@gmail.com`,
+        partialTokenOptions,
+      );
+
+      // upsert dummy data to ReferenceSkills table
+      const { body: body1 }: { body: ReferenceSkillsCreateResponseBody } =
+        await request(dummyApp)
+          .post('/skills/referenceSet')
+          .send(referenceSkillsDummy)
+          .set('Authorization', `Bearer ${token}`)
+          .expect(200);
+      expect(body1).toHaveProperty('successCount');
+      expect(body1.successCount).toBe(3);
+
+      // upsert dummy data to SkillsAnnotation table
+      await prisma.skillsAnnotation.createMany({
+        data: [
+          {
+            name: 'Database',
+            canonical: 'Database',
+            suggest: true,
+            rejectAs: 'spam',
+          },
+          {
+            name: 'nodejs',
+            canonical: 'Node.js',
+            suggest: true,
+            rejectAs: 'spam',
+          },
+        ],
+      });
+
+      const { body, headers } = await request(dummyApp)
+        .get('/skills')
+        .expect(200);
+      expect(headers).toHaveProperty('cache-control', 'public, max-age=3600');
+      expect(body).toEqual({
+        data: expect.arrayContaining([
+          { canonical: 'Python' },
+          { canonical: 'TypeScript' },
+          { canonical: 'JavaScript' },
+        ]),
+      });
+    });
+  });
+
+  describe('Skills appear in ReferenceSkills(RS) table but not in SkillsAnnotation(SA) table', () => {
+    it('Should always be suggested, so that even no data in SA will be suggested there will still be data in view', async () => {
+      const randomString = getRandomString();
+      const partialTokenOptions: TokenOptions = {
+        roles: ['admin'],
+      };
+      const token = await authHelper.getToken(
+        `bboberson${randomString}@gmail.com`,
+        partialTokenOptions,
+      );
+
+      // upsert dummy data to ReferenceSkills table
+      const { body: body1 }: { body: ReferenceSkillsCreateResponseBody } =
+        await request(dummyApp)
+          .post('/skills/referenceSet')
+          .send(referenceSkillsDummy)
+          .set('Authorization', `Bearer ${token}`)
+          .expect(200);
+      expect(body1).toHaveProperty('successCount');
+      expect(body1.successCount).toBe(3);
+
+      // upsert dummy data to SkillsAnnotation table
+      await prisma.skillsAnnotation.createMany({
+        data: [
+          {
+            name: 'Database',
+            canonical: 'Database',
+            suggest: false,
+            rejectAs: null,
+          },
+          {
+            name: 'nodejs',
+            canonical: 'Node.js',
+            suggest: true,
+            rejectAs: 'spam',
+          },
+        ],
+      });
+
+      const { body, headers } = await request(dummyApp)
+        .get('/skills')
+        .expect(200);
+      expect(headers).toHaveProperty('cache-control', 'public, max-age=3600');
+      expect(body).toEqual({
+        data: expect.arrayContaining([
+          { canonical: 'Python' },
+          { canonical: 'TypeScript' },
+          { canonical: 'JavaScript' },
+        ]),
+      });
     });
   });
 });

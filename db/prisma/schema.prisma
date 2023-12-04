@@ -259,7 +259,7 @@ model OpportunitySkills {
 // imported skills from 3rd party sources (at time of writing, Lightcast)
 model ReferenceSkills {
   referenceId              String                    @id
-  name                     String
+  name                     String                    @db.Citext
 }
 
 model SkillsAnnotation {
@@ -270,7 +270,7 @@ model SkillsAnnotation {
 }
 
 view SkillsView {
-  name String @unique
+  name String @unique @db.Citext
   canonical String?
   suggest Boolean?
   rejectAs String?

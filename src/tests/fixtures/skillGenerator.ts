@@ -23,7 +23,7 @@ const skillsAnnotationDummy = [
   {
     name: 'JAVAScript',
     canonical: null,
-    suggest: null,
+    suggest: false,
     rejectAs: null,
   },
   {
