@@ -407,11 +407,36 @@ class ApplicantController {
   }
 
   // Deletes all applicants that match a known email pattern only used for testing
-  async deleteTestApplicants(): Promise<Promise<IdOnly>[]> {
+  async deleteTestApplicants(batchSize: number = 10): Promise<IdOnly[]> {
+    const deletedApps: IdOnly[] = [];
+
     const applicantsToDelete = await this.prisma.$queryRaw<
       IdOnly[]
     >`SELECT id FROM "Applicant" WHERE email LIKE 'test-user%@schmidtfutures.com' OR email LIKE 'success+test-user%@simulator.amazonses.com'`;
-    return applicantsToDelete.map((x) => this.deleteApplicantForce(x.id));
+
+    // Sequentially execute each batch of deletes. This intentionally is not massively parallel as to avoid using too many connections at once
+    /* eslint-disable no-await-in-loop */
+    /* eslint-disable no-console */
+    for (
+      let batchStart = 0;
+      batchStart < applicantsToDelete.length;
+      batchStart += batchSize
+    ) {
+      const batchEnd = batchStart + batchSize;
+      console.log(
+        'Deleting: %O',
+        applicantsToDelete.slice(batchStart, batchEnd),
+      );
+      const newDeletes = applicantsToDelete
+        .slice(batchStart, batchEnd)
+        .map((x) => this.deleteApplicantForce(x.id));
+      const res = await Promise.all(newDeletes);
+      deletedApps.push(...res);
+    }
+    /* eslint-enable no-await-in-loop */
+    /* eslint-enable no-console */
+
+    return deletedApps;
   }
 
   async validResume(
