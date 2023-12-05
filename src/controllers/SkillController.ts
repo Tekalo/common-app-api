@@ -23,30 +23,26 @@ class SkillController {
   async createReferenceSkills(
     requestedSkills: ReferenceSkillsCreateRequestBody,
   ): Promise<ReferenceSkillsCreateResponseBody> {
-    let successCount = 0;
-
-    // Use Promise.all to wait for all upsert operations to complete
-    await Promise.all(
-      requestedSkills.map(async (skill) => {
-        await this.prisma.referenceSkills.upsert({
-          create: {
-            referenceId: skill.referenceId,
-            name: skill.name,
-          },
-          update: {
-            name: skill.name,
-          },
-          where: {
-            referenceId: skill.referenceId,
-          },
-        });
-
-        successCount += 1;
+    const referenceSkillUpserts = requestedSkills.map((skill) =>
+      this.prisma.referenceSkills.upsert({
+        create: {
+          referenceId: skill.referenceId,
+          name: skill.name,
+        },
+        update: {
+          name: skill.name,
+        },
+        where: {
+          referenceId: skill.referenceId,
+        },
       }),
     );
 
+    // Use Promise.all to wait for all upsert operations to complete
+    const result = await Promise.all(referenceSkillUpserts);
+
     return Skills.ReferenceSkillsCreateResponseBodySchema.parse({
-      successCount,
+      successCount: result.length,
     });
   }
 }
