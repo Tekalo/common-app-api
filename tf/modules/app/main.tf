@@ -485,7 +485,7 @@ resource "aws_iam_role_policy" "kms_policy" {
 
 data "aws_iam_policy_document" "task_kms_policy" {
   statement {
-    actions   = ["kms:GenerateDataKey"]
+    actions   = ["kms:Decrypt", "kms:GenerateDataKey"]
     resources = [aws_kms_key.main.arn]
   }
 }
