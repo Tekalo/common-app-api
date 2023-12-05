@@ -14,6 +14,6 @@ then
     https://docs.google.com/document/d/1cdj83P5KRGqC6YvM8aVA5d9HwII--dEp1YX1k-KX2a0${NC}"
 fi
 
-# pnpm generate-spec
+pnpm generate-spec
 pnpm format && git add -A .
 pnpm lint
