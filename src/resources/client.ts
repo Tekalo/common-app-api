@@ -6,6 +6,7 @@ const PASSWORD_AUTH_ERROR: string =
 
 const prisma = new PrismaClient({
   log: [
+    'info',
     {
       emit: 'event',
       level: 'error',

@@ -2,6 +2,8 @@ import { PrismaClient } from '@prisma/client';
 import CAPPError from '../src/resources/shared/CAPPError.js';
 import SkillController from '../src/controllers/SkillController.js';
 
+const chunkSize = 500;
+
 const prisma = new PrismaClient({
   log: [
     {
@@ -89,11 +91,18 @@ const insertSkillsIntoDatabase = async (skills: Array<LightcastSkill>) => {
   // eslint-disable-next-line no-console
   console.log(`Inserting ${skills.length} skills`);
   const skillsController = new SkillController(prisma);
-  const skillsPayload = skills.map((skill) => ({
-    name: skill.name,
-    referenceId: skill.id,
-  }));
-  await skillsController.createReferenceSkills(skillsPayload);
+  const insertReferenceSkillPromises = [];
+  for (let i = 0; i < skills.length; i += chunkSize) {
+    const chunk = skills.slice(i, i + chunkSize);
+    const skillsPayload = chunk.map((skill) => ({
+      name: skill.name,
+      referenceId: skill.id,
+    }));
+    const createReferenceSkillPromise =
+      skillsController.createReferenceSkills(skillsPayload);
+    insertReferenceSkillPromises.push(createReferenceSkillPromise);
+  }
+  await Promise.all(insertReferenceSkillPromises);
 };
 
 const syncLightcastSkills = async () => {
