@@ -464,6 +464,32 @@ data "aws_iam_policy_document" "task_ses_policy" {
   }
 }
 
+resource "aws_iam_role_policy" "sqs_policy" {
+  name   = "sqs-policy"
+  role   = aws_iam_role.ecs_task_role.id
+  policy = data.aws_iam_policy_document.task_sqs_policy.json
+}
+
+data "aws_iam_policy_document" "task_sqs_policy" {
+  statement {
+    actions   = ["sqs:SendMessage"]
+    resources = ["*"] # TODO: limit to email queue
+  }
+}
+
+resource "aws_iam_role_policy" "kms_policy" {
+  name   = "kms-policy"
+  role   = aws_iam_role.ecs_task_role.id
+  policy = data.aws_iam_policy_document.task_kms_policy.json
+}
+
+data "aws_iam_policy_document" "task_kms_policy" {
+  statement {
+    actions   = ["kms:Decrypt", "kms:GenerateDataKey"]
+    resources = [aws_kms_key.main.arn]
+  }
+}
+
 resource "aws_cloudwatch_dashboard" "main" {
   dashboard_name = "${aws_ecs_service.api.name}-${var.env}"
   dashboard_body = templatefile("${path.module}/cloudwatch_dashboard.tftpl", {

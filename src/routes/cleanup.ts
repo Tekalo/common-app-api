@@ -34,7 +34,7 @@ const cleanupRoutes = (
   const authenticator = new Authenticator(prisma, appConfig);
 
   router.delete(
-    '/testusers',
+    '/testapplicants',
     authenticator
       .validateJwtRole('admin')
       .bind(authenticator) as RequestHandler,
@@ -42,12 +42,7 @@ const cleanupRoutes = (
       applicantController
         .deleteTestApplicants()
         .then((result) => {
-          // Resolve the inner promises
-          Promise.all(result)
-            .then((values) => {
-              res.status(200).json(values);
-            })
-            .catch((err) => next(err));
+          res.status(200).json(result);
         })
         .catch((err) => next(err));
     },
