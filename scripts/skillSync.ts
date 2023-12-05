@@ -1,8 +1,5 @@
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 import CAPPError from '../src/resources/shared/CAPPError.js';
-import SkillController from '../src/controllers/SkillController.js';
-
-const chunkSize = 500;
 
 const prisma = new PrismaClient({
   log: [
@@ -89,20 +86,17 @@ const getLightcastSkills = async () => {
 
 const insertSkillsIntoDatabase = async (skills: Array<LightcastSkill>) => {
   // eslint-disable-next-line no-console
-  console.log(`Inserting ${skills.length} skills`);
-  const skillsController = new SkillController(prisma);
-  const insertReferenceSkillPromises = [];
-  for (let i = 0; i < skills.length; i += chunkSize) {
-    const chunk = skills.slice(i, i + chunkSize);
-    const skillsPayload = chunk.map((skill) => ({
-      name: skill.name,
-      referenceId: skill.id,
-    }));
-    const createReferenceSkillPromise =
-      skillsController.createReferenceSkills(skillsPayload);
-    insertReferenceSkillPromises.push(createReferenceSkillPromise);
-  }
-  await Promise.all(insertReferenceSkillPromises);
+  console.log(`Preparing ${skills.length} skills to insert`);
+  const dataAsSqlArr = skills.map(
+    (skill) => Prisma.sql`(${Prisma.join([skill.id, skill.name])})`,
+  );
+  const insertedCount = await prisma.$executeRaw`
+    INSERT INTO "ReferenceSkills" ("referenceId", name)
+    VALUES ${Prisma.join(dataAsSqlArr)}
+    ON CONFLICT ("referenceId") DO UPDATE SET
+      name = EXCLUDED.name;`;
+  // eslint-disable-next-line no-console
+  console.log(`Inserted ${insertedCount} into database`);
 };
 
 const syncLightcastSkills = async () => {
