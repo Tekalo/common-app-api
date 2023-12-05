@@ -18,3 +18,8 @@ resource "aws_sqs_queue" "email_sqs_deadletter_queue" {
   kms_master_key_id                 = data.aws_kms_key.main.key_id
   kms_data_key_reuse_period_seconds = 300
 }
+
+output "email_queue_url" {
+  description = "URL of the SQS queue that is processed by the email-sender lambda"
+  value       = aws_sqs_queue.email_sqs_queue.url
+}

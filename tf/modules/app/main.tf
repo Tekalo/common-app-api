@@ -206,8 +206,8 @@ resource "aws_ecs_task_definition" "api" {
           value = "${var.web_url}"
         },
         {
-          name  = "AWS_SES_WHITELIST",
-          value = var.ses_whitelist != null ? var.ses_whitelist : "",
+          name  = "AWS_SES_WHITELIST"
+          value = var.ses_whitelist != null ? var.ses_whitelist : ""
         },
         {
           name  = "AWS_SES_FROM_ADDRESS"
@@ -249,7 +249,7 @@ resource "aws_ecs_task_definition" "cli" {
       image                  = "${var.cli_image}"
       memory                 = 512
       essential              = true
-      readonlyRootFilesystem = true
+      readonlyRootFilesystem = false
 
       logConfiguration = {
         logDriver = "awslogs"
@@ -461,6 +461,32 @@ data "aws_iam_policy_document" "task_ses_policy" {
       variable = "ses:FromAddress"
       values   = [var.email_from_address]
     }
+  }
+}
+
+resource "aws_iam_role_policy" "sqs_policy" {
+  name   = "sqs-policy"
+  role   = aws_iam_role.ecs_task_role.id
+  policy = data.aws_iam_policy_document.task_sqs_policy.json
+}
+
+data "aws_iam_policy_document" "task_sqs_policy" {
+  statement {
+    actions   = ["sqs:SendMessage"]
+    resources = ["*"] # TODO: limit to email queue
+  }
+}
+
+resource "aws_iam_role_policy" "kms_policy" {
+  name   = "kms-policy"
+  role   = aws_iam_role.ecs_task_role.id
+  policy = data.aws_iam_policy_document.task_kms_policy.json
+}
+
+data "aws_iam_policy_document" "task_kms_policy" {
+  statement {
+    actions   = ["kms:GenerateDataKey"]
+    resources = [aws_kms_key.main.arn]
   }
 }
 

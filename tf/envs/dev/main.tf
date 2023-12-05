@@ -34,6 +34,12 @@ module "envconfig" {
   env = var.env
 }
 
+module "email" {
+  source             = "../../modules/email"
+  env                = module.envconfig.env
+  email_from_address = var.email_from_address
+}
+
 module "app" {
   source = "../../modules/app"
 
@@ -65,7 +71,8 @@ module "app" {
   uploads_cors_allowed_origins = var.uploads_cors_allowed_origins
 
   additional_env_vars = {
-    "PRESIGNER_STRATEGY" = "both"
+    "PRESIGNER_STRATEGY" = "both",
+    "AWS_EMAIL_SQS_URL"  = "${module.email.email_queue_url}"
   }
 }
 
@@ -79,11 +86,6 @@ module "auth0_ses" {
   env                      = module.envconfig.env
 }
 
-module "email" {
-  source             = "../../modules/email"
-  env                = module.envconfig.env
-  email_from_address = var.email_from_address
-}
 
 # DNS for auth0
 # Dev and staging share an Auth0 tenant, which is configured with a custom domain.

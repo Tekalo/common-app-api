@@ -35,4 +35,17 @@ describe('Config Loader', () => {
 
     expect(isLoadTest).toBe(false);
   });
+  test('should set emailQueueUrl', () => {
+    process.env.AWS_EMAIL_SQS_URL =
+      'https://sqs.us-east-1.amazonaws.com/12345/email-sender-queue';
+    const { aws } = configLoader.loadConfig();
+
+    expect(aws.emailQueueUrl).toEqual(process.env.AWS_EMAIL_SQS_URL);
+  });
+  test("should set emailQueueUrl to undefined if environment variable doesn't exist", () => {
+    delete process.env.AWS_EMAIL_SQS_URL;
+    const { aws } = configLoader.loadConfig();
+
+    expect(aws.emailQueueUrl).toBeUndefined();
+  });
 });
