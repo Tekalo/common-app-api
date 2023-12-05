@@ -410,10 +410,7 @@ class ApplicantController {
       batchStart < applicantsToDelete.length;
       batchStart += batchSize
     ) {
-      const batchEnd = Math.min(
-        batchStart + batchSize,
-        applicantsToDelete.length,
-      );
+      const batchEnd = batchStart + batchSize;
       console.log(
         'Deleting: %O',
         applicantsToDelete.slice(batchStart, batchEnd),
