@@ -8,13 +8,15 @@
 -- DropTable
 DROP TABLE "Skill";
 
--- DropTable
-DROP TABLE "UserSkills";
+-- DropIndex
+DROP INDEX IF EXISTS "UserSkills_name_key";
 
--- CreateTable
-CREATE TABLE "ApplicantSkills" (
-    "name" CITEXT NOT NULL
-);
+-- Rename the table
+ALTER TABLE "UserSkills"
+RENAME TO "ApplicantSkills";
+
+-- CreateIndex
+CREATE UNIQUE INDEX "ApplicantSkills_name_key" ON "ApplicantSkills"("name");
 
 -- CreateTable
 CREATE TABLE "SkillsAnnotation" (
@@ -23,9 +25,6 @@ CREATE TABLE "SkillsAnnotation" (
     "suggest" BOOLEAN,
     "rejectAs" TEXT
 );
-
--- CreateIndex
-CREATE UNIQUE INDEX "ApplicantSkills_name_key" ON "ApplicantSkills"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "SkillsAnnotation_name_key" ON "SkillsAnnotation"("name");
