@@ -8,7 +8,7 @@ The infrastructure for all three Tekalo API environments (dev, staging, prod) is
 
 ## Configuration
 
-We use infrastructure as code (IaC) to configure the infrastructure of the Tekalo API, and avoid making manual edits in the AWS console as much as possible. Most of the infrastructure configuration is in the form of terraform code, and can be found in [the terraform directory](../tf) in this repo. The configuration for the ECS cluster, the vpc, and other related infrastructure is configured using CloudFormation, and can be found in the [aws-infrastructure](https://github.com/schmidtfutures/aws-infrastructure/tree/main/fan-prod-external) repository.
+We use infrastructure as code (IaC) to configure the infrastructure of the Tekalo API, and avoid making manual edits in the AWS console as much as possible. Most of the infrastructure configuration is in the form of terraform code, and can be found in [the terraform directory](../tf) in this repo. The configuration for the ECS cluster, the vpc, and other related infrastructure is configured using CloudFormation, and can be found in the [aws-infrastructure](https://github.com/tekalo/aws-infrastructure/tree/main/fan-prod-external) repository.
 
 ## DNS
 
@@ -26,7 +26,7 @@ When code is merged into the `main` branch a build and deploy is triggered throu
 
 An Aurora Serverless v2 PostgreSQL RDS cluster supports the API. Credentials for the database are stored in Secrets Manager and are accessed and set in the task container at deploy time. At the time of container startup, the [docker container](../Dockerfile) will [process the secret json](../scripts/ensure-db-url.sh) and ensure that the db connection string is properly set in the environment.
 
-Automatic rotation of the database password has been configured. The API tasks [will shut down if a database authentication error is detected](https://github.com/schmidtfutures/common-app-api/blob/main/src/resources/client.ts#L24-L28), allowing new tasks to be started with the new password.
+Automatic rotation of the database password has been configured. The API tasks [will shut down if a database authentication error is detected](https://github.com/tekalo/common-app-api/blob/main/src/resources/client.ts#L24-L28), allowing new tasks to be started with the new password.
 
 There is currently only one database instance in the cluster, though it would probably make sense to deploy a replica to prevent downtime if there is a database failure.
 
