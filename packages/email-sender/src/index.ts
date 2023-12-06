@@ -1,5 +1,7 @@
-// the aws sdk is baked into the lambda runtime and including
-// the dependencies in the project will cause errors
+// The aws sdk is baked into the lambda runtime and including
+// the dependencies in the package.json will cause errors.
+// import/no-extraneous-dependencies has been disabled below so
+// the linter doesn't complain about the packages not being in dependencies
 
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { SQSEvent, SQSHandler, SQSRecord } from 'aws-lambda';
@@ -8,8 +10,7 @@ import { SendEmailCommandInput } from '@aws-sdk/client-ses';
 import SESService from './SESService.js';
 
 const SES_SERVICE = new SESService();
-export const SES_FROM_ADDRESS =
-  process.env.SES_FROM_ADDRESS || 'tekalo@dev.tekalo.io';
+const SES_FROM_ADDRESS = process.env.SES_FROM_ADDRESS || 'tekalo@dev.tekalo.io';
 
 export type EmailMessage = {
   recipientEmail: string;

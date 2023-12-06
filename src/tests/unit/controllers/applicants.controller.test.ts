@@ -13,7 +13,7 @@ import {
   createMockContext,
 } from '@App/tests/util/context.js';
 import SESService from '@App/services/SESService.js';
-import DummySESService from '@App/tests/fixtures/DummySesService.js';
+import DummySESService from '@App/tests/fixtures/DummySESService.js';
 import DummySQSService from '@App/tests/fixtures/DummySQSService.js';
 import DummyS3Service from '@App/tests/fixtures/DummyS3Service.js';
 import { getAPIRequestBody } from '@App/tests/fixtures/applicantSubmissionGenerator.js';
