@@ -33,7 +33,7 @@ import DummyAuthService from '../fixtures/DummyAuthService.js';
 import DummyMonitoringService from '../fixtures/DummyMonitoringService.js';
 import authHelper, { TokenOptions } from '../util/auth.js';
 import DummyEmailService from '../fixtures/DummyEmailService.js';
-import DummySESService from '../fixtures/DummySesService.js';
+import DummySESService from '../fixtures/DummySESService.js';
 import DummySQSService from '../fixtures/DummySQSService.js';
 import DummyUploadService from '../fixtures/DummyUploadService.js';
 import DummyS3Service from '../fixtures/DummyS3Service.js';

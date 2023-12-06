@@ -6,7 +6,7 @@ import { prisma } from '@App/resources/client.js';
 import DummyAuthService from './DummyAuthService.js';
 import DummyEmailService from './DummyEmailService.js';
 import DummyMonitoringService from './DummyMonitoringService.js';
-import DummySESService from './DummySesService.js';
+import DummySESService from './DummySESService.js';
 import DummySQSService from './DummySQSService.js';
 import DummyUploadService from './DummyUploadService.js';
 import DummyS3Service from './DummyS3Service.js';
