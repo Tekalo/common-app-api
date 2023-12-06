@@ -9,7 +9,7 @@ import {
 import OpportunityController from '@App/controllers/OpportunityController.js';
 import EmailService from '@App/services/EmailService.js';
 import DummyEmailService from '@App/tests/fixtures/DummyEmailService.js';
-import DummySESService from '@App/tests/fixtures/DummySesService.js';
+import DummySESService from '@App/tests/fixtures/DummySESService.js';
 import DummySQSService from '@App/tests/fixtures/DummySQSService.js';
 import { getMockConfig } from '../../util/helpers.js';
 
