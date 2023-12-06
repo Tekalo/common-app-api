@@ -156,7 +156,7 @@ resource "aws_ecs_task_definition" "api" {
       image                  = "${var.image}"
       memory                 = 512
       essential              = true
-      readOnlyRootFilesystem = true
+      readonlyRootFilesystem = true
       portMappings = [
         {
           containerPort = var.api_port
@@ -262,7 +262,7 @@ resource "aws_ecs_task_definition" "cli" {
       image                  = "${var.cli_image}"
       memory                 = 512
       essential              = true
-
+      readonlyRootFilesystem = true
       logConfiguration = {
         logDriver = "awslogs"
         options = {
