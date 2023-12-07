@@ -8,19 +8,6 @@ data "aws_db_subnet_group" "main_subnet_group" {
 
 data "aws_caller_identity" "current" {}
 
-
-locals {
-  tmpfs_settings = [
-    {
-      containerPath = "/api/tmp",
-      size          = 5120, # in MB
-      mountOptions  = ["rw", "noexec", "nodev"]
-      // noexec: don't allow binaries
-      // nodev: don't allow device files
-    }
-  ]
-}
-
 resource "aws_kms_key" "main" {
   description         = "Key for all CAPP ${var.env} data"
   enable_key_rotation = var.env == "prod"
@@ -255,7 +242,10 @@ resource "aws_ecs_task_definition" "cli" {
   requires_compatibilities = ["FARGATE"]
   cpu                      = 256
   memory                   = 512
-
+  volume                    {
+    name                   = "tmp"
+    host_path              = "/tmp"
+  }
   container_definitions = jsonencode([
     {
       name                   = "capp-cli"
@@ -263,6 +253,12 @@ resource "aws_ecs_task_definition" "cli" {
       memory                 = 512
       essential              = true
       readonlyRootFilesystem = true
+      mountPoints            = [
+        {
+          containerPath       = "/api/tmp"
+          sourceVolume        = "tmp"
+        }
+      ]
       logConfiguration = {
         logDriver = "awslogs"
         options = {
@@ -275,9 +271,6 @@ resource "aws_ecs_task_definition" "cli" {
         name      = "DATABASE_SECRET"
         valueFrom = module.rds-secret.secret_arn
       }],
-      linuxParameters = {
-        tmpfs = local.tmpfs_settings
-      }
     },
   ])
 }
