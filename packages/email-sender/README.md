@@ -26,4 +26,4 @@ pnpm package:email-sender
 
 from the root of the repository. This will compile the code, copy node_modules and the email-sender package json into the build directory, create a zip file, and copy the zip file into the `/tf/envs/dev` directory to be deployed.
 
-To publish changes to the lambda code to staging or production, the zip file needs to be manually copied to the relevant `/tf/envs/<env>` directory.
+To publish changes to the lambda code to staging or production,`email-sender.zip` needs to be manually copied to the relevant `/tf/envs/<env>` directory.
