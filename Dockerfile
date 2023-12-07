@@ -1,6 +1,7 @@
 FROM node:20.10.0-slim AS base
 WORKDIR /api
 RUN chown node:node /api
+RUN chown node:node /tmp
 RUN apt-get update && apt-get install -y \
     openssl \
     curl \
