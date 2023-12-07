@@ -244,7 +244,6 @@ resource "aws_ecs_task_definition" "cli" {
   memory                   = 512
   volume                    {
     name                   = "tmp"
-    host_path              = "/tmp"
   }
   container_definitions = jsonencode([
     {
@@ -255,7 +254,7 @@ resource "aws_ecs_task_definition" "cli" {
       readonlyRootFilesystem = true
       mountPoints            = [
         {
-          containerPath       = "/api/tmp"
+          containerPath       = "/tmp"
           sourceVolume        = "tmp"
         }
       ]
