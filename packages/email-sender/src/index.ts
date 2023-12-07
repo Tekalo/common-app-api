@@ -1,5 +1,7 @@
-// the aws sdk is baked into the lambda runtime and including
-// the dependencies in the project will cause errors
+// The aws sdk is baked into the lambda runtime and including
+// the dependencies in the package.json will cause errors.
+// import/no-extraneous-dependencies has been disabled below so
+// the linter doesn't complain about the packages not being in dependencies
 
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { SQSEvent, SQSHandler, SQSRecord } from 'aws-lambda';
@@ -7,46 +9,54 @@ import { SQSEvent, SQSHandler, SQSRecord } from 'aws-lambda';
 import { SendEmailCommandInput } from '@aws-sdk/client-ses';
 import SESService from './SESService.js';
 
-const sesService = new SESService();
+const SES_SERVICE = new SESService();
+const SES_FROM_ADDRESS = process.env.SES_FROM_ADDRESS || 'tekalo@dev.tekalo.io';
 
-type EmailMessage = {
+export type EmailMessage = {
   recipientEmail: string;
   subject: string;
   htmlBody: string;
   textBody: string | undefined;
 };
 
-const processMessage = async (message: SQSRecord) => {
+export const generateSESInput = (
+  message: EmailMessage,
+  sesFromAddress: string,
+): SendEmailCommandInput => {
+  const friendlyFromAddress = `Tekalo <${sesFromAddress}>`;
+  return {
+    Destination: {
+      ToAddresses: [message.recipientEmail],
+    },
+    ReplyToAddresses: [sesFromAddress],
+    Message: {
+      Body: {
+        Html: {
+          Charset: 'UTF-8',
+          Data: message.htmlBody,
+        },
+        Text:
+          message.textBody === undefined
+            ? undefined
+            : { Charset: 'UTF-8', Data: message.textBody },
+      },
+      Subject: {
+        Charset: 'UTF-8',
+        Data: message.subject,
+      },
+    },
+    Source: friendlyFromAddress,
+  };
+};
+
+export const processMessage = async (
+  message: SQSRecord,
+  sesService: SESService,
+) => {
   try {
     const emailToSend: EmailMessage = JSON.parse(message.body) as EmailMessage;
 
-    // todo: env variable
-    const sesFromAddress = 'tekalo@dev.apps.futurestech.cloud';
-    const friendlyFromAddress = `Tekalo <${sesFromAddress}>`;
-    const parsedMessage: SendEmailCommandInput = {
-      Destination: {
-        ToAddresses: [emailToSend.recipientEmail],
-      },
-      // todo: env variable
-      ReplyToAddresses: [sesFromAddress],
-      Message: {
-        Body: {
-          Html: {
-            Charset: 'UTF-8',
-            Data: emailToSend.htmlBody,
-          },
-          Text:
-            emailToSend.textBody === undefined
-              ? undefined
-              : { Charset: 'UTF-8', Data: emailToSend.textBody },
-        },
-        Subject: {
-          Charset: 'UTF-8',
-          Data: emailToSend.subject,
-        },
-      },
-      Source: friendlyFromAddress,
-    };
+    const parsedMessage = generateSESInput(emailToSend, SES_FROM_ADDRESS);
 
     return await sesService.sendEmail(parsedMessage);
   } catch (err) {
@@ -59,7 +69,7 @@ const processMessage = async (message: SQSRecord) => {
 export const handler: SQSHandler = async (event: SQSEvent) => {
   await Promise.all(
     event.Records.map(async (record) => {
-      await processMessage(record);
+      await processMessage(record, SES_SERVICE);
     }),
   );
   // eslint-disable-next-line no-console

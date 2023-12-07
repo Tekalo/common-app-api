@@ -242,15 +242,23 @@ resource "aws_ecs_task_definition" "cli" {
   requires_compatibilities = ["FARGATE"]
   cpu                      = 256
   memory                   = 512
-
+  volume                    {
+    name                   = "tmp"
+    host_path              = "/tmp"
+  }
   container_definitions = jsonencode([
     {
       name                   = "capp-cli"
       image                  = "${var.cli_image}"
       memory                 = 512
       essential              = true
-      readonlyRootFilesystem = false
-
+      readonlyRootFilesystem = true
+      mountPoints            = [
+        {
+          containerPath       = "/api/tmp"
+          sourceVolume        = "tmp"
+        }
+      ]
       logConfiguration = {
         logDriver = "awslogs"
         options = {
@@ -262,7 +270,7 @@ resource "aws_ecs_task_definition" "cli" {
       secrets = [{
         name      = "DATABASE_SECRET"
         valueFrom = module.rds-secret.secret_arn
-      }]
+      }],
     },
   ])
 }

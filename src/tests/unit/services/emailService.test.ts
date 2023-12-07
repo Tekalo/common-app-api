@@ -6,7 +6,7 @@ import getApplicantWelcomeEmail from '@App/resources/emails/applicantWelcomeEmai
 import EmailService, {
   removeAliasLowercaseEmail,
 } from '@App/services/EmailService.js';
-import DummySESService from '../../fixtures/DummySesService.js';
+import DummySESService from '../../fixtures/DummySESService.js';
 import DummySQSService from '../../fixtures/DummySQSService.js';
 import { getMockConfig } from '../../util/helpers.js';
 

@@ -55,7 +55,12 @@ resource "aws_lambda_function" "mailer" {
   handler          = "index.handler"
   role             = aws_iam_role.mailer_lambda_role.arn
   runtime          = "nodejs18.x"
-  // save artifacts to s3?
+
+  environment {
+    variables = {
+      SES_FROM_ADDRESS = var.email_from_address
+    }
+  }
 }
 
 resource "aws_lambda_event_source_mapping" "mailer_sqs_source" {
