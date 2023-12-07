@@ -48,20 +48,21 @@ describe('GET /skills', () => {
 
     // uncomment the below codes for local testing
     // execute SQL command to create the view; once created, view will automatically be updated whenever there are changes in source tables
-    // await prisma.$executeRaw`
-    //     CREATE VIEW "SkillsView" AS
-    //     SELECT
-    //       COALESCE(sa.name::citext, rs.name::citext) as name,
-    //       COALESCE(sa.canonical, rs.name, sa.name) as canonical,
-    //       CASE
-    //         WHEN sa.suggest IS NOT NULL THEN sa.suggest
-    //         WHEN rs.name IS NOT NULL THEN true
-    //         ELSE false
-    //       END as suggest,
-    //       sa."rejectAs" as "rejectAs"
-    //     FROM "SkillsAnnotation" sa
-    //     FULL JOIN "ReferenceSkills" rs ON sa.name = rs.name
-    // `;
+    await prisma.$executeRaw`
+        CREATE VIEW "SkillsView" AS
+        SELECT
+          COALESCE(sa.name, rs.name)::citext as name,
+          COALESCE(sa.canonical, rs.name, sa.name)::citext as canonical,
+          LOWER(COALESCE(sa.canonical, rs.name, sa.name)) as "canonicalLowerCase",
+          CASE
+            WHEN sa.suggest IS NOT NULL THEN sa.suggest
+            WHEN rs.name IS NOT NULL THEN true
+            ELSE false
+          END as suggest,
+          sa."rejectAs" as "rejectAs"
+        FROM "SkillsAnnotation" sa
+        FULL JOIN "ReferenceSkills" rs ON sa.name = rs.name
+    `;
 
     const { body, headers } = await request(dummyApp)
       .get('/skills')
@@ -72,6 +73,69 @@ describe('GET /skills', () => {
         { canonical: 'Python' },
         { canonical: 'TypeScript' },
         { canonical: 'Node.js' },
+      ]),
+    });
+  });
+
+  it('Should return just one canonical if multiple entries share the same lower-case canonical ', async () => {
+    const randomString = getRandomString();
+    const partialTokenOptions: TokenOptions = {
+      roles: ['admin'],
+    };
+    const token = await authHelper.getToken(
+      `bboberson${randomString}@gmail.com`,
+      partialTokenOptions,
+    );
+
+    // upsert dummy data to ReferenceSkills table
+    const { body: body1 }: { body: ReferenceSkillsCreateResponseBody } =
+      await request(dummyApp)
+        .post('/skills/referenceSet')
+        .send(referenceSkillsDummy)
+        .set('Authorization', `Bearer ${token}`)
+        .expect(200);
+    expect(body1).toHaveProperty('successCount');
+    expect(body1.successCount).toBe(3);
+
+    // upsert dummy data to SkillsAnnotation table
+    await prisma.skillsAnnotation.createMany({
+      data: [
+        {
+          name: 'JS',
+          canonical: 'Javascript',
+          suggest: true,
+          rejectAs: null,
+        },
+        {
+          name: 'JavaScript(JS)',
+          canonical: 'JAVASCRIPT',
+          suggest: true,
+          rejectAs: null,
+        },
+        {
+          name: 'javascript',
+          canonical: null,
+          suggest: true,
+          rejectAs: null,
+        },
+        {
+          name: 'python',
+          canonical: null,
+          suggest: true,
+          rejectAs: null,
+        },
+      ],
+    });
+
+    const { body, headers } = await request(dummyApp)
+      .get('/skills')
+      .expect(200);
+    expect(headers).toHaveProperty('cache-control', 'public, max-age=3600');
+    expect(body).toEqual({
+      data: expect.arrayContaining([
+        { canonical: 'Python' },
+        { canonical: 'TypeScript' },
+        { canonical: 'JAVASCRIPT' },
       ]),
     });
   });
