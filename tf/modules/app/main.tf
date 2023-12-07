@@ -243,7 +243,8 @@ resource "aws_ecs_task_definition" "cli" {
   cpu                      = 256
   memory                   = 512
   volume                    {
-    name                   = "/tmp"
+    name                   = "tmp"
+    host_path              = "/tmp"
   }
   container_definitions = jsonencode([
     {
@@ -255,7 +256,7 @@ resource "aws_ecs_task_definition" "cli" {
       mountPoints            = [
         {
           containerPath       = "/api/tmp"
-          sourceVolume        = "/tmp"
+          sourceVolume        = "tmp"
         }
       ]
       logConfiguration = {
