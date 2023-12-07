@@ -618,12 +618,10 @@ describe('POST /applicants/me/submissions', () => {
         const skills = await prisma.applicantSkills.findMany({
           where: { OR: [{ name: 'New skill #1' }, { name: 'New skill #2' }] },
         });
-        expect(skills).toEqual(
-          expect.arrayContaining([
-            { name: 'New skill #1' },
-            { name: 'New skill #2' },
-          ]),
-        );
+        expect(skills).toEqual([
+          expect.objectContaining({ name: 'New skill #1' }),
+          expect.objectContaining({ name: 'New skill #2' }),
+        ]);
         expect(submission?.skills).toEqual(
           expect.arrayContaining(['New skill #1', 'New skill #2']),
         );
