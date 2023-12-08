@@ -2,6 +2,7 @@ FROM node:20.10.0-slim AS base
 WORKDIR /api
 RUN chown node:node /api
 RUN chown node:node /tmp
+# VOLUME instruction: https://github.com/aws/containers-roadmap/issues/938#issuecomment-743655586
 VOLUME ["/tmp"]
 RUN apt-get update && apt-get install -y \
     openssl \
