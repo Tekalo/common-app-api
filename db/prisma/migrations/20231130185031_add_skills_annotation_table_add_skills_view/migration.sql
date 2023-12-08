@@ -40,7 +40,6 @@ CREATE VIEW "SkillsView" AS
         SELECT
           COALESCE(sa.name, rs.name)::citext as name,
           COALESCE(sa.canonical, rs.name, sa.name)::citext as canonical,
-          LOWER(COALESCE(sa.canonical, rs.name, sa.name)) as "canonicalLowerCase",
           CASE
             WHEN sa.suggest IS NOT NULL THEN sa.suggest
             WHEN rs.name IS NOT NULL THEN true

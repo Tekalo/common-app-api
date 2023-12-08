@@ -46,6 +46,7 @@ describe('GET /skills', () => {
       data: skillsAnnotationDummy,
     });
 
+    // TODO: Remove when CAPP-1382 is complete
     // uncomment the below codes for local testing
     // execute SQL command to create the view; once created, view will automatically be updated whenever there are changes in source tables
     // await prisma.$executeRaw`
@@ -53,7 +54,6 @@ describe('GET /skills', () => {
     //     SELECT
     //       COALESCE(sa.name, rs.name)::citext as name,
     //       COALESCE(sa.canonical, rs.name, sa.name)::citext as canonical,
-    //       LOWER(COALESCE(sa.canonical, rs.name, sa.name)) as "canonicalLowerCase",
     //       CASE
     //         WHEN sa.suggest IS NOT NULL THEN sa.suggest
     //         WHEN rs.name IS NOT NULL THEN true
@@ -77,7 +77,7 @@ describe('GET /skills', () => {
     });
   });
 
-  it('Should return just one canonical if multiple entries share the same lower-case canonical ', async () => {
+  it('Should return just one skill if multiple skills share the same canonical value with different casing', async () => {
     const randomString = getRandomString();
     const partialTokenOptions: TokenOptions = {
       roles: ['admin'],
@@ -124,20 +124,24 @@ describe('GET /skills', () => {
           suggest: true,
           rejectAs: null,
         },
+        {
+          name: 'pithon',
+          canonical: 'PYTHON',
+          suggest: true,
+          rejectAs: null,
+        },
       ],
     });
 
-    const { body, headers } = await request(dummyApp)
-      .get('/skills')
-      .expect(200);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { body, headers }: { body: SkillGetResponseBody; headers: any } =
+      await request(dummyApp).get('/skills').expect(200);
     expect(headers).toHaveProperty('cache-control', 'public, max-age=3600');
-    expect(body).toEqual({
-      data: expect.arrayContaining([
-        { canonical: 'Python' },
-        { canonical: 'TypeScript' },
-        { canonical: 'JAVASCRIPT' },
-      ]),
-    });
+    expect(body.data).toEqual([
+      { canonical: 'JavaScript' },
+      { canonical: 'Python' },
+      { canonical: 'TypeScript' },
+    ]);
   });
 
   describe('Skills appear in both SkillsAnnotation(SA) and ReferenceSkills(RS) table', () => {

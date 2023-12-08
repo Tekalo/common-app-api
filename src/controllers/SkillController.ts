@@ -15,23 +15,15 @@ class SkillController {
 
   async getSkills(): Promise<SkillGetResponseBody> {
     const skills = await this.prisma.skillsView.groupBy({
-      by: ['canonicalLowerCase'],
+      by: ['canonical'],
       where: {
         suggest: true,
         rejectAs: null,
       },
-      _min: {
-        canonical: true,
-      },
     });
 
-    const onlyCanonical = skills.map((skill) => ({
-      // eslint-disable-next-line no-underscore-dangle
-      canonical: skill._min.canonical,
-    }));
-
     return Skills.SkillGetResponseBodySchema.parse({
-      data: onlyCanonical,
+      data: skills,
     });
   }
 
