@@ -34,6 +34,12 @@ module "envconfig" {
   env = var.env
 }
 
+module "email" {
+  source             = "../../modules/email"
+  env                = module.envconfig.env
+  email_from_address = var.email_from_address
+}
+
 module "app" {
   source = "../../modules/app"
 
