@@ -34,7 +34,7 @@ data "aws_iam_policy_document" "mailer_ses_policy" {
 }
 
 resource "aws_iam_role" "mailer_lambda_role" {
-  name               = "lambda-mailer-role"
+  name               = "capp-${var.env}-lambda-mailer-role"
   assume_role_policy = data.aws_iam_policy_document.mailer_assume_role_policy.json
   inline_policy {
     name   = "lambda_inline_policy"
