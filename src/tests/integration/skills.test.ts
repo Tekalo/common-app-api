@@ -53,13 +53,12 @@ describe('GET /skills', () => {
     //     CREATE VIEW "SkillsView" AS
     //     SELECT
     //       COALESCE(sa.name, rs.name)::citext as name,
-    //       COALESCE(sa.canonical, rs.name, sa.name)::citext as canonical,
     //       CASE
-    //         WHEN sa.suggest IS NOT NULL THEN sa.suggest
-    //         WHEN rs.name IS NOT NULL THEN true
-    //         ELSE false
-    //       END as suggest,
-    //       sa."rejectAs" as "rejectAs"
+    //         WHEN sa.suggest THEN COALESCE(sa.canonical, sa.name)::citext
+    //         ELSE COALESCE(sa.canonical, rs.name)::citext
+    //       END AS canonical,
+    //       COALESCE(sa.suggest, rs.name IS NOT NULL) AS suggest,
+    //       sa."rejectAs"
     //     FROM "SkillsAnnotation" sa
     //     FULL JOIN "ReferenceSkills" rs ON sa.name = rs.name
     // `;
@@ -70,7 +69,7 @@ describe('GET /skills', () => {
     expect(headers).toHaveProperty('cache-control', 'public, max-age=3600');
     expect(body).toEqual({
       data: expect.arrayContaining([
-        { canonical: 'Python' },
+        { canonical: 'python' },
         { canonical: 'TypeScript' },
         { canonical: 'Node.js' },
       ]),
@@ -138,8 +137,8 @@ describe('GET /skills', () => {
       await request(dummyApp).get('/skills').expect(200);
     expect(headers).toHaveProperty('cache-control', 'public, max-age=3600');
     expect(body.data).toEqual([
-      { canonical: 'JavaScript' },
-      { canonical: 'Python' },
+      { canonical: 'javascript' },
+      { canonical: 'python' },
       { canonical: 'TypeScript' },
     ]);
   });
@@ -259,7 +258,7 @@ describe('GET /skills', () => {
       });
     });
 
-    it('Skills which have no canonical and suggest is true should be suggested', async () => {
+    it('Skills which have no canonical and suggest is true should be suggested based on sa.name', async () => {
       const randomString = getRandomString();
       const partialTokenOptions: TokenOptions = {
         roles: ['admin'],
@@ -309,9 +308,9 @@ describe('GET /skills', () => {
       expect(headers).toHaveProperty('cache-control', 'public, max-age=3600');
       expect(body).toEqual({
         data: expect.arrayContaining([
-          { canonical: 'Python' },
-          { canonical: 'TypeScript' },
-          { canonical: 'JavaScript' },
+          { canonical: 'python' },
+          { canonical: 'Typescript' },
+          { canonical: 'JAVAScript' },
         ]),
       });
     });
@@ -524,7 +523,7 @@ describe('GET /skills', () => {
       });
     });
 
-    it('Skills which have no canonical but suggest is true should be suggested', async () => {
+    it('Skills which have no canonical but suggest is true should be suggested based on sa.name', async () => {
       const randomString = getRandomString();
       const partialTokenOptions: TokenOptions = {
         roles: ['admin'],

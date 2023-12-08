@@ -39,12 +39,11 @@ ALTER TABLE "SkillsAnnotation" ALTER COLUMN "canonical" SET DATA TYPE CITEXT;
 CREATE VIEW "SkillsView" AS
         SELECT
           COALESCE(sa.name, rs.name)::citext as name,
-          COALESCE(sa.canonical, rs.name, sa.name)::citext as canonical,
           CASE
-            WHEN sa.suggest IS NOT NULL THEN sa.suggest
-            WHEN rs.name IS NOT NULL THEN true
-            ELSE false
-          END as suggest,
-          sa."rejectAs" as "rejectAs"
+            WHEN sa.suggest THEN COALESCE(sa.canonical, sa.name)::citext
+            ELSE COALESCE(sa.canonical, rs.name)::citext
+          END AS canonical,
+          COALESCE(sa.suggest, rs.name IS NOT NULL) AS suggest,
+          sa."rejectAs"
         FROM "SkillsAnnotation" sa
         FULL JOIN "ReferenceSkills" rs ON sa.name = rs.name
