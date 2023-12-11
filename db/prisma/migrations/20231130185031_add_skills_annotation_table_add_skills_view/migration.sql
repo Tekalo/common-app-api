@@ -15,6 +15,10 @@ DROP INDEX IF EXISTS "UserSkills_name_key";
 ALTER TABLE "UserSkills"
 RENAME TO "ApplicantSkills";
 
+-- Change field type
+ALTER TABLE "ReferenceSkills"
+ALTER COLUMN "name" SET DATA TYPE CITEXT;
+
 -- CreateIndex
 CREATE UNIQUE INDEX "ApplicantSkills_name_key" ON "ApplicantSkills"("name");
 

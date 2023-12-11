@@ -273,7 +273,6 @@ model SkillsAnnotation {
 view SkillsView {
   name String @unique @db.Citext
   canonical String? @db.Citext
-  canonicalLowerCase String?
   suggest Boolean?
   rejectAs String?
 }
