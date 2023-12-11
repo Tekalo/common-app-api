@@ -74,7 +74,8 @@ module "app" {
 
   additional_env_vars = {
     # Temporarily enabling this while we role out POST-based uploads.
-    "PRESIGNER_STRATEGY" = "both"
+    "PRESIGNER_STRATEGY" = "both",
+    "AWS_EMAIL_SQS_URL"  = "${module.email.email_queue_url}"
   }
 }
 
