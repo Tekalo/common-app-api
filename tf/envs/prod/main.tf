@@ -34,6 +34,12 @@ module "envconfig" {
   env = var.env
 }
 
+module "email" {
+  source             = "../../modules/email"
+  env                = module.envconfig.env
+  email_from_address = var.email_from_address
+}
+
 module "app" {
   source = "../../modules/app"
 
@@ -73,7 +79,8 @@ module "app" {
 
   additional_env_vars = {
     # Temporarily enabling this while we role out POST-based uploads.
-    "PRESIGNER_STRATEGY" = "both"
+    "PRESIGNER_STRATEGY" = "both",
+    "AWS_EMAIL_SQS_URL"  = "${module.email.email_queue_url}"
   }
 }
 
