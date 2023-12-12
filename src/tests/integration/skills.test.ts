@@ -74,6 +74,9 @@ describe('GET /skills', () => {
         { canonical: 'Node.js' },
       ]),
     });
+    expect(body).toEqual({
+      data: expect.not.arrayContaining([{ canonical: 'JavaScript' }]),
+    });
   });
 
   it('Should return just one skill if multiple skills share the same canonical value with different casing', async () => {
@@ -144,7 +147,7 @@ describe('GET /skills', () => {
   });
 
   describe('Skills appear in both SkillsAnnotation(SA) and ReferenceSkills(RS) table', () => {
-    it('Skills where all fields besides name are null should be suggested', async () => {
+    it('Skills where all fields besides name are null should be suggested based on rs.name', async () => {
       const randomString = getRandomString();
       const partialTokenOptions: TokenOptions = {
         roles: ['admin'],
@@ -313,6 +316,14 @@ describe('GET /skills', () => {
           { canonical: 'JAVAScript' },
         ]),
       });
+      // should not use rs.name when sa.name is available
+      expect(body).toEqual({
+        data: expect.not.arrayContaining([
+          { canonical: 'Python' },
+          { canonical: 'TypeScript' },
+          { canonical: 'JavaScript' },
+        ]),
+      });
     });
 
     it('Skills which have canonical but suggest is false should not be suggested', async () => {
@@ -466,6 +477,12 @@ describe('GET /skills', () => {
           { canonical: 'Python' },
           { canonical: 'TypeScript' },
           { canonical: 'JavaScript' },
+        ]),
+      });
+      expect(body).toEqual({
+        data: expect.not.arrayContaining([
+          { canonical: 'Database' },
+          { canonical: 'nodejs' },
         ]),
       });
     });
@@ -625,6 +642,12 @@ describe('GET /skills', () => {
           { canonical: 'JavaScript' },
         ]),
       });
+      expect(body).toEqual({
+        data: expect.not.arrayContaining([
+          { canonical: 'Database' },
+          { canonical: 'Node.js' },
+        ]),
+      });
     });
 
     it('Skills where suggest is true but rejectAs is not null should not be suggested', async () => {
@@ -676,11 +699,17 @@ describe('GET /skills', () => {
           { canonical: 'JavaScript' },
         ]),
       });
+      expect(body).toEqual({
+        data: expect.not.arrayContaining([
+          { canonical: 'Database' },
+          { canonical: 'Node.js' },
+        ]),
+      });
     });
   });
 
   describe('Skills appear in ReferenceSkills(RS) table but not in SkillsAnnotation(SA) table', () => {
-    it('Should always be suggested, so that even no data in SA will be suggested there will still be data in view', async () => {
+    it('Should always be suggested, even though no data in SA will be suggested', async () => {
       const randomString = getRandomString();
       const partialTokenOptions: TokenOptions = {
         roles: ['admin'],
@@ -727,6 +756,12 @@ describe('GET /skills', () => {
           { canonical: 'Python' },
           { canonical: 'TypeScript' },
           { canonical: 'JavaScript' },
+        ]),
+      });
+      expect(body).toEqual({
+        data: expect.not.arrayContaining([
+          { canonical: 'Database' },
+          { canonical: 'nodejs' },
         ]),
       });
     });

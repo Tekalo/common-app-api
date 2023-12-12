@@ -25,7 +25,7 @@ CREATE UNIQUE INDEX "ApplicantSkills_name_key" ON "ApplicantSkills"("name");
 -- CreateTable
 CREATE TABLE "SkillsAnnotation" (
     "name" CITEXT NOT NULL,
-    "canonical" TEXT,
+    "canonical" CITEXT,
     "suggest" BOOLEAN,
     "rejectAs" TEXT
 );
@@ -35,9 +35,6 @@ CREATE UNIQUE INDEX "SkillsAnnotation_name_key" ON "SkillsAnnotation"("name");
 
 -- AlterTable
 ALTER TABLE "ApplicantSkills" ADD COLUMN     "dataAdded" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;
-
--- AlterTable
-ALTER TABLE "SkillsAnnotation" ALTER COLUMN "canonical" SET DATA TYPE CITEXT;
 
 -- Create SkillsView table view
 CREATE VIEW "SkillsView" AS
