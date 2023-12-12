@@ -57,7 +57,7 @@
     "@aws-sdk/s3-presigned-post": "3.470.0",
     "@aws-sdk/s3-request-presigner": "3.470.0",
     "@capp/schemas": "workspace:*",
-    "@prisma/client": "5.6.0",
+    "@prisma/client": "5.7.0",
     "@quixo3/prisma-session-store": "3.1.13",
     "@sentry/node": "7.86.0",
     "@sentry/types": "7.86.0",
@@ -90,8 +90,8 @@
     "@types/node": "20.10.4",
     "@types/supertest": "2.0.16",
     "@types/swagger-ui-express": "4.1.6",
-    "@typescript-eslint/eslint-plugin": "6.13.2",
-    "@typescript-eslint/parser": "6.13.2",
+    "@typescript-eslint/eslint-plugin": "6.14.0",
+    "@typescript-eslint/parser": "6.14.0",
     "cookie": "0.6.0",
     "cookie-parser": "1.4.6",
     "eslint": "8.55.0",
@@ -106,7 +106,7 @@
     "nodemon": "3.0.2",
     "pino-pretty": "10.2.3",
     "prettier": "3.1.1",
-    "prisma": "5.6.0",
+    "prisma": "5.7.0",
     "sentry-testkit": "5.0.8",
     "supertest": "6.3.3",
     "tsx": "4.6.2",
@@ -114,7 +114,7 @@
   },
   "//": "added to resolve a critical vulnerability in @babel/traverse 7.23.0",
   "peerDependencies": {
-    "@babel/core": "7.23.5"
+    "@babel/core": "7.23.6"
   },
   "prisma": {
     "schema": "db/prisma/schema.prisma",
