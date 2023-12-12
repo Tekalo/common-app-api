@@ -63,10 +63,11 @@ describe('GET /skills', () => {
     //     FULL JOIN "ReferenceSkills" rs ON sa.name = rs.name
     // `;
 
-    const { body, headers } = await request(dummyApp)
-      .get('/skills')
-      .expect(200);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { body, headers }: { body: SkillGetResponseBody; headers: any } =
+      await request(dummyApp).get('/skills').expect(200);
     expect(headers).toHaveProperty('cache-control', 'public, max-age=3600');
+    expect(body.data).toHaveLength(3);
     expect(body).toEqual({
       data: expect.arrayContaining([
         { canonical: 'python' },
@@ -139,6 +140,7 @@ describe('GET /skills', () => {
     const { body, headers }: { body: SkillGetResponseBody; headers: any } =
       await request(dummyApp).get('/skills').expect(200);
     expect(headers).toHaveProperty('cache-control', 'public, max-age=3600');
+    expect(body.data).toHaveLength(3);
     expect(body.data).toEqual([
       { canonical: 'javascript' },
       { canonical: 'python' },
@@ -146,7 +148,7 @@ describe('GET /skills', () => {
     ]);
   });
 
-  describe('Skills appear in both SkillsAnnotation(SA) and ReferenceSkills(RS) table', () => {
+  describe('Skills appear in both SkillsAnnotation(SA) and ReferenceSkills(RS) table with the same name value regardless of casing', () => {
     it('Skills where all fields besides name are null should be suggested based on rs.name', async () => {
       const randomString = getRandomString();
       const partialTokenOptions: TokenOptions = {
@@ -261,7 +263,7 @@ describe('GET /skills', () => {
       });
     });
 
-    it('Skills which have no canonical and suggest is true should be suggested based on sa.name', async () => {
+    it('Skills which have no canonical and suggest is true should still be suggested based on sa.name', async () => {
       const randomString = getRandomString();
       const partialTokenOptions: TokenOptions = {
         roles: ['admin'],
@@ -468,10 +470,11 @@ describe('GET /skills', () => {
         ],
       });
 
-      const { body, headers } = await request(dummyApp)
-        .get('/skills')
-        .expect(200);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { body, headers }: { body: SkillGetResponseBody; headers: any } =
+        await request(dummyApp).get('/skills').expect(200);
       expect(headers).toHaveProperty('cache-control', 'public, max-age=3600');
+      expect(body.data).toHaveLength(3);
       expect(body).toEqual({
         data: expect.arrayContaining([
           { canonical: 'Python' },
@@ -540,7 +543,7 @@ describe('GET /skills', () => {
       });
     });
 
-    it('Skills which have no canonical but suggest is true should be suggested based on sa.name', async () => {
+    it('Skills which have no canonical but suggest is true should still be suggested based on sa.name', async () => {
       const randomString = getRandomString();
       const partialTokenOptions: TokenOptions = {
         roles: ['admin'],
@@ -631,10 +634,11 @@ describe('GET /skills', () => {
         ],
       });
 
-      const { body, headers } = await request(dummyApp)
-        .get('/skills')
-        .expect(200);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { body, headers }: { body: SkillGetResponseBody; headers: any } =
+        await request(dummyApp).get('/skills').expect(200);
       expect(headers).toHaveProperty('cache-control', 'public, max-age=3600');
+      expect(body.data).toHaveLength(3);
       expect(body).toEqual({
         data: expect.arrayContaining([
           { canonical: 'Python' },
@@ -688,10 +692,11 @@ describe('GET /skills', () => {
         ],
       });
 
-      const { body, headers } = await request(dummyApp)
-        .get('/skills')
-        .expect(200);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { body, headers }: { body: SkillGetResponseBody; headers: any } =
+        await request(dummyApp).get('/skills').expect(200);
       expect(headers).toHaveProperty('cache-control', 'public, max-age=3600');
+      expect(body.data).toHaveLength(3);
       expect(body).toEqual({
         data: expect.arrayContaining([
           { canonical: 'Python' },
@@ -747,10 +752,11 @@ describe('GET /skills', () => {
         ],
       });
 
-      const { body, headers } = await request(dummyApp)
-        .get('/skills')
-        .expect(200);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { body, headers }: { body: SkillGetResponseBody; headers: any } =
+        await request(dummyApp).get('/skills').expect(200);
       expect(headers).toHaveProperty('cache-control', 'public, max-age=3600');
+      expect(body.data).toHaveLength(3);
       expect(body).toEqual({
         data: expect.arrayContaining([
           { canonical: 'Python' },

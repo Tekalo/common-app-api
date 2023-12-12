@@ -14,6 +14,7 @@ class SkillController {
   }
 
   async getSkills(): Promise<SkillGetResponseBody> {
+    // groupBy to de-duplicate the same canonical skill name regardless of casing
     const skills = await this.prisma.skillsView.groupBy({
       by: ['canonical'],
       where: {
