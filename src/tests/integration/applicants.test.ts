@@ -47,7 +47,7 @@ afterEach(async () => {
   await prisma.applicantSubmission.deleteMany();
   await prisma.applicant.deleteMany();
   await prisma.applicantDeletionRequests.deleteMany();
-  await prisma.userSkills.deleteMany();
+  await prisma.applicantSkills.deleteMany();
   jest.restoreAllMocks();
 });
 
@@ -615,15 +615,13 @@ describe('POST /applicants/me/submissions', () => {
           where: { id: submissionBody?.submission?.id },
           include: { utmParams: true },
         });
-        const skills = await prisma.userSkills.findMany({
+        const skills = await prisma.applicantSkills.findMany({
           where: { OR: [{ name: 'New skill #1' }, { name: 'New skill #2' }] },
         });
-        expect(skills).toEqual(
-          expect.arrayContaining([
-            { name: 'New skill #1' },
-            { name: 'New skill #2' },
-          ]),
-        );
+        expect(skills).toEqual([
+          expect.objectContaining({ name: 'New skill #1' }),
+          expect.objectContaining({ name: 'New skill #2' }),
+        ]);
         expect(submission?.skills).toEqual(
           expect.arrayContaining(['New skill #1', 'New skill #2']),
         );

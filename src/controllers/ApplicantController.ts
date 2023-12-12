@@ -196,7 +196,7 @@ class ApplicantController {
       },
     });
 
-    const createSkills = this.prisma.userSkills.createMany({
+    const createSkills = this.prisma.applicantSkills.createMany({
       data: validatedSubmission.skills.map((skill) => ({ name: skill })),
       skipDuplicates: true,
     });
@@ -244,7 +244,7 @@ class ApplicantController {
     );
     const { resumeUpload, ...restOfSubmission } = validatedSubmission;
 
-    const createSkills = this.prisma.userSkills.createMany({
+    const createSkills = this.prisma.applicantSkills.createMany({
       data: validatedSubmission.skills.map((skill) => ({ name: skill })),
       skipDuplicates: true,
     });

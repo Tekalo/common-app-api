@@ -2,7 +2,7 @@
 
 generator client {
   provider = "prisma-client-js"
-  previewFeatures = ["postgresqlExtensions"]
+  previewFeatures = ["postgresqlExtensions","views"]
 }
 
 datasource db {
@@ -247,13 +247,9 @@ model Upload {
   ApplicantDraftSubmission ApplicantDraftSubmission?
 }
 
-model Skill {
+model ApplicantSkills {
   name                       String                  @unique @db.Citext
-}
-
-// custom skills submitted in applicant submissions
-model UserSkills {
-  name                       String                  @unique @db.Citext
+  dataAdded                  DateTime                @default(now())
 }
 
 // custom skills submitted in opportunity submissions
@@ -264,5 +260,19 @@ model OpportunitySkills {
 // imported skills from 3rd party sources (at time of writing, Lightcast)
 model ReferenceSkills {
   referenceId              String                    @id
-  name                     String
+  name                     String                    @db.Citext
+}
+
+model SkillsAnnotation {
+  name                    String                    @unique @db.Citext
+  canonical               String?                   @db.Citext           
+  suggest                 Boolean?
+  rejectAs                String?
+}
+
+view SkillsView {
+  name String @unique @db.Citext
+  canonical String? @db.Citext
+  suggest Boolean?
+  rejectAs String?
 }
