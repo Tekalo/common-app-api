@@ -1,2 +1,2 @@
 #!/bin/bash
-exec pnpm exec eslint .
+exec pnpm exec eslint --cache .

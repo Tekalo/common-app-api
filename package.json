@@ -27,7 +27,7 @@
     "watch:check": "nodemon --watch 'src/**' -e ts --exec 'tsc --noEmit'",
     "container-install": "./scripts/container-install.sh",
     "container-uninstall": "./scripts/container-uninstall.sh",
-    "format": "./scripts/prettier.sh",
+    "format": "./scripts/container-format.sh",
     "lint": "./scripts/container-lint.sh",
     "lint:fix": "./scripts/lint-fix.sh",
     "preinstall": "npx only-allow pnpm",

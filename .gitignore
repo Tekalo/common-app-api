@@ -5,3 +5,4 @@
 **/.pnpm-store/*
 .env
 .DS_Store
+.eslintcache
