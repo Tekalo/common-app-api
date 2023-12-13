@@ -1,7 +1,6 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-
 CHANGED=`git diff HEAD@{1} --stat -- ./src/resources/schemas/* | wc -l`
 if [ $CHANGED -gt 0 ];
 then
@@ -14,6 +13,5 @@ then
     https://docs.google.com/document/d/1cdj83P5KRGqC6YvM8aVA5d9HwII--dEp1YX1k-KX2a0${NC}"
 fi
 
-pnpm generate-spec
-pnpm format && git add -A .
-pnpm lint
+CMDS='tsx /api/scripts/writeSpec.ts ; /api/scripts/lint-command.sh ; prettier --cache --cache-strategy metadata --write . ;'
+docker compose run -T --rm api bash "-c" "$CMDS"
