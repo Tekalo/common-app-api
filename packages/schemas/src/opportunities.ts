@@ -44,7 +44,6 @@ const OpportunitySubmissionSchema = z.object({
           )
         : [],
     ),
-  desiredOtherSkills: z.array(z.string()).optional(),
   visaSponsorship: VisaSponsorship.optional(),
   similarStaffed: z.boolean(),
   desiredImpactExp: z.string().max(5000).optional(),

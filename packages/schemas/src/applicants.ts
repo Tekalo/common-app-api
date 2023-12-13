@@ -86,7 +86,6 @@ const ApplicantCreateSubmissionRequestBody = z.object({
           .join(' '),
       ),
     ),
-  otherSkills: z.array(z.string().max(255)),
   linkedInUrl: z.string().max(500).nullable(),
   githubUrl: z.string().max(500).nullable(),
   portfolioUrl: z.string().max(500).nullable(),
@@ -199,10 +198,6 @@ const ApplicantDraftSubmissionRequestBodySchema = z.object({
   lastOrg: z.string().max(255).nullish(),
   yoe: YOE.nullish(),
   skills: z
-    .array(z.string().max(255))
-    .nullish()
-    .transform((val) => val || []),
-  otherSkills: z
     .array(z.string().max(255))
     .nullish()
     .transform((val) => val || []),
