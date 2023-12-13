@@ -345,14 +345,6 @@
                                 "type": "string"
                               }
                             },
-                            "otherSkills": {
-                              "type": "array",
-                              "nullable": true,
-                              "items": {
-                                "type": "string",
-                                "maxLength": 255
-                              }
-                            },
                             "linkedInUrl": {
                               "type": "string",
                               "nullable": true,
@@ -493,7 +485,6 @@
                             "lastOrg",
                             "yoe",
                             "skills",
-                            "otherSkills",
                             "linkedInUrl",
                             "githubUrl",
                             "portfolioUrl",
@@ -558,14 +549,6 @@
                                 "type": "string"
                               }
                             },
-                            "otherSkills": {
-                              "type": "array",
-                              "nullable": true,
-                              "items": {
-                                "type": "string",
-                                "maxLength": 255
-                              }
-                            },
                             "linkedInUrl": {
                               "type": "string",
                               "nullable": true,
@@ -706,7 +689,6 @@
                             "lastOrg",
                             "yoe",
                             "skills",
-                            "otherSkills",
                             "linkedInUrl",
                             "githubUrl",
                             "portfolioUrl",
@@ -791,13 +773,6 @@
                     ]
                   },
                   "skills": {
-                    "type": "array",
-                    "items": {
-                      "type": "string",
-                      "maxLength": 255
-                    }
-                  },
-                  "otherSkills": {
                     "type": "array",
                     "items": {
                       "type": "string",
@@ -976,7 +951,6 @@
                   "lastOrg",
                   "yoe",
                   "skills",
-                  "otherSkills",
                   "linkedInUrl",
                   "githubUrl",
                   "portfolioUrl",
@@ -1047,14 +1021,6 @@
                           "nullable": true,
                           "items": {
                             "type": "string"
-                          }
-                        },
-                        "otherSkills": {
-                          "type": "array",
-                          "nullable": true,
-                          "items": {
-                            "type": "string",
-                            "maxLength": 255
                           }
                         },
                         "linkedInUrl": {
@@ -1197,7 +1163,6 @@
                         "lastOrg",
                         "yoe",
                         "skills",
-                        "otherSkills",
                         "linkedInUrl",
                         "githubUrl",
                         "portfolioUrl",
@@ -1296,13 +1261,6 @@
                       "maxLength": 255
                     }
                   },
-                  "otherSkills": {
-                    "type": "array",
-                    "items": {
-                      "type": "string",
-                      "maxLength": 255
-                    }
-                  },
                   "linkedInUrl": {
                     "type": "string",
                     "nullable": true,
@@ -1475,7 +1433,6 @@
                   "lastOrg",
                   "yoe",
                   "skills",
-                  "otherSkills",
                   "linkedInUrl",
                   "githubUrl",
                   "portfolioUrl",
@@ -1546,14 +1503,6 @@
                           "nullable": true,
                           "items": {
                             "type": "string"
-                          }
-                        },
-                        "otherSkills": {
-                          "type": "array",
-                          "nullable": true,
-                          "items": {
-                            "type": "string",
-                            "maxLength": 255
                           }
                         },
                         "linkedInUrl": {
@@ -1696,7 +1645,6 @@
                         "lastOrg",
                         "yoe",
                         "skills",
-                        "otherSkills",
                         "linkedInUrl",
                         "githubUrl",
                         "portfolioUrl",
@@ -2037,14 +1985,6 @@
                             "type": "string"
                           }
                         },
-                        "otherSkills": {
-                          "type": "array",
-                          "nullable": true,
-                          "items": {
-                            "type": "string",
-                            "maxLength": 255
-                          }
-                        },
                         "linkedInUrl": {
                           "type": "string",
                           "nullable": true,
@@ -2185,7 +2125,6 @@
                         "lastOrg",
                         "yoe",
                         "skills",
-                        "otherSkills",
                         "linkedInUrl",
                         "githubUrl",
                         "portfolioUrl",
