@@ -200,10 +200,6 @@ const ApplicantDraftSubmissionRequestBodySchema = z.object({
     .array(z.string().max(255))
     .nullish()
     .transform((val) => val || []),
-  otherSkills: z
-    .array(z.string().max(255))
-    .nullish()
-    .transform((val) => val || []),
   linkedInUrl: z.string().max(500).nullish(),
   githubUrl: z.string().max(500).nullish(),
   portfolioUrl: z.string().max(500).nullish(),

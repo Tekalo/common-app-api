@@ -1835,14 +1835,6 @@
                       "maxLength": 255
                     }
                   },
-                  "otherSkills": {
-                    "type": "array",
-                    "nullable": true,
-                    "items": {
-                      "type": "string",
-                      "maxLength": 255
-                    }
-                  },
                   "linkedInUrl": {
                     "type": "string",
                     "nullable": true,
