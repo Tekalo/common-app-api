@@ -5,7 +5,7 @@ import { OpportunityBatch } from '@prisma/client';
 import {
   oppBatchPayload,
   seedOpportunityBatch,
-} from '../fixtures/OpportunitySubmissionGenerator.js';
+} from '../fixtures/opportunitySubmissionGenerator.js';
 import getDummyApp from '../fixtures/appGenerator.js';
 import { getRandomString } from '../util/helpers.js';
 import authHelper, { TokenOptions } from '../util/auth.js';
