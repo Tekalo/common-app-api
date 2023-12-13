@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@aws-sdk/client-s3':
-        specifier: 3.470.0
-        version: 3.470.0
+        specifier: 3.472.0
+        version: 3.472.0
       '@aws-sdk/client-ses':
         specifier: 3.470.0
         version: 3.470.0
@@ -18,11 +18,11 @@ importers:
         specifier: 3.470.0
         version: 3.470.0
       '@aws-sdk/s3-presigned-post':
-        specifier: 3.470.0
-        version: 3.470.0
+        specifier: 3.472.0
+        version: 3.472.0
       '@aws-sdk/s3-request-presigner':
-        specifier: 3.470.0
-        version: 3.470.0
+        specifier: 3.472.0
+        version: 3.472.0
       '@babel/core':
         specifier: 7.23.6
         version: 7.23.6
@@ -304,8 +304,8 @@ packages:
       tslib: 1.14.1
     dev: false
 
-  /@aws-sdk/client-s3@3.470.0:
-    resolution: {integrity: sha512-HdhNlz25ImxID17qK7qfLXileJPYdPT7kgC+gm083edhFk0JI0+N8y7N9ybnVYpoHzZZPXeO1KZkmfdWK4IQhw==}
+  /@aws-sdk/client-s3@3.472.0:
+    resolution: {integrity: sha512-Gth+HNhCIjEE6YoeC59ypGqaJ+cZuznuLJ2t3PL+9BQ/2pWXaxhZ5QXFxaJidtzdyebOAgY87/7g3D6PHnWQDg==}
     engines: {node: '>=14.0.0'}
     dependencies:
       '@aws-crypto/sha1-browser': 3.0.0
@@ -331,7 +331,7 @@ packages:
       '@aws-sdk/util-endpoints': 3.470.0
       '@aws-sdk/util-user-agent-browser': 3.468.0
       '@aws-sdk/util-user-agent-node': 3.470.0
-      '@aws-sdk/xml-builder': 3.465.0
+      '@aws-sdk/xml-builder': 3.472.0
       '@smithy/config-resolver': 2.0.21
       '@smithy/eventstream-serde-browser': 2.0.15
       '@smithy/eventstream-serde-config-resolver': 2.0.15
@@ -805,11 +805,11 @@ packages:
       tslib: 2.6.2
     dev: false
 
-  /@aws-sdk/s3-presigned-post@3.470.0:
-    resolution: {integrity: sha512-xwEWtI0mVrekSsHlr6YFW9rPEI2QjsBQGDYmAkKJT9I839YtV+NGMBmaOP6kx7r2TtiaCubwEEZZNCTh0ywJIA==}
+  /@aws-sdk/s3-presigned-post@3.472.0:
+    resolution: {integrity: sha512-OyhKiF9cEB8VStGR9TE9BhRrvFGMD/7yfGex0eyho50wWlJ1Wc+0L8iVl6VDy4euYh1l/SorFy+oicg+LnZchQ==}
     engines: {node: '>=14.0.0'}
     dependencies:
-      '@aws-sdk/client-s3': 3.470.0
+      '@aws-sdk/client-s3': 3.472.0
       '@aws-sdk/types': 3.468.0
       '@aws-sdk/util-format-url': 3.468.0
       '@smithy/middleware-endpoint': 2.2.3
@@ -822,8 +822,8 @@ packages:
       - aws-crt
     dev: false
 
-  /@aws-sdk/s3-request-presigner@3.470.0:
-    resolution: {integrity: sha512-HaYcw/RsIimGEF8jcSnTUA09xChAG/pVtPz8Mo/cU6Jpq9XiOnbGrWZ+3bkWEOtZRSbcz/0Gelws6QuLsxkt0w==}
+  /@aws-sdk/s3-request-presigner@3.472.0:
+    resolution: {integrity: sha512-BynrM9F1Wn2qdllJQPQR/ilkf/RZTmNnWdPrjHsA8n26UL/O2qt5zvPlx/uRF+2kqN5jR+AeRjik84/gBU7xVQ==}
     engines: {node: '>=14.0.0'}
     dependencies:
       '@aws-sdk/signature-v4-multi-region': 3.470.0
@@ -964,10 +964,11 @@ packages:
       tslib: 2.6.2
     dev: false
 
-  /@aws-sdk/xml-builder@3.465.0:
-    resolution: {integrity: sha512-9TKW5ZgsReygePTnAUdvaqxr/k1HXsEz2yDnk/jTLaUeRPsd5la8fFjb6OfgYYlbEVNlxTcKzaqOdrqxpUkmyQ==}
+  /@aws-sdk/xml-builder@3.472.0:
+    resolution: {integrity: sha512-PwjVxz1hr9up8QkddabuScPZ/d5aDHgvHYgK4acHYzltXL4wngfvimi5ZqXTzVWF2QANxHmWnHUr45QJX71oJQ==}
     engines: {node: '>=14.0.0'}
     dependencies:
+      '@smithy/types': 2.7.0
       tslib: 2.6.2
     dev: false
 
