@@ -1123,6 +1123,7 @@ describe('Applicant Controller', () => {
         lastOrg: 'mozilla',
         yoe: '>11',
         skills: ['react', 'python'], // enum
+        otherSkills: [],
         linkedInUrl: 'https://www.linkedin.com/in/bob-bobberson',
         githubUrl: 'https://github.com/bboberson',
         portfolioUrl: null,
