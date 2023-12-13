@@ -84,10 +84,6 @@ describe('POST /opportunities', () => {
       desiredStartDate: new Date('2023-12-01'),
       desiredYoe: ['15+'],
       desiredSkills: ['figma', 'project management'],
-      desiredOtherSkills: [
-        'really good at frying fries',
-        'waffle fry manufacturing',
-      ],
       visaSponsorship: 'no',
       similarStaffed: false,
       desiredImpactExp:

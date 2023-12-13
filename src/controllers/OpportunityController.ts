@@ -38,7 +38,6 @@ class OpportunityController {
       jdUrl: submission.jdUrl,
       desiredYoe: submission.desiredYoe,
       desiredSkills: submission.desiredSkills,
-      desiredOtherSkills: submission.desiredOtherSkills,
       visaSponsorship: submission.visaSponsorship,
       similarStaffed: submission.similarStaffed,
       desiredImpactExp: submission.desiredImpactExp,
