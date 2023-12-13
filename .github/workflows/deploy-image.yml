@@ -36,7 +36,7 @@ jobs:
     name: Deploy to ${{ inputs.env }}
     environment:
       name: ${{ inputs.env }}
-      url: https://capp-api.${{ inputs.env }}.apps.futurestech.cloud
+      url: https://capp-api.${{ inputs.env }}.tekalo.io
     runs-on: ubuntu-latest
     defaults:
       run:
