@@ -248,13 +248,13 @@ model Upload {
 }
 
 model ApplicantSkills {
-  name                       String                  @unique @db.Citext
+  name                       String                  @id @db.Citext
   dataAdded                  DateTime                @default(now())
 }
 
 // custom skills submitted in opportunity submissions
 model OpportunitySkills {
-  name                       String                  @unique @db.Citext
+  name                       String                  @id @db.Citext
 }
 
 // imported skills from 3rd party sources (at time of writing, Lightcast)
@@ -264,14 +264,14 @@ model ReferenceSkills {
 }
 
 model SkillsAnnotation {
-  name                    String                    @unique @db.Citext
+  name                    String                    @id @db.Citext
   canonical               String?                   @db.Citext           
   suggest                 Boolean?
   rejectAs                String?
 }
 
 view SkillsView {
-  name String @unique @db.Citext
+  name String @id @db.Citext
   canonical String? @db.Citext
   suggest Boolean?
   rejectAs String?
