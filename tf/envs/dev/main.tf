@@ -3,7 +3,7 @@ terraform {
     organization = "schmidtfutures"
 
     workspaces {
-      name = "common-app-infra-backend-dev"
+      name = "common-app-infra-backend-v2-dev"
     }
   }
 
