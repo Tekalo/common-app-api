@@ -64,3 +64,18 @@ output "cert_arn" {
 output "env" {
   value = var.env
 }
+
+resource "aws_kms_key" "main" {
+  description         = "Key for all CAPP ${var.env} data"
+  enable_key_rotation = var.env == "prod"
+}
+
+resource "aws_kms_alias" "main" {
+  name          = "alias/capp-${var.env}"
+  target_key_id = aws_kms_key.main.key_id
+}
+
+output "kms_main_key_id" {
+  description = "Main KMS Key ID"
+  value       = aws_kms_alias.main
+}

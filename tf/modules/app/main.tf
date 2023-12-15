@@ -8,21 +8,6 @@ data "aws_db_subnet_group" "main_subnet_group" {
 
 data "aws_caller_identity" "current" {}
 
-resource "aws_kms_key" "main" {
-  description         = "Key for all CAPP ${var.env} data"
-  enable_key_rotation = var.env == "prod"
-}
-
-resource "aws_kms_alias" "main" {
-  name          = "alias/capp-${var.env}"
-  target_key_id = aws_kms_key.main.key_id
-}
-
-output "kms_main_key_id" {
-  description = "Main KMS Key ID"
-  value       = aws_kms_alias.main
-}
-
 resource "aws_rds_cluster" "main" {
   cluster_identifier_prefix = "capp-${var.env}"
 

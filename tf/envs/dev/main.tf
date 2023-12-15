@@ -37,6 +37,7 @@ module "envconfig" {
 module "email" {
   source             = "../../modules/email"
   env                = module.envconfig.env
+  kms_key_id         = module.envconfig.kms_main_key_id
   email_from_address = var.email_from_address
 }
 
