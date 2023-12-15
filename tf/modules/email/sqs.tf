@@ -19,7 +19,7 @@ resource "aws_sqs_queue" "email_sqs_deadletter_queue" {
   message_retention_seconds         = 1209600
   kms_master_key_id                 = data.aws_kms_key.main.key_id
   kms_data_key_reuse_period_seconds = 300
-  depends_on                        = [modules.app.aws_kms_key.main]
+  # depends_on                        = [modules.app.aws_kms_key.main]
 }
 
 output "email_queue_url" {
