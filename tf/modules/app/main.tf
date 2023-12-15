@@ -8,15 +8,6 @@ data "aws_db_subnet_group" "main_subnet_group" {
 
 data "aws_caller_identity" "current" {}
 
-moved {
-  from = aws_kms_key.main
-  to   = module.envconfig.aws_kms_key.main
-}
-
-moved {
-  from = aws_kms_alias.main
-  to   = module.envconfig.aws_kms_alias.main
-}
 resource "aws_rds_cluster" "main" {
   cluster_identifier_prefix = "capp-${var.env}"
 

@@ -86,6 +86,16 @@ module "app" {
   }
 }
 
+moved {
+  from = module.app.aws_kms_key.main
+  to   = module.envconfig.aws_kms_key.main
+}
+
+moved {
+  from = module.app.aws_kms_alias.main
+  to   = module.envconfig.aws_kms_alias.main
+}
+
 module "env_defns" {
   source = "../../modules/env_defns"
 }
