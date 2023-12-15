@@ -81,5 +81,6 @@ output "kms_main_key" {
   value = {
     arn    = aws_kms_key.main.arn,
     key_id = aws_kms_key.main.key_id
+    alias  = aws_kms_alias.main.name
   }
 }
