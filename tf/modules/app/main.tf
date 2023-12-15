@@ -25,7 +25,7 @@ resource "aws_rds_cluster" "main" {
 
   final_snapshot_identifier = "capp-${var.env}-final"
 
-  kms_key_id        = aws_kms_key.main.arn
+  kms_key_id        = var.kms_key.arn
   storage_encrypted = true
 
   db_subnet_group_name = data.aws_db_subnet_group.main_subnet_group.name
@@ -347,13 +347,13 @@ resource "aws_route53_record" "api" {
 resource "aws_secretsmanager_secret" "auth0_express_config" {
   name        = "projects/capp/${var.env}/auth0_express_config"
   description = "CAPP ${var.env} auth0 express config"
-  kms_key_id  = aws_kms_key.main.key_id
+  kms_key_id  = var.kms_key.key_id
 }
 
 resource "aws_secretsmanager_secret" "auth0_api_config" {
   name        = "projects/capp/${var.env}/auth0_api_config"
   description = "CAPP ${var.env} auth0 management api config"
-  kms_key_id  = aws_kms_key.main.key_id
+  kms_key_id  = var.kms_key.key_id
 }
 
 module "rds-secret" {
@@ -368,7 +368,7 @@ module "rds-secret" {
     "dbname"   = aws_rds_cluster.main.database_name
     "port"     = tostring(aws_rds_cluster.main.port)
   }
-  kms_key_id            = aws_kms_key.main.arn
+  kms_key_id            = var.kms_key.arn
   vpc_subnet_ids        = var.rotation_vpc_subnet_ids
   vpc_security_group_id = var.rotation_vpc_security_group_id
 
@@ -409,7 +409,7 @@ data "aws_iam_policy_document" "execution_role" {
 
   statement {
     actions   = ["kms:Decrypt"]
-    resources = [aws_kms_key.main.arn]
+    resources = [var.kms_key.arn]
   }
 }
 
@@ -483,7 +483,7 @@ resource "aws_iam_role_policy" "kms_policy" {
 data "aws_iam_policy_document" "task_kms_policy" {
   statement {
     actions   = ["kms:Decrypt", "kms:GenerateDataKey"]
-    resources = [aws_kms_key.main.arn]
+    resources = [kms_key.arn]
   }
 }
 

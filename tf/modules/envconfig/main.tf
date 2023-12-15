@@ -75,7 +75,10 @@ resource "aws_kms_alias" "main" {
   target_key_id = aws_kms_key.main.key_id
 }
 
-output "kms_main_key_id" {
-  description = "Main KMS Key ID"
-  value       = aws_kms_alias.main
+output "kms_main_key" {
+  description = "Main KMS Key"
+  value = {
+    arn    = aws_kms_alias.main.arn,
+    key_id = aws_kms_alias.main.key_id
+  }
 }
