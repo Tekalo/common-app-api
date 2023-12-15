@@ -65,16 +65,6 @@ output "env" {
   value = var.env
 }
 
-moved {
-  from = module.app.aws_kms_key.main
-  to   = module.envconfig.aws_kms_key.main
-}
-
-moved {
-  from = module.app.aws_kms_alias.main
-  to   = module.envconfig.aws_kms_alias.main
-}
-
 resource "aws_kms_key" "main" {
   description         = "Key for all CAPP ${var.env} data"
   enable_key_rotation = var.env == "prod"
