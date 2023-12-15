@@ -45,6 +45,7 @@ module "app" {
   source = "../../modules/app"
 
   env                  = module.envconfig.env
+  kms_key_id           = module.envconfig.kms_main_key_id
   api_port             = var.api_port
   dns_zone_id          = module.envconfig.dns_zone_id
   load_balancer_arn    = module.envconfig.load_balancer_arn

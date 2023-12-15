@@ -30,6 +30,11 @@ variable "env" {
   type        = string
 }
 
+variable "kms_key_id" {
+  description = "Main KMS key id"
+  type        = string
+}
+
 variable "api_port" {
   description = "Port number for API service"
   type        = number
