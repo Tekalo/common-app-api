@@ -18,6 +18,11 @@ resource "aws_kms_alias" "main" {
   target_key_id = aws_kms_key.main.key_id
 }
 
+output "kms_main_key_id" {
+  description = "Main KMS Key ID"
+  value       = aws_kms_alias.main
+}
+
 resource "aws_rds_cluster" "main" {
   cluster_identifier_prefix = "capp-${var.env}"
 
@@ -242,8 +247,8 @@ resource "aws_ecs_task_definition" "cli" {
   requires_compatibilities = ["FARGATE"]
   cpu                      = 256
   memory                   = 512
-  volume                    {
-    name                   = "tmp"
+  volume {
+    name = "tmp"
   }
   container_definitions = jsonencode([
     {
@@ -252,10 +257,10 @@ resource "aws_ecs_task_definition" "cli" {
       memory                 = 512
       essential              = true
       readonlyRootFilesystem = true
-      mountPoints            = [
+      mountPoints = [
         {
-          containerPath       = "/tmp"
-          sourceVolume        = "tmp"
+          containerPath = "/tmp"
+          sourceVolume  = "tmp"
         }
       ]
       logConfiguration = {
