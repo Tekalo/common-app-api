@@ -35,6 +35,7 @@ variable "kms_key" {
   type = object({
     arn    = string
     key_id = string
+    alias  = string
   })
 }
 
