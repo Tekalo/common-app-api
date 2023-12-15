@@ -24,7 +24,6 @@ const submissions: Array<OpportunitySubmission> = [
     desiredStartDate: new Date('2023-12-01'),
     desiredYoe: ['0-2', '3-5', '6-8', '9-12'],
     desiredSkills: ['react', 'sketch'],
-    desiredOtherSkills: ['flipping burgers', 'flipping houses'],
     visaSponsorship: 'no',
     similarStaffed: true,
     desiredImpactExp:

@@ -2,3 +2,5 @@ build/
 .pnpm-store/
 pnpm-lock.yaml
 auth0
+.eslintcache
+tf/

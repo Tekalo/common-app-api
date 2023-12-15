@@ -65,7 +65,6 @@ describe('Opportunity Controller', () => {
           desiredYoe: ['0-2', '3-5'],
           desiredSkills: ['react', 'sketch'],
           jdUrl: 'comeflipforbob.com/apply',
-          desiredOtherSkills: ['flipping burgers', 'flipping houses'],
           visaSponsorship: 'no',
           similarStaffed: true,
           desiredImpactExp:
@@ -139,7 +138,6 @@ describe('Opportunity Controller', () => {
           desiredEndDate: new Date('2024-12-01'),
           desiredYoe: ['15+'],
           desiredSkills: ['figma', 'project management'],
-          desiredOtherSkills: ['frying fries', 'frying eggs'],
           jdUrl: 'comeflipforbob.com/apply',
           visaSponsorship: 'no',
           similarStaffed: false,
@@ -194,7 +192,6 @@ describe('Opportunity Controller', () => {
           desiredYoe: ['0-2', '3-5'],
           desiredSkills: ['react', 'sketch'],
           jdUrl: 'comeflipforbob.com/apply',
-          desiredOtherSkills: ['flipping burgers', 'flipping houses'],
           visaSponsorship: 'no',
           similarStaffed: true,
           desiredImpactExp:

@@ -5,7 +5,7 @@ import { OpportunityBatch } from '@prisma/client';
 import {
   oppBatchPayload,
   seedOpportunityBatch,
-} from '../fixtures/OpportunitySubmissionGenerator.js';
+} from '../fixtures/opportunitySubmissionGenerator.js';
 import getDummyApp from '../fixtures/appGenerator.js';
 import { getRandomString } from '../util/helpers.js';
 import authHelper, { TokenOptions } from '../util/auth.js';
@@ -84,10 +84,6 @@ describe('POST /opportunities', () => {
       desiredStartDate: new Date('2023-12-01'),
       desiredYoe: ['15+'],
       desiredSkills: ['figma', 'project management'],
-      desiredOtherSkills: [
-        'really good at frying fries',
-        'waffle fry manufacturing',
-      ],
       visaSponsorship: 'no',
       similarStaffed: false,
       desiredImpactExp:

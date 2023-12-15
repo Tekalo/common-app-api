@@ -4,3 +4,5 @@ build
 scripts/*.sh
 auth0
 packages/**/*.d.ts
+tf/
+.github/
