@@ -46,23 +46,6 @@ describe('GET /skills', () => {
       data: skillsAnnotationDummy,
     });
 
-    // TODO: Remove when CAPP-1382 is complete
-    // uncomment the below codes for local testing
-    // execute SQL command to create the view; once created, view will automatically be updated whenever there are changes in source tables
-    // await prisma.$executeRaw`
-    //     CREATE VIEW "SkillsView" AS
-    //     SELECT
-    //       COALESCE(sa.name, rs.name)::citext as name,
-    //       CASE
-    //         WHEN sa.suggest THEN COALESCE(sa.canonical, sa.name)::citext
-    //         ELSE COALESCE(sa.canonical, rs.name)::citext
-    //       END AS canonical,
-    //       COALESCE(sa.suggest, rs.name IS NOT NULL) AS suggest,
-    //       sa."rejectAs"
-    //     FROM "SkillsAnnotation" sa
-    //     FULL JOIN "ReferenceSkills" rs ON sa.name = rs.name
-    // `;
-
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { body, headers }: { body: SkillGetResponseBody; headers: any } =
       await request(dummyApp).get('/skills').expect(200);
