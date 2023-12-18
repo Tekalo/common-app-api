@@ -107,7 +107,7 @@ describe('POST /opportunities', () => {
     const skills = await prisma.opportunitySkills.findFirst({
       where: { name: cleanSkill },
     });
-    expect(skills).toEqual({ name: cleanSkill });
+    expect(skills).toEqual({ name: cleanSkill, createdAt: expect.any(Date) });
   });
   it('should return 200 when opportunity submission includes skills that already exist in DB', async () => {
     const duplicateSkill = 'Duplicate Skill';
