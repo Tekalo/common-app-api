@@ -31,12 +31,14 @@ provider "aws" {
 module "envconfig" {
   source = "../../modules/envconfig"
 
-  env = var.env
+  env        = var.env
+  bucket_env = var.env
 }
 
 module "email" {
   source             = "../../modules/email"
   env                = module.envconfig.env
+  kms_key            = module.envconfig.kms_main_key
   email_from_address = var.email_from_address
 }
 
@@ -44,6 +46,8 @@ module "app" {
   source = "../../modules/app"
 
   env                  = module.envconfig.env
+  bucket_env           = module.envconfig.bucket_env
+  kms_key              = module.envconfig.kms_main_key
   api_port             = var.api_port
   dns_zone_id          = module.envconfig.dns_zone_id
   load_balancer_arn    = module.envconfig.load_balancer_arn
@@ -82,6 +86,16 @@ module "app" {
     "PRESIGNER_STRATEGY" = "both",
     "AWS_EMAIL_SQS_URL"  = "${module.email.email_queue_url}"
   }
+}
+
+moved {
+  from = module.app.aws_kms_key.main
+  to   = module.envconfig.aws_kms_key.main
+}
+
+moved {
+  from = module.app.aws_kms_alias.main
+  to   = module.envconfig.aws_kms_alias.main
 }
 
 module "env_defns" {

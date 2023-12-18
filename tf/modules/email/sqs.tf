@@ -1,10 +1,7 @@
-data "aws_kms_key" "main" {
-  key_id = "alias/capp-${var.env}"
-}
 resource "aws_sqs_queue" "email_sqs_queue" {
   name                              = "capp-${var.env}-email-sender"
   message_retention_seconds         = 1209600
-  kms_master_key_id                 = data.aws_kms_key.main.key_id
+  kms_master_key_id                 = var.kms_key.alias
   kms_data_key_reuse_period_seconds = 300
   redrive_policy = jsonencode({
     deadLetterTargetArn = aws_sqs_queue.email_sqs_deadletter_queue.arn
@@ -15,7 +12,7 @@ resource "aws_sqs_queue" "email_sqs_queue" {
 resource "aws_sqs_queue" "email_sqs_deadletter_queue" {
   name                              = "capp-${var.env}-email-sender-deadletter"
   message_retention_seconds         = 1209600
-  kms_master_key_id                 = data.aws_kms_key.main.key_id
+  kms_master_key_id                 = var.kms_key.alias
   kms_data_key_reuse_period_seconds = 300
 }
 

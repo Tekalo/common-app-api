@@ -3,6 +3,11 @@ variable "env" {
   description = "Slug of environment (dev, staging, prod)"
 }
 
+variable "bucket_env" {
+  type        = string
+  description = "Environment for the purposes of upload bucket creation"
+}
+
 data "aws_cloudformation_stack" "vpc" {
   name = "${var.env}-vpc"
 }
@@ -63,4 +68,28 @@ output "cert_arn" {
 
 output "env" {
   value = var.env
+}
+
+output "bucket_env" {
+  value = var.bucket_env
+}
+
+resource "aws_kms_key" "main" {
+  description         = "Key for all CAPP ${var.env} data"
+  enable_key_rotation = var.env == "prod"
+
+}
+
+resource "aws_kms_alias" "main" {
+  name          = "alias/capp-${var.env}"
+  target_key_id = aws_kms_key.main.key_id
+}
+
+output "kms_main_key" {
+  description = "Main KMS Key"
+  value = {
+    arn    = aws_kms_key.main.arn,
+    key_id = aws_kms_key.main.key_id
+    alias  = aws_kms_alias.main.name
+  }
 }

@@ -3,3 +3,7 @@ variable "ses_whitelist" {
   type        = string
 }
 
+variable "bucket_env" {
+  type = string
+}
+
