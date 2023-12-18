@@ -36,8 +36,8 @@
     "prepare": "husky install",
     "prisma:migrate": "docker compose run --rm api prisma migrate dev",
     "prisma:seed": "docker compose run --rm api prisma db seed",
-    "prisma:update": "docker-compose run -T --rm api bash -c 'prisma db push && tsx /api/scripts/createSkillsView.ts'",
-    "generate-spec": "docker compose run -T --rm api tsx /api/scripts/writeSpec.ts",
+    "prisma:update": "docker compose run -T --rm api bash -c 'prisma db push && tsx ./scripts/createSkillsView.ts'",
+    "generate-spec": "docker compose run -T --rm api tsx ./scripts/writeSpec.ts",
     "sync-skills": "docker compose run -T --rm api tsx ./scripts/skillSync.ts"
   },
   "repository": {
