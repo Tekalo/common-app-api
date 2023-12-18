@@ -29,7 +29,7 @@ data "aws_iam_policy_document" "mailer_ses_policy" {
     actions = [
       "kms:Decrypt",
     ]
-    resources = [data.aws_kms_key.main.arn]
+    resources = [var.kms_key.arn]
   }
 }
 

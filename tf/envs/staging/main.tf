@@ -37,6 +37,7 @@ module "envconfig" {
 module "email" {
   source             = "../../modules/email"
   env                = module.envconfig.env
+  kms_key            = module.envconfig.kms_main_key
   email_from_address = var.email_from_address
 }
 
@@ -44,6 +45,7 @@ module "app" {
   source = "../../modules/app"
 
   env                  = module.envconfig.env
+  kms_key              = module.envconfig.kms_main_key
   api_port             = var.api_port
   dns_zone_id          = module.envconfig.dns_zone_id
   load_balancer_arn    = module.envconfig.load_balancer_arn
@@ -79,6 +81,15 @@ module "app" {
   }
 }
 
+moved {
+  from = module.app.aws_kms_key.main
+  to   = module.envconfig.aws_kms_key.main
+}
+
+moved {
+  from = module.app.aws_kms_alias.main
+  to   = module.envconfig.aws_kms_alias.main
+}
 module "env_defns" {
   source = "../../modules/env_defns"
 }
