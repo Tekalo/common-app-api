@@ -249,12 +249,13 @@ model Upload {
 
 model ApplicantSkills {
   name                       String                  @id @db.Citext
-  dataAdded                  DateTime                @default(now())
+  createdAt                  DateTime                @default(now())
 }
 
 // custom skills submitted in opportunity submissions
 model OpportunitySkills {
   name                       String                  @id @db.Citext
+  createdAt                  DateTime                @default(now())
 }
 
 // imported skills from 3rd party sources (at time of writing, Lightcast)
