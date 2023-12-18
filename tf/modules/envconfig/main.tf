@@ -70,6 +70,10 @@ output "env" {
   value = var.env
 }
 
+output "bucket_env" {
+  value = var.bucket_env
+}
+
 resource "aws_kms_key" "main" {
   description         = "Key for all CAPP ${var.env} data"
   enable_key_rotation = var.env == "prod"
