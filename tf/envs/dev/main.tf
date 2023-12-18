@@ -31,7 +31,8 @@ provider "aws" {
 module "envconfig" {
   source = "../../modules/envconfig"
 
-  env = var.env
+  env        = var.env
+  bucket_env = var.bucket_env
 }
 
 module "email" {
@@ -45,6 +46,7 @@ module "app" {
   source = "../../modules/app"
 
   env                  = module.envconfig.env
+  bucket_env           = module.envconfig.bucket_env
   kms_key              = module.envconfig.kms_main_key
   api_port             = var.api_port
   dns_zone_id          = module.envconfig.dns_zone_id
