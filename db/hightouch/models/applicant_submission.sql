@@ -57,9 +57,15 @@ SELECT
     appsub."interestCauses",
     LOWER(appsub."otherCauses" :: TEXT) :: TEXT []
   ) AS "allCauses",
-  ARRAY_CAT(
-    appsub.skills,
-    LOWER(appsub."otherSkills" :: TEXT) :: TEXT []
+  (
+    SELECT
+      ARRAY_AGG(COALESCE(sv.canonical, x)) FILTER (
+        WHERE
+          sv."rejectAs" IS NULL
+      )
+    FROM
+      UNNEST(appsub.skills) AS x
+      LEFT JOIN PUBLIC."SkillsView" sv ON x = sv.name
   ) AS "allSkills",
   appsub."currentLocation",
   appsub."openToRelocate",
