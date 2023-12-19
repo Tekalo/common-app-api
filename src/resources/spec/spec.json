@@ -797,6 +797,13 @@
                       "maxLength": 255
                     }
                   },
+                  "otherSkills": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "maxLength": 255
+                    }
+                  },
                   "linkedInUrl": {
                     "type": "string",
                     "nullable": true,
@@ -969,6 +976,7 @@
                   "lastOrg",
                   "yoe",
                   "skills",
+                  "otherSkills",
                   "linkedInUrl",
                   "githubUrl",
                   "portfolioUrl",
@@ -1288,6 +1296,13 @@
                       "maxLength": 255
                     }
                   },
+                  "otherSkills": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "maxLength": 255
+                    }
+                  },
                   "linkedInUrl": {
                     "type": "string",
                     "nullable": true,
@@ -1460,6 +1475,7 @@
                   "lastOrg",
                   "yoe",
                   "skills",
+                  "otherSkills",
                   "linkedInUrl",
                   "githubUrl",
                   "portfolioUrl",
@@ -1781,6 +1797,14 @@
                     ]
                   },
                   "skills": {
+                    "type": "array",
+                    "nullable": true,
+                    "items": {
+                      "type": "string",
+                      "maxLength": 255
+                    }
+                  },
+                  "otherSkills": {
                     "type": "array",
                     "nullable": true,
                     "items": {
@@ -2370,6 +2394,12 @@
                           "items": {
                             "type": "string",
                             "maxLength": 255
+                          }
+                        },
+                        "desiredOtherSkills": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
                           }
                         },
                         "visaSponsorship": {
