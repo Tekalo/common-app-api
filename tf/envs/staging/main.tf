@@ -3,7 +3,7 @@ terraform {
     organization = "schmidtfutures"
 
     workspaces {
-      name = "common-app-infra-backend-staging"
+      name = "tekalo-infra-backend-staging"
     }
   }
 
@@ -32,7 +32,7 @@ module "envconfig" {
   source = "../../modules/envconfig"
 
   env        = var.env
-  bucket_env = var.env
+  bucket_env = var.bucket_env
 }
 
 module "email" {
