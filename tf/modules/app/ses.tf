@@ -3,7 +3,7 @@ resource "aws_ses_domain_identity" "tekalo_io" {
 }
 
 resource "aws_route53_record" "tekalo_io_verification_record" {
-  zone_id = data.aws_route53_zone.main
+  zone_id = data.aws_route53_zone.main.zone_id
   name    = "_amazonses.${aws_ses_domain_identity.tekalo_io.id}"
   type    = "TXT"
   ttl     = "600"
