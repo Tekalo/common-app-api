@@ -18,10 +18,9 @@ function loadConfig(): BaseConfig {
     },
     aws: {
       sesFromAddress:
-        process.env.AWS_SES_FROM_ADDRESS || 'tekalo@dev.apps.futurestech.cloud',
+        process.env.AWS_SES_FROM_ADDRESS || 'tekalo@dev.tekalo.io',
       sesReplyToAddress:
-        process.env.AWS_SES_REPLYTO_ADDRESS ||
-        'tekalo@dev.apps.futurestech.cloud',
+        process.env.AWS_SES_REPLYTO_ADDRESS || 'tekalo@dev.tekalo.io',
       region: process.env.AWS_REGION || 'us-east-1',
       sesWhiteList: String(process.env.AWS_SES_WHITELIST).split(',') || [],
       emailQueueUrl: process.env.AWS_EMAIL_SQS_URL,
