@@ -114,7 +114,7 @@
   },
   "//": "added to resolve a critical vulnerability in @babel/traverse 7.23.0",
   "peerDependencies": {
-    "@babel/core": "7.23.6"
+    "@babel/core": "7.23.7"
   },
   "prisma": {
     "schema": "db/prisma/schema.prisma",
