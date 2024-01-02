@@ -3,11 +3,6 @@ variable "env" {
   description = "Slug of environment (dev, staging, prod)"
 }
 
-variable "bucket_env" {
-  type        = string
-  description = "Environment for the purposes of upload bucket creation"
-}
-
 data "aws_cloudformation_stack" "vpc" {
   name = "${var.env}-vpc"
 }
@@ -68,10 +63,6 @@ output "cert_arn" {
 
 output "env" {
   value = var.env
-}
-
-output "bucket_env" {
-  value = var.bucket_env
 }
 
 resource "aws_kms_key" "main" {
