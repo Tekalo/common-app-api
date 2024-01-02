@@ -105,11 +105,11 @@ class ApplicantController {
           auth0Id: auth0UserId,
           utmParams: data.utmParams
             ? {
-              create: {
-                params: data.utmParams,
-                event: 'create-applicant',
-              },
-            }
+                create: {
+                  params: data.utmParams,
+                  event: 'create-applicant',
+                },
+              }
             : undefined,
         },
       });
@@ -184,11 +184,11 @@ class ApplicantController {
         applicant: { connect: { id: applicantId } },
         utmParams: validatedSubmission.utmParams
           ? {
-            create: {
-              params: validatedSubmission.utmParams,
-              event: 'create-submission',
-            },
-          }
+              create: {
+                params: validatedSubmission.utmParams,
+                event: 'create-submission',
+              },
+            }
           : undefined,
       },
       include: {
@@ -464,8 +464,8 @@ class ApplicantController {
    */
   async validateApplicantSubmission<
     T extends
-    | ParsedApplicantSubmissionBody
-    | ParsedApplicantDraftSubmissionBody,
+      | ParsedApplicantSubmissionBody
+      | ParsedApplicantDraftSubmissionBody,
   >(
     applicantId: number,
     submission: T,
@@ -516,17 +516,17 @@ class ApplicantController {
         ...restOfSubmission,
         resumeUpload: resumeUpload
           ? {
-            connect: { id: resumeUpload?.id },
-          }
+              connect: { id: resumeUpload?.id },
+            }
           : undefined,
         applicant: { connect: { id: applicantId } },
         utmParams: data.utmParams
           ? {
-            create: {
-              params: data.utmParams,
-              event: 'create-draft-submission',
-            },
-          }
+              create: {
+                params: data.utmParams,
+                event: 'create-draft-submission',
+              },
+            }
           : undefined,
       },
       update: {

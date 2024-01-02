@@ -73,11 +73,11 @@ class OpportunityController {
         },
         utmParams: data.utmParams
           ? {
-            create: {
-              params: data.utmParams,
-              event: 'create-batch',
-            },
-          }
+              create: {
+                params: data.utmParams,
+                event: 'create-batch',
+              },
+            }
           : undefined,
       },
     });
