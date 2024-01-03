@@ -1,0 +1,20 @@
+SELECT
+  NAME
+FROM
+  "ReferenceSkills"
+WHERE
+  NAME IS NOT NULL
+UNION
+SELECT
+  NAME
+FROM
+  "ApplicantSkills"
+WHERE
+  NAME IS NOT NULL
+UNION
+SELECT
+  NAME
+FROM
+  "OpportunitySkills"
+WHERE
+  NAME IS NOT NULL;
