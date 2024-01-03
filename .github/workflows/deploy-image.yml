@@ -55,7 +55,7 @@ jobs:
         run: terraform init
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1-node16
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: us-east-1
           role-to-assume: ${{ vars[format('{0}_AWS_PLAN_ROLE', inputs.env)] }}
