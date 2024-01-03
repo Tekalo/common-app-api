@@ -192,9 +192,9 @@ importers:
       '@jest/globals':
         specifier: 29.7.0
         version: 29.7.0
-      '@tsconfig/node18':
-        specifier: 18.2.2
-        version: 18.2.2
+      '@tsconfig/node20':
+        specifier: 20.1.2
+        version: 20.1.2
       '@types/aws-lambda':
         specifier: 8.10.130
         version: 8.10.130
@@ -2866,10 +2866,6 @@ packages:
 
   /@tokenizer/token@0.3.0:
     resolution: {integrity: sha512-OvjF+z51L3ov0OyAU0duzsYuvO01PH7x4t6DJx+guahgTnBHkhJdG7soQeTSFLWN3efnHyibZ4Z8l2EuWwJN3A==}
-    dev: true
-
-  /@tsconfig/node18@18.2.2:
-    resolution: {integrity: sha512-d6McJeGsuoRlwWZmVIeE8CUA27lu6jLjvv1JzqmpsytOYYbVi1tHZEnwCNVOXnj4pyLvneZlFlpXUK+X9wBWyw==}
     dev: true
 
   /@tsconfig/node20@20.1.2:
