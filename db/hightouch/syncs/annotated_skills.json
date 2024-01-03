@@ -1,0 +1,27 @@
+{
+  "mode": "upsert",
+  "object": "public.SkillsAnnotation",
+  "mappings": [
+    {
+      "to": "canonical",
+      "from": "Canonical Skill",
+      "type": "standard"
+    },
+    {
+      "to": "suggest",
+      "from": "Suggest",
+      "type": "standard"
+    },
+    {
+      "to": "rejectAs",
+      "from": "Reject?",
+      "type": "standard"
+    }
+  ],
+  "configVersion": 1,
+  "externalIdMapping": {
+    "to": "name",
+    "from": "Name",
+    "type": "standard"
+  }
+}

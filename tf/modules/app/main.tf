@@ -15,13 +15,13 @@ resource "aws_rds_cluster" "main" {
   engine_mode = "provisioned"
   # This only exists as a temporary solution until CAPP-690 is resolved
   # We want to ideally have version 15 in all envs
-  engine_version         = var.env == "dev" ? 15 : 14
-  database_name          = "capp"
-  master_username        = var.db_username
-  master_password        = var.db_password
-  vpc_security_group_ids = [data.aws_security_group.db_security_group.id]
-  # allow_major_version_upgrade = true
-  backup_retention_period = var.env == "prod" ? 8 : 1
+  engine_version              = var.env == "dev" ? 15 : 14
+  database_name               = "capp"
+  master_username             = var.db_username
+  master_password             = var.db_password
+  vpc_security_group_ids      = [data.aws_security_group.db_security_group.id]
+  allow_major_version_upgrade = true
+  backup_retention_period     = var.env == "prod" ? 8 : 1
 
   final_snapshot_identifier = "capp-${var.env}-final"
 
