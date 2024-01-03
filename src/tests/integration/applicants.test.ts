@@ -231,7 +231,7 @@ describe('POST /applicants', () => {
       });
     });
     test('Should update applicantID in cookie with 2 subsequent requests for 2 different users', async () => {
-      type RespHeaders = { 'set-cookie': string };
+      type RespHeaders = { [index: string]: string };
       const { clientSecret } = configLoader.loadConfig().auth0.api;
       const agent = request.agent(dummyApp);
 
