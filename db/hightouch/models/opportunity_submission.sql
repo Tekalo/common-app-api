@@ -54,9 +54,15 @@ SELECT
   os."desiredStartDate",
   os."desiredEndDate",
   os."desiredYoe",
-  ARRAY_CAT(
-    os."desiredSkills",
-    LOWER(os."desiredOtherSkills" :: TEXT) :: TEXT []
+  (
+    SELECT
+      ARRAY_AGG(COALESCE(sv.canonical, x)) FILTER (
+        WHERE
+          sv."rejectAs" IS NULL
+      )
+    FROM
+      UNNEST(os."desiredSkills") AS x
+      LEFT JOIN PUBLIC."SkillsView" sv ON x = sv.name
   ) AS "desiredAllSkills",
   os."desiredImpactExp",
   os."similarStaffed",
