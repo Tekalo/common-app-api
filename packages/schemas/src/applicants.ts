@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import Shared from './shared.js';
+import Shared from './shared';
 
 const PreferredContact = z.enum(['sms', 'whatsapp', 'email']);
 const SearchStatus = z.enum(['active', 'passive', 'future']);
@@ -83,8 +83,8 @@ const ApplicantCreateSubmissionRequestBody = z.object({
         skill
           .trim()
           .split(/[\s,\t]+/)
-          .join(' '),
-      ),
+          .join(' ')
+      )
     ),
   linkedInUrl: z.string().max(500).nullable(),
   githubUrl: z.string().max(500).nullable(),
@@ -252,7 +252,7 @@ const ApplicantUpdateSubmissionRequestBodySchema =
     {
       message: 'interestWorkArrangement must be defined or set to null',
       path: ['interestWorkArrangement'],
-    },
+    }
   );
 
 const ApplicantDraftSubmissionResponseBodySchema = z.object({
@@ -263,7 +263,7 @@ const ApplicantDraftSubmissionResponseBodySchema = z.object({
 // Draft or final submission
 const ApplicantGetSubmissionsResponseBodySchema = z.object({
   submission: ApplicantSubmissionResponseBody.or(
-    ApplicantDraftSubmissionResponseBodySchema.shape.submission,
+    ApplicantDraftSubmissionResponseBodySchema.shape.submission
   ).nullable(),
   isFinal: z.boolean(),
 });
