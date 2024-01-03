@@ -1,14 +1,14 @@
 {
-    "mode": "insert",
-    "baseId": "app2VXWTOaPNLPm0R",
-    "mappings": [
-        {
-            "to": "Name",
-            "from": "name",
-            "type": "standard"
-        }
-    ],
-    "tableName": "Skills Annotations",
-    "configVersion": 0,
-    "externalIdMapping": {}
+  "mode": "insert",
+  "baseId": "app2VXWTOaPNLPm0R",
+  "mappings": [
+    {
+      "to": "Name",
+      "from": "name",
+      "type": "standard"
+    }
+  ],
+  "tableName": "Skills Annotations",
+  "configVersion": 0,
+  "externalIdMapping": {}
 }
