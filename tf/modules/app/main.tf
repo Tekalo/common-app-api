@@ -15,7 +15,7 @@ resource "aws_rds_cluster" "main" {
   engine_mode = "provisioned"
   # This only exists as a temporary solution until CAPP-690 is resolved
   # We want to ideally have version 15 in all envs
-  engine_version              = var.env == "dev" ? 16.1 : 14
+  engine_version              = var.env == "dev" ? 15.5 : 14
   database_name               = "capp"
   master_username             = var.db_username
   master_password             = var.db_password
