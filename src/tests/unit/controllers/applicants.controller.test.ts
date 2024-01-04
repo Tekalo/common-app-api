@@ -60,7 +60,7 @@ describe('Applicant Controller', () => {
       await expect(
         applicantController.createApplicant({
           name: 'Bob Boberson',
-          email: 'bboberson@schmidtfutures.com',
+          email: 'bboberson@tekalo.org',
           preferredContact: 'email',
           searchStatus: 'active',
           acceptedTerms: true,
@@ -104,7 +104,7 @@ describe('Applicant Controller', () => {
         id: 1,
         phone: '777-777-7777',
         name: 'Bob Boberson',
-        email: 'bboberson@schmidtfutures.com',
+        email: 'bboberson@tekalo.org',
         pronoun: 'he/his',
         preferredContact: 'email',
         searchStatus: 'active',
