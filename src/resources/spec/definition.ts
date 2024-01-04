@@ -13,6 +13,8 @@ const {
   ApplicantDraftSubmissionRequestBodySchema,
   ApplicantDraftSubmissionResponseBodySchema,
   ApplicantGetSubmissionsResponseBodySchema,
+  ApplicantStateResponseBodySchema,
+  ApplicantGetResponseBodySchema,
 } = Applicants;
 
 const {
@@ -145,6 +147,11 @@ const specJson = createDocument({
         responses: {
           '200': {
             description: 'Success',
+            content: {
+              'application/json': {
+                schema: ApplicantGetResponseBodySchema,
+              },
+            },
           },
           '404': {
             description: 'Applicant Not Found',
@@ -183,6 +190,11 @@ const specJson = createDocument({
         responses: {
           '200': {
             description: 'Success',
+            content: {
+              'applicantion/json': {
+                schema: ApplicantStateResponseBodySchema,
+              },
+            },
           },
           '404': {
             description: 'Not Found',
