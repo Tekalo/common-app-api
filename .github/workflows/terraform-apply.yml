@@ -9,8 +9,6 @@ on:
     secrets:
       TF_API_TOKEN:
         required: true
-      AWS_DEPLOY_ROLE_INFRA:
-        required: true
     outputs:
       image:
         description: Image that has been currently deployed
@@ -42,12 +40,11 @@ jobs:
         run: terraform init
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1-node16
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: us-east-1
           role-to-assume: ${{ vars[format('{0}_AWS_PLAN_ROLE', inputs.env)] }}
           role-session-name: GithubActions
-          mask-aws-account-id: false
 
       - name: Get current image
         id: current-image

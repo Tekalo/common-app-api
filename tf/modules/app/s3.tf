@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "upload_files" {
-  bucket = "capp-${var.bucket_env}-api-uploads"
+  bucket = "capp-${var.env}-api-uploads"
 }
 
 resource "aws_s3_bucket_lifecycle_configuration" "upload_files_lifecycle" {

@@ -1,5 +1,4 @@
 env                = "dev"
-bucket_env         = "v2-dev"
 api_port           = 3000
 auth0_zone_id      = "Z05018301MJBZ3G7FIXJG" // dev.tekalo.io
 auth0_domain_cname = "sf-capp-dev-cd-qvqebidgqn1u3sh5.edge.tenants.us.auth0.com"

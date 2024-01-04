@@ -1,5 +1,5 @@
 {
-  "extends": "@tsconfig/node18/tsconfig.json", // not relying on the package tsconfig; aws support lags a bit and we might want to update this independently
+  "extends": "@tsconfig/node20/tsconfig.json", // not relying on the package tsconfig; aws support lags a bit and we might want to update this independently
   "compilerOptions": {
     "baseUrl": "./",
     "module": "NodeNext", // what kind of JS IMPORTS will our TS compile to? see https://stackoverflow.com/questions/71463698/why-we-need-nodenext-typescript-compiler-option-when-we-have-esnext

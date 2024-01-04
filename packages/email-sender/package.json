@@ -19,7 +19,7 @@
   "license": "ISC",
   "devDependencies": {
     "@jest/globals": "29.7.0",
-    "@tsconfig/node18": "18.2.2",
+    "@tsconfig/node20": "20.1.2",
     "@types/aws-lambda": "8.10.130",
     "prettier": "3.1.1",
     "swc": "1.0.11",

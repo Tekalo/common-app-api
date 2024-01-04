@@ -31,8 +31,7 @@ provider "aws" {
 module "envconfig" {
   source = "../../modules/envconfig"
 
-  env        = var.env
-  bucket_env = var.bucket_env
+  env = var.env
 }
 
 module "email" {
@@ -46,7 +45,6 @@ module "app" {
   source = "../../modules/app"
 
   env                  = module.envconfig.env
-  bucket_env           = module.envconfig.bucket_env
   kms_key              = module.envconfig.kms_main_key
   api_port             = var.api_port
   dns_zone_id          = module.envconfig.dns_zone_id
@@ -77,8 +75,7 @@ module "app" {
   uploads_cors_allowed_origins = var.uploads_cors_allowed_origins
 
   additional_env_vars = {
-    # Temporarily enabling this while we role out POST-based uploads.
-    "PRESIGNER_STRATEGY" = "both",
+    "PRESIGNER_STRATEGY" = "post",
     "AWS_EMAIL_SQS_URL"  = "${module.email.email_queue_url}"
   }
 }
