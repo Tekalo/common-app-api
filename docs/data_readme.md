@@ -15,11 +15,11 @@ Airtable is used as the front-end for matchmakers. There are a few additional co
 - Matchmaker (aka Talent Connector): One of our recruitment specialists who match candidates and opportunities.
 - Match: One candidate paired with one opportunity, created by a matchmaker. A match has a status that indicates where it is in its life cycle.
 - (Match) Status: The status of a match. See the "Status State Diagram" for the logic that defines this.
-- Organization: A concepts that conects opportunities which come from the same company. There's some automated logic for connecting opportunities for organizations, but it's mostly managed manually.
+- Organization: A concept that conects opportunities which come from the same company. There's some automated logic for connecting opportunities for organizations, but it's mostly managed manually.
 
 Airtable is populated by Hightouch and has some internal automations which can be found in the base (along with their descriptions). Airtable should be setup for dev, staging, and prod environments, but only prod is used by matchmakers.
 
-Matchmakers are meant to use the provided Airtable "interfaces" for interacting with candidates, opportunities, matches, and organizations. There are two collections of intefaces, one for SF internal and the other for matchmakers who are working at partner organizations - The SF interfaces allow you to edit almost every field, whereas the partner interfaces constrain what the matchmaker sees to what they are assigned and limits the fields they can modify. There are some actions (such as associating opportunities to organizations and assigning match makers) that are not available in either interface and must be done directly in the base; this should be a lead matchmaker who is orchestrating the reviews.
+Matchmakers are meant to use the provided Airtable "interfaces" for interacting with candidates, opportunities, matches, and organizations. There are two collections of intefaces, one for first-party matchmakers and the other for matchmakers who are working at partner organizations - The first-party interfaces allow you to edit almost every field, whereas the partner interfaces constrain what the matchmaker sees to what they are assigned and limits the fields they can modify. There are some actions (such as associating opportunities to organizations and assigning match makers) that are not available in either interface and must be done directly in the base; this should be a lead matchmaker who is orchestrating the reviews.
 
 ### Airtable Diagrams
 
