@@ -23,12 +23,12 @@ Matchmakers are meant to use the provided Airtable "interfaces" for interacting 
 
 ### Airtable Diagrams
 
-Matchmaker Process: https://lucid.app/lucidchart/invitations/accept/inv_a0d8b2b0-784a-41f7-9947-9e8ebf7ab707
+- [Matchmaker Process](https://lucid.app/lucidchart/invitations/accept/inv_a0d8b2b0-784a-41f7-9947-9e8ebf7ab707)
 
-Status State Diagram: https://lucid.app/lucidchart/invitations/accept/inv_3c0c10c4-666a-4285-8897-cedd390fda99
+- [Status State Diagram](https://lucid.app/lucidchart/invitations/accept/inv_3c0c10c4-666a-4285-8897-cedd390fda99)
 
 ### Demo Videos
 
-Interface Overview: https://drive.google.com/file/d/1-6Sv5in0GT8kv5Rjw5_w9wuRXgGKmUk4/view?usp=drive_link
+- [Interface Overview](https://drive.google.com/file/d/1-6Sv5in0GT8kv5Rjw5_w9wuRXgGKmUk4/view?usp=drive_link)
 
-Matchmaking Demo: https://drive.google.com/file/d/1ADBK8S-aJM6fjGN5yNbhPoq5k9PIertW/view?usp=drive_link
+- [Matchmaking Demo](https://drive.google.com/file/d/1ADBK8S-aJM6fjGN5yNbhPoq5k9PIertW/view?usp=drive_link)
