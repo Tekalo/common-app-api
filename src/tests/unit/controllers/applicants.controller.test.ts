@@ -117,7 +117,7 @@ describe('Applicant Controller', () => {
       await expect(
         applicantController.createApplicant({
           name: 'Bob Boberson',
-          email: 'bboberson@schmidtfutures.com',
+          email: 'bboberson@tekalo.org',
           pronoun: 'he/his',
           preferredContact: 'email',
           searchStatus: 'active',
@@ -156,7 +156,7 @@ describe('Applicant Controller', () => {
       await expect(
         applicantController.createApplicant({
           name: 'Bob Boberson',
-          email: 'bboberson@schmidtfutures.com',
+          email: 'bboberson@tekalo.org',
           pronoun: 'he/his',
           preferredContact: 'email',
           searchStatus: 'active',
@@ -189,7 +189,7 @@ describe('Applicant Controller', () => {
       await expect(
         applicantController.createApplicant({
           name: 'Bob Boberson',
-          email: 'bboberson@schmidtfutures.com',
+          email: 'bboberson@tekalo.org',
           pronoun: 'he/his',
           preferredContact: 'email',
           searchStatus: 'active',
@@ -203,7 +203,7 @@ describe('Applicant Controller', () => {
         id: 1,
         phone: '777-777-7777',
         name: 'Bob Boberson',
-        email: 'bboberson@schmidtfutures.com',
+        email: 'bboberson@tekalo.org',
         pronoun: 'he/his',
         preferredContact: 'email',
         searchStatus: 'active',
@@ -238,7 +238,7 @@ describe('Applicant Controller', () => {
 
       const resp = await applicantController.createApplicant({
         name: 'Bob Boberson',
-        email: 'bboberson@schmidtfutures.com',
+        email: 'bboberson@tekalo.org',
         pronoun: 'he/his',
         preferredContact: 'email',
         searchStatus: 'active',
@@ -248,7 +248,7 @@ describe('Applicant Controller', () => {
       expect(resp).toMatchObject({
         id: 1,
         auth0Id: expect.stringMatching('^auth0\\|.+'),
-        email: 'bboberson@schmidtfutures.com',
+        email: 'bboberson@tekalo.org',
       });
       mockEmailSpy.mockRestore();
     });
@@ -257,7 +257,7 @@ describe('Applicant Controller', () => {
         id: 1,
         phone: '777-777-7777',
         name: 'Bob Boberson',
-        email: 'bboberson@schmidtfutures.com',
+        email: 'bboberson@tekalo.org',
         pronoun: 'he/his',
         preferredContact: 'email',
         searchStatus: 'active',
@@ -288,7 +288,7 @@ describe('Applicant Controller', () => {
         ),
       );
 
-      const bobEmail = 'bboberson@schmidtfutures.com';
+      const bobEmail = 'bboberson@tekalo.org';
 
       await applicantController.createApplicant({
         name: 'Bob Boberson',
@@ -313,7 +313,7 @@ describe('Applicant Controller', () => {
         id: 1,
         phone: '777-777-7777',
         name: 'Bob Boberson',
-        email: 'bboberson@schmidtfutures.com',
+        email: 'bboberson@tekalo.org',
         pronoun: 'he/his',
         preferredContact: 'email',
         searchStatus: 'active',
@@ -339,14 +339,14 @@ describe('Applicant Controller', () => {
           getMockConfig(),
         ),
       );
-      const bobEmail = 'bboberson@schmidtfutures.com';
+      const bobEmail = 'bboberson@tekalo.org';
 
       const auth = {
         header: {},
         token: '',
         payload: {
           sub: 'google-oauth-2|12345678',
-          'auth0.capp.com/email': 'bboberson@schmidtfutures.com',
+          'auth0.capp.com/email': 'bboberson@tekalo.org',
           'auth0.capp.com/roles': [],
         },
       };
@@ -373,7 +373,7 @@ describe('Applicant Controller', () => {
         id: 1,
         phone: '777-777-7777',
         name: 'Bob Boberson',
-        email: 'bboberson@schmidtfutures.com',
+        email: 'bboberson@tekalo.org',
         pronoun: 'he/his',
         preferredContact: 'email',
         searchStatus: 'active',
@@ -411,7 +411,7 @@ describe('Applicant Controller', () => {
         id: 1,
         phone: '777-777-7777',
         name: 'Bob Boberson',
-        email: 'bboberson@schmidtfutures.com',
+        email: 'bboberson@tekalo.org',
         pronoun: 'he/his',
         preferredContact: 'email',
         searchStatus: 'active',
@@ -452,7 +452,7 @@ describe('Applicant Controller', () => {
         id: 1,
         phone: '777-777-7777',
         name: 'Bob Boberson',
-        email: 'bboberson@schmidtfutures.com',
+        email: 'bboberson@tekalo.org',
         pronoun: 'he/his',
         preferredContact: 'email',
         searchStatus: 'active',
@@ -487,7 +487,7 @@ describe('Applicant Controller', () => {
         id: 1,
         phone: '777-777-7777',
         name: 'Bob Boberson',
-        email: 'bboberson@schmidtfutures.com',
+        email: 'bboberson@tekalo.org',
         pronoun: 'he/his',
         preferredContact: 'email',
         searchStatus: 'active',
@@ -524,7 +524,7 @@ describe('Applicant Controller', () => {
         id: 1,
         phone: '777-777-7777',
         name: 'Bob Boberson',
-        email: 'bboberson@schmidtfutures.com',
+        email: 'bboberson@tekalo.org',
         pronoun: 'he/his',
         preferredContact: 'email',
         searchStatus: 'active',
@@ -556,7 +556,7 @@ describe('Applicant Controller', () => {
 
       await applicantController.deleteApplicant(1);
       const expectedEmail = emailService.generateApplicantDeletionEmail(
-        'bboberson@schmidtfutures.com',
+        'bboberson@tekalo.org',
         'Bob Boberson',
       );
       expect(mockEmailSpy).toHaveBeenCalledWith(expectedEmail);
@@ -570,7 +570,7 @@ describe('Applicant Controller', () => {
         id: 1,
         phone: '777-777-7777',
         name: 'Bob Boberson',
-        email: 'bboberson@schmidtfutures.com',
+        email: 'bboberson@tekalo.org',
         pronoun: 'he/his',
         preferredContact: 'email',
         searchStatus: 'active',
@@ -608,7 +608,7 @@ describe('Applicant Controller', () => {
         id: 1,
         phone: '777-777-7777',
         name: 'Bob Boberson',
-        email: 'bboberson@schmidtfutures.com',
+        email: 'bboberson@tekalo.org',
         pronoun: 'he/his',
         preferredContact: 'email',
         searchStatus: 'active',
@@ -649,7 +649,7 @@ describe('Applicant Controller', () => {
         id: 1,
         phone: '777-777-7777',
         name: 'Bob Boberson',
-        email: 'bboberson@schmidtfutures.com',
+        email: 'bboberson@tekalo.org',
         pronoun: 'he/his',
         preferredContact: 'email',
         searchStatus: 'active',
@@ -684,7 +684,7 @@ describe('Applicant Controller', () => {
         id: 1,
         phone: '777-777-7777',
         name: 'Bob Boberson',
-        email: 'bboberson@schmidtfutures.com',
+        email: 'bboberson@tekalo.org',
         pronoun: 'he/his',
         preferredContact: 'email',
         searchStatus: 'active',
@@ -721,7 +721,7 @@ describe('Applicant Controller', () => {
         id: 1,
         phone: '777-777-7777',
         name: 'Bob Boberson',
-        email: 'bboberson@schmidtfutures.com',
+        email: 'bboberson@tekalo.org',
         pronoun: 'he/his',
         preferredContact: 'email',
         searchStatus: 'active',
@@ -877,7 +877,7 @@ describe('Applicant Controller', () => {
         id: 1,
         phone: '777-777-7777',
         name: 'Bob Boberson',
-        email: 'Aboberson@schmidtfutures.com',
+        email: 'Aboberson@tekalo.org',
         pronoun: 'he/his',
         preferredContact: 'email',
         searchStatus: 'active',
@@ -971,7 +971,7 @@ describe('Applicant Controller', () => {
         id: 1,
         phone: '777-777-7777',
         name: 'Bob Boberson',
-        email: 'bboberson@schmidtfutures.com',
+        email: 'bboberson@tekalo.org',
         pronoun: 'he/his',
         preferredContact: 'email',
         searchStatus: 'active',
@@ -1058,7 +1058,7 @@ describe('Applicant Controller', () => {
         id: 25,
         applicantId: 0,
         createdAt: new Date('2023-02-01'),
-        email: 'bboberson@schmidtfutures.com',
+        email: 'bboberson@tekalo.org',
         acceptedTerms: new Date('2023-02-01'),
         acceptedPrivacy: new Date('2023-02-01'),
         followUpOptIn: false,
@@ -1073,7 +1073,7 @@ describe('Applicant Controller', () => {
       const mockEmailSpy = jest.spyOn(emailService, 'sendEmail');
       const mockUser = {
         name: 'Bob Boberson',
-        email: 'bboberson@schmidtfutures.com',
+        email: 'bboberson@tekalo.org',
         auth0Id: 'auth0|12345',
       };
 
@@ -1162,7 +1162,7 @@ describe('Applicant Controller', () => {
         resolvedValue,
       );
 
-      const bobEmail = 'bboberson@schmidtfutures.com';
+      const bobEmail = 'bboberson@tekalo.org';
       mockCtx.prisma.applicant.findUniqueOrThrow.mockResolvedValue({
         id: applicantId,
         phone: '777-777-7777',
