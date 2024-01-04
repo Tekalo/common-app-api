@@ -28,7 +28,10 @@ import EmailService from '@App/services/EmailService.js';
 import MonitoringService from '@App/services/MonitoringService.js';
 import UploadService from '@App/services/UploadService.js';
 import { Claims } from '@App/resources/types/auth0.js';
-import { Applicants, Uploads, Shared } from '@capp/schemas/src';
+// import { Applicants, Uploads, Shared } from '@capp/schemas/src';
+import Applicants from '@capp/schemas/src/applicants.js';
+import Uploads from '@capp/schemas/src/uploads.js';
+import Shared from '@capp/schemas/src/shared.js';
 import { z } from 'zod';
 import { IdOnly } from '@App/resources/types/shared.js';
 
