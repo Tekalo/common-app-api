@@ -412,7 +412,7 @@ class ApplicantController {
 
     const applicantsToDelete = await this.prisma.$queryRaw<
       IdOnly[]
-    >`SELECT id FROM "Applicant" WHERE email LIKE 'test-user%@schmidtfutures.com' OR email LIKE 'success+test-user%@simulator.amazonses.com'`;
+    >`SELECT id FROM "Applicant" WHERE email LIKE 'success+test-user%@simulator.amazonses.com'`;
 
     // Sequentially execute each batch of deletes. This intentionally is not massively parallel as to avoid using too many connections at once
     /* eslint-disable no-await-in-loop */
