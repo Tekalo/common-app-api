@@ -2959,6 +2959,86 @@
           }
         }
       }
+    },
+    "/skills": {
+      "get": {
+        "description": "Get suggested skills from database",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "canonical": {
+                            "type": "string",
+                            "nullable": true
+                          }
+                        },
+                        "required": [
+                          "canonical"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/skills/referenceSet": {
+      "post": {
+        "description": "Create or update reference skills",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "successCount": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "successCount"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "successCount": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "successCount"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }

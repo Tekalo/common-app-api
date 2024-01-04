@@ -1,4 +1,4 @@
-import { Applicants, Opportunities, Uploads } from '@capp/schemas';
+import { Applicants, Opportunities, Skills, Uploads } from '@capp/schemas';
 import { z } from 'zod';
 import { createDocument, extendZodWithOpenApi } from 'zod-openapi';
 
@@ -28,6 +28,12 @@ const {
   UploadStateRequestBodySchema,
   UploadStateResponseBodySchema,
 } = Uploads;
+
+const {
+  SkillGetResponseBodySchema,
+  ReferenceSkillsCreateRequestBodySchema,
+  ReferenceSkillsCreateResponseBodySchema,
+} = Skills;
 
 const specJson = createDocument({
   openapi: '3.0.0',
@@ -484,6 +490,44 @@ const specJson = createDocument({
         },
       },
     },
+    '/skills': {
+      get: {
+        description: 'Get suggested skills from database',
+        responses: {
+          '200': {
+            description: 'Success',
+            content: {
+              'application/json': {
+                schema: SkillGetResponseBodySchema,
+              }
+            }
+          },
+        }
+      }
+    },
+    '/skills/referenceSet': {
+      post: {
+        description: 'Create or update reference skills',
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: ReferenceSkillsCreateResponseBodySchema,
+            },
+          },
+        },
+        responses: {
+          '200': {
+            description: 'Success',
+            content: {
+              'application/json': {
+                schema: ReferenceSkillsCreateResponseBodySchema,
+              },
+            },
+          },
+        }
+      }
+    }
   },
 });
 
