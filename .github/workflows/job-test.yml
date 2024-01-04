@@ -44,12 +44,11 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1-node16
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: us-east-1
           role-to-assume: ${{ vars['DEV_AWS_PLAN_ROLE'] }}
           role-session-name: GithubActions
-          mask-aws-account-id: false
 
       - name: Install openssl
         run: apt-get update && apt-get install -y openssl

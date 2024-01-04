@@ -63,7 +63,7 @@ jobs:
           fi
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1-node16
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region:
             us-east-1
@@ -72,7 +72,6 @@ jobs:
             # maybe just merge this into deploy-image script?
           role-to-assume: ${{ vars[format('{0}_AWS_PLAN_ROLE', inputs.environment)] }}
           role-session-name: GithubActions
-          mask-aws-account-id: false
 
       - name: Verify image exists
         run: |

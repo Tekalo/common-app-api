@@ -73,7 +73,7 @@ module "app" {
   uploads_cors_allowed_origins = var.uploads_cors_allowed_origins
 
   additional_env_vars = {
-    "PRESIGNER_STRATEGY" = "both",
+    "PRESIGNER_STRATEGY" = "post",
     "AWS_EMAIL_SQS_URL"  = "${module.email.email_queue_url}"
   }
 }
