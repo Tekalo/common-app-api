@@ -1,5 +1,5 @@
+import Shared from '@capp/schemas/src/shared';
 import { z } from 'zod';
-import Shared from './shared';
 
 const PreferredContact = z.enum(['sms', 'whatsapp', 'email']);
 const SearchStatus = z.enum(['active', 'passive', 'future']);
