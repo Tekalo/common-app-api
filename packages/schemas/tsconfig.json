@@ -3,6 +3,6 @@
   "include": ["src"],
   "compilerOptions": {
     "module": "NodeNext",
-    "moduleResolution": "Bundler"
+    "moduleResolution": "node"
   }
 }

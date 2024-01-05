@@ -4,7 +4,8 @@ import { PrismaClient, Prisma, UploadStatus } from '@prisma/client';
 import { Applicants, Opportunities, Uploads } from '@capp/schemas';
 import CAPPError from '../../src/resources/shared/CAPPError.js';
 import { Problem } from '../../src/resources/types/shared.js';
-import seedData from './seed.json' assert { type: 'json' };
+import seedData from './seed.json';
+// assert { type: 'json' };
 
 const prisma = new PrismaClient();
 
