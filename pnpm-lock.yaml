@@ -196,8 +196,8 @@ importers:
         specifier: 20.1.2
         version: 20.1.2
       '@types/aws-lambda':
-        specifier: 8.10.130
-        version: 8.10.130
+        specifier: 8.10.131
+        version: 8.10.131
       prettier:
         specifier: 3.1.1
         version: 3.1.1
@@ -2924,8 +2924,8 @@ packages:
     resolution: {integrity: sha512-vBkIh9AY22kVOCEKo5CJlyCgmSWvasC+SWUxL/x/vOwRobMpI/HG1xp/Ae3AqmSiZeLUbOhW0FCD3ZjqqUxmXw==}
     dev: true
 
-  /@types/aws-lambda@8.10.130:
-    resolution: {integrity: sha512-HxTfLeGvD1wTJqIGwcBCpNmHKenja+We1e0cuzeIDFfbEj3ixnlTInyPR/81zAe0Ss/Ip12rFK6XNeMLVucOSg==}
+  /@types/aws-lambda@8.10.131:
+    resolution: {integrity: sha512-IWmFpqnVDvskYWnNSiu/qlRn80XlIOU0Gy5rKCl/NjhnI95pV8qIHs6L5b+bpHhyzuOSzjLgBcwgFSXrC1nZWA==}
     dev: true
 
   /@types/babel__core@7.20.2:
