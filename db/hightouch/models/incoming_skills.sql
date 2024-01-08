@@ -18,3 +18,13 @@ FROM
   "OpportunitySkills"
 WHERE
   NAME IS NOT NULL;
+
+
+
+-- ONLY ON FIRST TIME LOAD RUN BELOW QUERY
+SELECT
+  NAME,
+  NAME AS canon,
+  TRUE AS suggest
+FROM
+  "ReferenceSkills”;

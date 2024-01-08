@@ -122,13 +122,10 @@ class OpportunityController {
   // Deletes opportunity batches with known test contact email
   // Meant to be used by admins manualy
   async deleteTestOpportunities() {
-    const oldTestEmail = 'test-user-contact@schmidtfutures.com';
     const testEmail = 'success+test-user-contact@simulator.amazonses.com';
     // Delete opportunity batches with test email
     return this.prisma.opportunityBatch.deleteMany({
-      where: {
-        OR: [{ contactEmail: testEmail }, { contactEmail: oldTestEmail }],
-      },
+      where: { contactEmail: testEmail },
     });
   }
 }
