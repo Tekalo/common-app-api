@@ -37,14 +37,15 @@ CREATE UNIQUE INDEX "SkillsAnnotation_name_key" ON "SkillsAnnotation"("name");
 ALTER TABLE "ApplicantSkills" ADD COLUMN     "dataAdded" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;
 
 -- Create SkillsView table view
-CREATE VIEW "SkillsView" AS
-        SELECT
-          COALESCE(sa.name, rs.name)::citext as name,
-          CASE
-            WHEN sa.suggest THEN COALESCE(sa.canonical, sa.name)::citext
-            ELSE COALESCE(sa.canonical, rs.name)::citext
-          END AS canonical,
-          COALESCE(sa.suggest, rs.name IS NOT NULL) AS suggest,
-          sa."rejectAs"
-        FROM "SkillsAnnotation" sa
-        FULL JOIN "ReferenceSkills" rs ON sa.name = rs.name
+CREATE OR REPLACE VIEW "SkillsView" AS
+    SELECT
+      COALESCE(sa.name, rs.name)::citext as name,
+      CASE
+        WHEN sa.suggest THEN COALESCE(sa.canonical, sa.name)::citext
+        ELSE COALESCE(sa.canonical, rs.name)::citext
+      END AS canonical,
+      COALESCE(sa.suggest, rs.name IS NOT NULL) AS suggest,
+      sa."rejectAs",
+      COALESCE(priority, false) as priority,
+    FROM "SkillsAnnotation" sa
+    FULL JOIN "ReferenceSkills" rs ON sa.name = rs.name
