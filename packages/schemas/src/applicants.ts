@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 import Shared from '@capp/schemas/src/shared';
 import { z } from 'zod';
 
