@@ -12,7 +12,7 @@ CREATE OR REPLACE VIEW "SkillsView" AS
     END AS canonical,
     COALESCE(sa.suggest, rs.name IS NOT NULL) AS suggest,
     sa."rejectAs",
-    COALESCE(priority, false) as priority
+    COALESCE(sa.priority, false) as priority
   FROM "SkillsAnnotation" sa
   FULL JOIN "ReferenceSkills" rs ON sa.name = rs.name;
 `;
