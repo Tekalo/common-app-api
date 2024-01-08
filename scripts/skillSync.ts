@@ -77,9 +77,13 @@ const getLightcastSkills = async () => {
   );
   const getSkillsResponseJson =
     (await getSkillsResponse.json()) as LightcastSkillsResponse;
-  // As of version 9.4 in Lightcast API, "Information Technology" category ID is 17
+  /**
+   * With version 9.4 in Lightcast API:
+   * "Information Technology" category ID is 17
+   * "Design" category is 7
+   */
   const ITSkills = getSkillsResponseJson.data.filter(
-    (skill) => skill.category.id === 17,
+    (skill) => skill.category.id === 17 || skill.category.id === 7,
   );
   return ITSkills;
 };
