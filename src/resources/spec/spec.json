@@ -56,19 +56,31 @@
                   },
                   "preferredContact": {
                     "type": "string",
-                    "enum": ["sms", "whatsapp", "email"]
+                    "enum": [
+                      "sms",
+                      "whatsapp",
+                      "email"
+                    ]
                   },
                   "searchStatus": {
                     "type": "string",
-                    "enum": ["active", "passive", "future"]
+                    "enum": [
+                      "active",
+                      "passive",
+                      "future"
+                    ]
                   },
                   "acceptedTerms": {
                     "type": "boolean",
-                    "enum": [true]
+                    "enum": [
+                      true
+                    ]
                   },
                   "acceptedPrivacy": {
                     "type": "boolean",
-                    "enum": [true]
+                    "enum": [
+                      true
+                    ]
                   },
                   "followUpOptIn": {
                     "type": "boolean"
@@ -156,7 +168,11 @@
                       "type": "string"
                     }
                   },
-                  "required": ["id", "auth0Id", "email"]
+                  "required": [
+                    "id",
+                    "auth0Id",
+                    "email"
+                  ]
                 }
               }
             }
@@ -266,7 +282,9 @@
                     "type": "boolean"
                   }
                 },
-                "required": ["pause"]
+                "required": [
+                  "pause"
+                ]
               }
             }
           }
@@ -384,7 +402,10 @@
                                   "type": "string"
                                 }
                               },
-                              "required": ["id", "originalFilename"]
+                              "required": [
+                                "id",
+                                "originalFilename"
+                              ]
                             },
                             "hoursPerWeek": {
                               "type": "string",
@@ -597,7 +618,10 @@
                                   "type": "string"
                                 }
                               },
-                              "required": ["id", "originalFilename"]
+                              "required": [
+                                "id",
+                                "originalFilename"
+                              ]
                             },
                             "hoursPerWeek": {
                               "type": "string",
@@ -737,7 +761,10 @@
                       "type": "boolean"
                     }
                   },
-                  "required": ["submission", "isFinal"]
+                  "required": [
+                    "submission",
+                    "isFinal"
+                  ]
                 }
               }
             }
@@ -767,7 +794,9 @@
                         "type": "number"
                       }
                     },
-                    "required": ["id"]
+                    "required": [
+                      "id"
+                    ]
                   },
                   "lastOrg": {
                     "type": "string",
@@ -826,7 +855,10 @@
                     "type": "array",
                     "items": {
                       "type": "string",
-                      "enum": ["full", "part"]
+                      "enum": [
+                        "full",
+                        "part"
+                      ]
                     }
                   },
                   "interestWorkArrangement": {
@@ -849,13 +881,22 @@
                   },
                   "openToRelocate": {
                     "type": "string",
-                    "enum": ["yes", "no", "not sure"]
+                    "enum": [
+                      "yes",
+                      "no",
+                      "not sure"
+                    ]
                   },
                   "openToRemoteMulti": {
                     "type": "array",
                     "items": {
                       "type": "string",
-                      "enum": ["remote", "in-person", "hybrid", "not sure"]
+                      "enum": [
+                        "remote",
+                        "in-person",
+                        "hybrid",
+                        "not sure"
+                      ]
                     }
                   },
                   "desiredSalary": {
@@ -881,7 +922,11 @@
                   "workAuthorization": {
                     "type": "string",
                     "nullable": true,
-                    "enum": ["authorized", "sponsorship", null]
+                    "enum": [
+                      "authorized",
+                      "sponsorship",
+                      null
+                    ]
                   },
                   "interestGovt": {
                     "type": "boolean"
@@ -891,7 +936,10 @@
                     "nullable": true,
                     "items": {
                       "type": "string",
-                      "enum": ["paid", "unpaid"]
+                      "enum": [
+                        "paid",
+                        "unpaid"
+                      ]
                     }
                   },
                   "previousImpactExperience": {
@@ -1080,7 +1128,10 @@
                               "type": "string"
                             }
                           },
-                          "required": ["id", "originalFilename"]
+                          "required": [
+                            "id",
+                            "originalFilename"
+                          ]
                         },
                         "hoursPerWeek": {
                           "type": "string",
@@ -1218,7 +1269,10 @@
                       "type": "boolean"
                     }
                   },
-                  "required": ["submission", "isFinal"]
+                  "required": [
+                    "submission",
+                    "isFinal"
+                  ]
                 }
               }
             }
@@ -1258,7 +1312,9 @@
                         "type": "number"
                       }
                     },
-                    "required": ["id"]
+                    "required": [
+                      "id"
+                    ]
                   },
                   "lastOrg": {
                     "type": "string",
@@ -1317,7 +1373,10 @@
                     "type": "array",
                     "items": {
                       "type": "string",
-                      "enum": ["full", "part"]
+                      "enum": [
+                        "full",
+                        "part"
+                      ]
                     }
                   },
                   "interestWorkArrangement": {
@@ -1340,13 +1399,22 @@
                   },
                   "openToRelocate": {
                     "type": "string",
-                    "enum": ["yes", "no", "not sure"]
+                    "enum": [
+                      "yes",
+                      "no",
+                      "not sure"
+                    ]
                   },
                   "openToRemoteMulti": {
                     "type": "array",
                     "items": {
                       "type": "string",
-                      "enum": ["remote", "in-person", "hybrid", "not sure"]
+                      "enum": [
+                        "remote",
+                        "in-person",
+                        "hybrid",
+                        "not sure"
+                      ]
                     }
                   },
                   "desiredSalary": {
@@ -1372,7 +1440,11 @@
                   "workAuthorization": {
                     "type": "string",
                     "nullable": true,
-                    "enum": ["authorized", "sponsorship", null]
+                    "enum": [
+                      "authorized",
+                      "sponsorship",
+                      null
+                    ]
                   },
                   "interestGovt": {
                     "type": "boolean"
@@ -1382,7 +1454,10 @@
                     "nullable": true,
                     "items": {
                       "type": "string",
-                      "enum": ["paid", "unpaid"]
+                      "enum": [
+                        "paid",
+                        "unpaid"
+                      ]
                     }
                   },
                   "previousImpactExperience": {
@@ -1571,7 +1646,10 @@
                               "type": "string"
                             }
                           },
-                          "required": ["id", "originalFilename"]
+                          "required": [
+                            "id",
+                            "originalFilename"
+                          ]
                         },
                         "hoursPerWeek": {
                           "type": "string",
@@ -1709,7 +1787,10 @@
                       "type": "boolean"
                     }
                   },
-                  "required": ["submission", "isFinal"]
+                  "required": [
+                    "submission",
+                    "isFinal"
+                  ]
                 }
               }
             }
@@ -1754,7 +1835,9 @@
                         "type": "number"
                       }
                     },
-                    "required": ["id"]
+                    "required": [
+                      "id"
+                    ]
                   },
                   "lastOrg": {
                     "type": "string",
@@ -1818,7 +1901,10 @@
                     "nullable": true,
                     "items": {
                       "type": "string",
-                      "enum": ["full", "part"]
+                      "enum": [
+                        "full",
+                        "part"
+                      ]
                     }
                   },
                   "interestWorkArrangement": {
@@ -1844,14 +1930,24 @@
                   "openToRelocate": {
                     "type": "string",
                     "nullable": true,
-                    "enum": ["yes", "no", "not sure", null]
+                    "enum": [
+                      "yes",
+                      "no",
+                      "not sure",
+                      null
+                    ]
                   },
                   "openToRemoteMulti": {
                     "type": "array",
                     "nullable": true,
                     "items": {
                       "type": "string",
-                      "enum": ["remote", "in-person", "hybrid", "not sure"]
+                      "enum": [
+                        "remote",
+                        "in-person",
+                        "hybrid",
+                        "not sure"
+                      ]
                     }
                   },
                   "desiredSalary": {
@@ -1878,7 +1974,11 @@
                   "workAuthorization": {
                     "type": "string",
                     "nullable": true,
-                    "enum": ["authorized", "sponsorship", null]
+                    "enum": [
+                      "authorized",
+                      "sponsorship",
+                      null
+                    ]
                   },
                   "interestGovt": {
                     "type": "boolean",
@@ -1889,7 +1989,10 @@
                     "nullable": true,
                     "items": {
                       "type": "string",
-                      "enum": ["paid", "unpaid"]
+                      "enum": [
+                        "paid",
+                        "unpaid"
+                      ]
                     }
                   },
                   "previousImpactExperience": {
@@ -2052,7 +2155,10 @@
                               "type": "string"
                             }
                           },
-                          "required": ["id", "originalFilename"]
+                          "required": [
+                            "id",
+                            "originalFilename"
+                          ]
                         },
                         "hoursPerWeek": {
                           "type": "string",
@@ -2190,7 +2296,10 @@
                       "type": "boolean"
                     }
                   },
-                  "required": ["submission", "isFinal"]
+                  "required": [
+                    "submission",
+                    "isFinal"
+                  ]
                 }
               }
             }
@@ -2264,7 +2373,13 @@
                         "type": "boolean"
                       }
                     },
-                    "required": ["name", "type", "size", "impactAreas", "eoe"]
+                    "required": [
+                      "name",
+                      "type",
+                      "size",
+                      "impactAreas",
+                      "eoe"
+                    ]
                   },
                   "contact": {
                     "type": "object",
@@ -2283,11 +2398,16 @@
                         "maxLength": 255
                       }
                     },
-                    "required": ["name", "email"]
+                    "required": [
+                      "name",
+                      "email"
+                    ]
                   },
                   "acceptedPrivacy": {
                     "type": "boolean",
-                    "enum": [true]
+                    "enum": [
+                      true
+                    ]
                   },
                   "referenceAttribution": {
                     "type": "string",
@@ -2374,7 +2494,11 @@
                         },
                         "visaSponsorship": {
                           "type": "string",
-                          "enum": ["yes", "no", "sometimes"]
+                          "enum": [
+                            "yes",
+                            "no",
+                            "sometimes"
+                          ]
                         },
                         "similarStaffed": {
                           "type": "boolean"
@@ -2554,7 +2678,10 @@
                     "type": "string"
                   }
                 },
-                "required": ["originalFilename", "contentType"]
+                "required": [
+                  "originalFilename",
+                  "contentType"
+                ]
               }
             }
           }
@@ -2586,10 +2713,15 @@
                           }
                         }
                       },
-                      "required": ["url", "fields"]
+                      "required": [
+                        "url",
+                        "fields"
+                      ]
                     }
                   },
-                  "required": ["id"]
+                  "required": [
+                    "id"
+                  ]
                 }
               }
             }
@@ -2618,10 +2750,16 @@
                 "properties": {
                   "status": {
                     "type": "string",
-                    "enum": ["REQUESTED", "SUCCESS", "FAILURE"]
+                    "enum": [
+                      "REQUESTED",
+                      "SUCCESS",
+                      "FAILURE"
+                    ]
                   }
                 },
-                "required": ["status"]
+                "required": [
+                  "status"
+                ]
               }
             }
           }
@@ -2642,10 +2780,18 @@
                     },
                     "status": {
                       "type": "string",
-                      "enum": ["REQUESTED", "SUCCESS", "FAILURE"]
+                      "enum": [
+                        "REQUESTED",
+                        "SUCCESS",
+                        "FAILURE"
+                      ]
                     }
                   },
-                  "required": ["id", "originalFilename", "status"]
+                  "required": [
+                    "id",
+                    "originalFilename",
+                    "status"
+                  ]
                 }
               }
             }
@@ -2692,10 +2838,15 @@
                           }
                         }
                       },
-                      "required": ["url", "fields"]
+                      "required": [
+                        "url",
+                        "fields"
+                      ]
                     }
                   },
-                  "required": ["id"]
+                  "required": [
+                    "id"
+                  ]
                 }
               }
             }
