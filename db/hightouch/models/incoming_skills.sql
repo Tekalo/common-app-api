@@ -27,4 +27,4 @@ SELECT
   NAME AS canon,
   TRUE AS suggest
 FROM
-  "ReferenceSkills”;
+  "ReferenceSkills"
