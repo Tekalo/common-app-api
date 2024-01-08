@@ -59,7 +59,9 @@ describe('GET /skills', () => {
       ]),
     });
     expect(body).toEqual({
-      data: expect.not.arrayContaining([{ canonical: 'JavaScript', priority: false }]),
+      data: expect.not.arrayContaining([
+        { canonical: 'JavaScript', priority: false },
+      ]),
     });
   });
 
@@ -184,7 +186,7 @@ describe('GET /skills', () => {
         data: expect.arrayContaining([
           { canonical: 'Python', priority: false },
           { canonical: 'TypeScript', priority: false },
-          { canonical: 'JavaScript', priority: false }
+          { canonical: 'JavaScript', priority: false },
         ]),
       });
     });
@@ -750,7 +752,7 @@ describe('GET /skills', () => {
       expect(body).toEqual({
         data: expect.not.arrayContaining([
           { canonical: 'Database', priority: false },
-          { canonical: 'nodejs', priority: false},
+          { canonical: 'nodejs', priority: false },
         ]),
       });
     });
