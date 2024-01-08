@@ -499,11 +499,11 @@ const specJson = createDocument({
             content: {
               'application/json': {
                 schema: SkillGetResponseBodySchema,
-              }
-            }
+              },
+            },
           },
-        }
-      }
+        },
+      },
     },
     '/skills/referenceSet': {
       post: {
@@ -512,7 +512,7 @@ const specJson = createDocument({
           required: true,
           content: {
             'application/json': {
-              schema: ReferenceSkillsCreateResponseBodySchema,
+              schema: ReferenceSkillsCreateRequestBodySchema,
             },
           },
         },
@@ -525,9 +525,39 @@ const specJson = createDocument({
               },
             },
           },
-        }
-      }
-    }
+          '400': {
+            description: 'Bad Input',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                },
+              },
+            },
+          },
+          '401': {
+            description: 'Unauthorized',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                },
+              },
+            },
+          },
+          '500': {
+            description: 'Error',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                },
+              },
+            },
+          },
+        },
+      },
+    },
   },
 });
 
