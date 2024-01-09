@@ -48,7 +48,7 @@ resource "aws_iam_role_policy_attachment" "mailer_lambda_policy" {
 }
 
 resource "aws_lambda_function" "mailer" {
-  description      = "Handles sending emails for common-app-api"
+  description      = "Handles sending emails for the Tekalo api"
   function_name    = "capp-${var.env}-email-sender"
   filename         = "email-sender.zip"
   source_code_hash = filebase64sha256("email-sender.zip")

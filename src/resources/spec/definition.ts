@@ -1,4 +1,4 @@
-import { Applicants, Opportunities, Uploads } from '@capp/schemas';
+import { Applicants, Opportunities, Skills, Uploads } from '@capp/schemas';
 import { z } from 'zod';
 import { createDocument, extendZodWithOpenApi } from 'zod-openapi';
 
@@ -13,6 +13,8 @@ const {
   ApplicantDraftSubmissionRequestBodySchema,
   ApplicantDraftSubmissionResponseBodySchema,
   ApplicantGetSubmissionsResponseBodySchema,
+  ApplicantStateResponseBodySchema,
+  ApplicantGetResponseBodySchema,
 } = Applicants;
 
 const {
@@ -27,11 +29,17 @@ const {
   UploadStateResponseBodySchema,
 } = Uploads;
 
+const {
+  SkillGetResponseBodySchema,
+  ReferenceSkillsCreateRequestBodySchema,
+  ReferenceSkillsCreateResponseBodySchema,
+} = Skills;
+
 const specJson = createDocument({
   openapi: '3.0.0',
   info: {
-    title: 'Common App API',
-    description: 'Documentation for Common App REST API endpoints',
+    title: 'Tekalo API',
+    description: 'Documentation for Tekalo REST API endpoints',
     version: '1.0.1',
   },
   paths: {
@@ -145,6 +153,11 @@ const specJson = createDocument({
         responses: {
           '200': {
             description: 'Success',
+            content: {
+              'application/json': {
+                schema: ApplicantGetResponseBodySchema,
+              },
+            },
           },
           '404': {
             description: 'Applicant Not Found',
@@ -183,6 +196,11 @@ const specJson = createDocument({
         responses: {
           '200': {
             description: 'Success',
+            content: {
+              'applicantion/json': {
+                schema: ApplicantStateResponseBodySchema,
+              },
+            },
           },
           '404': {
             description: 'Not Found',
@@ -451,6 +469,74 @@ const specJson = createDocument({
           },
           '400': {
             description: 'Bad Input',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                },
+              },
+            },
+          },
+          '500': {
+            description: 'Error',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    '/skills': {
+      get: {
+        description: 'Get suggested skills from database',
+        responses: {
+          '200': {
+            description: 'Success',
+            content: {
+              'application/json': {
+                schema: SkillGetResponseBodySchema,
+              },
+            },
+          },
+        },
+      },
+    },
+    '/skills/referenceSet': {
+      post: {
+        description: 'Create or update reference skills',
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: ReferenceSkillsCreateRequestBodySchema,
+            },
+          },
+        },
+        responses: {
+          '200': {
+            description: 'Success',
+            content: {
+              'application/json': {
+                schema: ReferenceSkillsCreateResponseBodySchema,
+              },
+            },
+          },
+          '400': {
+            description: 'Bad Input',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                },
+              },
+            },
+          },
+          '401': {
+            description: 'Unauthorized',
             content: {
               'application/json': {
                 schema: {
