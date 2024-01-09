@@ -22,8 +22,7 @@ provider "aws" {
   default_tags {
     tags = {
       Environment = "Prod"
-      Project     = "CAPP"
-      BillingCode = "TLE-451"
+      Project     = "Tekalo"
     }
   }
 }

@@ -1,8 +1,8 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "Common App API",
-    "description": "Documentation for Common App REST API endpoints",
+    "title": "Tekalo API",
+    "description": "Documentation for Tekalo REST API endpoints",
     "version": "1.0.1"
   },
   "paths": {
