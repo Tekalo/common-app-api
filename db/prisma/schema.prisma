@@ -267,7 +267,7 @@ model ReferenceSkills {
 
 model SkillsAnnotation {
   name                    String                    @id @db.Citext
-  canonical               String?                   @db.Citext           
+  canonical               String?                   @db.Citext
   suggest                 Boolean?
   rejectAs                String?
   priority                Boolean?
@@ -279,4 +279,12 @@ view SkillsView {
   suggest Boolean?
   rejectAs String?
   priority Boolean?
+}
+
+model CausesAnnotation {
+  name                    String                    @id @db.Citext
+  canonical               String?                   @db.Citext
+  suggest                 Boolean?
+  rejectAs                String?
+  priority                Boolean?
 }
