@@ -15,14 +15,15 @@ class SkillController {
 
   async getSkills(): Promise<SkillGetResponseBody> {
     // groupBy to de-duplicate the same canonical skill name regardless of casing
-    
-    const skills = await this.prisma.$queryRaw`SELECT canonical, sum(cast(priority as int)) > 0 as priority FROM "SkillsView" WHERE suggest = true AND "rejectAs" IS NULL GROUP BY canonical`;
+
+    const skills = await this.prisma
+      .$queryRaw`SELECT canonical, sum(cast(priority as int)) > 0 as priority FROM "SkillsView" WHERE suggest = true AND "rejectAs" IS NULL GROUP BY canonical`;
     console.log(skills);
     return Skills.SkillGetResponseBodySchema.parse({
       data: skills,
     });
   }
- 
+
   async createReferenceSkills(
     requestedSkills: ReferenceSkillsCreateRequestBody,
   ): Promise<ReferenceSkillsCreateResponseBody> {

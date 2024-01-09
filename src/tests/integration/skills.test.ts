@@ -158,9 +158,7 @@ describe('GET /skills', () => {
     const { body, headers }: { body: SkillGetResponseBody; headers: any } =
       await request(dummyApp).get('/skills').expect(200);
     expect(headers).toHaveProperty('cache-control', 'public, max-age=3600');
-    expect(body.data).toEqual([
-      { canonical: 'Javascript', priority: true },
-    ]);
+    expect(body.data).toEqual([{ canonical: 'Javascript', priority: true }]);
   });
 
   describe('Skills appear in both SkillsAnnotation(SA) and ReferenceSkills(RS) table with the same name value regardless of casing', () => {
