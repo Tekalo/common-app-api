@@ -15,7 +15,7 @@ resource "aws_rds_cluster" "main" {
   engine_mode = "provisioned"
   # This only exists as a temporary solution until CAPP-690 is resolved
   # We want to ideally have version 15 in all envs
-  engine_version              = var.env == "prod" ? 14 : 15.5
+  engine_version              = 15.5
   database_name               = "capp"
   master_username             = var.db_username
   master_password             = var.db_password
@@ -31,7 +31,7 @@ resource "aws_rds_cluster" "main" {
   db_subnet_group_name = data.aws_db_subnet_group.main_subnet_group.name
   serverlessv2_scaling_configuration {
     max_capacity = 2.0
-    min_capacity = 0.5
+    min_capacity = 2.0
   }
 
   lifecycle {
