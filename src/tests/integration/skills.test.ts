@@ -133,6 +133,36 @@ describe('GET /skills', () => {
     ]);
   });
 
+  it('Should return just one skill with higher "priority" if skills share the same canonical value with different "priority"', async () => {
+    // Upsert dummy data to SkillsAnnotation table
+    await prisma.skillsAnnotation.createMany({
+      data: [
+        {
+          name: 'JS',
+          canonical: 'Javascript',
+          suggest: true,
+          rejectAs: null,
+          priority: true,
+        },
+        {
+          name: 'JavaScript(JS)',
+          canonical: 'Javascript',
+          suggest: true,
+          rejectAs: null,
+          priority: false,
+        },
+      ],
+    });
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { body, headers }: { body: SkillGetResponseBody; headers: any } =
+      await request(dummyApp).get('/skills').expect(200);
+    expect(headers).toHaveProperty('cache-control', 'public, max-age=3600');
+    expect(body.data).toEqual([
+      { canonical: 'Javascript', priority: true },
+    ]);
+  });
+
   describe('Skills appear in both SkillsAnnotation(SA) and ReferenceSkills(RS) table with the same name value regardless of casing', () => {
     it('Skills where all fields besides name are null should be suggested based on rs.name', async () => {
       const randomString = getRandomString();
