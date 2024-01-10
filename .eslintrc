@@ -45,10 +45,7 @@
         // Ignore errors about dev deps that are only used in test files and not actual /src code
         "import/no-extraneous-dependencies": [
           "error",
-          {
-            "devDependencies": ["**/*test.ts", "**/context.ts"],
-            "packageDir": ["."] // Look for package.json inside whatever directory linter is being executed. Used when linting /packages dir.
-          }
+          { "devDependencies": ["**/*test.ts", "**/context.ts"] }
         ]
       }
     },
