@@ -289,6 +289,14 @@ model CausesAnnotation {
   priority                Boolean?
 }
 
+view CausesView {
+  name String @id @db.Citext
+  canonical String? @db.Citext
+  suggest Boolean?
+  rejectAs String?
+  priority Boolean?
+}
+
 // Custom impact causes submitted in applicant submissions
 model ApplicantCauses {
   name                       String                  @id @db.Citext
