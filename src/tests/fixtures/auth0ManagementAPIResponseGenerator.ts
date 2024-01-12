@@ -14,7 +14,7 @@ function getMockUserCreateResponse(
 ) {
   const mockUser = {
     user_id: auth0Id,
-    email: 'mockemail@schmidtfutures.com',
+    email: 'mockemail@tekalo.org',
     name: 'Mock TestUser',
     email_verified: false,
     username: '',
