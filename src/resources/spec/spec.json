@@ -2820,9 +2820,12 @@
                           "canonical": {
                             "type": "string",
                             "nullable": true
+                          },
+                          "priority": {
+                            "type": "boolean"
                           }
                         },
-                        "required": ["canonical"]
+                        "required": ["canonical", "priority"]
                       }
                     }
                   },

@@ -381,14 +381,14 @@ describe('Email Service sending to SQS queue', () => {
 
 describe('should lowercase email addresses and remove the right part of +', () => {
   const arrInput = [
-    'Aboberson@schmidtfutures.com',
+    'Aboberson@tekalo.org',
     'bboberson+123xyz@gmail.com',
-    'bBoBerson+321zyx@schmidtfutures.com',
+    'bBoBerson+321zyx@tekalo.org',
   ];
   const arrOutput = [
-    'aboberson@schmidtfutures.com',
+    'aboberson@tekalo.org',
     'bboberson@gmail.com',
-    'bboberson@schmidtfutures.com',
+    'bboberson@tekalo.org',
   ];
 
   it.each(arrInput)("test '%s'", (input) => {
