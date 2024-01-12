@@ -247,18 +247,19 @@ model Upload {
   ApplicantDraftSubmission ApplicantDraftSubmission?
 }
 
+// Custom skills submitted in applicant submissions
 model ApplicantSkills {
   name                       String                  @id @db.Citext
   createdAt                  DateTime                @default(now())
 }
 
-// custom skills submitted in opportunity submissions
+// Custom skills submitted in opportunity submissions
 model OpportunitySkills {
   name                       String                  @id @db.Citext
   createdAt                  DateTime                @default(now())
 }
 
-// imported skills from 3rd party sources (at time of writing, Lightcast)
+// Imported skills from 3rd party sources (at time of writing, Lightcast)
 model ReferenceSkills {
   referenceId              String                    @id
   name                     String                    @db.Citext
@@ -266,9 +267,10 @@ model ReferenceSkills {
 
 model SkillsAnnotation {
   name                    String                    @id @db.Citext
-  canonical               String?                   @db.Citext           
+  canonical               String?                   @db.Citext
   suggest                 Boolean?
   rejectAs                String?
+  priority                Boolean?
 }
 
 view SkillsView {
@@ -276,4 +278,13 @@ view SkillsView {
   canonical String? @db.Citext
   suggest Boolean?
   rejectAs String?
+  priority Boolean?
+}
+
+model CausesAnnotation {
+  name                    String                    @id @db.Citext
+  canonical               String?                   @db.Citext
+  suggest                 Boolean?
+  rejectAs                String?
+  priority                Boolean?
 }
