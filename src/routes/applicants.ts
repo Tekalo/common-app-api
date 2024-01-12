@@ -29,6 +29,7 @@ import { RequestWithJWT } from '@App/resources/types/auth0.js';
 import EmailService from '@App/services/EmailService.js';
 import UploadService from '@App/services/UploadService.js';
 import { BaseConfig } from '@App/resources/types/shared.js';
+import CAPPError from '@App/resources/shared/CAPPError.js';
 
 const applicantRoutes = (
   authService: AuthService,
@@ -229,11 +230,23 @@ const applicantRoutes = (
   router.post(
     '/me/uploads/:id/complete',
     authenticator.verifyJwtOrCookie.bind(authenticator) as RequestHandler,
+    // eslint-disable-next-line consistent-return
     (req: Request, res: Response, next) => {
+      const { id } = req.params;
+
+      // Check if id is a valid integer
+      if (!/^\d+$/.test(id)) {
+        const error = new CAPPError({
+          title: 'Invalid endpoint id',
+          detail: 'Should be integer',
+          status: 400,
+        });
+        return next(error);
+      }
+
       const appBody = req.body as UploadStateRequestBody;
       const applicantID = req.auth?.payload.id || req.session.applicant.id;
       const { status } = Uploads.UploadStateRequestBodySchema.parse(appBody);
-      const { id } = req.params;
       applicantController
         .updateUploadStatus(applicantID, Number(id), status)
         .then((result) => {
@@ -250,8 +263,20 @@ const applicantRoutes = (
     authenticator
       .validateJwtRole('matchmaker')
       .bind(authenticator) as RequestHandler,
+    // eslint-disable-next-line consistent-return
     (req: Request, res: Response, next) => {
-      const applicantID = Number(req.params.id);
+      const { id } = req.params;
+      // Check if id is a valid integer
+      if (!/^\d+$/.test(id)) {
+        const error = new CAPPError({
+          title: 'Invalid endpoint id',
+          detail: 'Should be integer',
+          status: 400,
+        });
+        return next(error);
+      }
+
+      const applicantID = Number(id);
       applicantController
         .getResumeDownloadUrl(applicantID)
         .then((result) => {
@@ -288,9 +313,20 @@ const applicantRoutes = (
     authenticator
       .validateJwtRole('admin')
       .bind(authenticator) as RequestHandler,
+    // eslint-disable-next-line consistent-return
     (req: Request, res: Response, next: NextFunction) => {
       const reqWithAuth = req as RequestWithJWT;
       const { id } = reqWithAuth.params;
+      // Check if id is a valid integer
+      if (!/^\d+$/.test(id)) {
+        const error = new CAPPError({
+          title: 'Invalid endpoint id',
+          detail: 'Should be integer',
+          status: 400,
+        });
+        return next(error);
+      }
+
       applicantController
         .deleteApplicantForce(Number(id))
         .then((result) => {

@@ -7,6 +7,7 @@ import EmailService from '@App/services/EmailService.js';
 import Authenticator from '@App/middleware/authenticator.js';
 import { RequestWithJWT } from '@App/resources/types/auth0.js';
 import { BaseConfig } from '@App/resources/types/shared.js';
+import CAPPError from '@App/resources/shared/CAPPError.js';
 
 const opportunitiesRoutes = (
   emailService: EmailService,
@@ -36,9 +37,20 @@ const opportunitiesRoutes = (
     authenticator
       .validateJwtRole('admin')
       .bind(authenticator) as RequestHandler,
+    // eslint-disable-next-line consistent-return
     (req: Request, res: Response, next) => {
       const reqWithAuth = req as RequestWithJWT;
       const { id } = reqWithAuth.params;
+      // Check if id is a valid integer
+      if (!/^\d+$/.test(id)) {
+        const error = new CAPPError({
+          title: 'Invalid endpoint id',
+          detail: 'Should be integer',
+          status: 400,
+        });
+        return next(error);
+      }
+
       opportunityController
         .deleteOpportunityForce(Number(id))
         .then((result) => {
