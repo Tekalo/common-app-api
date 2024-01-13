@@ -106,7 +106,14 @@ const ApplicantCreateSubmissionRequestBody = z.object({
   otherCauses: z
     .array(z.string().max(255))
     .nullable()
-    .transform((val) => val || []),
+    .transform((causeArray) =>
+    causeArray ? causeArray.map((cause) =>
+        cause
+          .trim()
+          .split(/[\s,\t]+/)
+          .join(' '),
+      ) : [],
+    ),
   workAuthorization: WorkAuthorization.nullable(),
   interestGovt: z.boolean(),
   interestGovtEmplTypes: z

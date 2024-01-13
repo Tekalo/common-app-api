@@ -87,7 +87,12 @@ class OpportunityController {
       skipDuplicates: true,
     });
 
-    const [batch] = await this.prisma.$transaction([batchCreate, skillsCreate]);
+    const causesCreate = this.prisma.opportunityCauses.createMany({
+      data: organization.impactAreasOther ? organization.impactAreasOther.map((impact) => ({ name: impact })) : [],
+      skipDuplicates: true,
+    });
+
+    const [batch] = await this.prisma.$transaction([batchCreate, skillsCreate, causesCreate]);
 
     const returnBatch: OpportunityBatchResponseBody = {
       eoe: batch.equalOpportunityEmployer,
