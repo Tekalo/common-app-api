@@ -107,12 +107,14 @@ const ApplicantCreateSubmissionRequestBody = z.object({
     .array(z.string().max(255))
     .nullable()
     .transform((causeArray) =>
-    causeArray ? causeArray.map((cause) =>
-        cause
-          .trim()
-          .split(/[\s,\t]+/)
-          .join(' '),
-      ) : [],
+      causeArray
+        ? causeArray.map((cause) =>
+            cause
+              .trim()
+              .split(/[\s,\t]+/)
+              .join(' '),
+          )
+        : [],
     ),
   workAuthorization: WorkAuthorization.nullable(),
   interestGovt: z.boolean(),

@@ -56,16 +56,18 @@ const OpportunityBatchRequestBodySchema = z.object({
     size: OrgSize,
     impactAreas: z.array(z.string().max(255)),
     impactAreasOther: z
-      .array(z.string().max(255)).optional()
-      .transform((impactAreasArray) => impactAreasArray
-      ? impactAreasArray.map((impactArea) =>
-          impactArea
-            .trim()
-            .split(/[\s,\t]+/)
-            .join(' '),
-        )
-      : [],
-  ),
+      .array(z.string().max(255))
+      .optional()
+      .transform((impactAreasArray) =>
+        impactAreasArray
+          ? impactAreasArray.map((impactArea) =>
+              impactArea
+                .trim()
+                .split(/[\s,\t]+/)
+                .join(' '),
+            )
+          : [],
+      ),
     eoe: z.boolean(),
   }),
   contact: z.object({

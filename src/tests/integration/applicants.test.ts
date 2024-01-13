@@ -673,7 +673,10 @@ describe('POST /applicants/me/submissions', () => {
         const applicant = await seedApplicant(randomString);
         const { id: resumeId } = await seedResumeUpload(applicant.id);
         const testSubmission = getAPIRequestBody(resumeId);
-        testSubmission.otherCauses = ['Custom    cause   #1', 'Custom    cause   #2'];
+        testSubmission.otherCauses = [
+          'Custom    cause   #1',
+          'Custom    cause   #2',
+        ];
         const {
           body: submissionBody,
         }: { body: ApplicantGetSubmissionResponse } = await request(dummyApp)
@@ -682,7 +685,9 @@ describe('POST /applicants/me/submissions', () => {
           .set('Authorization', `Bearer ${token}`)
           .expect(200);
         const causes = await prisma.applicantCauses.findMany({
-          where: { OR: [{ name: 'Custom cause #1' }, { name: 'Custom cause #2' }] },
+          where: {
+            OR: [{ name: 'Custom cause #1' }, { name: 'Custom cause #2' }],
+          },
         });
         expect(causes).toEqual([
           expect.objectContaining({ name: 'Custom cause #1' }),
@@ -899,10 +904,16 @@ describe('PUT /applicants/me/submissions', () => {
       dummyApp,
     )
       .put('/applicants/me/submissions')
-      .send({ ...testSubmission, otherCauses: ['LGBTQ+ rights  ', ' houselessness   '] })
+      .send({
+        ...testSubmission,
+        otherCauses: ['LGBTQ+ rights  ', ' houselessness   '],
+      })
       .set('Authorization', `Bearer ${token}`)
       .expect(200);
-    expect(body.submission.otherCauses).toEqual(['LGBTQ+ rights', 'houselessness']);
+    expect(body.submission.otherCauses).toEqual([
+      'LGBTQ+ rights',
+      'houselessness',
+    ]);
   });
 
   it('should return 500 error if applicant does not have an existing final submission', async () => {

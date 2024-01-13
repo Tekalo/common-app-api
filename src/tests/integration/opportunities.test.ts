@@ -132,7 +132,10 @@ describe('POST /opportunities', () => {
     const causes = await prisma.opportunityCauses.findFirst({
       where: { name: cleanImpactArea },
     });
-    expect(causes).toEqual({ name: cleanImpactArea, createdAt: expect.any(Date) });
+    expect(causes).toEqual({
+      name: cleanImpactArea,
+      createdAt: expect.any(Date),
+    });
   });
   it('should return 200 when opportunity submission includes impactCauses that already exist in DB', async () => {
     const duplicateCause = 'Duplicate Cause';
