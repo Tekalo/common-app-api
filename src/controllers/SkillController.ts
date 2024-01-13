@@ -17,7 +17,7 @@ class SkillController {
     // De-duplicate the same canonical skill name regardless of casing and return records with priority=true if duplicate records exist
     const skills = await this.prisma
       .$queryRaw`SELECT canonical, sum(cast(priority as int)) > 0 as priority FROM "SkillsView" WHERE suggest = true AND "rejectAs" IS NULL GROUP BY canonical`;
-    console.log(skills);
+    // console.log(skills);
     return Skills.SkillGetResponseBodySchema.parse({
       data: skills,
     });
