@@ -200,8 +200,8 @@ class ApplicantController {
       skipDuplicates: true,
     });
     const createCauses = this.prisma.applicantCauses.createMany({
-      data: validatedSubmission.otherCauses.map((otherCause) => ({
-        name: otherCause,
+      data: validatedSubmission.interestCauses.map((cause) => ({
+        name: cause,
       })),
       skipDuplicates: true,
     });
@@ -256,8 +256,8 @@ class ApplicantController {
     });
 
     const createCauses = this.prisma.applicantCauses.createMany({
-      data: validatedSubmission.otherCauses.map((otherCause) => ({
-        name: otherCause,
+      data: validatedSubmission.interestCauses.map((cause) => ({
+        name: cause,
       })),
       skipDuplicates: true,
     });

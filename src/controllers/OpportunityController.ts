@@ -88,8 +88,8 @@ class OpportunityController {
     });
 
     const causesCreate = this.prisma.opportunityCauses.createMany({
-      data: organization.impactAreasOther
-        ? organization.impactAreasOther.map((impact) => ({ name: impact }))
+      data: organization.impactAreas
+        ? organization.impactAreas.map((impact) => ({ name: impact }))
         : [],
       skipDuplicates: true,
     });

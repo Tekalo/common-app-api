@@ -124,7 +124,7 @@ describe('POST /opportunities', () => {
     // All outside/inside whitespaces should be trimmed
     const uncleanImpactArea = '  We help all people!   ';
     const cleanImpactArea = 'We help all people!';
-    oppBatchPayload.organization.impactAreasOther = [uncleanImpactArea];
+    oppBatchPayload.organization.impactAreas = [uncleanImpactArea];
     await request(dummyApp)
       .post('/opportunities/batch')
       .send(oppBatchPayload)

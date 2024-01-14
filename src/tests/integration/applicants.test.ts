@@ -673,7 +673,7 @@ describe('POST /applicants/me/submissions', () => {
         const applicant = await seedApplicant(randomString);
         const { id: resumeId } = await seedResumeUpload(applicant.id);
         const testSubmission = getAPIRequestBody(resumeId);
-        testSubmission.otherCauses = [
+        testSubmission.interestCauses = [
           'Custom    cause   #1',
           'Custom    cause   #2',
         ];
@@ -693,7 +693,7 @@ describe('POST /applicants/me/submissions', () => {
           expect.objectContaining({ name: 'Custom cause #1' }),
           expect.objectContaining({ name: 'Custom cause #2' }),
         ]);
-        expect(submissionBody.submission?.otherCauses).toEqual(
+        expect(submissionBody.submission?.interestCauses).toEqual(
           expect.arrayContaining(['Custom cause #1', 'Custom cause #2']),
         );
       });
@@ -719,8 +719,8 @@ describe('POST /applicants/me/submissions', () => {
         const { id: ahmadResumeId } = await seedResumeUpload(applicantAhmad.id);
         const bobTestSubmission = getAPIRequestBody(bobResumeId);
         const ahmadTestSubmission = getAPIRequestBody(ahmadResumeId);
-        bobTestSubmission.otherCauses = ['Human Rights For All'];
-        ahmadTestSubmission.otherCauses = ['Human Rights For All'];
+        bobTestSubmission.interestCauses = ['Human Rights For All'];
+        ahmadTestSubmission.interestCauses = ['Human Rights For All'];
         await request(dummyApp)
           .post('/applicants/me/submissions')
           .send({ ...bobTestSubmission })
@@ -906,11 +906,11 @@ describe('PUT /applicants/me/submissions', () => {
       .put('/applicants/me/submissions')
       .send({
         ...testSubmission,
-        otherCauses: ['LGBTQ+ rights  ', ' houselessness   '],
+        interestCauses: ['LGBTQ+ rights  ', ' houselessness   '],
       })
       .set('Authorization', `Bearer ${token}`)
       .expect(200);
-    expect(body.submission.otherCauses).toEqual([
+    expect(body.submission.interestCauses).toEqual([
       'LGBTQ+ rights',
       'houselessness',
     ]);
