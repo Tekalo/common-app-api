@@ -66,7 +66,7 @@ const OpportunityBatchRequestBodySchema = z.object({
                 .split(/[\s,\t]+/)
                 .join(' '),
             )
-          : [],
+          : undefined,
       ),
     eoe: z.boolean(),
   }),
