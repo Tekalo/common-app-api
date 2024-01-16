@@ -20,3 +20,8 @@ output "email_queue_url" {
   description = "URL of the SQS queue that is processed by the email-sender lambda"
   value       = aws_sqs_queue.email_sqs_queue.url
 }
+
+output "email_queue_arn" {
+  description = "ARN of the SQS queue that is processed by the email-sender lambda"
+  value       = aws_sqs_queue.email_sqs_queue.arn
+}

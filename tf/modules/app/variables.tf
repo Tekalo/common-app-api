@@ -231,6 +231,11 @@ output "ses_whitelist" {
   value       = var.ses_whitelist
 }
 
+variable "email_queue_arn" {
+  type        = string
+  description = "ARN of the SQS queue that is processed by the email-sender lambda"
+}
+
 variable "uploads_cors_allowed_origins" {
   description = "CORS origins to allow for the upload bucket (use full URL, e.g., https://tekalo.org. Wildcards allowed.)"
   type        = list(string)
