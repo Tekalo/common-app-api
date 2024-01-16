@@ -13,7 +13,7 @@ class CauseController {
     // De-duplicate the same canonical cause name regardless of casing and return records with priority=true if duplicate records exist
     const causes = await this.prisma
       .$queryRaw`SELECT canonical, sum(cast(priority as int)) > 0 as priority FROM "CausesView" WHERE suggest = true AND "rejectAs" IS NULL GROUP BY canonical`;
-    console.log(causes);
+    // console.log(causes);
     return Causes.CauseGetResponseBodySchema.parse({
       data: causes,
     });

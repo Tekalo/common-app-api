@@ -7,6 +7,6 @@ CREATE VIEW "CausesView" AS
             ELSE canonical::citext
           END AS canonical,
           suggest,
-          "rejectAs"
+          "rejectAs",
           COALESCE(priority, false) as priority
-        FROM "CausesAnnotation"
+        FROM "CausesAnnotation";
