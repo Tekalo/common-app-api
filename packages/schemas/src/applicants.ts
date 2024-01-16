@@ -116,7 +116,7 @@ const ApplicantCreateSubmissionRequestBody = z.object({
     ),
   otherCauses: z
     .array(z.string().max(255))
-    .nullable()
+    .optional()
     .transform((val) => val || []),
   workAuthorization: WorkAuthorization.nullable(),
   interestGovt: z.boolean(),
