@@ -1,4 +1,4 @@
--- Create SkillsView table view
+-- Create CausesView table view
 CREATE VIEW "CausesView" AS
         SELECT
           name::citext as name,
