@@ -318,7 +318,6 @@ describe('GET /causes', () => {
     const { body, headers }: { body: CauseGetResponseBody; headers: any } =
       await request(dummyApp).get('/causes').expect(200);
     expect(headers).toHaveProperty('cache-control', 'public, max-age=3600');
-    expect(body.data).toHaveLength(0);
     expect(body.data).toEqual([]);
   });
 
