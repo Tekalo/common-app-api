@@ -102,7 +102,18 @@ const ApplicantCreateSubmissionRequestBody = z.object({
   openToRelocate: OpenToRelocate,
   openToRemoteMulti: z.array(OpenToRemote),
   desiredSalary: z.string().max(255).nullable(),
-  interestCauses: z.array(z.string().max(255)), // order matters
+  interestCauses: z
+    .array(z.string().max(255)) // order matters
+    .transform((causeArray) =>
+      causeArray
+        ? causeArray.map((cause) =>
+            cause
+              .trim()
+              .split(/[\s,\t]+/)
+              .join(' '),
+          )
+        : [],
+    ),
   otherCauses: z
     .array(z.string().max(255))
     .nullable()
