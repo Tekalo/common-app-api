@@ -16,6 +16,11 @@
       "to": "rejectAs",
       "from": "Reject?",
       "type": "standard"
+    },
+    {
+      "from": "Prioritize",
+      "to": "priority",
+      "type": "standard"
     }
   ],
   "configVersion": 1,
