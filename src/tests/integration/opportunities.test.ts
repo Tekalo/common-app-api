@@ -120,6 +120,34 @@ describe('POST /opportunities', () => {
       .send(oppBatchPayload)
       .expect(200);
   });
+  it('should save new impactCauses in a new batch of opportunities', async () => {
+    // All outside/inside whitespaces should be trimmed
+    const uncleanImpactArea = '  We help all people!   ';
+    const cleanImpactArea = 'We help all people!';
+    oppBatchPayload.organization.impactAreas = [uncleanImpactArea];
+    await request(dummyApp)
+      .post('/opportunities/batch')
+      .send(oppBatchPayload)
+      .expect(200);
+    const causes = await prisma.opportunityCauses.findFirst({
+      where: { name: cleanImpactArea },
+    });
+    expect(causes).toEqual({
+      name: cleanImpactArea,
+      createdAt: expect.any(Date),
+    });
+  });
+  it('should return 200 when opportunity submission includes impactCauses that already exist in DB', async () => {
+    const duplicateCause = 'Duplicate Cause';
+    await prisma.opportunitySkills.create({
+      data: { name: duplicateCause },
+    });
+    oppBatchPayload.organization.impactAreas = [duplicateCause];
+    await request(dummyApp)
+      .post('/opportunities/batch')
+      .send(oppBatchPayload)
+      .expect(200);
+  });
   it('should save UTM parameters', async () => {
     const { body }: { body: OpportunityBatch } = await request(dummyApp)
       .post('/opportunities/batch')

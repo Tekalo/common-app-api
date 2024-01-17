@@ -84,11 +84,11 @@ model ApplicantSubmission {
   interestEmploymentType  String[] // Interested In - Part time/Full Time    //enum
   interestWorkArrangement String[] // Interested In - Part time role type
   interestRoles           String[] // Interested In - Roles            //enum
-  interestCauses          String[] // Interested In - Impact Causes   //enum
+  interestCauses          String[] // Interested In - Impact Causes
   interestGovt            Boolean // Interested In - Govt
   interestGovtEmplTypes   String[] // Interested In - Govt Paid/Unpaid //enum
 
-  otherCauses String[] // Additional cause(s) they are interested in
+  otherCauses String[] // Additional cause(s) they are interested in // TODO: Deprecate
   skills      String[] // Enum or FKs
   otherSkills String[] // Additional skill(s) they have
 
@@ -134,7 +134,7 @@ model ApplicantDraftSubmission {
   interestEmploymentType  String[] // Interested In - Part time/Full Time    //enum
   interestWorkArrangement String[]
   interestRoles           String[] // Interested In - Roles            //enum
-  interestCauses          String[] // Interested In - Impact Causes   //enum
+  interestCauses          String[] // Interested In - Impact Causes
   interestGovt            Boolean? // Interested In - Govt
   interestGovtEmplTypes   String[] // Interested In - Govt Paid/Unpaid // enum
 
@@ -247,18 +247,19 @@ model Upload {
   ApplicantDraftSubmission ApplicantDraftSubmission?
 }
 
+// Custom skills submitted in applicant submissions
 model ApplicantSkills {
   name                       String                  @id @db.Citext
   createdAt                  DateTime                @default(now())
 }
 
-// custom skills submitted in opportunity submissions
+// Custom skills submitted in opportunity submissions
 model OpportunitySkills {
   name                       String                  @id @db.Citext
   createdAt                  DateTime                @default(now())
 }
 
-// imported skills from 3rd party sources (at time of writing, Lightcast)
+// Imported skills from 3rd party sources (at time of writing, Lightcast)
 model ReferenceSkills {
   referenceId              String                    @id
   name                     String                    @db.Citext
@@ -266,9 +267,10 @@ model ReferenceSkills {
 
 model SkillsAnnotation {
   name                    String                    @id @db.Citext
-  canonical               String?                   @db.Citext           
+  canonical               String?                   @db.Citext
   suggest                 Boolean?
   rejectAs                String?
+  priority                Boolean?
 }
 
 view SkillsView {
@@ -276,4 +278,33 @@ view SkillsView {
   canonical String? @db.Citext
   suggest Boolean?
   rejectAs String?
+  priority Boolean?
+}
+
+model CausesAnnotation {
+  name                    String                    @id @db.Citext
+  canonical               String?                   @db.Citext
+  suggest                 Boolean?
+  rejectAs                String?
+  priority                Boolean?
+}
+
+view CausesView {
+  name String @id @db.Citext
+  canonical String? @db.Citext
+  suggest Boolean?
+  rejectAs String?
+  priority Boolean?
+}
+
+// Custom impact causes submitted in applicant submissions
+model ApplicantCauses {
+  name                       String                  @id @db.Citext
+  createdAt                  DateTime                @default(now())
+}
+
+// Custom impact causes submitted in opportunity submissions
+model OpportunityCauses {
+  name                       String                  @id @db.Citext
+  createdAt                  DateTime                @default(now())
 }

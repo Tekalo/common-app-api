@@ -4,5 +4,6 @@ import Opportunities from './opportunities.js';
 import Shared from './shared.js';
 import Uploads from './uploads.js';
 import Skills from './skills.js';
+import Causes from './causes.js';
 
-export { Applicants, Auth0, Opportunities, Shared, Uploads, Skills };
+export { Applicants, Auth0, Opportunities, Shared, Uploads, Skills, Causes };

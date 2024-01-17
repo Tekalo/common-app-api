@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 const SkillGetResponseUnitSchema = z.object({
   canonical: z.string().nullable(),
+  priority: z.boolean(),
 });
 
 const SkillGetResponseBodySchema = z.object({

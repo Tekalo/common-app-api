@@ -195,15 +195,21 @@ class ApplicantController {
         resumeUpload: { select: { id: true, originalFilename: true } },
       },
     });
-
     const createSkills = this.prisma.applicantSkills.createMany({
       data: validatedSubmission.skills.map((skill) => ({ name: skill })),
+      skipDuplicates: true,
+    });
+    const createCauses = this.prisma.applicantCauses.createMany({
+      data: validatedSubmission.interestCauses.map((cause) => ({
+        name: cause,
+      })),
       skipDuplicates: true,
     });
 
     const [applicantSubmission] = await this.prisma.$transaction([
       createApplicantSubmission,
       createSkills,
+      createCauses,
     ]);
     try {
       const applicant = await this.prisma.applicant.findUniqueOrThrow({
@@ -249,6 +255,13 @@ class ApplicantController {
       skipDuplicates: true,
     });
 
+    const createCauses = this.prisma.applicantCauses.createMany({
+      data: validatedSubmission.interestCauses.map((cause) => ({
+        name: cause,
+      })),
+      skipDuplicates: true,
+    });
+
     // Throws error if applicantID doesn't exist
     const updatedApplicantSubmission = this.prisma.applicantSubmission.update({
       data: {
@@ -265,6 +278,7 @@ class ApplicantController {
 
     const [applicantSubmission] = await this.prisma.$transaction([
       updatedApplicantSubmission,
+      createCauses,
       createSkills,
     ]);
 
