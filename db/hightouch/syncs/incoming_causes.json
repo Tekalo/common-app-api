@@ -1,14 +1,14 @@
 {
-    "mode": "insert",
-    "baseId": "appDb5NGE2tTr6IYh",
-    "mappings": [
-        {
-            "to": "Name",
-            "from": "name",
-            "type": "standard"
-        }
-    ],
-    "tableName": "Causes Annotations",
-    "configVersion": 0,
-    "externalIdMapping": {}
+  "mode": "insert",
+  "baseId": "appDb5NGE2tTr6IYh",
+  "mappings": [
+    {
+      "to": "Name",
+      "from": "name",
+      "type": "standard"
+    }
+  ],
+  "tableName": "Causes Annotations",
+  "configVersion": 0,
+  "externalIdMapping": {}
 }
