@@ -53,9 +53,21 @@ SELECT
   appsub."interestRoles",
   appsub."interestGovt",
   appsub."interestGovtEmplTypes",
-  ARRAY_CAT(
-    appsub."interestCauses",
-    LOWER(appsub."otherCauses" :: TEXT) :: TEXT []
+  (
+    SELECT
+      ARRAY_AGG(
+        COALESCE(cv.canonical, cause)
+        ORDER BY
+          rn ASC
+      ) FILTER (
+        WHERE
+          cv."rejectAs" IS NULL
+      )
+    FROM
+      UNNEST(appsub."interestCauses")
+    WITH
+      ORDINALITY AS x(cause, rn)
+      LEFT JOIN PUBLIC."CausesView" cv ON cause = cv.name
   ) AS "allCauses",
   (
     SELECT
