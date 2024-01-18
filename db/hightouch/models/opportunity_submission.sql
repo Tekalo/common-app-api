@@ -16,7 +16,7 @@ SELECT
       UNNEST(ob."impactAreas")
     WITH
       ORDINALITY AS x(cause, rn)
-      LEFT JOIN PUBLIC."CausesView" cv ON cause = cv.name
+      LEFT JOIN PUBLIC."CausesView" cv ON lower(cause) = lower(cv.name)
   ) AS "impactAreasAll",
   ob."orgName",
   ob."orgSize",
@@ -74,7 +74,7 @@ SELECT
       )
     FROM
       UNNEST(os."desiredSkills") AS x
-      LEFT JOIN PUBLIC."SkillsView" sv ON x = sv.name
+      LEFT JOIN PUBLIC."SkillsView" sv ON lower(x) = lower(sv.name)
   ) AS "desiredAllSkills",
   os."desiredImpactExp",
   os."similarStaffed",
