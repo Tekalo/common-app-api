@@ -2,9 +2,21 @@ SELECT
   ob."contactEmail",
   ob."contactName",
   ob."contactPhone",
-  ARRAY_CAT(
-    ob."impactAreas",
-    LOWER(ob."impactAreasOther" :: TEXT) :: TEXT []
+ (
+    SELECT
+      ARRAY_AGG(
+        COALESCE(cv.canonical, cause)
+        ORDER BY
+          rn ASC
+      ) FILTER (
+        WHERE
+          cv."rejectAs" IS NULL
+      )
+    FROM
+      UNNEST(ob."impactAreas")
+    WITH
+      ORDINALITY AS x(cause, rn)
+      LEFT JOIN PUBLIC."CausesView" cv ON cause = cv.name
   ) AS "impactAreasAll",
   ob."orgName",
   ob."orgSize",
