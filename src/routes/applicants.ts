@@ -228,22 +228,11 @@ const applicantRoutes = (
   );
 
   router.post(
-    '/me/uploads/:id/complete',
+    '/me/uploads/:id(\\d+)/complete',
     authenticator.verifyJwtOrCookie.bind(authenticator) as RequestHandler,
     // eslint-disable-next-line consistent-return
     (req: Request, res: Response, next) => {
       const { id } = req.params;
-
-      // Check if id is a valid integer
-      if (!/^\d+$/.test(id)) {
-        const error = new CAPPError({
-          title: 'Invalid endpoint id',
-          detail: 'Should be integer',
-          status: 400,
-        });
-        return next(error);
-      }
-
       const appBody = req.body as UploadStateRequestBody;
       const applicantID = req.auth?.payload.id || req.session.applicant.id;
       const { status } = Uploads.UploadStateRequestBodySchema.parse(appBody);
@@ -259,23 +248,13 @@ const applicantRoutes = (
   // Get applicant's resume (they can only ever have one)
   // TODO: Allow resume owners to authenticate
   router.get(
-    '/:id/resume',
+    '/:id(\\d+)/resume',
     authenticator
       .validateJwtRole('matchmaker')
       .bind(authenticator) as RequestHandler,
     // eslint-disable-next-line consistent-return
     (req: Request, res: Response, next) => {
       const { id } = req.params;
-      // Check if id is a valid integer
-      if (!/^\d+$/.test(id)) {
-        const error = new CAPPError({
-          title: 'Invalid endpoint id',
-          detail: 'Should be integer',
-          status: 400,
-        });
-        return next(error);
-      }
-
       const applicantID = Number(id);
       applicantController
         .getResumeDownloadUrl(applicantID)
@@ -309,7 +288,7 @@ const applicantRoutes = (
   );
 
   router.delete(
-    '/:id',
+    '/:id(\\d+)',
     authenticator
       .validateJwtRole('admin')
       .bind(authenticator) as RequestHandler,
@@ -317,15 +296,6 @@ const applicantRoutes = (
     (req: Request, res: Response, next: NextFunction) => {
       const reqWithAuth = req as RequestWithJWT;
       const { id } = reqWithAuth.params;
-      // Check if id is a valid integer
-      if (!/^\d+$/.test(id)) {
-        const error = new CAPPError({
-          title: 'Invalid endpoint id',
-          detail: 'Should be integer',
-          status: 400,
-        });
-        return next(error);
-      }
 
       applicantController
         .deleteApplicantForce(Number(id))

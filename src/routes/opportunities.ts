@@ -33,7 +33,7 @@ const opportunitiesRoutes = (
 
   // Admin endpoints
   router.delete(
-    '/batch/:id',
+    '/batch/:id(\\d+)',
     authenticator
       .validateJwtRole('admin')
       .bind(authenticator) as RequestHandler,
@@ -41,15 +41,6 @@ const opportunitiesRoutes = (
     (req: Request, res: Response, next) => {
       const reqWithAuth = req as RequestWithJWT;
       const { id } = reqWithAuth.params;
-      // Check if id is a valid integer
-      if (!/^\d+$/.test(id)) {
-        const error = new CAPPError({
-          title: 'Invalid endpoint id',
-          detail: 'Should be integer',
-          status: 400,
-        });
-        return next(error);
-      }
 
       opportunityController
         .deleteOpportunityForce(Number(id))

@@ -1503,7 +1503,7 @@ describe('DELETE /applicants/:id', () => {
       .expect(200);
   });
 
-  it('should return a 400 status code for a non-integer id', async () => {
+  it('should return a 404 status code for a non-integer id', async () => {
     const randomString = getRandomString();
     const partialTokenOptions: TokenOptions = {
       roles: ['admin'],
@@ -1516,7 +1516,7 @@ describe('DELETE /applicants/:id', () => {
     await request(dummyApp)
       .delete(`/applicants/${nonIntId}`)
       .set('Authorization', `Bearer ${token}`)
-      .expect(400);
+      .expect(404);
   });
 });
 
@@ -1657,7 +1657,7 @@ describe('POST /applicants/me/uploads/:id/complete', () => {
       .expect(401);
   });
 
-  it('should return 400 for request with non-integer id', async () => {
+  it('should return 404 for request with non-integer id', async () => {
     const randomString = getRandomString();
     const token = await authHelper.getToken(
       `bboberson${randomString}@gmail.com`,
@@ -1679,7 +1679,7 @@ describe('POST /applicants/me/uploads/:id/complete', () => {
       .post(`/applicants/me/uploads/${nonIntId}/complete`)
       .send({ status: 'SUCCESS' })
       .set('Authorization', `Bearer ${token}`)
-      .expect(400);
+      .expect(404);
   });
 
   it('should successfully update upload status', async () => {
@@ -2021,7 +2021,7 @@ describe('GET /applicants/:id/resume', () => {
       .expect(404);
   });
 
-  it('should return 400 status code for a non-integer id', async () => {
+  it('should return 404 status code for a non-integer id', async () => {
     const bobToken = await authHelper.getToken(
       `bboberson${getRandomString()}@gmail.com`,
       { roles: ['matchmaker'] },
@@ -2030,7 +2030,7 @@ describe('GET /applicants/:id/resume', () => {
     await request(dummyApp)
       .get(`/applicants/${nonIntId}/resume`)
       .set('Authorization', `Bearer ${bobToken}`)
-      .expect(400);
+      .expect(404);
   });
 });
 

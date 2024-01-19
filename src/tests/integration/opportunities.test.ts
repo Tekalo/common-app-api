@@ -43,7 +43,7 @@ describe('DELETE /opportunities/batch/:id', () => {
       .expect(200);
   });
 
-  it('should return a 400 status code for a non-integer id', async () => {
+  it('should return a 404 status code for a non-integer id', async () => {
     const randomString = getRandomString();
     const partialTokenOptions: TokenOptions = {
       roles: ['admin'],
@@ -56,7 +56,7 @@ describe('DELETE /opportunities/batch/:id', () => {
     await request(dummyApp)
       .delete(`/opportunities/batch/${nonIntId}`)
       .set('Authorization', `Bearer ${token}`)
-      .expect(400);
+      .expect(404);
   });
 });
 
