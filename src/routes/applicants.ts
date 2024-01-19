@@ -227,8 +227,9 @@ const applicantRoutes = (
   );
 
   router.post(
-    '/me/uploads/:id/complete',
+    '/me/uploads/:id(\\d+)/complete',
     authenticator.verifyJwtOrCookie.bind(authenticator) as RequestHandler,
+    // eslint-disable-next-line consistent-return
     (req: Request, res: Response, next) => {
       const appBody = req.body as UploadStateRequestBody;
       const applicantID = req.auth?.payload.id || req.session.applicant.id;
@@ -246,10 +247,11 @@ const applicantRoutes = (
   // Get applicant's resume (they can only ever have one)
   // TODO: Allow resume owners to authenticate
   router.get(
-    '/:id/resume',
+    '/:id(\\d+)/resume',
     authenticator
       .validateJwtRole('matchmaker')
       .bind(authenticator) as RequestHandler,
+    // eslint-disable-next-line consistent-return
     (req: Request, res: Response, next) => {
       const applicantID = Number(req.params.id);
       applicantController
@@ -284,10 +286,11 @@ const applicantRoutes = (
   );
 
   router.delete(
-    '/:id',
+    '/:id(\\d+)',
     authenticator
       .validateJwtRole('admin')
       .bind(authenticator) as RequestHandler,
+    // eslint-disable-next-line consistent-return
     (req: Request, res: Response, next: NextFunction) => {
       const reqWithAuth = req as RequestWithJWT;
       const { id } = reqWithAuth.params;

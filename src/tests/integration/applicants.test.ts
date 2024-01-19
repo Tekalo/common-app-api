@@ -1600,6 +1600,22 @@ describe('DELETE /applicants/:id', () => {
       .set('Authorization', `Bearer ${token}`)
       .expect(200);
   });
+
+  it('should return a 404 status code for a non-integer id', async () => {
+    const randomString = getRandomString();
+    const partialTokenOptions: TokenOptions = {
+      roles: ['admin'],
+    };
+    const token = await authHelper.getToken(
+      `bboberson${randomString}@gmail.com`,
+      partialTokenOptions,
+    );
+    const nonIntId = 23.3;
+    await request(dummyApp)
+      .delete(`/applicants/${nonIntId}`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(404);
+  });
 });
 
 describe('POST /applicants/me/resume', () => {
@@ -1711,7 +1727,7 @@ describe('POST /applicants/me/resume', () => {
   });
 });
 
-describe('POST /applicants/me/uploads/:id/state', () => {
+describe('POST /applicants/me/uploads/:id/complete', () => {
   const dummyS3Service = new DummyS3Service();
   dummyS3Service.generateSignedUploadUrl = () =>
     Promise.resolve('https://bogus-signed-s3-link.com');
@@ -1737,6 +1753,31 @@ describe('POST /applicants/me/uploads/:id/state', () => {
       .post('/applicants/me/uploads/1/complete')
       .send({ status: 'SUCCESS' })
       .expect(401);
+  });
+
+  it('should return 404 for request with non-integer id', async () => {
+    const randomString = getRandomString();
+    const token = await authHelper.getToken(
+      `bboberson${randomString}@gmail.com`,
+    );
+    await request(dummyUploadApp)
+      .post('/applicants')
+      .send({
+        name: 'Bob Boberson',
+        email: `bboberson${randomString}@gmail.com`,
+        preferredContact: 'sms',
+        searchStatus: 'active',
+        acceptedTerms: true,
+        acceptedPrivacy: true,
+      })
+      .set('Authorization', `Bearer ${token}`);
+
+    const nonIntId = 23.3;
+    await request(dummyUploadApp)
+      .post(`/applicants/me/uploads/${nonIntId}/complete`)
+      .send({ status: 'SUCCESS' })
+      .set('Authorization', `Bearer ${token}`)
+      .expect(404);
   });
 
   it('should successfully update upload status', async () => {
@@ -2074,6 +2115,18 @@ describe('GET /applicants/:id/resume', () => {
     );
     await request(dummyApp)
       .get('/applicants/123456/resume')
+      .set('Authorization', `Bearer ${bobToken}`)
+      .expect(404);
+  });
+
+  it('should return 404 status code for a non-integer id', async () => {
+    const bobToken = await authHelper.getToken(
+      `bboberson${getRandomString()}@gmail.com`,
+      { roles: ['matchmaker'] },
+    );
+    const nonIntId = 23.3;
+    await request(dummyApp)
+      .get(`/applicants/${nonIntId}/resume`)
       .set('Authorization', `Bearer ${bobToken}`)
       .expect(404);
   });
