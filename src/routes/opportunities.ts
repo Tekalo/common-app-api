@@ -7,7 +7,6 @@ import EmailService from '@App/services/EmailService.js';
 import Authenticator from '@App/middleware/authenticator.js';
 import { RequestWithJWT } from '@App/resources/types/auth0.js';
 import { BaseConfig } from '@App/resources/types/shared.js';
-import CAPPError from '@App/resources/shared/CAPPError.js';
 
 const opportunitiesRoutes = (
   emailService: EmailService,

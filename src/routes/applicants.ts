@@ -29,7 +29,6 @@ import { RequestWithJWT } from '@App/resources/types/auth0.js';
 import EmailService from '@App/services/EmailService.js';
 import UploadService from '@App/services/UploadService.js';
 import { BaseConfig } from '@App/resources/types/shared.js';
-import CAPPError from '@App/resources/shared/CAPPError.js';
 
 const applicantRoutes = (
   authService: AuthService,
