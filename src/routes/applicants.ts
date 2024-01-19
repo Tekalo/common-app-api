@@ -231,10 +231,10 @@ const applicantRoutes = (
     authenticator.verifyJwtOrCookie.bind(authenticator) as RequestHandler,
     // eslint-disable-next-line consistent-return
     (req: Request, res: Response, next) => {
-      const { id } = req.params;
       const appBody = req.body as UploadStateRequestBody;
       const applicantID = req.auth?.payload.id || req.session.applicant.id;
       const { status } = Uploads.UploadStateRequestBodySchema.parse(appBody);
+      const { id } = req.params;
       applicantController
         .updateUploadStatus(applicantID, Number(id), status)
         .then((result) => {
@@ -253,8 +253,7 @@ const applicantRoutes = (
       .bind(authenticator) as RequestHandler,
     // eslint-disable-next-line consistent-return
     (req: Request, res: Response, next) => {
-      const { id } = req.params;
-      const applicantID = Number(id);
+      const applicantID = Number(req.params.id);
       applicantController
         .getResumeDownloadUrl(applicantID)
         .then((result) => {
@@ -295,7 +294,6 @@ const applicantRoutes = (
     (req: Request, res: Response, next: NextFunction) => {
       const reqWithAuth = req as RequestWithJWT;
       const { id } = reqWithAuth.params;
-
       applicantController
         .deleteApplicantForce(Number(id))
         .then((result) => {

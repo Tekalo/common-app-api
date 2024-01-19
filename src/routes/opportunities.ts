@@ -40,7 +40,6 @@ const opportunitiesRoutes = (
     (req: Request, res: Response, next) => {
       const reqWithAuth = req as RequestWithJWT;
       const { id } = reqWithAuth.params;
-
       opportunityController
         .deleteOpportunityForce(Number(id))
         .then((result) => {
