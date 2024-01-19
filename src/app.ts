@@ -4,6 +4,7 @@ import {
   healthRoutes,
   opportunitiesRoutes,
   skillsRoutes,
+  causesRoutes,
   cleanupRoutes,
 } from '@App/routes/index.js';
 import logger from '@App/services/logger.js';
@@ -94,6 +95,7 @@ const getApp = (
   );
   app.use('/opportunities', opportunitiesRoutes(emailService, config));
   app.use('/skills', skillsRoutes(config));
+  app.use('/causes', causesRoutes(config));
   app.use(
     '/cleanup',
     cleanupRoutes(authService, emailService, uploadService, config),

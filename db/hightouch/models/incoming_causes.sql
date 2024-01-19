@@ -1,0 +1,13 @@
+SELECT
+  NAME
+FROM
+  "ApplicantCauses"
+WHERE
+  NAME IS NOT NULL
+UNION
+SELECT
+  NAME
+FROM
+  "OpportunityCauses"
+WHERE
+  NAME IS NOT NULL;

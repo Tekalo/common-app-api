@@ -90,7 +90,6 @@ model ApplicantSubmission {
 
   otherCauses String[] // Additional cause(s) they are interested in // TODO: Deprecate
   skills      String[] // Enum or FKs
-  otherSkills String[] // Additional skill(s) they have
 
   currentLocation   String
   openToRelocate    String // enum
@@ -140,7 +139,6 @@ model ApplicantDraftSubmission {
 
   otherCauses String[] // Additional cause(s) they are interested in
   skills      String[] // Enum or FKs
-  otherSkills String[] // Additional skill(s) they have
 
   currentLocation   String?
   openToRelocate    String? // enum
@@ -213,7 +211,6 @@ model OpportunitySubmission {
   desiredEndDate      DateTime?
   desiredYoe          String[] // enum
   desiredSkills       String[] // enum, optional
-  desiredOtherSkills  String[] // optional
   desiredImpactExp    String?
 
   similarStaffed Boolean?
@@ -287,6 +284,14 @@ model CausesAnnotation {
   suggest                 Boolean?
   rejectAs                String?
   priority                Boolean?
+}
+
+view CausesView {
+  name String @id @db.Citext
+  canonical String? @db.Citext
+  suggest Boolean?
+  rejectAs String?
+  priority Boolean?
 }
 
 // Custom impact causes submitted in applicant submissions
