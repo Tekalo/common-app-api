@@ -1218,15 +1218,13 @@ describe('Applicant Controller', () => {
 
       const applicantId = 666;
       const uploadResumeId = 1;
-      const emailService = new EmailService(
-        new SESService(),
-        new DummySQSService(),
-        getMockConfig(),
-      );
+      const uploadBucket = 'upload_bucket';
+      const mockConfig = getMockConfig({ uploadBucket });
+
       const applicantController = new ApplicantController(
         new DummyAuthService(),
         ctx.prisma,
-        emailService,
+        new DummyEmailService(new DummySQSService(), mockConfig),
         new DummyUploadService(
           ctx.prisma,
           new DummyS3Service(),

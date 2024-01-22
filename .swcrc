@@ -3,13 +3,13 @@
   // EX: using commonJS will add Object.defineProperty(exports, "__esModule".. to our compiled JS
   "module": {
     "type": "es6",
-    "resolveFully": true, // allows us to import index.js files from repo dirs https://github.com/swc-project/swc/pull/7945
+    "resolveFully": true // allows us to import index.js files from repo dirs https://github.com/swc-project/swc/pull/7945
   },
   "jsc": {
     "baseUrl": "./",
     "paths": {
       "@App/*": ["src/*"],
-      "@capp/*": ["packages/*"],
+      "@capp/*": ["packages/*"]
     },
     // All of the code that is transpiled EXCEPT for the import/export statements
     "target": "es2022",
@@ -19,12 +19,12 @@
     // NodeNext in our tsconfig.
     "experimental": {
       "keepImportAttributes": true,
-      "emitAssertForImportAttributes": true,
+      "emitAssertForImportAttributes": true
     },
     "parser": {
       "syntax": "typescript",
-      "dynamicImport": false,
-    },
+      "dynamicImport": false
+    }
   },
-  "isModule": true,
+  "isModule": true
 }
