@@ -1208,6 +1208,48 @@ describe('Applicant Controller', () => {
         ]),
       );
     });
+
+    test('Should return error when Prisma throws a transaction error', async () => {
+      const mockError = new Prisma.PrismaClientKnownRequestError('ERROR', {
+        code: '101',
+        clientVersion: '1.0',
+      });
+      mockCtx.prisma.$transaction.mockRejectedValue(mockError);
+
+      const applicantId = 666;
+      const uploadResumeId = 1;
+      const uploadBucket = 'upload_bucket';
+      const mockConfig = getMockConfig({ uploadBucket });
+
+      const applicantController = new ApplicantController(
+        new DummyAuthService(),
+        ctx.prisma,
+        new DummyEmailService(new DummySQSService(), mockConfig),
+        new DummyUploadService(
+          ctx.prisma,
+          new DummyS3Service(),
+          getMockConfig(),
+        ),
+      );
+      mockCtx.prisma.upload.findFirst.mockResolvedValue({
+        id: uploadResumeId,
+        applicantId,
+        originalFilename: 'myresume.pdf',
+        type: 'RESUME',
+        status: 'SUCCESS',
+        createdAt: new Date('2023-02-01'),
+        completedAt: new Date('2023-02-01'),
+        contentType: 'application/pdf',
+      });
+
+      const testBody = getAPIRequestBody(uploadResumeId);
+      await expect(
+        applicantController.createSubmission(
+          applicantId,
+          Applicants.ApplicantCreateSubmissionRequestBodySchema.parse(testBody),
+        ),
+      ).rejects.toEqual(mockError);
+    });
   });
 
   describe('Applicant Get Resume Upload Url', () => {
