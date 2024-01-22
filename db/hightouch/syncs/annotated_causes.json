@@ -1,10 +1,10 @@
 {
   "mode": "upsert",
-  "object": "public.SkillsAnnotation",
+  "object": "public.CausesAnnotation",
   "mappings": [
     {
       "to": "canonical",
-      "from": "Canonical Skill",
+      "from": "Canonical Cause",
       "type": "standard"
     },
     {
@@ -18,11 +18,12 @@
       "type": "standard"
     },
     {
-      "from": "Prioritize",
       "to": "priority",
+      "from": "Prioritize",
       "type": "standard"
     }
   ],
+  "deleteMode": null,
   "configVersion": 1,
   "externalIdMapping": {
     "to": "name",

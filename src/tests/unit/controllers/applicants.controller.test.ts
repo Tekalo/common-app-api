@@ -12,8 +12,6 @@ import {
   Context,
   createMockContext,
 } from '@App/tests/util/context.js';
-import SESService from '@App/services/SESService.js';
-import DummySESService from '@App/tests/fixtures/DummySESService.js';
 import DummySQSService from '@App/tests/fixtures/DummySQSService.js';
 import DummyS3Service from '@App/tests/fixtures/DummyS3Service.js';
 import { getAPIRequestBody } from '@App/tests/fixtures/applicantSubmissionGenerator.js';
@@ -46,11 +44,7 @@ describe('Applicant Controller', () => {
       const applicantController = new ApplicantController(
         dummyAuthService,
         ctx.prisma,
-        new DummyEmailService(
-          new DummySESService(),
-          new DummySQSService(),
-          getMockConfig(),
-        ),
+        new DummyEmailService(new DummySQSService(), getMockConfig()),
         new DummyUploadService(
           ctx.prisma,
           new DummyS3Service(),
@@ -60,7 +54,7 @@ describe('Applicant Controller', () => {
       await expect(
         applicantController.createApplicant({
           name: 'Bob Boberson',
-          email: 'bboberson@schmidtfutures.com',
+          email: 'bboberson@tekalo.org',
           preferredContact: 'email',
           searchStatus: 'active',
           acceptedTerms: true,
@@ -84,7 +78,6 @@ describe('Applicant Controller', () => {
       dummyAuthService.userExists = () => Promise.resolve(true);
 
       const mockEmailService = new EmailService(
-        new SESService(),
         new DummySQSService(),
         getMockConfig(),
       );
@@ -104,7 +97,7 @@ describe('Applicant Controller', () => {
         id: 1,
         phone: '777-777-7777',
         name: 'Bob Boberson',
-        email: 'bboberson@schmidtfutures.com',
+        email: 'bboberson@tekalo.org',
         pronoun: 'he/his',
         preferredContact: 'email',
         searchStatus: 'active',
@@ -117,7 +110,7 @@ describe('Applicant Controller', () => {
       await expect(
         applicantController.createApplicant({
           name: 'Bob Boberson',
-          email: 'bboberson@schmidtfutures.com',
+          email: 'bboberson@tekalo.org',
           pronoun: 'he/his',
           preferredContact: 'email',
           searchStatus: 'active',
@@ -142,11 +135,7 @@ describe('Applicant Controller', () => {
       const applicantController = new ApplicantController(
         new DummyAuthService(),
         ctx.prisma,
-        new DummyEmailService(
-          new DummySESService(),
-          new DummySQSService(),
-          getMockConfig(),
-        ),
+        new DummyEmailService(new DummySQSService(), getMockConfig()),
         new DummyUploadService(
           ctx.prisma,
           new DummyS3Service(),
@@ -156,7 +145,7 @@ describe('Applicant Controller', () => {
       await expect(
         applicantController.createApplicant({
           name: 'Bob Boberson',
-          email: 'bboberson@schmidtfutures.com',
+          email: 'bboberson@tekalo.org',
           pronoun: 'he/his',
           preferredContact: 'email',
           searchStatus: 'active',
@@ -175,11 +164,7 @@ describe('Applicant Controller', () => {
       const applicantController = new ApplicantController(
         new DummyAuthService(),
         ctx.prisma,
-        new DummyEmailService(
-          new DummySESService(),
-          new DummySQSService(),
-          getMockConfig(),
-        ),
+        new DummyEmailService(new DummySQSService(), getMockConfig()),
         new DummyUploadService(
           ctx.prisma,
           new DummyS3Service(),
@@ -189,7 +174,7 @@ describe('Applicant Controller', () => {
       await expect(
         applicantController.createApplicant({
           name: 'Bob Boberson',
-          email: 'bboberson@schmidtfutures.com',
+          email: 'bboberson@tekalo.org',
           pronoun: 'he/his',
           preferredContact: 'email',
           searchStatus: 'active',
@@ -203,7 +188,7 @@ describe('Applicant Controller', () => {
         id: 1,
         phone: '777-777-7777',
         name: 'Bob Boberson',
-        email: 'bboberson@schmidtfutures.com',
+        email: 'bboberson@tekalo.org',
         pronoun: 'he/his',
         preferredContact: 'email',
         searchStatus: 'active',
@@ -215,7 +200,6 @@ describe('Applicant Controller', () => {
       });
 
       const mockEmailService = new EmailService(
-        new SESService(),
         new DummySQSService(),
         getMockConfig(),
       );
@@ -238,7 +222,7 @@ describe('Applicant Controller', () => {
 
       const resp = await applicantController.createApplicant({
         name: 'Bob Boberson',
-        email: 'bboberson@schmidtfutures.com',
+        email: 'bboberson@tekalo.org',
         pronoun: 'he/his',
         preferredContact: 'email',
         searchStatus: 'active',
@@ -248,7 +232,7 @@ describe('Applicant Controller', () => {
       expect(resp).toMatchObject({
         id: 1,
         auth0Id: expect.stringMatching('^auth0\\|.+'),
-        email: 'bboberson@schmidtfutures.com',
+        email: 'bboberson@tekalo.org',
       });
       mockEmailSpy.mockRestore();
     });
@@ -257,7 +241,7 @@ describe('Applicant Controller', () => {
         id: 1,
         phone: '777-777-7777',
         name: 'Bob Boberson',
-        email: 'bboberson@schmidtfutures.com',
+        email: 'bboberson@tekalo.org',
         pronoun: 'he/his',
         preferredContact: 'email',
         searchStatus: 'active',
@@ -270,7 +254,6 @@ describe('Applicant Controller', () => {
 
       const webUrl = process.env.WEB_URL || '';
       const emailService = new EmailService(
-        new SESService(),
         new DummySQSService(),
         getMockConfig({ webUrl }),
       );
@@ -288,7 +271,7 @@ describe('Applicant Controller', () => {
         ),
       );
 
-      const bobEmail = 'bboberson@schmidtfutures.com';
+      const bobEmail = 'bboberson@tekalo.org';
 
       await applicantController.createApplicant({
         name: 'Bob Boberson',
@@ -313,7 +296,7 @@ describe('Applicant Controller', () => {
         id: 1,
         phone: '777-777-7777',
         name: 'Bob Boberson',
-        email: 'bboberson@schmidtfutures.com',
+        email: 'bboberson@tekalo.org',
         pronoun: 'he/his',
         preferredContact: 'email',
         searchStatus: 'active',
@@ -324,7 +307,6 @@ describe('Applicant Controller', () => {
         followUpOptIn: false,
       });
       const dummyEmailService = new DummyEmailService(
-        new DummySESService(),
         new DummySQSService(),
         getMockConfig(),
       );
@@ -339,14 +321,14 @@ describe('Applicant Controller', () => {
           getMockConfig(),
         ),
       );
-      const bobEmail = 'bboberson@schmidtfutures.com';
+      const bobEmail = 'bboberson@tekalo.org';
 
       const auth = {
         header: {},
         token: '',
         payload: {
           sub: 'google-oauth-2|12345678',
-          'auth0.capp.com/email': 'bboberson@schmidtfutures.com',
+          'auth0.capp.com/email': 'bboberson@tekalo.org',
           'auth0.capp.com/roles': [],
         },
       };
@@ -373,7 +355,7 @@ describe('Applicant Controller', () => {
         id: 1,
         phone: '777-777-7777',
         name: 'Bob Boberson',
-        email: 'bboberson@schmidtfutures.com',
+        email: 'bboberson@tekalo.org',
         pronoun: 'he/his',
         preferredContact: 'email',
         searchStatus: 'active',
@@ -391,11 +373,7 @@ describe('Applicant Controller', () => {
       const applicantController = new ApplicantController(
         new DummyAuthService(),
         ctx.prisma,
-        new DummyEmailService(
-          new DummySESService(),
-          new DummySQSService(),
-          getMockConfig(),
-        ),
+        new DummyEmailService(new DummySQSService(), getMockConfig()),
         new DummyUploadService(
           ctx.prisma,
           new DummyS3Service(),
@@ -411,7 +389,7 @@ describe('Applicant Controller', () => {
         id: 1,
         phone: '777-777-7777',
         name: 'Bob Boberson',
-        email: 'bboberson@schmidtfutures.com',
+        email: 'bboberson@tekalo.org',
         pronoun: 'he/his',
         preferredContact: 'email',
         searchStatus: 'active',
@@ -432,11 +410,7 @@ describe('Applicant Controller', () => {
       const applicantController = new ApplicantController(
         dummyAuthService,
         ctx.prisma,
-        new DummyEmailService(
-          new DummySESService(),
-          new DummySQSService(),
-          getMockConfig(),
-        ),
+        new DummyEmailService(new DummySQSService(), getMockConfig()),
         new DummyUploadService(
           ctx.prisma,
           new DummyS3Service(),
@@ -452,7 +426,7 @@ describe('Applicant Controller', () => {
         id: 1,
         phone: '777-777-7777',
         name: 'Bob Boberson',
-        email: 'bboberson@schmidtfutures.com',
+        email: 'bboberson@tekalo.org',
         pronoun: 'he/his',
         preferredContact: 'email',
         searchStatus: 'active',
@@ -472,11 +446,7 @@ describe('Applicant Controller', () => {
       const applicantController = new ApplicantController(
         new DummyAuthService(),
         ctx.prisma,
-        new DummyEmailService(
-          new DummySESService(),
-          new DummySQSService(),
-          mockConfig,
-        ),
+        new DummyEmailService(new DummySQSService(), mockConfig),
         new DummyUploadService(ctx.prisma, mockS3Service, mockConfig),
       );
       await applicantController.deleteApplicant(1);
@@ -487,7 +457,7 @@ describe('Applicant Controller', () => {
         id: 1,
         phone: '777-777-7777',
         name: 'Bob Boberson',
-        email: 'bboberson@schmidtfutures.com',
+        email: 'bboberson@tekalo.org',
         pronoun: 'he/his',
         preferredContact: 'email',
         searchStatus: 'active',
@@ -508,11 +478,7 @@ describe('Applicant Controller', () => {
       const applicantController = new ApplicantController(
         new DummyAuthService(),
         ctx.prisma,
-        new DummyEmailService(
-          new DummySESService(),
-          new DummySQSService(),
-          getMockConfig(),
-        ),
+        new DummyEmailService(new DummySQSService(), getMockConfig()),
         new DummyUploadService(ctx.prisma, dummyS3Service, getMockConfig()),
       );
       await expect(
@@ -524,7 +490,7 @@ describe('Applicant Controller', () => {
         id: 1,
         phone: '777-777-7777',
         name: 'Bob Boberson',
-        email: 'bboberson@schmidtfutures.com',
+        email: 'bboberson@tekalo.org',
         pronoun: 'he/his',
         preferredContact: 'email',
         searchStatus: 'active',
@@ -536,7 +502,6 @@ describe('Applicant Controller', () => {
       });
 
       const emailService = new EmailService(
-        new DummySESService(),
         new DummySQSService(),
         getMockConfig(),
       );
@@ -556,7 +521,7 @@ describe('Applicant Controller', () => {
 
       await applicantController.deleteApplicant(1);
       const expectedEmail = emailService.generateApplicantDeletionEmail(
-        'bboberson@schmidtfutures.com',
+        'bboberson@tekalo.org',
         'Bob Boberson',
       );
       expect(mockEmailSpy).toHaveBeenCalledWith(expectedEmail);
@@ -570,7 +535,7 @@ describe('Applicant Controller', () => {
         id: 1,
         phone: '777-777-7777',
         name: 'Bob Boberson',
-        email: 'bboberson@schmidtfutures.com',
+        email: 'bboberson@tekalo.org',
         pronoun: 'he/his',
         preferredContact: 'email',
         searchStatus: 'active',
@@ -588,11 +553,7 @@ describe('Applicant Controller', () => {
       const applicantController = new ApplicantController(
         new DummyAuthService(),
         ctx.prisma,
-        new DummyEmailService(
-          new DummySESService(),
-          new DummySQSService(),
-          getMockConfig(),
-        ),
+        new DummyEmailService(new DummySQSService(), getMockConfig()),
         new DummyUploadService(
           ctx.prisma,
           new DummyS3Service(),
@@ -608,7 +569,7 @@ describe('Applicant Controller', () => {
         id: 1,
         phone: '777-777-7777',
         name: 'Bob Boberson',
-        email: 'bboberson@schmidtfutures.com',
+        email: 'bboberson@tekalo.org',
         pronoun: 'he/his',
         preferredContact: 'email',
         searchStatus: 'active',
@@ -629,11 +590,7 @@ describe('Applicant Controller', () => {
       const applicantController = new ApplicantController(
         dummyAuthService,
         ctx.prisma,
-        new DummyEmailService(
-          new DummySESService(),
-          new DummySQSService(),
-          getMockConfig(),
-        ),
+        new DummyEmailService(new DummySQSService(), getMockConfig()),
         new DummyUploadService(
           ctx.prisma,
           new DummyS3Service(),
@@ -649,7 +606,7 @@ describe('Applicant Controller', () => {
         id: 1,
         phone: '777-777-7777',
         name: 'Bob Boberson',
-        email: 'bboberson@schmidtfutures.com',
+        email: 'bboberson@tekalo.org',
         pronoun: 'he/his',
         preferredContact: 'email',
         searchStatus: 'active',
@@ -669,11 +626,7 @@ describe('Applicant Controller', () => {
       const applicantController = new ApplicantController(
         new DummyAuthService(),
         ctx.prisma,
-        new DummyEmailService(
-          new DummySESService(),
-          new DummySQSService(),
-          mockConfig,
-        ),
+        new DummyEmailService(new DummySQSService(), mockConfig),
         new DummyUploadService(ctx.prisma, mockS3Service, mockConfig),
       );
       await applicantController.deleteApplicantForce(1);
@@ -684,7 +637,7 @@ describe('Applicant Controller', () => {
         id: 1,
         phone: '777-777-7777',
         name: 'Bob Boberson',
-        email: 'bboberson@schmidtfutures.com',
+        email: 'bboberson@tekalo.org',
         pronoun: 'he/his',
         preferredContact: 'email',
         searchStatus: 'active',
@@ -705,11 +658,7 @@ describe('Applicant Controller', () => {
       const applicantController = new ApplicantController(
         new DummyAuthService(),
         ctx.prisma,
-        new DummyEmailService(
-          new DummySESService(),
-          new DummySQSService(),
-          getMockConfig(),
-        ),
+        new DummyEmailService(new DummySQSService(), getMockConfig()),
         new DummyUploadService(ctx.prisma, dummyS3Service, getMockConfig()),
       );
       await expect(
@@ -721,7 +670,7 @@ describe('Applicant Controller', () => {
         id: 1,
         phone: '777-777-7777',
         name: 'Bob Boberson',
-        email: 'bboberson@schmidtfutures.com',
+        email: 'bboberson@tekalo.org',
         pronoun: 'he/his',
         preferredContact: 'email',
         searchStatus: 'active',
@@ -733,7 +682,6 @@ describe('Applicant Controller', () => {
       });
 
       const emailService = new EmailService(
-        new DummySESService(),
         new DummySQSService(),
         getMockConfig(),
       );
@@ -763,11 +711,7 @@ describe('Applicant Controller', () => {
       const applicantController = new ApplicantController(
         new DummyAuthService(),
         ctx.prisma,
-        new DummyEmailService(
-          new DummySESService(),
-          new DummySQSService(),
-          getMockConfig(),
-        ),
+        new DummyEmailService(new DummySQSService(), getMockConfig()),
         new DummyUploadService(
           ctx.prisma,
           new DummyS3Service(),
@@ -799,11 +743,7 @@ describe('Applicant Controller', () => {
       const applicantController = new ApplicantController(
         new DummyAuthService(),
         ctx.prisma,
-        new DummyEmailService(
-          new DummySESService(),
-          new DummySQSService(),
-          getMockConfig(),
-        ),
+        new DummyEmailService(new DummySQSService(), getMockConfig()),
         new DummyUploadService(
           ctx.prisma,
           new DummyS3Service(),
@@ -830,11 +770,7 @@ describe('Applicant Controller', () => {
       const applicantController = new ApplicantController(
         new DummyAuthService(),
         ctx.prisma,
-        new DummyEmailService(
-          new DummySESService(),
-          new DummySQSService(),
-          getMockConfig(),
-        ),
+        new DummyEmailService(new DummySQSService(), getMockConfig()),
         new DummyUploadService(
           ctx.prisma,
           new DummyS3Service(),
@@ -877,7 +813,7 @@ describe('Applicant Controller', () => {
         id: 1,
         phone: '777-777-7777',
         name: 'Bob Boberson',
-        email: 'Aboberson@schmidtfutures.com',
+        email: 'Aboberson@tekalo.org',
         pronoun: 'he/his',
         preferredContact: 'email',
         searchStatus: 'active',
@@ -888,25 +824,22 @@ describe('Applicant Controller', () => {
         followUpOptIn: false,
       });
 
-      const sesService = new DummySESService();
       const mockConfig = getMockConfig({
         aws: {
           sesFromAddress: 'baz@futurestech.com',
           sesReplyToAddress: 'replies@futurestech.com',
           region: 'us-east-1',
           sesWhiteList: ['bboberson@gmail.com'],
-          emailQueueUrl: undefined,
+          emailQueueUrl:
+            'https://sqs.us-east-1.amazonaws.com/123456789/email-sqs-queue',
         },
         env: 'dev',
         useEmailWhiteList: true,
       });
-      const emailService = new EmailService(
-        sesService,
-        new DummySQSService(),
-        mockConfig,
-      );
+      const sqsService = new DummySQSService();
+      const emailService = new EmailService(sqsService, mockConfig);
 
-      const mockEmailSpy = jest.spyOn(sesService, 'sendEmail');
+      const mockEmailSpy = jest.spyOn(sqsService, 'enqueueMessage');
 
       const applicantController = new ApplicantController(
         new DummyAuthService(),
@@ -935,25 +868,21 @@ describe('Applicant Controller', () => {
         followUpOptIn: false,
       });
 
-      const sesService = new DummySESService();
       const mockConfig = getMockConfig({
         aws: {
           sesFromAddress: 'baz@futurestech.com',
           sesReplyToAddress: 'replies@futurestech.com',
           region: 'us-east-1',
           sesWhiteList: ['bboberson@gmail.com'],
-          emailQueueUrl: undefined,
+          emailQueueUrl:
+            'https://sqs.us-east-1.amazonaws.com/123456789/email-sqs-queue',
         },
         env: 'dev',
         useEmailWhiteList: true,
       });
-      const emailService = new EmailService(
-        sesService,
-        new DummySQSService(),
-        mockConfig,
-      );
-
-      const mockEmailSpy = jest.spyOn(sesService, 'sendEmail');
+      const sqsService = new DummySQSService();
+      const emailService = new EmailService(sqsService, mockConfig);
+      const mockEmailSpy = jest.spyOn(sqsService, 'enqueueMessage');
 
       const applicantController = new ApplicantController(
         new DummyAuthService(),
@@ -971,7 +900,7 @@ describe('Applicant Controller', () => {
         id: 1,
         phone: '777-777-7777',
         name: 'Bob Boberson',
-        email: 'bboberson@schmidtfutures.com',
+        email: 'bboberson@tekalo.org',
         pronoun: 'he/his',
         preferredContact: 'email',
         searchStatus: 'active',
@@ -982,25 +911,21 @@ describe('Applicant Controller', () => {
         followUpOptIn: false,
       });
 
-      const sesService = new DummySESService();
       const mockConfig = getMockConfig({
         aws: {
           sesFromAddress: 'baz@futurestech.com',
           sesReplyToAddress: 'replies@futurestech.com',
           region: 'us-east-1',
           sesWhiteList: ['bboberson@gmail.com'],
-          emailQueueUrl: '',
+          emailQueueUrl:
+            'https://sqs.us-east-1.amazonaws.com/123456789/email-sqs-queue',
         },
         env: 'prod',
         useEmailWhiteList: false,
       });
-      const emailService = new EmailService(
-        sesService,
-        new DummySQSService(),
-        mockConfig,
-      );
-
-      const mockEmailSpy = jest.spyOn(sesService, 'sendEmail');
+      const sqsService = new DummySQSService();
+      const emailService = new EmailService(sqsService, mockConfig);
+      const mockEmailSpy = jest.spyOn(sqsService, 'enqueueMessage');
 
       const applicantController = new ApplicantController(
         new DummyAuthService(),
@@ -1037,11 +962,7 @@ describe('Applicant Controller', () => {
       const applicantController = new ApplicantController(
         dummyAuthService,
         ctx.prisma,
-        new DummyEmailService(
-          new DummySESService(),
-          new DummySQSService(),
-          getMockConfig(),
-        ),
+        new DummyEmailService(new DummySQSService(), getMockConfig()),
         new DummyUploadService(
           ctx.prisma,
           new DummyS3Service(),
@@ -1058,14 +979,13 @@ describe('Applicant Controller', () => {
         id: 25,
         applicantId: 0,
         createdAt: new Date('2023-02-01'),
-        email: 'bboberson@schmidtfutures.com',
+        email: 'bboberson@tekalo.org',
         acceptedTerms: new Date('2023-02-01'),
         acceptedPrivacy: new Date('2023-02-01'),
         followUpOptIn: false,
       });
 
       const emailService = new EmailService(
-        new DummySESService(),
         new DummySQSService(),
         getMockConfig(),
       );
@@ -1073,7 +993,7 @@ describe('Applicant Controller', () => {
       const mockEmailSpy = jest.spyOn(emailService, 'sendEmail');
       const mockUser = {
         name: 'Bob Boberson',
-        email: 'bboberson@schmidtfutures.com',
+        email: 'bboberson@tekalo.org',
         auth0Id: 'auth0|12345',
       };
 
@@ -1123,7 +1043,6 @@ describe('Applicant Controller', () => {
         lastOrg: 'mozilla',
         yoe: '>11',
         skills: ['react', 'python'], // enum
-        otherSkills: [],
         linkedInUrl: 'https://www.linkedin.com/in/bob-bobberson',
         githubUrl: 'https://github.com/bboberson',
         portfolioUrl: null,
@@ -1162,7 +1081,7 @@ describe('Applicant Controller', () => {
         resolvedValue,
       );
 
-      const bobEmail = 'bboberson@schmidtfutures.com';
+      const bobEmail = 'bboberson@tekalo.org';
       mockCtx.prisma.applicant.findUniqueOrThrow.mockResolvedValue({
         id: applicantId,
         phone: '777-777-7777',
@@ -1190,7 +1109,6 @@ describe('Applicant Controller', () => {
       });
 
       const emailService = new EmailService(
-        new SESService(),
         new DummySQSService(),
         getMockConfig(),
       );
@@ -1232,11 +1150,7 @@ describe('Applicant Controller', () => {
       const applicantController = new ApplicantController(
         new DummyAuthService(),
         ctx.prisma,
-        new DummyEmailService(
-          new DummySESService(),
-          new DummySQSService(),
-          getMockConfig(),
-        ),
+        new DummyEmailService(new DummySQSService(), getMockConfig()),
         dummyUploadService,
       );
       const requestBody: RawApplicantSubmissionBody = getAPIRequestBody(1);
@@ -1272,11 +1186,7 @@ describe('Applicant Controller', () => {
       const applicantController = new ApplicantController(
         new DummyAuthService(),
         ctx.prisma,
-        new DummyEmailService(
-          new DummySESService(),
-          new DummySQSService(),
-          getMockConfig(),
-        ),
+        new DummyEmailService(new DummySQSService(), getMockConfig()),
         dummyUploadService,
       );
       const requestBody = getAPIRequestBody(applicantId);
@@ -1374,11 +1284,7 @@ describe('Applicant Controller', () => {
       const applicantController = new ApplicantController(
         new DummyAuthService(),
         ctx.prisma,
-        new DummyEmailService(
-          new DummySESService(),
-          new DummySQSService(),
-          mockConfig,
-        ),
+        new DummyEmailService(new DummySQSService(), mockConfig),
         uploadService,
       );
 
@@ -1419,11 +1325,7 @@ describe('Applicant Controller', () => {
       const applicantController = new ApplicantController(
         new DummyAuthService(),
         ctx.prisma,
-        new DummyEmailService(
-          new DummySESService(),
-          new DummySQSService(),
-          mockConfig,
-        ),
+        new DummyEmailService(new DummySQSService(), mockConfig),
         uploadService,
       );
 

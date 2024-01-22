@@ -102,10 +102,21 @@ const ApplicantCreateSubmissionRequestBody = z.object({
   openToRelocate: OpenToRelocate,
   openToRemoteMulti: z.array(OpenToRemote),
   desiredSalary: z.string().max(255).nullable(),
-  interestCauses: z.array(z.string().max(255)), // order matters
+  interestCauses: z
+    .array(z.string().max(255)) // order matters
+    .transform((causeArray) =>
+      causeArray
+        ? causeArray.map((cause) =>
+            cause
+              .trim()
+              .split(/[\s,\t]+/)
+              .join(' '),
+          )
+        : [],
+    ),
   otherCauses: z
     .array(z.string().max(255))
-    .nullable()
+    .nullish()
     .transform((val) => val || []),
   workAuthorization: WorkAuthorization.nullable(),
   interestGovt: z.boolean(),
@@ -152,7 +163,6 @@ const ApplicantSubmissionResponseBody = z.object({
   lastOrg: z.string().max(255).nullable(),
   yoe: z.string().nullable(),
   skills: z.array(z.string()).nullable(),
-  otherSkills: z.array(z.string().max(255)).nullable(),
   linkedInUrl: z.string().max(500).nullable(),
   githubUrl: z.string().max(500).nullable(),
   portfolioUrl: z.string().max(500).nullable(),

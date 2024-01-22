@@ -42,6 +42,22 @@ describe('DELETE /opportunities/batch/:id', () => {
       .set('Authorization', `Bearer ${token}`)
       .expect(200);
   });
+
+  it('should return a 404 status code for a non-integer id', async () => {
+    const randomString = getRandomString();
+    const partialTokenOptions: TokenOptions = {
+      roles: ['admin'],
+    };
+    const token = await authHelper.getToken(
+      `bboberson${randomString}@gmail.com`,
+      partialTokenOptions,
+    );
+    const nonIntId = 23.3;
+    await request(dummyApp)
+      .delete(`/opportunities/batch/${nonIntId}`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(404);
+  });
 });
 
 describe('POST /opportunities', () => {
@@ -115,6 +131,34 @@ describe('POST /opportunities', () => {
       data: { name: duplicateSkill },
     });
     oppBatchPayload.submissions[0].desiredSkills = [duplicateSkill];
+    await request(dummyApp)
+      .post('/opportunities/batch')
+      .send(oppBatchPayload)
+      .expect(200);
+  });
+  it('should save new impactCauses in a new batch of opportunities', async () => {
+    // All outside/inside whitespaces should be trimmed
+    const uncleanImpactArea = '  We help all people!   ';
+    const cleanImpactArea = 'We help all people!';
+    oppBatchPayload.organization.impactAreas = [uncleanImpactArea];
+    await request(dummyApp)
+      .post('/opportunities/batch')
+      .send(oppBatchPayload)
+      .expect(200);
+    const causes = await prisma.opportunityCauses.findFirst({
+      where: { name: cleanImpactArea },
+    });
+    expect(causes).toEqual({
+      name: cleanImpactArea,
+      createdAt: expect.any(Date),
+    });
+  });
+  it('should return 200 when opportunity submission includes impactCauses that already exist in DB', async () => {
+    const duplicateCause = 'Duplicate Cause';
+    await prisma.opportunitySkills.create({
+      data: { name: duplicateCause },
+    });
+    oppBatchPayload.organization.impactAreas = [duplicateCause];
     await request(dummyApp)
       .post('/opportunities/batch')
       .send(oppBatchPayload)

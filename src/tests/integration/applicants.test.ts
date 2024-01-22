@@ -33,7 +33,6 @@ import DummyAuthService from '../fixtures/DummyAuthService.js';
 import DummyMonitoringService from '../fixtures/DummyMonitoringService.js';
 import authHelper, { TokenOptions } from '../util/auth.js';
 import DummyEmailService from '../fixtures/DummyEmailService.js';
-import DummySESService from '../fixtures/DummySESService.js';
 import DummySQSService from '../fixtures/DummySQSService.js';
 import DummyUploadService from '../fixtures/DummyUploadService.js';
 import DummyS3Service from '../fixtures/DummyS3Service.js';
@@ -305,11 +304,7 @@ describe('POST /applicants', () => {
     const app = getApp(
       authService,
       new DummyMonitoringService(prisma),
-      new DummyEmailService(
-        new DummySESService(),
-        new DummySQSService(),
-        appConfig,
-      ),
+      new DummyEmailService(new DummySQSService(), appConfig),
       new DummyUploadService(prisma, new DummyS3Service(), appConfig),
       appConfig,
     );
@@ -420,7 +415,6 @@ describe('POST /applicants/me/submissions', () => {
           resumeUpload: { id: resumeId, originalFilename: expect.any(String) },
           openToRemoteMulti: ['in-person', 'hybrid'],
           interestWorkArrangement: [],
-          otherSkills: [],
         },
         isFinal: true,
       });
@@ -610,8 +604,8 @@ describe('POST /applicants/me/submissions', () => {
         }: { body: ApplicantGetSubmissionResponse } = await request(dummyApp)
           .post('/applicants/me/submissions')
           .send({ ...testSubmission })
-          .set('Authorization', `Bearer ${token}`);
-        // .expect(200);
+          .set('Authorization', `Bearer ${token}`)
+          .expect(200);
         const submission = await prisma.applicantSubmission.findUnique({
           where: { id: submissionBody?.submission?.id },
           include: { utmParams: true },
@@ -651,6 +645,76 @@ describe('POST /applicants/me/submissions', () => {
         const ahmadTestSubmission = getAPIRequestBody(ahmadResumeId);
         bobTestSubmission.skills = ['React', 'Python'];
         ahmadTestSubmission.skills = ['React', 'Python'];
+        await request(dummyApp)
+          .post('/applicants/me/submissions')
+          .send({ ...bobTestSubmission })
+          .set('Authorization', `Bearer ${bobToken}`)
+          .expect(200);
+        await request(dummyApp)
+          .post('/applicants/me/submissions')
+          .send({ ...ahmadTestSubmission })
+          .set('Authorization', `Bearer ${ahmadToken}`)
+          .expect(200);
+      });
+    });
+
+    describe('Submission causes', () => {
+      it('should save causes when final submission includes new causes that dont exist yet in DB', async () => {
+        const randomString = getRandomString();
+        const token = await authHelper.getToken(
+          `bboberson${randomString}@gmail.com`,
+        );
+        const applicant = await seedApplicant(randomString);
+        const { id: resumeId } = await seedResumeUpload(applicant.id);
+        const testSubmission = getAPIRequestBody(resumeId);
+        testSubmission.interestCauses = [
+          'Custom    cause   #1',
+          'Custom    cause   #2',
+        ];
+        const {
+          body: submissionBody,
+        }: { body: ApplicantGetSubmissionResponse } = await request(dummyApp)
+          .post('/applicants/me/submissions')
+          .send({ ...testSubmission })
+          .set('Authorization', `Bearer ${token}`)
+          .expect(200);
+        const causes = await prisma.applicantCauses.findMany({
+          where: {
+            OR: [{ name: 'Custom cause #1' }, { name: 'Custom cause #2' }],
+          },
+        });
+        expect(causes).toEqual([
+          expect.objectContaining({ name: 'Custom cause #1' }),
+          expect.objectContaining({ name: 'Custom cause #2' }),
+        ]);
+        expect(submissionBody.submission?.interestCauses).toEqual(
+          expect.arrayContaining(['Custom cause #1', 'Custom cause #2']),
+        );
+      });
+
+      it('should return 200 when final submission includes causes that already exist in DB', async () => {
+        const bobRandomString = getRandomString();
+        const ahmadRandomString = getRandomString();
+        const bobToken = await authHelper.getToken(
+          `bboberson${bobRandomString}@gmail.com`,
+        );
+        const ahmadToken = await authHelper.getToken(
+          `bboberson${ahmadRandomString}@gmail.com`,
+        );
+        const applicantBob = await seedApplicantWithIDs(
+          `bboberson${bobRandomString}@gmail.com`,
+          'auth0|123456',
+        );
+        const applicantAhmad = await seedApplicantWithIDs(
+          `bboberson${ahmadRandomString}@gmail.com`,
+          'auth0|456789',
+        );
+        const { id: bobResumeId } = await seedResumeUpload(applicantBob.id);
+        const { id: ahmadResumeId } = await seedResumeUpload(applicantAhmad.id);
+        const bobTestSubmission = getAPIRequestBody(bobResumeId);
+        const ahmadTestSubmission = getAPIRequestBody(ahmadResumeId);
+        bobTestSubmission.interestCauses = ['Human Rights For All'];
+        ahmadTestSubmission.interestCauses = ['Human Rights For All'];
         await request(dummyApp)
           .post('/applicants/me/submissions')
           .send({ ...bobTestSubmission })
@@ -817,6 +881,35 @@ describe('PUT /applicants/me/submissions', () => {
     expect(body.submission.skills).toEqual(['acroyoga', 'flame throwing']);
   });
 
+  it('should save causes when updating a final submission with new causes that dont exist yet in DB', async () => {
+    const randomString = getRandomString();
+    const token = await authHelper.getToken(
+      `bboberson${randomString}@gmail.com`,
+    );
+    const applicant = await seedApplicant(randomString);
+    const { id: resumeId } = await seedResumeUpload(applicant.id);
+    const testSubmission = getAPIRequestBody(resumeId);
+    await request(dummyApp)
+      .post('/applicants/me/submissions')
+      .send(testSubmission)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200);
+    const { body }: { body: ApplicantCreateSubmissionResponse } = await request(
+      dummyApp,
+    )
+      .put('/applicants/me/submissions')
+      .send({
+        ...testSubmission,
+        interestCauses: ['LGBTQ+ rights  ', ' houselessness   '],
+      })
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200);
+    expect(body.submission.interestCauses).toEqual([
+      'LGBTQ+ rights',
+      'houselessness',
+    ]);
+  });
+
   it('should return 500 error if applicant does not have an existing final submission', async () => {
     const randomString = getRandomString();
     const token = await authHelper.getToken(
@@ -874,11 +967,7 @@ describe('DELETE /applicants/me', () => {
     const app = getApp(
       authService,
       new DummyMonitoringService(prisma),
-      new DummyEmailService(
-        new DummySESService(),
-        new DummySQSService(),
-        appConfig,
-      ),
+      new DummyEmailService(new DummySQSService(), appConfig),
       new DummyUploadService(prisma, new DummyS3Service(), appConfig),
       appConfig,
     );
@@ -1502,6 +1591,22 @@ describe('DELETE /applicants/:id', () => {
       .set('Authorization', `Bearer ${token}`)
       .expect(200);
   });
+
+  it('should return a 404 status code for a non-integer id', async () => {
+    const randomString = getRandomString();
+    const partialTokenOptions: TokenOptions = {
+      roles: ['admin'],
+    };
+    const token = await authHelper.getToken(
+      `bboberson${randomString}@gmail.com`,
+      partialTokenOptions,
+    );
+    const nonIntId = 23.3;
+    await request(dummyApp)
+      .delete(`/applicants/${nonIntId}`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(404);
+  });
 });
 
 describe('POST /applicants/me/resume', () => {
@@ -1565,11 +1670,7 @@ describe('POST /applicants/me/resume', () => {
     const dummyUploadApp = getApp(
       new DummyAuthService(),
       new DummyMonitoringService(prisma),
-      new DummyEmailService(
-        new DummySESService(),
-        new DummySQSService(),
-        appConfig,
-      ),
+      new DummyEmailService(new DummySQSService(), appConfig),
       dummyUploadService,
       appConfig,
     );
@@ -1613,7 +1714,7 @@ describe('POST /applicants/me/resume', () => {
   });
 });
 
-describe('POST /applicants/me/uploads/:id/state', () => {
+describe('POST /applicants/me/uploads/:id/complete', () => {
   const dummyS3Service = new DummyS3Service();
   dummyS3Service.generateSignedUploadUrl = () =>
     Promise.resolve('https://bogus-signed-s3-link.com');
@@ -1625,11 +1726,7 @@ describe('POST /applicants/me/uploads/:id/state', () => {
   const dummyUploadApp = getApp(
     new DummyAuthService(),
     new DummyMonitoringService(prisma),
-    new DummyEmailService(
-      new DummySESService(),
-      new DummySQSService(),
-      appConfig,
-    ),
+    new DummyEmailService(new DummySQSService(), appConfig),
     dummyUploadService,
     appConfig,
   );
@@ -1639,6 +1736,31 @@ describe('POST /applicants/me/uploads/:id/state', () => {
       .post('/applicants/me/uploads/1/complete')
       .send({ status: 'SUCCESS' })
       .expect(401);
+  });
+
+  it('should return 404 for request with non-integer id', async () => {
+    const randomString = getRandomString();
+    const token = await authHelper.getToken(
+      `bboberson${randomString}@gmail.com`,
+    );
+    await request(dummyUploadApp)
+      .post('/applicants')
+      .send({
+        name: 'Bob Boberson',
+        email: `bboberson${randomString}@gmail.com`,
+        preferredContact: 'sms',
+        searchStatus: 'active',
+        acceptedTerms: true,
+        acceptedPrivacy: true,
+      })
+      .set('Authorization', `Bearer ${token}`);
+
+    const nonIntId = 23.3;
+    await request(dummyUploadApp)
+      .post(`/applicants/me/uploads/${nonIntId}/complete`)
+      .send({ status: 'SUCCESS' })
+      .set('Authorization', `Bearer ${token}`)
+      .expect(404);
   });
 
   it('should successfully update upload status', async () => {
@@ -1976,6 +2098,18 @@ describe('GET /applicants/:id/resume', () => {
     );
     await request(dummyApp)
       .get('/applicants/123456/resume')
+      .set('Authorization', `Bearer ${bobToken}`)
+      .expect(404);
+  });
+
+  it('should return 404 status code for a non-integer id', async () => {
+    const bobToken = await authHelper.getToken(
+      `bboberson${getRandomString()}@gmail.com`,
+      { roles: ['matchmaker'] },
+    );
+    const nonIntId = 23.3;
+    await request(dummyApp)
+      .get(`/applicants/${nonIntId}/resume`)
       .set('Authorization', `Bearer ${bobToken}`)
       .expect(404);
   });

@@ -11,7 +11,6 @@ import {
   getApplicantPostSubmitEmail,
   getOrgWelcomeEmail,
 } from '@App/resources/emails/index.js';
-import SESService from './SESService.js';
 import SQSService from './SQSService.js';
 
 // shall process roger+123ty@gmail.com into roger@gmail.com
@@ -36,18 +35,11 @@ export function removeAliasLowercaseEmail(emailRaw: string): string {
 }
 
 class EmailService {
-  private sesService: SESService;
-
   private sqsService: SQSService;
 
   private config: BaseConfig;
 
-  constructor(
-    sesService: SESService,
-    sqsService: SQSService,
-    config: BaseConfig,
-  ) {
-    this.sesService = sesService;
+  constructor(sqsService: SQSService, config: BaseConfig) {
     this.sqsService = sqsService;
     this.config = config;
   }
@@ -162,8 +154,6 @@ class EmailService {
         if (this.config.aws.emailQueueUrl) {
           return this.enqueueEmail(this.config.aws.emailQueueUrl, emailToSend);
         }
-        const emailOutput = await this.sesService.sendEmail(emailToSend);
-        return emailOutput;
       }
     }
   }

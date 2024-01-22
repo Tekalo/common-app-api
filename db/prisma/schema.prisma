@@ -84,13 +84,12 @@ model ApplicantSubmission {
   interestEmploymentType  String[] // Interested In - Part time/Full Time    //enum
   interestWorkArrangement String[] // Interested In - Part time role type
   interestRoles           String[] // Interested In - Roles            //enum
-  interestCauses          String[] // Interested In - Impact Causes   //enum
+  interestCauses          String[] // Interested In - Impact Causes
   interestGovt            Boolean // Interested In - Govt
   interestGovtEmplTypes   String[] // Interested In - Govt Paid/Unpaid //enum
 
-  otherCauses String[] // Additional cause(s) they are interested in
+  otherCauses String[] // Additional cause(s) they are interested in // TODO: Deprecate
   skills      String[] // Enum or FKs
-  otherSkills String[] // Additional skill(s) they have
 
   currentLocation   String
   openToRelocate    String // enum
@@ -134,13 +133,12 @@ model ApplicantDraftSubmission {
   interestEmploymentType  String[] // Interested In - Part time/Full Time    //enum
   interestWorkArrangement String[]
   interestRoles           String[] // Interested In - Roles            //enum
-  interestCauses          String[] // Interested In - Impact Causes   //enum
+  interestCauses          String[] // Interested In - Impact Causes
   interestGovt            Boolean? // Interested In - Govt
   interestGovtEmplTypes   String[] // Interested In - Govt Paid/Unpaid // enum
 
   otherCauses String[] // Additional cause(s) they are interested in
   skills      String[] // Enum or FKs
-  otherSkills String[] // Additional skill(s) they have
 
   currentLocation   String?
   openToRelocate    String? // enum
@@ -213,7 +211,6 @@ model OpportunitySubmission {
   desiredEndDate      DateTime?
   desiredYoe          String[] // enum
   desiredSkills       String[] // enum, optional
-  desiredOtherSkills  String[] // optional
   desiredImpactExp    String?
 
   similarStaffed Boolean?
@@ -287,4 +284,24 @@ model CausesAnnotation {
   suggest                 Boolean?
   rejectAs                String?
   priority                Boolean?
+}
+
+view CausesView {
+  name String @id @db.Citext
+  canonical String? @db.Citext
+  suggest Boolean?
+  rejectAs String?
+  priority Boolean?
+}
+
+// Custom impact causes submitted in applicant submissions
+model ApplicantCauses {
+  name                       String                  @id @db.Citext
+  createdAt                  DateTime                @default(now())
+}
+
+// Custom impact causes submitted in opportunity submissions
+model OpportunityCauses {
+  name                       String                  @id @db.Citext
+  createdAt                  DateTime                @default(now())
 }

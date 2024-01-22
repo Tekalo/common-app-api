@@ -1,21 +1,20 @@
 import { jest } from '@jest/globals';
 import getApplicantDeletionEmail from '@App/resources/emails/applicantDeletion.js';
 import getApplicantDeletionCompleteEmail from '@App/resources/emails/applicantDeletionComplete.js';
+import getApplicantPostSubmitEmail from '@App/resources/emails/applicantPostSubmitEmail.js';
 import getOrgWelcomeEmail from '@App/resources/emails/orgWelcomeEmail.js';
 import getApplicantWelcomeEmail from '@App/resources/emails/applicantWelcomeEmail.js';
 import EmailService, {
   removeAliasLowercaseEmail,
 } from '@App/services/EmailService.js';
-import DummySESService from '../../fixtures/DummySESService.js';
 import DummySQSService from '../../fixtures/DummySQSService.js';
 import { getMockConfig } from '../../util/helpers.js';
 
 describe('Email Service', () => {
   test('should successfully generate applicant welcome email', () => {
-    const dummySesService = new DummySESService();
+    const sqsService = new DummySQSService();
     const emailService = new EmailService(
-      dummySesService,
-      new DummySQSService(),
+      sqsService,
       getMockConfig({
         aws: {
           sesFromAddress: 'baz@futurestech.com',
@@ -58,35 +57,45 @@ describe('Email Service', () => {
   });
 
   test('should successfully send welcome email', async () => {
-    const dummySesService = new DummySESService();
-    const mockSesSendEmailFunc = jest.spyOn(dummySesService, 'sendEmail');
+    const sqsService = new DummySQSService();
+    const mockSQSEnqueueEmailFunc = jest.spyOn(sqsService, 'enqueueMessage');
+    const emailQueueUrl =
+      'https://sqs.us-east-1.amazonaws.com/123456789/email-sqs-queue';
     const emailService = new EmailService(
-      dummySesService,
-      new DummySQSService(),
+      sqsService,
       getMockConfig({
         aws: {
           sesFromAddress: 'baz@futurestech.com',
           sesReplyToAddress: 'replies@futurestech.com',
           region: 'us-east-1',
           sesWhiteList: [],
-          emailQueueUrl: '',
+          emailQueueUrl,
         },
         env: 'prod',
       }),
     );
+    const recipientEmail = 'foo@bar.com';
+
     const welcomeEmailBody = emailService.generateApplicantWelcomeEmail(
-      'foo@bar.com',
+      recipientEmail,
       'fake-ticket',
       'https://login_link',
     );
+    const expectedMessage = JSON.stringify({
+      recipientEmail,
+      subject: welcomeEmailBody.Message?.Subject?.Data,
+      htmlBody: welcomeEmailBody.Message?.Body?.Html?.Data,
+      textBody: welcomeEmailBody.Message?.Body?.Text?.Data,
+    });
     await emailService.sendEmail(welcomeEmailBody);
-    expect(mockSesSendEmailFunc).toHaveBeenCalledWith(welcomeEmailBody);
+    expect(mockSQSEnqueueEmailFunc).toHaveBeenCalledWith(
+      emailQueueUrl,
+      expectedMessage,
+    );
   });
 
   test('should successfully generate applicant deletion email', () => {
-    const dummySesService = new DummySESService();
     const emailService = new EmailService(
-      dummySesService,
       new DummySQSService(),
       getMockConfig({
         aws: {
@@ -94,7 +103,8 @@ describe('Email Service', () => {
           sesReplyToAddress: 'replies@futurestech.com',
           region: 'us-east-1',
           sesWhiteList: [],
-          emailQueueUrl: '',
+          emailQueueUrl:
+            'https://sqs.us-east-1.amazonaws.com/123456789/email-sqs-queue',
         },
       }),
     );
@@ -122,42 +132,54 @@ describe('Email Service', () => {
   });
 
   test('should successfully send applicant deletion email', async () => {
-    const dummySesService = new DummySESService();
-    const mockSesSendEmailFunc = jest.spyOn(dummySesService, 'sendEmail');
+    const sqsService = new DummySQSService();
+    const mockSQSEnqueueEmailFunc = jest.spyOn(sqsService, 'enqueueMessage');
+    const emailQueueUrl =
+      'https://sqs.us-east-1.amazonaws.com/123456789/email-sqs-queue';
     const emailService = new EmailService(
-      dummySesService,
-      new DummySQSService(),
+      sqsService,
       getMockConfig({
         aws: {
           sesFromAddress: 'baz@futurestech.com',
           sesReplyToAddress: 'replies@futurestech.com',
           region: 'us-east-1',
           sesWhiteList: [],
-          emailQueueUrl: '',
+          emailQueueUrl,
         },
         env: 'prod',
       }),
     );
+    const recipientEmail = 'foo@bar.com';
     const deletionEmailBody = emailService.generateApplicantDeletionEmail(
-      'foo@bar.com',
+      recipientEmail,
       'Testy McTesterson',
     );
     await emailService.sendEmail(deletionEmailBody);
-    expect(mockSesSendEmailFunc).toHaveBeenCalledWith(deletionEmailBody);
+    const expectedMessage = JSON.stringify({
+      recipientEmail,
+      subject: deletionEmailBody.Message?.Subject?.Data,
+      htmlBody: deletionEmailBody.Message?.Body?.Html?.Data,
+      textBody: deletionEmailBody.Message?.Body?.Text?.Data,
+    });
+
+    expect(mockSQSEnqueueEmailFunc).toHaveBeenCalledWith(
+      emailQueueUrl,
+      expectedMessage,
+    );
   });
 
   test('should successfully generate applicant deletion complete email', () => {
-    const dummySesService = new DummySESService();
+    const sqsService = new DummySQSService();
     const emailService = new EmailService(
-      dummySesService,
-      new DummySQSService(),
+      sqsService,
       getMockConfig({
         aws: {
           sesFromAddress: 'baz@futurestech.com',
           sesReplyToAddress: 'replies@futurestech.com',
           region: 'us-east-1',
           sesWhiteList: [],
-          emailQueueUrl: '',
+          emailQueueUrl:
+            'https://sqs.us-east-1.amazonaws.com/123456789/email-sqs-queue',
         },
       }),
     );
@@ -185,79 +207,116 @@ describe('Email Service', () => {
   });
 
   test('should successfully send applicant deletion complete email', async () => {
-    const dummySesService = new DummySESService();
-    const mockSesSendEmailFunc = jest.spyOn(dummySesService, 'sendEmail');
+    const sqsService = new DummySQSService();
+    const mockSQSEnqueueEmailFunc = jest.spyOn(sqsService, 'enqueueMessage');
+    const emailQueueUrl =
+      'https://sqs.us-east-1.amazonaws.com/123456789/email-sqs-queue';
     const emailService = new EmailService(
-      dummySesService,
-      new DummySQSService(),
+      sqsService,
       getMockConfig({
         aws: {
           sesFromAddress: 'baz@futurestech.com',
           sesReplyToAddress: 'replies@futurestech.com',
           region: 'us-east-1',
           sesWhiteList: [],
-          emailQueueUrl: undefined,
+          emailQueueUrl,
         },
         env: 'prod',
       }),
     );
+    const recipientEmail = 'foo@bar.com';
     const deletionEmailBody =
       emailService.generateApplicantDeletionCompleteEmail(
-        'foo@bar.com',
+        recipientEmail,
         'Testy McTesterson',
       );
+
+    const expectedMessage = JSON.stringify({
+      recipientEmail,
+      subject: deletionEmailBody.Message?.Subject?.Data,
+      htmlBody: deletionEmailBody.Message?.Body?.Html?.Data,
+      textBody: deletionEmailBody.Message?.Body?.Text?.Data,
+    });
+
     await emailService.sendEmail(deletionEmailBody);
-    expect(mockSesSendEmailFunc).toBeCalledWith(deletionEmailBody);
+    expect(mockSQSEnqueueEmailFunc).toHaveBeenCalledWith(
+      emailQueueUrl,
+      expectedMessage,
+    );
   });
 
-  test('should successfully generate application submit email', async () => {
-    const dummySesService = new DummySESService();
-    const mockSesSendEmailFunc = jest.spyOn(dummySesService, 'sendEmail');
+  test('should successfully generate application submit email', () => {
+    const sqsService = new DummySQSService();
     const emailService = new EmailService(
-      dummySesService,
-      new DummySQSService(),
+      sqsService,
       getMockConfig({
         aws: {
           sesFromAddress: 'baz@futurestech.com',
           sesReplyToAddress: 'replies@futurestech.com',
           region: 'us-east-1',
           sesWhiteList: [],
+          emailQueueUrl:
+            'https://sqs.us-east-1.amazonaws.com/123456789/email-sqs-queue',
         },
         env: 'prod',
       }),
     );
-    const postSubmitEmailBody =
-      emailService.generateApplicantPostSubmitEmail('foo@bar.com');
-    await emailService.sendEmail(postSubmitEmailBody);
-    expect(mockSesSendEmailFunc).toHaveBeenCalledWith(postSubmitEmailBody);
+    const result = emailService.generateApplicantPostSubmitEmail('foo@bar.com');
+    const expectedEmail = getApplicantPostSubmitEmail();
+    expect(result).toHaveProperty('Destination', {
+      ToAddresses: ['foo@bar.com'],
+    });
+    expect(result).toHaveProperty('Source', 'Tekalo <baz@futurestech.com>');
+    expect(result).toHaveProperty('Message', {
+      Subject: {
+        Charset: 'UTF-8',
+        Data: expect.stringMatching(expectedEmail.subject),
+      },
+      Body: {
+        Html: {
+          Charset: 'UTF-8',
+          Data: expect.stringContaining(expectedEmail.htmlBody),
+        },
+      },
+    });
   });
 
   test('should successfully send application submit email', async () => {
-    const dummySesService = new DummySESService();
-    const mockSesSendEmailFunc = jest.spyOn(dummySesService, 'sendEmail');
+    const sqsService = new DummySQSService();
+    const mockSQSEnqueueEmailFunc = jest.spyOn(sqsService, 'enqueueMessage');
+    const emailQueueUrl =
+      'https://sqs.us-east-1.amazonaws.com/123456789/email-sqs-queue';
     const emailService = new EmailService(
-      dummySesService,
-      new DummySQSService(),
+      sqsService,
       getMockConfig({
         aws: {
           sesFromAddress: 'baz@futurestech.com',
           sesReplyToAddress: 'replies@futurestech.com',
           region: 'us-east-1',
           sesWhiteList: [],
+          emailQueueUrl,
         },
         env: 'prod',
       }),
     );
+    const recipientEmail = 'foo@bar.com';
     const submitEmailBody =
-      emailService.generateApplicantPostSubmitEmail('foo@bar.com');
+      emailService.generateApplicantPostSubmitEmail(recipientEmail);
     await emailService.sendEmail(submitEmailBody);
-    expect(mockSesSendEmailFunc).toHaveBeenCalledWith(submitEmailBody);
+    const expectedMessage = JSON.stringify({
+      recipientEmail,
+      subject: submitEmailBody.Message?.Subject?.Data,
+      htmlBody: submitEmailBody.Message?.Body?.Html?.Data,
+      textBody: submitEmailBody.Message?.Body?.Text?.Data,
+    });
+    expect(mockSQSEnqueueEmailFunc).toHaveBeenCalledWith(
+      emailQueueUrl,
+      expectedMessage,
+    );
   });
 
   test('should successfully generate org welcome email', () => {
-    const dummySesService = new DummySESService();
     const emailService = new EmailService(
-      dummySesService,
       new DummySQSService(),
       getMockConfig({
         aws: {
@@ -292,39 +351,52 @@ describe('Email Service', () => {
   });
 
   test('should successfully send org welcome email', async () => {
-    const dummySesService = new DummySESService();
-    const mockSesSendEmailFunc = jest.spyOn(dummySesService, 'sendEmail');
+    const sqsService = new DummySQSService();
+    const mockSQSEnqueueEmailFunc = jest.spyOn(sqsService, 'enqueueMessage');
+    const emailQueueUrl =
+      'https://sqs.us-east-1.amazonaws.com/123456789/email-sqs-queue';
     const emailService = new EmailService(
-      dummySesService,
-      new DummySQSService(),
+      sqsService,
       getMockConfig({
         aws: {
           sesFromAddress: 'baz@futurestech.com',
           sesReplyToAddress: 'replies@futurestech.com',
           region: 'us-east-1',
           sesWhiteList: [],
+          emailQueueUrl,
         },
         env: 'prod',
       }),
     );
+    const recipientEmail = 'foo@bar.com';
     const welcomeEmailBody =
-      emailService.generateOrgWelcomeEmail('foo@bar.com');
+      emailService.generateOrgWelcomeEmail(recipientEmail);
+
+    const expectedMessage = JSON.stringify({
+      recipientEmail,
+      subject: welcomeEmailBody.Message?.Subject?.Data,
+      htmlBody: welcomeEmailBody.Message?.Body?.Html?.Data,
+      textBody: welcomeEmailBody.Message?.Body?.Text?.Data,
+    });
     await emailService.sendEmail(welcomeEmailBody);
-    expect(mockSesSendEmailFunc).toHaveBeenCalledWith(welcomeEmailBody);
+    expect(mockSQSEnqueueEmailFunc).toHaveBeenCalledWith(
+      emailQueueUrl,
+      expectedMessage,
+    );
   });
 });
 
 describe('Email Service sending to SQS queue', () => {
-  test('should send email as a message to email sender SQS queue when queue is configured', async () => {
-    const dummySesService = new DummySESService();
+  test('should send email as a message to email sender SQS queue', async () => {
     const dummySQSService = new DummySQSService();
-    const mockSesSendEmailFunc = jest.spyOn(dummySesService, 'sendEmail');
-    const mockSQSSendEmailFunc = jest.spyOn(dummySQSService, 'enqueueMessage');
+    const mockSQSEnqueueEmailFunc = jest.spyOn(
+      dummySQSService,
+      'enqueueMessage',
+    );
     const emailQueueUrl =
       'https://sqs.us-east-1.amazonaws.com/12345/email-sender-queue';
     const recipientEmail = 'foo@bar.com';
     const emailService = new EmailService(
-      dummySesService,
       dummySQSService,
       getMockConfig({
         aws: {
@@ -346,49 +418,23 @@ describe('Email Service sending to SQS queue', () => {
       textBody: welcomeEmailBody.Message?.Body?.Text?.Data,
     });
     await emailService.sendEmail(welcomeEmailBody);
-    expect(mockSesSendEmailFunc).not.toHaveBeenCalled();
-    expect(mockSQSSendEmailFunc).toHaveBeenCalledWith(
+    expect(mockSQSEnqueueEmailFunc).toHaveBeenCalledWith(
       emailQueueUrl,
       expectedMessage,
     );
-  });
-
-  test('should send email directly via SES when email sender SQS queue is not configured', async () => {
-    const dummySesService = new DummySESService();
-    const dummySQSService = new DummySQSService();
-    const mockSesSendEmailFunc = jest.spyOn(dummySesService, 'sendEmail');
-    const mockSQSSendEmailFunc = jest.spyOn(dummySQSService, 'enqueueMessage');
-    const emailService = new EmailService(
-      dummySesService,
-      dummySQSService,
-      getMockConfig({
-        aws: {
-          sesFromAddress: 'baz@futurestech.com',
-          sesReplyToAddress: 'replies@futurestech.com',
-          region: 'us-east-1',
-          sesWhiteList: [],
-        },
-        env: 'prod',
-      }),
-    );
-    const welcomeEmailBody =
-      emailService.generateOrgWelcomeEmail('foo@bar.com');
-    await emailService.sendEmail(welcomeEmailBody);
-    expect(mockSesSendEmailFunc).toHaveBeenCalledWith(welcomeEmailBody);
-    expect(mockSQSSendEmailFunc).not.toHaveBeenCalled();
   });
 });
 
 describe('should lowercase email addresses and remove the right part of +', () => {
   const arrInput = [
-    'Aboberson@schmidtfutures.com',
+    'Aboberson@tekalo.org',
     'bboberson+123xyz@gmail.com',
-    'bBoBerson+321zyx@schmidtfutures.com',
+    'bBoBerson+321zyx@tekalo.org',
   ];
   const arrOutput = [
-    'aboberson@schmidtfutures.com',
+    'aboberson@tekalo.org',
     'bboberson@gmail.com',
-    'bboberson@schmidtfutures.com',
+    'bboberson@tekalo.org',
   ];
 
   it.each(arrInput)("test '%s'", (input) => {
