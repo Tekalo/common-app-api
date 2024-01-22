@@ -4,7 +4,6 @@ import AuthService from './services/AuthService.js';
 import configLoader from './services/configLoader.js';
 import EmailService from './services/EmailService.js';
 import MonitoringService from './services/MonitoringService.js';
-import SESService from './services/SESService.js';
 import SQSService from './services/SQSService.js';
 import DummyAuthService from './tests/fixtures/DummyAuthService.js';
 import { prisma } from './resources/client.js';
@@ -19,7 +18,7 @@ const authService = config.isLoadTest
 const app = getApp(
   authService,
   new MonitoringService(prisma),
-  new EmailService(new SESService(), new SQSService(), config),
+  new EmailService(new SQSService(), config),
   new UploadService(prisma, new S3Service(), config),
   config,
 );

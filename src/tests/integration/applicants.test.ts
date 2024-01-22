@@ -33,7 +33,6 @@ import DummyAuthService from '../fixtures/DummyAuthService.js';
 import DummyMonitoringService from '../fixtures/DummyMonitoringService.js';
 import authHelper, { TokenOptions } from '../util/auth.js';
 import DummyEmailService from '../fixtures/DummyEmailService.js';
-import DummySESService from '../fixtures/DummySESService.js';
 import DummySQSService from '../fixtures/DummySQSService.js';
 import DummyUploadService from '../fixtures/DummyUploadService.js';
 import DummyS3Service from '../fixtures/DummyS3Service.js';
@@ -305,11 +304,7 @@ describe('POST /applicants', () => {
     const app = getApp(
       authService,
       new DummyMonitoringService(prisma),
-      new DummyEmailService(
-        new DummySESService(),
-        new DummySQSService(),
-        appConfig,
-      ),
+      new DummyEmailService(new DummySQSService(), appConfig),
       new DummyUploadService(prisma, new DummyS3Service(), appConfig),
       appConfig,
     );
@@ -972,11 +967,7 @@ describe('DELETE /applicants/me', () => {
     const app = getApp(
       authService,
       new DummyMonitoringService(prisma),
-      new DummyEmailService(
-        new DummySESService(),
-        new DummySQSService(),
-        appConfig,
-      ),
+      new DummyEmailService(new DummySQSService(), appConfig),
       new DummyUploadService(prisma, new DummyS3Service(), appConfig),
       appConfig,
     );
@@ -1679,11 +1670,7 @@ describe('POST /applicants/me/resume', () => {
     const dummyUploadApp = getApp(
       new DummyAuthService(),
       new DummyMonitoringService(prisma),
-      new DummyEmailService(
-        new DummySESService(),
-        new DummySQSService(),
-        appConfig,
-      ),
+      new DummyEmailService(new DummySQSService(), appConfig),
       dummyUploadService,
       appConfig,
     );
@@ -1739,11 +1726,7 @@ describe('POST /applicants/me/uploads/:id/complete', () => {
   const dummyUploadApp = getApp(
     new DummyAuthService(),
     new DummyMonitoringService(prisma),
-    new DummyEmailService(
-      new DummySESService(),
-      new DummySQSService(),
-      appConfig,
-    ),
+    new DummyEmailService(new DummySQSService(), appConfig),
     dummyUploadService,
     appConfig,
   );

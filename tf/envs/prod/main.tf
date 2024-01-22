@@ -62,6 +62,7 @@ module "app" {
   web_url              = var.web_url
   email_from_address   = var.email_from_address
   reply_to_address     = var.reply_to_address
+  email_queue_arn      = module.email.email_queue_arn
 
   pagerduty_integration_url = var.pagerduty_integration_url
   notify_webhook            = var.notify_webhook
