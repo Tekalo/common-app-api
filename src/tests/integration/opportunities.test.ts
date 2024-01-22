@@ -42,6 +42,22 @@ describe('DELETE /opportunities/batch/:id', () => {
       .set('Authorization', `Bearer ${token}`)
       .expect(200);
   });
+
+  it('should return a 404 status code for a non-integer id', async () => {
+    const randomString = getRandomString();
+    const partialTokenOptions: TokenOptions = {
+      roles: ['admin'],
+    };
+    const token = await authHelper.getToken(
+      `bboberson${randomString}@gmail.com`,
+      partialTokenOptions,
+    );
+    const nonIntId = 23.3;
+    await request(dummyApp)
+      .delete(`/opportunities/batch/${nonIntId}`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(404);
+  });
 });
 
 describe('POST /opportunities', () => {

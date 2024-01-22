@@ -32,10 +32,11 @@ const opportunitiesRoutes = (
 
   // Admin endpoints
   router.delete(
-    '/batch/:id',
+    '/batch/:id(\\d+)',
     authenticator
       .validateJwtRole('admin')
       .bind(authenticator) as RequestHandler,
+    // eslint-disable-next-line consistent-return
     (req: Request, res: Response, next) => {
       const reqWithAuth = req as RequestWithJWT;
       const { id } = reqWithAuth.params;

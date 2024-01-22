@@ -116,7 +116,7 @@ const ApplicantCreateSubmissionRequestBody = z.object({
     ),
   otherCauses: z
     .array(z.string().max(255))
-    .optional()
+    .nullish()
     .transform((val) => val || []),
   workAuthorization: WorkAuthorization.nullable(),
   interestGovt: z.boolean(),
@@ -163,7 +163,6 @@ const ApplicantSubmissionResponseBody = z.object({
   lastOrg: z.string().max(255).nullable(),
   yoe: z.string().nullable(),
   skills: z.array(z.string()).nullable(),
-  otherSkills: z.array(z.string().max(255)).nullable(),
   linkedInUrl: z.string().max(500).nullable(),
   githubUrl: z.string().max(500).nullable(),
   portfolioUrl: z.string().max(500).nullable(),
