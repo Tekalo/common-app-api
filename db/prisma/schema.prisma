@@ -270,8 +270,6 @@ model SkillsAnnotation {
   suggest                 Boolean?
   rejectAs                String?
   priority                Boolean?
-
-  @@index(name)
 }
 
 view SkillsView {
