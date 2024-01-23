@@ -260,6 +260,8 @@ model OpportunitySkills {
 model ReferenceSkills {
   referenceId              String                    @id
   name                     String                    @db.Citext
+
+  @@index(name)
 }
 
 model SkillsAnnotation {
