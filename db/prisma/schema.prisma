@@ -260,6 +260,8 @@ model OpportunitySkills {
 model ReferenceSkills {
   referenceId              String                    @id
   name                     String                    @db.Citext
+
+  @@index(name)
 }
 
 model SkillsAnnotation {
@@ -268,6 +270,8 @@ model SkillsAnnotation {
   suggest                 Boolean?
   rejectAs                String?
   priority                Boolean?
+
+  @@index(name)
 }
 
 view SkillsView {
