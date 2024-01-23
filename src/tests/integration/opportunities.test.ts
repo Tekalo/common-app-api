@@ -75,7 +75,6 @@ describe('POST /opportunities', () => {
       contactPhone: '+918-867-5309',
       eoe: true,
       impactAreas: ['Clean Energy', 'Education'],
-      impactAreasOther: ['Feeding the Community', 'Space for Socializing'],
       orgName: 'Bobs Burgers Foundation',
       orgSize: '<20',
       orgType: '501(c)(3)',

@@ -59,7 +59,6 @@ class OpportunityController {
         orgType: organization.type,
         orgSize: organization.size,
         impactAreas: organization.impactAreas,
-        impactAreasOther: organization.impactAreasOther || [],
         contactName: contact.name,
         contactPhone: contact.phone,
         contactEmail: contact.email,

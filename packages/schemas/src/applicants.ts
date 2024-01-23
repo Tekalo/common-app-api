@@ -114,10 +114,6 @@ const ApplicantCreateSubmissionRequestBody = z.object({
           )
         : [],
     ),
-  otherCauses: z
-    .array(z.string().max(255))
-    .nullish()
-    .transform((val) => val || []),
   workAuthorization: WorkAuthorization.nullable(),
   interestGovt: z.boolean(),
   interestGovtEmplTypes: z
@@ -182,7 +178,6 @@ const ApplicantSubmissionResponseBody = z.object({
   openToRemoteMulti: z.array(z.string()).nullable(),
   desiredSalary: z.string().max(255).nullable(),
   interestCauses: z.array(z.string().max(255)).nullable(),
-  otherCauses: z.array(z.string().max(255)).nullable(),
   workAuthorization: z.string().nullable(),
   interestGovt: z.boolean().nullable(),
   interestGovtEmplTypes: z.array(z.string()).nullable(),
@@ -239,10 +234,6 @@ const ApplicantDraftSubmissionRequestBodySchema = z.object({
     .array(z.string().max(255))
     .nullish()
     .transform((val) => val || []), // order matters
-  otherCauses: z
-    .array(z.string().max(255))
-    .nullish()
-    .transform((val) => val || []),
   workAuthorization: WorkAuthorization.nullish(),
   interestGovt: z.boolean().nullish(),
   interestGovtEmplTypes: z

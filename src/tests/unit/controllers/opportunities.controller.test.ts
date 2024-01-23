@@ -36,7 +36,6 @@ describe('Opportunity Controller', () => {
         type: '501(c)(3)',
         size: '20-50',
         impactAreas: ['Clean Energy'],
-        impactAreasOther: ['Making Food'],
         eoe: true,
       },
       contact: {
@@ -75,7 +74,6 @@ describe('Opportunity Controller', () => {
       orgType: organization.type,
       orgSize: organization.size,
       impactAreas: organization.impactAreas,
-      impactAreasOther: organization.impactAreasOther || [],
       contactName: contact.name,
       contactPhone: contact.phone || null,
       contactEmail: contact.email,
@@ -158,7 +156,6 @@ describe('Opportunity Controller', () => {
         type: '501(c)(3)',
         size: '20-50',
         impactAreas: ['Clean Energy'],
-        impactAreasOther: ['Making Food'],
         eoe: true,
       },
       contact: {
@@ -197,7 +194,6 @@ describe('Opportunity Controller', () => {
       orgType: organization.type,
       orgSize: organization.size,
       impactAreas: organization.impactAreas,
-      impactAreasOther: organization.impactAreasOther || [],
       contactName: contact.name,
       contactPhone: contact.phone || null,
       contactEmail: contact.email,
