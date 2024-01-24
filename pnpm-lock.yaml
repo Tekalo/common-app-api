@@ -9,20 +9,20 @@ importers:
   .:
     dependencies:
       '@aws-sdk/client-s3':
-        specifier: 3.496.0
-        version: 3.496.0
+        specifier: 3.498.0
+        version: 3.498.0
       '@aws-sdk/client-ses':
-        specifier: 3.496.0
-        version: 3.496.0
+        specifier: 3.498.0
+        version: 3.498.0
       '@aws-sdk/client-sqs':
         specifier: 3.496.0
         version: 3.496.0
       '@aws-sdk/s3-presigned-post':
-        specifier: 3.496.0
-        version: 3.496.0
+        specifier: 3.498.0
+        version: 3.498.0
       '@aws-sdk/s3-request-presigner':
-        specifier: 3.496.0
-        version: 3.496.0
+        specifier: 3.498.0
+        version: 3.498.0
       '@babel/core':
         specifier: 7.23.7
         version: 7.23.7
@@ -36,11 +36,11 @@ importers:
         specifier: 3.1.13
         version: 3.1.13(@prisma/client@5.8.1)(express-session@1.17.3)
       '@sentry/node':
-        specifier: 7.94.1
-        version: 7.94.1
+        specifier: 7.95.0
+        version: 7.95.0
       '@sentry/types':
-        specifier: 7.94.1
-        version: 7.94.1
+        specifier: 7.95.0
+        version: 7.95.0
       '@types/auth0':
         specifier: 3.3.10
         version: 3.3.10
@@ -304,8 +304,8 @@ packages:
       tslib: 1.14.1
     dev: false
 
-  /@aws-sdk/client-s3@3.496.0:
-    resolution: {integrity: sha512-Q16iIP8SmM/7uWHbTCRnvXgM+RxgEDHQmkKL1bvdPLhfu4q1+RwWwJ/WS+1amwQtwvWc8Z51W4XEsokJmqOYUA==}
+  /@aws-sdk/client-s3@3.498.0:
+    resolution: {integrity: sha512-M1nDbKYW04SkPsQafp6JTqfCeiRy4ELHBpX+DRwNmb7MsPy2aBk+rjbREBt233xDCrd8C9HswJhJ18U37KQTgA==}
     engines: {node: '>=14.0.0'}
     dependencies:
       '@aws-crypto/sha1-browser': 3.0.0
@@ -323,7 +323,7 @@ packages:
       '@aws-sdk/middleware-recursion-detection': 3.496.0
       '@aws-sdk/middleware-sdk-s3': 3.496.0
       '@aws-sdk/middleware-signing': 3.496.0
-      '@aws-sdk/middleware-ssec': 3.496.0
+      '@aws-sdk/middleware-ssec': 3.498.0
       '@aws-sdk/middleware-user-agent': 3.496.0
       '@aws-sdk/region-config-resolver': 3.496.0
       '@aws-sdk/signature-v4-multi-region': 3.496.0
@@ -370,8 +370,8 @@ packages:
       - aws-crt
     dev: false
 
-  /@aws-sdk/client-ses@3.496.0:
-    resolution: {integrity: sha512-GYJwio6e7Jw7ma+oFH0QineEf8JF4asoR88KQXNghf7th8IcDSlMzM1WhgHq/XX4ZwN0rOiysPcZKcmC7bBFYQ==}
+  /@aws-sdk/client-ses@3.498.0:
+    resolution: {integrity: sha512-LUzaOT6ZklTUNpUqidb3I5Zb01yzNJhOhm0fz7HaFf7JzRPFxPUviN6tlVbWNMP14/aciJyGztrzGwv53M9m/A==}
     engines: {node: '>=14.0.0'}
     dependencies:
       '@aws-crypto/sha256-browser': 3.0.0
@@ -772,8 +772,8 @@ packages:
       tslib: 2.6.2
     dev: false
 
-  /@aws-sdk/middleware-ssec@3.496.0:
-    resolution: {integrity: sha512-6RUFEgGqKGq8N8W9tsctS8KRlYnmD/yiExb/LvblCJqV1DWoD0psRFWNz8TQZtujHklG5dHjuq+aN/qicjBNdw==}
+  /@aws-sdk/middleware-ssec@3.498.0:
+    resolution: {integrity: sha512-sWujXgzeTqMZzj/pRYEnnEbSzhBosqw9DXHOY1Mg2igI9NEfGlB7lPARp6aKmCaYlP3Bcj2X86vKCqF53mbyig==}
     engines: {node: '>=14.0.0'}
     dependencies:
       '@aws-sdk/types': 3.496.0
@@ -804,11 +804,11 @@ packages:
       tslib: 2.6.2
     dev: false
 
-  /@aws-sdk/s3-presigned-post@3.496.0:
-    resolution: {integrity: sha512-VeHitbXqVCYSxOS5qMXV36+LL6rclAZTfEmKN1iXXbV3tH2twlYsWQG8E1RNdEZ8ulFnTYYfOETKa3+vGJ+p9w==}
+  /@aws-sdk/s3-presigned-post@3.498.0:
+    resolution: {integrity: sha512-yMgt2ghkq9CW5j6Y11GiXSvtPX7ByJzwYzloNYaS1VCPBSnHmivusyxtWuCV9zpAXrLHeknz2wPYNw17PSS+gA==}
     engines: {node: '>=14.0.0'}
     dependencies:
-      '@aws-sdk/client-s3': 3.496.0
+      '@aws-sdk/client-s3': 3.498.0
       '@aws-sdk/types': 3.496.0
       '@aws-sdk/util-format-url': 3.496.0
       '@smithy/middleware-endpoint': 2.4.1
@@ -821,8 +821,8 @@ packages:
       - aws-crt
     dev: false
 
-  /@aws-sdk/s3-request-presigner@3.496.0:
-    resolution: {integrity: sha512-l4FMNKYjEDRwjry5zG0TAmfKY/COh/ZoGiUGfTUXaL92NzNqv8NpREHVvL7Rp6YeGzF1/j6/1LeVzDct94lc/Q==}
+  /@aws-sdk/s3-request-presigner@3.498.0:
+    resolution: {integrity: sha512-MeKKc/AIowkDtSRoLdYM2TkHyR/pKaxIWUgt4r+N7gWZtwzMSpQVG+a3HcmtMy6Nz3etXM4jlg8BDA9OMaMz7g==}
     engines: {node: '>=14.0.0'}
     dependencies:
       '@aws-sdk/signature-v4-multi-region': 3.496.0
@@ -2045,43 +2045,43 @@ packages:
       type-fest: 2.19.0
     dev: false
 
-  /@sentry-internal/tracing@7.94.1:
-    resolution: {integrity: sha512-znxCdrz7tPXm9Bwoe46PW72Zr0Iv7bXT6+b2LNg5fxWiCQVBbQFrMuVvtXEmHxeRRJVEgTh/4TdulB7wrtQIUQ==}
+  /@sentry-internal/tracing@7.95.0:
+    resolution: {integrity: sha512-YKiLPMnEgTsTh7u/W1Zep9HtV1rJqAetqJ4ekaIxyUUB6ppi6V00MacSjb01o++fwlNNDYFxNpJlgQqNPqsCNA==}
     engines: {node: '>=8'}
     dependencies:
-      '@sentry/core': 7.94.1
-      '@sentry/types': 7.94.1
-      '@sentry/utils': 7.94.1
+      '@sentry/core': 7.95.0
+      '@sentry/types': 7.95.0
+      '@sentry/utils': 7.95.0
     dev: false
 
-  /@sentry/core@7.94.1:
-    resolution: {integrity: sha512-4sjiMnkbGpv9O98YHVZe7fHNwwdYl+zLoCOoEOadtrJ1EYYvnK/MSixN2HJF7g/0s22xd4xY958QyNIRVR+Iiw==}
+  /@sentry/core@7.95.0:
+    resolution: {integrity: sha512-z+ffO6jK/ZUxnRbBGmnj5sOouKZ4mvRY0KJa33kbyqcmeiJKrN81M7Ecj1IJUCamo/6RqX0GCwDDxgUPZZZBwA==}
     engines: {node: '>=8'}
     dependencies:
-      '@sentry/types': 7.94.1
-      '@sentry/utils': 7.94.1
+      '@sentry/types': 7.95.0
+      '@sentry/utils': 7.95.0
     dev: false
 
-  /@sentry/node@7.94.1:
-    resolution: {integrity: sha512-30nyrfVbY1vNoWg5ptGW+soykU532VvKLuXiKty3SKEXjp5bv23JrCcVtuwp9KrW4josHOJbxZUqeNni85YplQ==}
+  /@sentry/node@7.95.0:
+    resolution: {integrity: sha512-3fbN+4ajPly9rhbuJtuZ+o2FGmka8Y7A3T/ooHuhCGoWegKtn3OzaOIrdwcYoBIy1fO6SuldTi/P72Y7wgIPtw==}
     engines: {node: '>=8'}
     dependencies:
-      '@sentry-internal/tracing': 7.94.1
-      '@sentry/core': 7.94.1
-      '@sentry/types': 7.94.1
-      '@sentry/utils': 7.94.1
+      '@sentry-internal/tracing': 7.95.0
+      '@sentry/core': 7.95.0
+      '@sentry/types': 7.95.0
+      '@sentry/utils': 7.95.0
     dev: false
 
-  /@sentry/types@7.94.1:
-    resolution: {integrity: sha512-A7CdEXFSgGyWv2BT2p9cAvJfb+dypvOtsY8ZvZvdPLUa7kqCV7ndhURUqKjvMBzsL2GParHn3ehDTl2eVc7pvA==}
+  /@sentry/types@7.95.0:
+    resolution: {integrity: sha512-ouU7NsEcrwmcnXHMNBGmKZEmKMzmgPGoBydZn1gukCI67Ci71fAYpPNrbtmjai6+jtsY21o45rVLqExru2sdfw==}
     engines: {node: '>=8'}
     dev: false
 
-  /@sentry/utils@7.94.1:
-    resolution: {integrity: sha512-gQ2EaMpUU1gGH3S+iqpog9gkXbCo8tlhGYA9a5FUtEtER3D3OAlp8dGFwClwzWDAwzjdLT1+X55zmEptU1cP/A==}
+  /@sentry/utils@7.95.0:
+    resolution: {integrity: sha512-0zget8AOaQWLIEA9cTx/qiQQYpx2x0UfnaW5xRmQg12QGTSngo/cUm9O04zuHw5gpBBGG0ocMDHxwwr+UCCBiw==}
     engines: {node: '>=8'}
     dependencies:
-      '@sentry/types': 7.94.1
+      '@sentry/types': 7.95.0
     dev: false
 
   /@sinclair/typebox@0.27.8:
