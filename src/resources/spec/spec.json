@@ -472,14 +472,6 @@
                                 "maxLength": 255
                               }
                             },
-                            "otherCauses": {
-                              "type": "array",
-                              "nullable": true,
-                              "items": {
-                                "type": "string",
-                                "maxLength": 255
-                              }
-                            },
                             "workAuthorization": {
                               "type": "string",
                               "nullable": true
@@ -537,7 +529,6 @@
                             "openToRemoteMulti",
                             "desiredSalary",
                             "interestCauses",
-                            "otherCauses",
                             "workAuthorization",
                             "interestGovt",
                             "interestGovtEmplTypes",
@@ -676,14 +667,6 @@
                                 "maxLength": 255
                               }
                             },
-                            "otherCauses": {
-                              "type": "array",
-                              "nullable": true,
-                              "items": {
-                                "type": "string",
-                                "maxLength": 255
-                              }
-                            },
                             "workAuthorization": {
                               "type": "string",
                               "nullable": true
@@ -741,7 +724,6 @@
                             "openToRemoteMulti",
                             "desiredSalary",
                             "interestCauses",
-                            "otherCauses",
                             "workAuthorization",
                             "interestGovt",
                             "interestGovtEmplTypes",
@@ -884,13 +866,6 @@
                     "maxLength": 255
                   },
                   "interestCauses": {
-                    "type": "array",
-                    "items": {
-                      "type": "string",
-                      "maxLength": 255
-                    }
-                  },
-                  "otherCauses": {
                     "type": "array",
                     "items": {
                       "type": "string",
@@ -1148,14 +1123,6 @@
                             "maxLength": 255
                           }
                         },
-                        "otherCauses": {
-                          "type": "array",
-                          "nullable": true,
-                          "items": {
-                            "type": "string",
-                            "maxLength": 255
-                          }
-                        },
                         "workAuthorization": {
                           "type": "string",
                           "nullable": true
@@ -1213,7 +1180,6 @@
                         "openToRemoteMulti",
                         "desiredSalary",
                         "interestCauses",
-                        "otherCauses",
                         "workAuthorization",
                         "interestGovt",
                         "interestGovtEmplTypes",
@@ -1370,13 +1336,6 @@
                       "maxLength": 255
                     }
                   },
-                  "otherCauses": {
-                    "type": "array",
-                    "items": {
-                      "type": "string",
-                      "maxLength": 255
-                    }
-                  },
                   "workAuthorization": {
                     "type": "string",
                     "nullable": true,
@@ -1628,14 +1587,6 @@
                             "maxLength": 255
                           }
                         },
-                        "otherCauses": {
-                          "type": "array",
-                          "nullable": true,
-                          "items": {
-                            "type": "string",
-                            "maxLength": 255
-                          }
-                        },
                         "workAuthorization": {
                           "type": "string",
                           "nullable": true
@@ -1693,7 +1644,6 @@
                         "openToRemoteMulti",
                         "desiredSalary",
                         "interestCauses",
-                        "otherCauses",
                         "workAuthorization",
                         "interestGovt",
                         "interestGovtEmplTypes",
@@ -1865,14 +1815,6 @@
                       "maxLength": 255
                     }
                   },
-                  "otherCauses": {
-                    "type": "array",
-                    "nullable": true,
-                    "items": {
-                      "type": "string",
-                      "maxLength": 255
-                    }
-                  },
                   "workAuthorization": {
                     "type": "string",
                     "nullable": true,
@@ -2100,14 +2042,6 @@
                             "maxLength": 255
                           }
                         },
-                        "otherCauses": {
-                          "type": "array",
-                          "nullable": true,
-                          "items": {
-                            "type": "string",
-                            "maxLength": 255
-                          }
-                        },
                         "workAuthorization": {
                           "type": "string",
                           "nullable": true
@@ -2165,7 +2099,6 @@
                         "openToRemoteMulti",
                         "desiredSalary",
                         "interestCauses",
-                        "otherCauses",
                         "workAuthorization",
                         "interestGovt",
                         "interestGovtEmplTypes",

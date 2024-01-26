@@ -36,7 +36,6 @@ const getAPIRequestBody = (
   openToRemoteMulti: ['in-person', 'hybrid'],
   desiredSalary: '100,000',
   interestCauses: ['climate change', 'responsible AI'],
-  otherCauses: ['animal rights'],
   workAuthorization: 'sponsorship',
   interestGovt: true,
   interestGovtEmplTypes: ['paid'],

@@ -1066,7 +1066,6 @@ describe('Applicant Controller', () => {
         openToRemoteMulti: ['not sure'],
         desiredSalary: '100,000',
         interestCauses: ['climate change', 'responsible AI'],
-        otherCauses: ['animal rights'],
         workAuthorization: 'sponsorship',
         interestGovt: true,
         interestGovtEmplTypes: ['paid'],
