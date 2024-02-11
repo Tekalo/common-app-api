@@ -109,7 +109,7 @@
     "prisma": "5.8.1",
     "sentry-testkit": "5.0.8",
     "supertest": "6.3.4",
-    "tsx": "4.7.0",
+    "tsx": "4.7.1",
     "typescript": "5.3.3"
   },
   "//": "added to resolve a critical vulnerability in @babel/traverse 7.23.0",
