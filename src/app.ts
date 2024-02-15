@@ -36,6 +36,10 @@ const getApp = (
 
   monitoringService.sentryInit(app);
 
+  // TODO: can we do this somewhere else?
+  config.auth0.express.cacheMaxAge = 12 * 60 * 60 * 1000; // 12 hours
+  const authenticator = new Authenticator(prisma, config);
+
   const router = express.Router();
 
   app.use(
@@ -54,6 +58,10 @@ const getApp = (
   app.use(express.json());
   // mount health check early
   app.use('/health', healthRoutes());
+
+  causesRoutes(config, '/causes').mountPublicCausesRoutes(app);
+  const { mountPublicSkillsRoutes, mountAuthenticatedSkillsRoutes } = skillsRoutes(config, '/skills');
+  mountPublicSkillsRoutes(app);
 
   /**
    * Setup cookie session middleware
@@ -91,11 +99,10 @@ const getApp = (
 
   app.use(
     '/applicants',
-    applicantRoutes(authService, emailService, uploadService, config),
+    applicantRoutes(authService, emailService, uploadService, config, authenticator),
   );
   app.use('/opportunities', opportunitiesRoutes(emailService, config));
-  app.use('/skills', skillsRoutes(config));
-  app.use('/causes', causesRoutes(config));
+  mountAuthenticatedSkillsRoutes(app, authenticator);
   app.use(
     '/cleanup',
     cleanupRoutes(authService, emailService, uploadService, config),
