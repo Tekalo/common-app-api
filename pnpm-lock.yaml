@@ -101,7 +101,7 @@ importers:
         version: 20.1.2
       '@types/aws-lambda':
         specifier: ^8.10.122
-        version: 8.10.122
+        version: 8.10.134
       '@types/cookie-parser':
         specifier: 1.4.6
         version: 1.4.6
@@ -2979,10 +2979,6 @@ packages:
   /@types/auth0@3.3.10:
     resolution: {integrity: sha512-9tS0Y2igWxw+Dx5uCHkIUCu6tG0oRkwpE322dOJPwZMLXQMx49n/gDmUz7YJSe1iVjrWW+ffVYmlPShVIEwjkg==}
     dev: false
-
-  /@types/aws-lambda@8.10.122:
-    resolution: {integrity: sha512-vBkIh9AY22kVOCEKo5CJlyCgmSWvasC+SWUxL/x/vOwRobMpI/HG1xp/Ae3AqmSiZeLUbOhW0FCD3ZjqqUxmXw==}
-    dev: true
 
   /@types/aws-lambda@8.10.134:
     resolution: {integrity: sha512-cfv422ivDMO+EeA3N4YcshbTHBL+5lLXe+Uz+4HXvIcsCuWvqNFpOs28ZprL8NA3qRCzt95ETiNAJDn4IcC/PA==}
