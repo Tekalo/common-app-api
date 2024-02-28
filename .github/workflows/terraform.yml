@@ -27,7 +27,7 @@ jobs:
       prod: ${{ steps.filter.outputs.prod || inputs.environment == 'prod' }}
     steps:
       - uses: actions/checkout@v4
-      - uses: dorny/paths-filter@v2
+      - uses: dorny/paths-filter@v3
         id: filter
         with:
           base: ${{ github.ref }}
