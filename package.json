@@ -54,7 +54,7 @@
     "@aws-sdk/client-s3": "3.523.0",
     "@aws-sdk/client-ses": "3.523.0",
     "@aws-sdk/client-sqs": "3.523.0",
-    "@aws-sdk/s3-presigned-post": "3.523.0",
+    "@aws-sdk/s3-presigned-post": "3.524.0",
     "@aws-sdk/s3-request-presigner": "3.523.0",
     "@capp/schemas": "workspace:*",
     "@prisma/client": "5.10.2",

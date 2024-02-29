@@ -18,8 +18,8 @@ importers:
         specifier: 3.523.0
         version: 3.523.0
       '@aws-sdk/s3-presigned-post':
-        specifier: 3.523.0
-        version: 3.523.0
+        specifier: 3.524.0
+        version: 3.524.0
       '@aws-sdk/s3-request-presigner':
         specifier: 3.523.0
         version: 3.523.0
@@ -881,8 +881,8 @@ packages:
       tslib: 2.6.2
     dev: false
 
-  /@aws-sdk/s3-presigned-post@3.523.0:
-    resolution: {integrity: sha512-Y3NSla/A4FlwWeR0UHBZqnINbk/PPwkCtAj/ISfMFGCl0m5C8oMTm6DWe2pN6vKOF8Gre1t0RXADAJfz49d+kg==}
+  /@aws-sdk/s3-presigned-post@3.524.0:
+    resolution: {integrity: sha512-11WK/AldHHQW1qYgGdF3vKIw7r+TlDquQqRIxhK5gVwgvKeTRYKQzljCvr6ngrxVnjhUr118c7u1aIYa8bSw1w==}
     engines: {node: '>=14.0.0'}
     dependencies:
       '@aws-sdk/client-s3': 3.523.0
