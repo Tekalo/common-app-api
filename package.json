@@ -107,7 +107,7 @@
     "pino-pretty": "10.3.1",
     "prettier": "3.2.5",
     "prisma": "5.10.2",
-    "sentry-testkit": "5.0.8",
+    "sentry-testkit": "5.0.9",
     "supertest": "6.3.4",
     "tsx": "4.7.1",
     "typescript": "5.3.3"

@@ -175,8 +175,8 @@ importers:
         specifier: 5.10.2
         version: 5.10.2
       sentry-testkit:
-        specifier: 5.0.8
-        version: 5.0.8
+        specifier: 5.0.9
+        version: 5.0.9
       supertest:
         specifier: 6.3.4
         version: 6.3.4
@@ -6719,8 +6719,8 @@ packages:
     transitivePeerDependencies:
       - supports-color
 
-  /sentry-testkit@5.0.8:
-    resolution: {integrity: sha512-PSuPm/Vso5IxuyJfkFYx07vLd9LmWQjVLPhXgFCYabn9fAX87EiwluwFv74dkzfdi/boo/E5OfjVHkBgfw8L1w==}
+  /sentry-testkit@5.0.9:
+    resolution: {integrity: sha512-b9oa3juBM3EXKDU/v5aL4HEC41yGxQZY4pluFN+nvRJLyvHc+JQWPWxxkOPAAr1vGY/4zH+V9NGS+ojIQkc88w==}
     dependencies:
       body-parser: 1.20.2
       express: 4.18.3
