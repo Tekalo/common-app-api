@@ -81,8 +81,8 @@ importers:
         specifier: 3.22.4
         version: 3.22.4
       zod-openapi:
-        specifier: 2.13.0
-        version: 2.13.0(zod@3.22.4)
+        specifier: 2.14.0
+        version: 2.14.0(zod@3.22.4)
     devDependencies:
       '@jest/globals':
         specifier: 29.7.0
@@ -7390,8 +7390,8 @@ packages:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
 
-  /zod-openapi@2.13.0(zod@3.22.4):
-    resolution: {integrity: sha512-BHkYeCQkMQaQb264oeeLm9zjmKIvAtDNv/IOPIIiso3s5/YGOSRm6CzEbqDn286W6zA4UYeUd8M/dpWld3/ZVg==}
+  /zod-openapi@2.14.0(zod@3.22.4):
+    resolution: {integrity: sha512-TywDpZKfbNSMspWtT152DaO+/cK0xqK/bv7Kt4ZMHhzEZS1rCFYxxFwDZdQd4Nrq5g4kX/R1SKI+FkYg4QkBlw==}
     engines: {node: '>=16.11'}
     peerDependencies:
       zod: ^3.21.4
