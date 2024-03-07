@@ -196,8 +196,8 @@ importers:
         specifier: 20.1.2
         version: 20.1.2
       '@types/aws-lambda':
-        specifier: 8.10.134
-        version: 8.10.134
+        specifier: 8.10.136
+        version: 8.10.136
       prettier:
         specifier: 3.2.5
         version: 3.2.5
@@ -2935,10 +2935,6 @@ packages:
   /@types/auth0@3.3.10:
     resolution: {integrity: sha512-9tS0Y2igWxw+Dx5uCHkIUCu6tG0oRkwpE322dOJPwZMLXQMx49n/gDmUz7YJSe1iVjrWW+ffVYmlPShVIEwjkg==}
     dev: false
-
-  /@types/aws-lambda@8.10.134:
-    resolution: {integrity: sha512-cfv422ivDMO+EeA3N4YcshbTHBL+5lLXe+Uz+4HXvIcsCuWvqNFpOs28ZprL8NA3qRCzt95ETiNAJDn4IcC/PA==}
-    dev: true
 
   /@types/aws-lambda@8.10.136:
     resolution: {integrity: sha512-cmmgqxdVGhxYK9lZMYYXYRJk6twBo53ivtXjIUEFZxfxe4TkZTZBK3RRWrY2HjJcUIix0mdifn15yjOAat5lTA==}
