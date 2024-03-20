@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@aws-sdk/client-s3':
-        specifier: 3.536.0
-        version: 3.536.0
+        specifier: 3.537.0
+        version: 3.537.0
       '@aws-sdk/client-ses':
         specifier: 3.535.0
         version: 3.535.0
@@ -18,11 +18,11 @@ importers:
         specifier: 3.536.0
         version: 3.536.0
       '@aws-sdk/s3-presigned-post':
-        specifier: 3.536.0
-        version: 3.536.0
+        specifier: 3.537.0
+        version: 3.537.0
       '@aws-sdk/s3-request-presigner':
-        specifier: 3.536.0
-        version: 3.536.0
+        specifier: 3.537.0
+        version: 3.537.0
       '@babel/core':
         specifier: 7.24.1
         version: 7.24.1
@@ -304,8 +304,8 @@ packages:
       tslib: 1.14.1
     dev: false
 
-  /@aws-sdk/client-s3@3.536.0:
-    resolution: {integrity: sha512-UM5txJxq8qKzLDVuW9c904bpb7+u1jOeyJITLz79WpyHSOP6ERHoTx/ltEuGJ4zQVazfkgthqR0lIn09sXEEuw==}
+  /@aws-sdk/client-s3@3.537.0:
+    resolution: {integrity: sha512-EMPN2toHz1QtSiDeLKS1zrazh+8J0g1Y5t5lCq25iTXqCSV9vB2jCKwG5+OB6L5tAKkwyl1uZofeWLmdFkztEg==}
     engines: {node: '>=14.0.0'}
     dependencies:
       '@aws-crypto/sha1-browser': 3.0.0
@@ -323,7 +323,7 @@ packages:
       '@aws-sdk/middleware-recursion-detection': 3.535.0
       '@aws-sdk/middleware-sdk-s3': 3.535.0
       '@aws-sdk/middleware-signing': 3.535.0
-      '@aws-sdk/middleware-ssec': 3.535.0
+      '@aws-sdk/middleware-ssec': 3.537.0
       '@aws-sdk/middleware-user-agent': 3.535.0
       '@aws-sdk/region-config-resolver': 3.535.0
       '@aws-sdk/signature-v4-multi-region': 3.535.0
@@ -847,8 +847,8 @@ packages:
       tslib: 2.6.2
     dev: false
 
-  /@aws-sdk/middleware-ssec@3.535.0:
-    resolution: {integrity: sha512-QAQ++9my7VZzusUPOFcUMdhTnjpGRyy/OvPC+jg9usdfcaSZeQbfzbdaVBalcm2Wt+1qxh3LZSTS+LxKikm02Q==}
+  /@aws-sdk/middleware-ssec@3.537.0:
+    resolution: {integrity: sha512-2QWMrbwd5eBy5KCYn9a15JEWBgrK2qFEKQN2lqb/6z0bhtevIOxIRfC99tzvRuPt6nixFQ+ynKuBjcfT4ZFrdQ==}
     engines: {node: '>=14.0.0'}
     dependencies:
       '@aws-sdk/types': 3.535.0
@@ -879,11 +879,11 @@ packages:
       tslib: 2.6.2
     dev: false
 
-  /@aws-sdk/s3-presigned-post@3.536.0:
-    resolution: {integrity: sha512-6CRDpD5GZkHmxBD5UB7NdOmOd2v2By8Mw/kqSGmxgHPsQwrYWnuR3FdxAX4j/QDv81KUiCgak2w/SacDaiPN3g==}
+  /@aws-sdk/s3-presigned-post@3.537.0:
+    resolution: {integrity: sha512-M0aaTmDMjOWF691039kdIZ/FCFbldFXOmzC+brH6sDsfn3jtVFR1Rpl5hE1qibqnx3dIZn7AL80FEFhW7tpTxw==}
     engines: {node: '>=14.0.0'}
     dependencies:
-      '@aws-sdk/client-s3': 3.536.0
+      '@aws-sdk/client-s3': 3.537.0
       '@aws-sdk/types': 3.535.0
       '@aws-sdk/util-format-url': 3.535.0
       '@smithy/middleware-endpoint': 2.5.0
@@ -896,8 +896,8 @@ packages:
       - aws-crt
     dev: false
 
-  /@aws-sdk/s3-request-presigner@3.536.0:
-    resolution: {integrity: sha512-bMz7nxYfSjCkw72Hah40o0c9scwU2LQWoT3CkTcWs9OCrG4MCzMTBJNlzRUpxOpfGTZqVzrCaUGINIjh3jP/tQ==}
+  /@aws-sdk/s3-request-presigner@3.537.0:
+    resolution: {integrity: sha512-jG3u9PTl9LpMFr+AY4jx4HvN3+qCFN5vy45U4E8zPagsQ4MbEseUcYpyyC9SHo+3DIgAJQLNV8Zv3LrtdiB5vQ==}
     engines: {node: '>=14.0.0'}
     dependencies:
       '@aws-sdk/signature-v4-multi-region': 3.535.0
