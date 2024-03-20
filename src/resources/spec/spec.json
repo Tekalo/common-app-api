@@ -2175,6 +2175,13 @@
                           "maxLength": 255
                         }
                       },
+                      "impactAreasOther": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "maxLength": 255
+                        }
+                      },
                       "eoe": {
                         "type": "boolean"
                       }
@@ -2407,6 +2414,13 @@
                         "type": "string"
                       }
                     },
+                    "impactAreasOther": {
+                      "type": "array",
+                      "nullable": true,
+                      "items": {
+                        "type": "string"
+                      }
+                    },
                     "orgName": {
                       "type": "string"
                     },
@@ -2433,6 +2447,7 @@
                     "contactName",
                     "contactPhone",
                     "impactAreas",
+                    "impactAreasOther",
                     "orgName",
                     "orgSize",
                     "orgType"
