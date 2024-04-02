@@ -28,6 +28,10 @@
     {
       "extends": "monorepo:prisma",
       "automerge": false
+    },
+    {
+      "extends": "@swc/core",
+      "automerge": false
     }
   ]
 }
