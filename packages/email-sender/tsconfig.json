@@ -6,7 +6,7 @@
     "moduleResolution": "NodeNext", // what directory should I look in to find these imports?
     "resolveJsonModule": true, // needed for loading local json files for spec.json specifically
     "strict": true,
-    "target": "ES2022" // All of the code that is transpiled EXCEPT for the import/export statements. AKA what runtime env are we targetting.
+    "target": "ES2022", // All of the code that is transpiled EXCEPT for the import/export statements. AKA what runtime env are we targetting.
   },
-  "include": ["src"]
+  "include": ["src"],
 }
