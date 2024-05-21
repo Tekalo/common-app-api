@@ -1,9 +1,9 @@
 terraform {
   cloud {
-    organization = "schmidtfutures"
+    organization = "tekalo"
 
     workspaces {
-      name = "common-app-infra-backend-prod"
+      name = "tekalo-infra-backend-prod"
     }
   }
 
