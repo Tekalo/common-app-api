@@ -1,6 +1,6 @@
 terraform {
   cloud {
-    organization = "schmidtfutures"
+    organization = "tekalo"
 
     workspaces {
       name = "tekalo-infra-backend-staging"
