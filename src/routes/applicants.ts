@@ -35,6 +35,7 @@ const applicantRoutes = (
   emailService: EmailService,
   uploadService: UploadService,
   config: BaseConfig,
+  authenticator: Authenticator,
 ) => {
   const router = express.Router();
   const applicantController = new ApplicantController(
@@ -43,10 +44,6 @@ const applicantRoutes = (
     emailService,
     uploadService,
   );
-
-  const appConfig = config;
-  appConfig.auth0.express.cacheMaxAge = 12 * 60 * 60 * 1000; // 12 hours
-  const authenticator = new Authenticator(prisma, appConfig);
 
   router.post('/', (req: Request, res: Response, next) => {
     const appBody = req.body as ApplicantRequestBody;

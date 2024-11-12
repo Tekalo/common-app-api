@@ -11,47 +11,47 @@ import Authenticator from '@App/middleware/authenticator.js';
 import { ReferenceSkillsCreateRequestBody } from '@App/resources/types/skills.js';
 import { Skills } from '@capp/schemas';
 
-const skillsRoutes = (config: BaseConfig) => {
-  const router = express.Router();
+
+const skillsRoutes = (config: BaseConfig, pathPrefix: string) => {
   const skillController = new SkillController(prisma);
 
-  const appConfig = config;
-  appConfig.auth0.express.cacheMaxAge = 12 * 60 * 60 * 1000; // 12 hours in ms
-  const authenticator = new Authenticator(prisma, appConfig);
-
-  router.get('/', (req: Request, res: Response, next: NextFunction) => {
-    skillController
-      .getSkills()
-      .then((result) => {
-        res
-          .status(200)
-          .set('Cache-Control', 'public, max-age=3600')
-          .json(result);
-      })
-      .catch((err) => next(err));
-  });
-
-  router.post(
-    '/referenceSet',
-    authenticator
-      .validateJwtRole('admin')
-      .bind(authenticator) as RequestHandler,
-    (req: Request, res: Response, next) => {
-      const referenceSkillsBody = req.body as ReferenceSkillsCreateRequestBody;
-      const validatedBody =
-        Skills.ReferenceSkillsCreateRequestBodySchema.parse(
-          referenceSkillsBody,
-        );
+  const mountPublicSkillsRoutes = (app: Application) => {
+    app.get(pathPrefix, (req: Request, res: Response, next: NextFunction) => {
       skillController
-        .createReferenceSkills(validatedBody)
+        .getSkills()
         .then((result) => {
-          res.status(200).json(result);
+          res
+            .status(200)
+            .set('Cache-Control', 'public, max-age=3600')
+            .json(result);
         })
         .catch((err) => next(err));
-    },
-  );
+    });
+  };
 
-  return router;
+  const mountAuthenticatedSkillsRoutes = (app: Application, authenticator: Authenticator) => {
+    app.post(
+      `${pathPrefix}/referenceSet`,
+      authenticator
+        .validateJwtRole('admin')
+        .bind(authenticator) as RequestHandler,
+      (req: Request, res: Response, next) => {
+        const referenceSkillsBody = req.body as ReferenceSkillsCreateRequestBody;
+        const validatedBody =
+          Skills.ReferenceSkillsCreateRequestBodySchema.parse(
+            referenceSkillsBody,
+          );
+        skillController
+          .createReferenceSkills(validatedBody)
+          .then((result) => {
+            res.status(200).json(result);
+          })
+          .catch((err) => next(err));
+      },
+    );
+  }
+
+  return { mountPublicSkillsRoutes, mountAuthenticatedSkillsRoutes };
 };
 
 export default skillsRoutes;
